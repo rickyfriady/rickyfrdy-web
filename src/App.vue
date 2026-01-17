@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import MainLayout from '@/layouts/MainLayout.vue'
 </script>
 
 <template>
-  <div id="app">
+  <MainLayout>
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" />
       </Transition>
     </RouterView>
-  </div>
+  </MainLayout>
 </template>
 
 <style scoped>
