@@ -469,19 +469,43 @@ Leveraging existing components from shadcn-vue:
 - Music player persists across pages
 - Theme toggle persists
 
-## Open Questions
+## Project Configuration
 
-**Content-Related**:
+**User Answers**:
 
-1. ✅ **Do you have 8-12 projects ready to showcase?** If not, we can design for 4-6 projects and expand later.
-2. ✅ **Do you have a GitHub username to integrate?** Needed for commit heatmap.
-3. ✅ **Do you have YouTube playlist/video URL(s) for the music player?** Need specific video IDs.
-4. ✅ **Do you have professional photos/headshot for About page?** Optional but recommended.
-5. ✅ **Do you have blog content ready, or should we design for "Coming Soon"?** Blog section can be added later.
+1. ✅ **Projects**: 6-8 projects ready to showcase
+2. ✅ **GitHub Username**: `rickyfrdy`
+3. ✅ **YouTube Music**: Playlist URL - `https://music.youtube.com/playlist?list=LRYRgMdMNWbZaO7noHke-epK1D7KTNUUdkzEI`
+4. ✅ **Deployment**: Vercel
+5. ✅ **Color Palette**: Custom warm neutral scheme
+   - Primary: `#F9F8F6` (warm white)
+   - Secondary: `#EFE9E3` (light beige)
+   - Tertiary: `#D9CFC7` (medium beige)
+   - Accent: `#C9B59C` (warm taupe)
+   - Design direction: Sophisticated, warm, professional with organic feel
 
-**Technical Decisions**: 6. ✅ **Preferred deployment platform?** (Vercel, Netlify, GitHub Pages, Cloudflare Pages) 7. ✅ **Domain name ready?** Custom domain vs. platform subdomain. 8. ✅ **Form submission service preference?** (EmailJS, Formspree, Netlify Forms, custom backend) 9. ✅ **Analytics?** (Google Analytics, Plausible, Fathom, none) 10. ✅ **Color scheme preference?** You mentioned "tech blue or terminal green" - which direction?
+**Design System Notes**:
 
-**Scope Clarifications**: 11. ✅ **Should blog support markdown content or rich text editor?** Markdown recommended for developers. 12. ✅ **How many blog posts initially?** Can launch with 0 and add later. 13. ✅ **Project detail page: Show code snippets or just descriptions?** Code snippets add credibility. 14. ✅ **Contact form: Email only or include phone/social?** Email + social links recommended.
+The color palette suggests a departure from typical tech portfolios (blues/greens). This warm, neutral, earthy scheme will create:
+
+- Professional yet approachable feel
+- High readability with proper contrast ratios
+- Unique visual identity (stands out from blue-heavy portfolios)
+- Works well for both light and dark modes (invert/adjust for dark theme)
+
+**Dark Mode Strategy**:
+
+- Dark base: `#1A1816` (dark brown-black)
+- Elevated surfaces: `#2D2824`
+- Text on dark: `#F9F8F6`
+- Accent remains: `#C9B59C` with adjusted opacity for contrast
+
+**Implementation Details**:
+
+- Blog: Markdown-based, launch with "Coming Soon" state
+- Contact: Email form + social links (GitHub, LinkedIn, Twitter)
+- Analytics: Can add later (Vercel Analytics recommended)
+- Domain: TBD (can use Vercel subdomain initially)
 
 ---
 
