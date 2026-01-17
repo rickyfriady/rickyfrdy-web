@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom Color Palette - Warm Neutrals */
+  --color-primary: #F9F8F6;
+  --color-secondary: #EFE9E3;
+  --color-tertiary: #D9CFC7;
+  --color-accent: #C9B59C;
+  
+  /* Dark Mode Colors */
+  --color-dark-base: #1A1816;
+  --color-dark-elevated: #2D2824;
+  
+  /* Semantic Colors */
+  --color-background: var(--color-primary);
+  --color-foreground: #1A1816;
+  --color-muted: var(--color-tertiary);
+  --color-border: var(--color-tertiary);
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: var(--color-dark-base);
+    --color-foreground: var(--color-primary);
+  }
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+}
