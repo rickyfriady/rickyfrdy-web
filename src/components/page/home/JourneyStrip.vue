@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 interface Milestone {
   year: string
@@ -57,7 +57,7 @@ function goTo(index: number) {
   trackRef.value.scrollTo({ left: element.offsetLeft - 24, behavior: 'smooth' })
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (!trackRef.value) return
   observer = new IntersectionObserver(
     (entries) => {
@@ -72,6 +72,7 @@ onMounted(() => {
     },
     { root: trackRef.value, threshold: [0.45, 0.55, 0.7, 0.9] }
   )
+  await nextTick()
   cardRefs.value.forEach((card) => observer?.observe(card))
 })
 
@@ -91,6 +92,7 @@ onUnmounted(() => observer?.disconnect())
           variant="ghost"
           size="icon"
           aria-label="Previous milestone"
+          :disabled="activeIndex === 0"
           @click="goTo(Math.max(activeIndex - 1, 0))"
         >
           <ChevronLeft class="h-4 w-4" />
@@ -102,6 +104,7 @@ onUnmounted(() => observer?.disconnect())
           variant="ghost"
           size="icon"
           aria-label="Next milestone"
+          :disabled="activeIndex === milestones.length - 1"
           @click="goTo(Math.min(activeIndex + 1, milestones.length - 1))"
         >
           <ChevronRight class="h-4 w-4" />
