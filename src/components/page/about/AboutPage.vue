@@ -15,10 +15,7 @@ import { Button } from '@/components/ui/button'
       :visible="{ opacity: 1, y: 0 }"
     >
       <p class="eyebrow mb-4 inline-flex">About</p>
-      <h1
-        class="title-display"
-        style="font-size: clamp(2.8rem, 7vw, 7rem); line-height: 0.93; letter-spacing: -0.02em"
-      >
+      <h1 class="title-display" style="font-size: clamp(2.8rem, 7vw, 7rem); line-height: 0.93">
         Building Systems With<br />
         <span class="title-accent text-accent">Human-First Clarity.</span>
       </h1>
@@ -148,7 +145,7 @@ import { Button } from '@/components/ui/button'
         :visible="{ opacity: 1, scale: 1 }"
       >
         <p class="eyebrow mb-4 inline-flex">Collaboration</p>
-        <h2 class="title-display" style="font-size: clamp(2rem, 5vw, 4.5rem); line-height: 0.95">
+        <h2 class="title-display" style="font-size: clamp(2rem, 5vw, 4.5rem)">
           Let's Build Something Together
         </h2>
         <p class="text-muted mx-auto mt-5 mb-8 max-w-2xl text-base md:text-lg">

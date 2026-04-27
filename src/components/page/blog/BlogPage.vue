@@ -21,9 +21,7 @@ import { Button } from '@/components/ui/button'
           Writing in progress — essays on systems, interfaces, and engineering craft.
         </p>
         <div class="mt-10">
-          <Button variant="outline" as="a" href="/" aria-label="Back to Home">
-            ← Back to Home
-          </Button>
+          <Button variant="outline" as="a" href="/"> ← Back to Home </Button>
         </div>
       </div>
     </section>
