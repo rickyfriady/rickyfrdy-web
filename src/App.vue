@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import MainLayout from '@/components/layout/MainLayout.vue'
+import ToastContainer from '@/components/providers/ToastContainer.vue'
 import LoadingBar from '@/components/ui/LoadingBar.vue'
 import { RouterView } from 'vue-router'
 </script>
 
 <template>
+  <ToastContainer />
   <LoadingBar />
   <MainLayout>
     <RouterView v-slot="{ Component }">
