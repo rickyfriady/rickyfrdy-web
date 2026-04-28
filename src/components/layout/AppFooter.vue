@@ -11,26 +11,24 @@ const socialLinks = [
 </script>
 
 <template>
-  <footer class="border-border border-t py-10">
-    <div class="container mx-auto px-4 md:px-8">
-      <div class="mb-5 flex justify-center gap-5">
-        <a
-          v-for="social in socialLinks"
-          :key="social.name"
-          :href="social.url"
-          :aria-label="social.name"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-muted hover:text-foreground transition-colors duration-200"
-        >
-          <component :is="social.icon" class="h-5 w-5" />
-        </a>
-      </div>
-      <p class="colophon">
-        Ricki Friadi&nbsp;·&nbsp;Built with Vue 3 + Tailwind v4&nbsp;·&nbsp;Jakarta,&nbsp;{{
-          currentYear
-        }}
-      </p>
+  <footer class="border-border border-t px-4 py-8">
+    <div class="mb-4 flex justify-center gap-5">
+      <a
+        v-for="social in socialLinks"
+        :key="social.name"
+        :href="social.url"
+        :aria-label="social.name"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted hover:text-foreground transition-colors duration-200"
+      >
+        <component :is="social.icon" class="h-4 w-4" />
+      </a>
     </div>
+    <p class="colophon">
+      Ricki Friadi&nbsp;·&nbsp;Built with Vue 3 + Tailwind v4&nbsp;·&nbsp;Jakarta,&nbsp;{{
+        currentYear
+      }}
+    </p>
   </footer>
 </template>
