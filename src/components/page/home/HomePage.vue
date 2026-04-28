@@ -5,190 +5,160 @@ import JourneyStrip from '@/components/page/home/JourneyStrip.vue'
 import ProjectCTA from '@/components/page/home/ProjectCTA.vue'
 import QuickStats from '@/components/page/home/QuickStats.vue'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, User } from 'lucide-vue-next'
+import { User } from 'lucide-vue-next'
 import { ref } from 'vue'
 
 const photoError = ref(false)
 const photoSrc = `${import.meta.env.BASE_URL}photo.jpg`
+
+const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST APIs']
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <!-- Hero: two-column on desktop — text left, IDE panel right -->
-    <section class="container mx-auto px-4 pt-16 pb-10 md:px-8 md:pt-24 md:pb-14">
-      <div class="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_300px] lg:gap-16">
-        <!-- Left: typographic statement -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: 24 }"
-          :visible="{ opacity: 1, y: 0 }"
-          :duration="700"
-        >
-          <p class="eyebrow mb-6">Fullstack Developer · Jakarta</p>
-
-          <h1
-            class="title-display"
-            style="
-              font-size: clamp(2.6rem, 5vw, 5.5rem);
-              line-height: 0.92;
-              letter-spacing: -0.02em;
-            "
+  <div>
+    <!-- Profile Header -->
+    <section
+      class="border-border border-b px-4 py-6"
+      v-motion
+      :initial="{ opacity: 0, y: 12 }"
+      :visible="{ opacity: 1, y: 0 }"
+      :duration="600"
+    >
+      <div class="flex items-center gap-4">
+        <!-- Circular photo -->
+        <div class="border-border h-16 w-16 shrink-0 overflow-hidden rounded-full border-2">
+          <img
+            v-show="!photoError"
+            :src="photoSrc"
+            alt="Ricki Friadi"
+            class="h-full w-full object-cover"
+            @error="photoError = true"
+          />
+          <div
+            v-if="photoError"
+            class="bg-secondary flex h-full w-full items-center justify-center"
           >
-            Engineering Systems,<br />
-            <span class="title-accent text-accent">Designing Presence.</span>
-          </h1>
-
-          <hr class="border-border my-6" />
-
-          <p
-            v-motion
-            :initial="{ opacity: 0 }"
-            :visible="{ opacity: 1 }"
-            :delay="300"
-            class="text-muted font-mono text-xs tracking-[0.18em] uppercase"
-          >
-            Ricki Friadi&nbsp;·&nbsp;Available for Work&nbsp;·&nbsp;2026
-          </p>
-
-          <div class="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" as="a" href="/works">
-              Explore Works
-              <ArrowRight class="ml-2 h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline" as="a" href="/contact">Get in Touch</Button>
+            <User class="text-muted h-8 w-8" />
           </div>
         </div>
 
-        <!-- Right: IDE file panel — desktop only -->
+        <!-- Name + role -->
+        <div class="min-w-0 flex-1">
+          <h1 class="title-display text-2xl leading-none">Ricki Friadi</h1>
+          <p class="text-muted mt-1 font-mono text-xs">Fullstack Developer</p>
+        </div>
+
+        <!-- Availability badge -->
         <div
-          v-motion
-          :initial="{ opacity: 0, x: 24 }"
-          :visible="{ opacity: 1, x: 0 }"
-          :delay="350"
-          :duration="700"
-          class="hidden self-start lg:block"
+          class="border-accent/30 bg-accent/10 hidden shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 sm:flex"
         >
-          <div
-            class="border-border overflow-hidden rounded-lg border"
-            style="border-left: 3px solid var(--color-accent)"
+          <span class="bg-accent h-1.5 w-1.5 animate-pulse rounded-full" />
+          <span class="text-accent font-mono text-[10px] tracking-[0.1em] uppercase"
+            >Open to Work</span
           >
-            <!-- IDE tab header -->
-            <div
-              class="border-border flex items-center gap-3 border-b px-4 py-2.5"
-              style="background: var(--color-secondary)"
-            >
-              <span class="font-mono text-[11px]" style="color: var(--color-muted)">
-                ~/ricki.jpg
-              </span>
-              <div class="ml-auto flex items-center gap-1.5">
-                <span class="h-2 w-2 rounded-full" style="background: #4ade80"></span>
-                <span
-                  class="font-mono text-[10px] tracking-[0.12em] uppercase"
-                  style="color: var(--color-muted)"
-                >
-                  available
-                </span>
-              </div>
-            </div>
-
-            <!-- Photo or placeholder -->
-            <div class="relative" style="aspect-ratio: 3/4; background: var(--color-secondary)">
-              <img
-                v-show="!photoError"
-                :src="photoSrc"
-                alt="Ricki Friadi"
-                class="h-full w-full object-cover"
-                @error="photoError = true"
-              />
-              <!-- Warm tint overlay for photo -->
-              <div
-                v-if="!photoError"
-                class="pointer-events-none absolute inset-0"
-                style="background: var(--color-accent); opacity: 0.07; mix-blend-mode: multiply"
-              />
-              <!-- Placeholder when no photo -->
-              <div
-                v-if="photoError"
-                class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6"
-              >
-                <div class="border-border rounded-lg border p-5">
-                  <User class="h-12 w-12" style="color: var(--color-border)" />
-                </div>
-                <div class="text-center leading-5" style="font-family: var(--font-mono)">
-                  <p class="text-[10px]" style="color: var(--color-accent)">// photo.jpg</p>
-                  <p class="text-[10px]" style="color: var(--color-muted)">
-                    add to /public/photo.jpg
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Footer annotation -->
-            <div
-              class="border-border flex items-center border-t px-4 py-2"
-              style="background: var(--color-secondary)"
-            >
-              <span class="font-mono text-[10px]" style="color: var(--color-muted)">
-                <span style="color: var(--color-accent); opacity: 0.7">//</span>
-                &nbsp;Jakarta, Indonesia &nbsp;·&nbsp; 2026
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- Quick Stats -->
-    <section class="container mx-auto px-4 md:px-8">
-      <QuickStats />
+    <!-- Hatch separator -->
+    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
+
+    <!-- Info grid -->
+    <QuickStats />
+
+    <!-- Hatch separator -->
+    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
+
+    <!-- Stat cards -->
+    <div
+      class="border-border grid grid-cols-2 border-b"
+      v-motion
+      :initial="{ opacity: 0 }"
+      :visible="{ opacity: 1 }"
+      :delay="150"
+    >
+      <div class="border-border border-r px-4 py-5">
+        <p class="text-muted font-mono text-[10px] tracking-[0.14em] uppercase">Projects Shipped</p>
+        <p class="title-display mt-1 text-4xl">25</p>
+      </div>
+      <div class="px-4 py-5">
+        <p class="text-muted font-mono text-[10px] tracking-[0.14em] uppercase">Years Experience</p>
+        <p class="title-display mt-1 text-4xl">4</p>
+      </div>
+    </div>
+
+    <!-- Hatch separator -->
+    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
+
+    <!-- About prose -->
+    <section
+      class="border-border border-b px-4 py-6"
+      v-motion
+      :initial="{ opacity: 0 }"
+      :visible="{ opacity: 1 }"
+      :delay="100"
+    >
+      <h2 class="text-foreground mb-3 text-base font-semibold">About</h2>
+      <p class="text-muted text-sm leading-relaxed">
+        I'm Ricki Friadi, a fullstack developer building reliable systems and clean interfaces
+        across the Node.js and TypeScript ecosystem — from backend APIs to frontend experiences. 4
+        years of professional experience shipping products.
+      </p>
+      <p class="text-muted mt-3 text-sm leading-relaxed">
+        Currently
+        <span
+          class="border-accent/30 bg-accent/10 text-accent rounded border px-1.5 py-0.5 font-mono text-[11px]"
+          >open to work</span
+        >
+        and building with
+        <span
+          v-for="tech in stack"
+          :key="tech"
+          class="border-border bg-secondary mx-0.5 rounded border px-1.5 py-0.5 font-mono text-xs"
+          >{{ tech }}</span
+        >.
+      </p>
     </section>
 
     <!-- § 02 — Journey Lab -->
-    <section class="container mx-auto px-4 py-12 md:px-8 md:py-16">
-      <div class="chapter-heading">
+    <section class="border-border border-b">
+      <div class="chapter-heading px-4">
         <span class="chapter-label">§ 02 — Journey Lab</span>
       </div>
       <JourneyLab />
     </section>
 
     <!-- § 03 — What Shaped My Work -->
-    <section class="container mx-auto px-4 py-12 md:px-8 md:py-16">
-      <div class="chapter-heading">
+    <section class="border-border border-b">
+      <div class="chapter-heading px-4">
         <span class="chapter-label">§ 03 — What Shaped My Work</span>
       </div>
       <JourneyStrip />
     </section>
 
-    <!-- Investigation Board (untouched) -->
+    <!-- Investigation Board -->
     <ProjectCTA />
 
     <!-- § 04 — Selected Work -->
-    <section class="container mx-auto px-4 py-12 md:px-8 md:py-16">
-      <div class="chapter-heading">
+    <section class="border-border border-b">
+      <div class="chapter-heading px-4">
         <span class="chapter-label">§ 04 — Selected Work</span>
       </div>
       <FeaturedProjects />
     </section>
 
     <!-- Final CTA -->
-    <section class="container mx-auto px-4 py-16 md:px-8 md:py-24">
-      <div
-        class="mx-auto max-w-3xl text-center"
-        v-motion
-        :initial="{ opacity: 0, y: 20 }"
-        :visible="{ opacity: 1, y: 0 }"
-      >
-        <p class="eyebrow mb-4">Collaboration</p>
-        <h2 class="title-display" style="font-size: clamp(2rem, 5vw, 4.5rem)">
-          Ready To Build<br />Your Next Product?
-        </h2>
-        <p class="text-muted mx-auto mt-6 mb-10 max-w-xl text-base md:text-lg">
-          From architecture to interface polish — software that scales and still feels crafted.
-        </p>
-        <div class="flex flex-col justify-center gap-4 sm:flex-row">
-          <Button size="lg" as="a" href="/contact">Start a Project</Button>
-          <Button size="lg" variant="outline" as="a" href="/about">Read My Story</Button>
-        </div>
+    <section class="px-4 py-12 text-center">
+      <p class="eyebrow mb-4">Collaboration</p>
+      <h2 class="title-display" style="font-size: clamp(2rem, 5vw, 3.5rem)">
+        Ready To Build<br />Your Next Product?
+      </h2>
+      <p class="text-muted mx-auto mt-4 mb-8 max-w-sm text-sm">
+        From architecture to interface polish — software that scales and still feels crafted.
+      </p>
+      <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <Button size="lg" as="a" href="/contact">Start a Project</Button>
+        <Button size="lg" variant="outline" as="a" href="/about">Read My Story</Button>
       </div>
     </section>
   </div>
