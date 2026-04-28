@@ -1,35 +1,27 @@
 <script setup lang="ts">
-const stats = [
-  { key: 'experience', value: '4 years' },
-  { key: 'shipped', value: '25 projects' },
-  { key: 'stack', value: 'Node.js · TypeScript · Vue 3' },
-  { key: 'status', value: 'open to work' }
+import { Briefcase, Clock, MapPin, Zap } from 'lucide-vue-next'
+
+const items = [
+  { icon: MapPin, label: 'Jakarta, Indonesia' },
+  { icon: Briefcase, label: '4 years experience' },
+  { icon: Zap, label: 'Open to Work' },
+  { icon: Clock, label: 'UTC +7 · WIB' }
 ]
 </script>
 
 <template>
-  <div class="border-border border-y py-5">
+  <div class="border-border grid grid-cols-2 border-b">
     <div
-      class="grid grid-cols-1 gap-x-10 gap-y-2.5 sm:grid-cols-2 lg:flex lg:flex-wrap lg:gap-x-12"
+      v-for="(item, i) in items"
+      :key="item.label"
+      class="border-border flex items-center gap-3 px-4 py-3.5"
+      :class="{
+        'border-r': i % 2 === 0,
+        'border-b': i < 2
+      }"
     >
-      <div
-        v-for="(stat, index) in stats"
-        :key="stat.key"
-        v-motion
-        :initial="{ opacity: 0 }"
-        :visible="{ opacity: 1 }"
-        :delay="index * 60"
-        class="flex items-baseline gap-2"
-      >
-        <span
-          class="shrink-0 font-mono text-[11px]"
-          style="color: var(--color-muted); min-width: 80px"
-          >{{ stat.key }}:</span
-        >
-        <span class="font-mono text-[11px]" style="color: var(--color-foreground)">{{
-          stat.value
-        }}</span>
-      </div>
+      <component :is="item.icon" class="text-muted h-3.5 w-3.5 shrink-0" />
+      <span class="text-foreground font-mono text-xs">{{ item.label }}</span>
     </div>
   </div>
 </template>
