@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { cn } from '@/utils/cn'
 import { computed } from 'vue'
-import { cn } from '@/lib/utils'
 
 interface Props {
   class?: string
@@ -8,9 +8,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const contentClass = computed(() => 
-  cn('p-6 pt-0', props.class)
-)
+const contentClass = computed(() => cn('p-6 pt-0', props.class))
 </script>
 
 <template>

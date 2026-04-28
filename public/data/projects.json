@@ -1,0 +1,224 @@
+[
+  {
+    "id": "1",
+    "slug": "ecommerce-platform",
+    "title": "E-Commerce Platform",
+    "shortDescription": "Full-stack e-commerce solution with payment integration, inventory management, and real-time order tracking.",
+    "fullDescription": "A comprehensive e-commerce platform built to handle high-traffic scenarios with seamless user experience. Features include product catalog management, shopping cart, secure checkout with multiple payment gateways, order tracking, and admin dashboard for inventory management.",
+    "thumbnail": "/images/projects/ecommerce-thumb.jpg",
+    "images": [
+      "/images/projects/ecommerce-1.jpg",
+      "/images/projects/ecommerce-2.jpg",
+      "/images/projects/ecommerce-3.jpg"
+    ],
+    "featured": true,
+    "category": "web-app",
+    "technologies": ["Node.js", "TypeScript", "PostgreSQL", "Vue 3", "Redis", "Stripe", "Docker"],
+    "keyMetric": "Handles 10K+ daily transactions",
+    "liveUrl": "https://demo-ecommerce.example.com",
+    "githubUrl": "https://github.com/rickyfrdy/ecommerce-platform",
+    "date": "2024-01-15",
+    "year": 2024,
+    "challenges": [
+      "Handling concurrent transactions without race conditions",
+      "Optimizing database queries for large product catalogs",
+      "Implementing real-time inventory updates",
+      "Ensuring PCI compliance for payment processing"
+    ],
+    "solutions": [
+      "Implemented database transactions with row-level locking",
+      "Added Redis caching layer for frequently accessed data",
+      "Used WebSocket for real-time inventory synchronization",
+      "Integrated Stripe for secure payment processing"
+    ],
+    "results": [
+      "Reduced page load time by 65%",
+      "Achieved 99.9% uptime over 6 months",
+      "Successfully processed over 100K transactions",
+      "Zero security incidents"
+    ],
+    "codeSnippets": [
+      {
+        "title": "Transaction Handling",
+        "description": "Ensuring data consistency during checkout process",
+        "language": "typescript",
+        "code": "async function processCheckout(orderId: string) {\n  return await db.transaction(async (tx) => {\n    const order = await tx.order.findUnique({ where: { id: orderId } });\n    \n    // Validate inventory\n    for (const item of order.items) {\n      const product = await tx.product.findUnique({ where: { id: item.productId } });\n      if (product.stock < item.quantity) {\n        throw new Error('Insufficient stock');\n      }\n    }\n    \n    // Deduct inventory and create payment\n    await tx.product.updateMany({\n      where: { id: { in: order.items.map(i => i.productId) } },\n      data: { stock: { decrement: 1 } }\n    });\n    \n    return await tx.payment.create({ data: { orderId, status: 'completed' } });\n  });\n}"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "slug": "api-gateway",
+    "title": "Microservices API Gateway",
+    "shortDescription": "Scalable API gateway with rate limiting, authentication, load balancing, and service discovery.",
+    "fullDescription": "A robust API gateway serving as the entry point for a microservices architecture. Handles authentication, authorization, rate limiting, request routing, load balancing, and provides unified logging and monitoring across services.",
+    "thumbnail": "/images/projects/api-gateway-thumb.jpg",
+    "images": ["/images/projects/api-gateway-1.jpg", "/images/projects/api-gateway-2.jpg"],
+    "featured": true,
+    "category": "api",
+    "technologies": ["Express", "JWT", "Docker", "Kubernetes", "MongoDB", "Redis", "Nginx"],
+    "keyMetric": "Reduced API latency by 60%",
+    "githubUrl": "https://github.com/rickyfrdy/api-gateway",
+    "date": "2023-09-20",
+    "year": 2023,
+    "challenges": [
+      "Managing authentication across multiple microservices",
+      "Implementing effective rate limiting without Redis bottleneck",
+      "Service discovery in dynamic containerized environment",
+      "Monitoring and debugging distributed systems"
+    ],
+    "solutions": [
+      "Centralized JWT-based authentication with token refresh",
+      "Distributed rate limiting using Redis with sliding window",
+      "Integrated Kubernetes service discovery",
+      "Implemented distributed tracing with correlation IDs"
+    ],
+    "results": [
+      "Handles 50K requests per minute",
+      "99.95% uptime across all services",
+      "Reduced authentication overhead by 40%",
+      "Improved debugging time by 70%"
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "analytics-dashboard",
+    "title": "Real-time Analytics Dashboard",
+    "shortDescription": "Interactive dashboard with WebSocket updates, data visualization, and custom reporting features.",
+    "fullDescription": "A real-time analytics platform providing live insights into business metrics. Features include customizable widgets, real-time data streaming, interactive charts, export functionality, and role-based access control.",
+    "thumbnail": "/images/projects/analytics-thumb.jpg",
+    "images": [
+      "/images/projects/analytics-1.jpg",
+      "/images/projects/analytics-2.jpg",
+      "/images/projects/analytics-3.jpg"
+    ],
+    "featured": true,
+    "category": "web-app",
+    "technologies": ["Socket.io", "Chart.js", "React", "Tailwind", "Node.js", "MongoDB", "Redis"],
+    "keyMetric": "Processing 1M+ events/day",
+    "liveUrl": "https://analytics-demo.example.com",
+    "date": "2023-05-10",
+    "year": 2023,
+    "challenges": [
+      "Handling real-time data streaming at scale",
+      "Optimizing chart rendering with large datasets",
+      "Managing WebSocket connections efficiently",
+      "Aggregating data for different time periods"
+    ],
+    "solutions": [
+      "Implemented data aggregation pipeline with time-series optimization",
+      "Used virtual scrolling for large data tables",
+      "Connection pooling and heartbeat mechanism for WebSocket",
+      "Pre-computed aggregations stored in Redis"
+    ],
+    "results": [
+      "Real-time updates under 100ms latency",
+      "Handles 10K concurrent users",
+      "Reduced server costs by 35%",
+      "Increased user engagement by 45%"
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "task-automation-cli",
+    "title": "Task Automation CLI Tool",
+    "shortDescription": "Command-line tool for automating repetitive development tasks with customizable workflows.",
+    "fullDescription": "A powerful CLI tool that automates common development workflows including code generation, database migrations, deployment scripts, and environment management. Features interactive prompts, configuration management, and plugin system.",
+    "thumbnail": "/images/projects/cli-tool-thumb.jpg",
+    "images": ["/images/projects/cli-tool-1.jpg"],
+    "featured": false,
+    "category": "tool",
+    "technologies": ["Node.js", "TypeScript", "Commander.js", "Inquirer", "Jest"],
+    "keyMetric": "Saves 10+ hours/week for teams",
+    "githubUrl": "https://github.com/rickyfrdy/dev-automation-cli",
+    "date": "2023-11-30",
+    "year": 2023,
+    "challenges": [
+      "Making the tool intuitive for non-technical users",
+      "Handling different project structures and configurations",
+      "Ensuring cross-platform compatibility",
+      "Managing plugin dependencies"
+    ],
+    "solutions": [
+      "Interactive prompts with validation and defaults",
+      "Flexible configuration system with templates",
+      "Thorough testing on Windows, macOS, and Linux",
+      "Isolated plugin execution environment"
+    ],
+    "results": [
+      "Adopted by 5 development teams",
+      "90% reduction in manual deployment errors",
+      "500+ GitHub stars",
+      "Active community contributions"
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "blog-cms",
+    "title": "Headless CMS for Blogs",
+    "shortDescription": "Modern content management system with markdown support, media management, and REST API.",
+    "fullDescription": "A lightweight, developer-friendly CMS designed specifically for blogs and content-heavy websites. Features markdown editing, media library, SEO optimization tools, multi-user support, and RESTful API for frontend integration.",
+    "thumbnail": "/images/projects/cms-thumb.jpg",
+    "images": ["/images/projects/cms-1.jpg", "/images/projects/cms-2.jpg"],
+    "featured": false,
+    "category": "web-app",
+    "technologies": ["Node.js", "TypeScript", "PostgreSQL", "Express", "AWS S3", "JWT"],
+    "keyMetric": "Powers 50+ active blogs",
+    "githubUrl": "https://github.com/rickyfrdy/headless-blog-cms",
+    "date": "2024-03-05",
+    "year": 2024,
+    "challenges": [
+      "Implementing efficient markdown parsing and preview",
+      "Managing media uploads and storage at scale",
+      "Building flexible content schema system",
+      "Ensuring fast API response times"
+    ],
+    "solutions": [
+      "Integrated marked.js with custom renderer for security",
+      "AWS S3 for scalable media storage with CDN",
+      "JSON schema-based content modeling",
+      "Aggressive caching strategy with cache invalidation"
+    ],
+    "results": [
+      "Average page load under 1 second",
+      "99.99% API uptime",
+      "Handles 1TB+ of media storage",
+      "Used in production by multiple clients"
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "open-source-ui-library",
+    "title": "Vue UI Component Library",
+    "shortDescription": "Open-source collection of accessible, customizable Vue 3 components.",
+    "fullDescription": "A comprehensive UI component library for Vue 3 applications built with accessibility, customization, and developer experience in mind. Includes 40+ components, comprehensive documentation, TypeScript support, and theming system.",
+    "thumbnail": "/images/projects/ui-library-thumb.jpg",
+    "images": ["/images/projects/ui-library-1.jpg", "/images/projects/ui-library-2.jpg"],
+    "featured": false,
+    "category": "open-source",
+    "technologies": ["Vue 3", "TypeScript", "Tailwind CSS", "Vite", "Storybook", "Vitest"],
+    "keyMetric": "1K+ GitHub stars",
+    "githubUrl": "https://github.com/rickyfrdy/vue-ui-components",
+    "liveUrl": "https://vue-ui-docs.example.com",
+    "date": "2024-06-12",
+    "year": 2024,
+    "challenges": [
+      "Ensuring WCAG AA accessibility compliance",
+      "Building truly composable and reusable components",
+      "Maintaining consistent API across components",
+      "Writing comprehensive documentation"
+    ],
+    "solutions": [
+      "Extensive accessibility testing and ARIA attributes",
+      "Composition API with logical concerns separation",
+      "Consistent naming conventions and patterns",
+      "Interactive Storybook documentation with examples"
+    ],
+    "results": [
+      "1,000+ GitHub stars in 6 months",
+      "Used by 50+ projects",
+      "100% test coverage",
+      "Active community of contributors"
+    ]
+  }
+]

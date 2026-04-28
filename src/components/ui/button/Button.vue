@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { cn } from '@/utils/cn'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import { Primitive, type PrimitiveProps } from 'reka-ui'
+import { computed } from 'vue'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center rounded-lg border text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-accent text-dark-base hover:bg-accent/90',
-        secondary: 'bg-secondary text-foreground hover:bg-secondary/80',
-        outline: 'border-2 border-accent bg-transparent hover:bg-accent hover:text-dark-base',
-        ghost: 'hover:bg-accent/10 hover:text-accent',
-        link: 'text-accent underline-offset-4 hover:underline'
+        default:
+          'border-accent bg-accent text-background hover:bg-accent-hover hover:-translate-y-px',
+        secondary: 'border-border bg-secondary text-foreground hover:border-accent/40',
+        outline:
+          'border-border bg-transparent text-foreground hover:border-accent hover:text-accent',
+        ghost: 'border-transparent text-muted hover:bg-secondary hover:text-foreground',
+        link: 'border-transparent text-accent underline-offset-4 hover:underline',
+        unstyled: ''
       },
       size: {
-        default: 'h-11 px-6 py-2',
+        default: 'h-10 px-5 py-2',
         sm: 'h-9 px-4 text-xs',
-        lg: 'h-12 px-8 text-base',
+        lg: 'h-12 px-7 text-base',
         icon: 'h-10 w-10'
       }
     },
@@ -30,26 +34,32 @@ const buttonVariants = cva(
 
 type ButtonVariants = VariantProps<typeof buttonVariants>
 
-interface Props {
+interface Props extends PrimitiveProps {
   variant?: ButtonVariants['variant']
   size?: ButtonVariants['size']
-  as?: string
   class?: string
+  asChild?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
   size: 'default',
-  as: 'button'
+  as: 'button',
+  asChild: false
 })
 
-const buttonClass = computed(() => 
+const buttonClass = computed(() =>
   cn(buttonVariants({ variant: props.variant, size: props.size }), props.class)
 )
 </script>
 
 <template>
-  <component :is="as" :class="buttonClass">
+  <Primitive
+    :as="as"
+    :as-child="asChild"
+    :class="buttonClass"
+    :style="{ transitionTimingFunction: 'var(--ease-out-quart)' }"
+  >
     <slot />
-  </component>
+  </Primitive>
 </template>

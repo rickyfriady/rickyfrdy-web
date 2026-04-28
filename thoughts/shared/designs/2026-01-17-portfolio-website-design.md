@@ -1,6 +1,6 @@
 ---
 date: 2026-01-17
-topic: "World-Class Fullstack Developer Portfolio Website"
+topic: 'World-Class Fullstack Developer Portfolio Website'
 status: validated
 ---
 

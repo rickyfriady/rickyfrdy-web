@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomePage.vue'),
+      component: () => import('@/components/page/home/HomePage.vue'),
       meta: {
         title: 'Ricki Friadi - Fullstack Developer',
         description: 'Portfolio of a Fullstack Developer specializing in Node.js & TypeScript'
@@ -15,7 +15,7 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      component: () => import('@/views/AboutPage.vue'),
+      component: () => import('@/components/page/about/AboutPage.vue'),
       meta: {
         title: 'About - Ricki Friadi',
         description: 'Learn about my journey as a fullstack developer'
@@ -24,16 +24,25 @@ const router = createRouter({
     {
       path: '/projects',
       name: 'projects',
-      component: () => import('@/views/ProjectsPage.vue'),
+      component: () => import('@/components/page/projects/ProjectsPage.vue'),
       meta: {
         title: 'Projects - Ricki Friadi',
         description: 'Explore my portfolio of web applications and solutions'
       }
     },
     {
+      path: '/works',
+      name: 'works',
+      component: () => import('@/components/page/works/WorksPage.vue'),
+      meta: {
+        title: 'Selected Works - Ricki Friadi',
+        description: 'Interactive investigation board of selected work'
+      }
+    },
+    {
       path: '/projects/:slug',
       name: 'project-detail',
-      component: () => import('@/views/ProjectDetailPage.vue'),
+      component: () => import('@/components/page/projects/ProjectDetailPage.vue'),
       meta: {
         title: 'Project Details - Ricki Friadi'
       }
@@ -41,7 +50,7 @@ const router = createRouter({
     {
       path: '/blog',
       name: 'blog',
-      component: () => import('@/views/BlogPage.vue'),
+      component: () => import('@/components/page/blog/BlogPage.vue'),
       meta: {
         title: 'Blog - Ricki Friadi',
         description: 'Technical articles about Node.js, TypeScript, and web development'
@@ -50,7 +59,7 @@ const router = createRouter({
     {
       path: '/blog/:slug',
       name: 'blog-post',
-      component: () => import('@/views/BlogPostPage.vue'),
+      component: () => import('@/components/page/blog/BlogPostPage.vue'),
       meta: {
         title: 'Blog Post - Ricki Friadi'
       }
@@ -58,7 +67,7 @@ const router = createRouter({
     {
       path: '/contact',
       name: 'contact',
-      component: () => import('@/views/ContactPage.vue'),
+      component: () => import('@/components/page/contact/ContactPage.vue'),
       meta: {
         title: 'Contact - Ricki Friadi',
         description: 'Get in touch for collaboration opportunities'
@@ -77,12 +86,12 @@ const router = createRouter({
 // Update document title and meta tags
 router.beforeEach((to, from, next) => {
   document.title = (to.meta.title as string) || 'Ricki Friadi'
-  
+
   const descriptionMeta = document.querySelector('meta[name="description"]')
   if (descriptionMeta && to.meta.description) {
     descriptionMeta.setAttribute('content', to.meta.description as string)
   }
-  
+
   next()
 })
 
