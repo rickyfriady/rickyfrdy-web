@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import MainLayout from '@/components/layout/MainLayout.vue'
+import LoadingBar from '@/components/ui/LoadingBar.vue'
 import { RouterView } from 'vue-router'
-import MainLayout from '@/layouts/MainLayout.vue'
 </script>
 
 <template>
+  <LoadingBar />
   <MainLayout>
     <RouterView v-slot="{ Component }">
-      <Transition name="page" mode="out-in">
+      <Transition name="page-wipe" mode="out-in">
         <component :is="Component" />
       </Transition>
     </RouterView>
@@ -14,18 +16,11 @@ import MainLayout from '@/layouts/MainLayout.vue'
 </template>
 
 <style scoped>
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+.page-wipe-enter-active {
+  animation: wipe-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+.page-wipe-leave-active {
+  animation: wipe-conceal 0.28s ease-in both;
 }
 </style>
