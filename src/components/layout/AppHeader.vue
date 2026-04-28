@@ -65,22 +65,38 @@ const railLinkClass = (path: string) =>
     </div>
   </aside>
 
-  <!-- Mobile: Bottom tab bar -->
-  <nav
-    class="border-border bg-background/95 fixed right-0 bottom-0 left-0 z-50 flex h-16 items-stretch border-t backdrop-blur-sm lg:hidden"
-    style="padding-bottom: env(safe-area-inset-bottom)"
-    aria-label="Mobile navigation"
-  >
-    <RouterLink
-      v-for="item in navItems"
-      :key="item.path"
-      :to="item.path"
-      :aria-current="isActive(item.path) ? 'page' : undefined"
-      class="focus-visible:ring-accent flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-      :class="isActive(item.path) ? 'text-accent' : 'text-muted hover:text-foreground'"
+  <!-- Mobile: floating pill nav -->
+  <nav class="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 lg:hidden">
+    <div
+      class="flex items-center gap-0.5 rounded-full px-1.5 py-1.5"
+      style="
+        background: color-mix(in oklch, var(--color-background) 85%, transparent);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--color-border);
+        box-shadow:
+          0 4px 24px oklch(0 0 0 / 0.08),
+          0 1px 4px oklch(0 0 0 / 0.06);
+      "
     >
-      <component :is="item.icon" class="h-5 w-5" />
-      <span class="text-[10px] font-medium">{{ item.name }}</span>
-    </RouterLink>
+      <RouterLink
+        v-for="item in navItems"
+        :key="item.path"
+        :to="item.path"
+        :aria-label="item.name"
+        :aria-current="isActive(item.path) ? 'page' : undefined"
+        class="relative flex flex-col items-center gap-1 rounded-full px-3.5 py-2 transition-colors duration-200"
+        :class="isActive(item.path) ? 'text-accent' : 'text-muted hover:text-foreground'"
+      >
+        <!-- Active indicator dot -->
+        <span
+          v-if="isActive(item.path)"
+          class="absolute top-1.5 h-1 w-1 rounded-full"
+          style="background: var(--color-accent)"
+        />
+        <component :is="item.icon" class="h-5 w-5" />
+        <span class="font-mono text-[9px] tracking-[0.08em] uppercase">{{ item.name }}</span>
+      </RouterLink>
+    </div>
   </nav>
 </template>
