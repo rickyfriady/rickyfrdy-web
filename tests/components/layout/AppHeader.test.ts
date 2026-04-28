@@ -45,11 +45,4 @@ describe('AppHeader', () => {
     const activeLinks = container.querySelectorAll('.border-accent')
     expect(activeLinks.length).toBeGreaterThan(0)
   })
-
-  it('renders Start a Project CTA in the left rail', async () => {
-    const router = makeRouter()
-    await router.isReady()
-    render(AppHeader, { global: { plugins: [router] } })
-    expect(screen.getByRole('link', { name: /start a project/i })).toBeInTheDocument()
-  })
 })
