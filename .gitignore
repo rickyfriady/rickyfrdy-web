@@ -29,3 +29,11 @@ coverage
 .env
 .env.local
 .env.*.local
+
+# Dev tooling artifacts
+.claude/
+.playwright-mcp/
+visual-*.png
+FRONTEND_REVIEW_TODO.md
+MIGRATION_TODO_OPTION3.md
+thoughts/ledgers/
