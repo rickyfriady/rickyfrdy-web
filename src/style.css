@@ -1,40 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=General+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 
 @theme {
   --font-sans:
-    'General Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-display: 'Libre Caslon Display', Georgia, serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Warm earthy palette — tinted neutrals with terracotta accent */
-  --color-background: oklch(0.97 0.006 70);
-  --color-foreground: oklch(0.18 0.012 55);
-  --color-muted: oklch(0.52 0.014 55);
-  --color-border: oklch(0.86 0.012 70);
-  --color-secondary: oklch(0.93 0.008 70);
-  --color-accent: oklch(0.52 0.14 28);
-  --color-accent-hover: oklch(0.45 0.14 28);
-  --color-surface: oklch(0.95 0.006 70);
-  --color-highlight: oklch(0.62 0.01 55);
+  /* Washi palette — warm paper, sumi ink, Japan blue accent */
+  --color-background: oklch(0.97 0.008 78);
+  --color-foreground: oklch(0.15 0.012 42);
+  --color-muted: oklch(0.52 0.014 52);
+  --color-border: oklch(0.87 0.01 74);
+  --color-secondary: oklch(0.93 0.008 74);
+  --color-accent: oklch(0.42 0.18 264);
+  --color-accent-hover: oklch(0.35 0.18 264);
+  --color-surface: oklch(0.94 0.008 74);
+  --color-highlight: oklch(0.65 0.012 52);
 
   /* Easing tokens */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: oklch(0.14 0.008 55);
-    --color-foreground: oklch(0.92 0.008 70);
-    --color-muted: oklch(0.62 0.012 60);
-    --color-border: oklch(0.28 0.01 55);
-    --color-secondary: oklch(0.19 0.008 55);
-    --color-accent: oklch(0.65 0.14 28);
-    --color-accent-hover: oklch(0.72 0.14 28);
-    --color-surface: oklch(0.17 0.008 55);
-    --color-highlight: oklch(0.48 0.01 55);
+    --color-background: oklch(0.13 0.012 264);
+    --color-foreground: oklch(0.93 0.006 74);
+    --color-muted: oklch(0.62 0.012 62);
+    --color-border: oklch(0.26 0.018 264);
+    --color-secondary: oklch(0.18 0.014 264);
+    --color-accent: oklch(0.65 0.18 264);
+    --color-accent-hover: oklch(0.72 0.18 264);
+    --color-surface: oklch(0.17 0.012 264);
+    --color-highlight: oklch(0.48 0.012 52);
   }
 }
 
@@ -50,7 +51,7 @@
   }
 
   html {
-    color-scheme: light;
+    color-scheme: light dark;
     scroll-behavior: smooth;
   }
 
@@ -66,7 +67,7 @@
 
   ::selection {
     background: var(--color-accent);
-    color: var(--color-background);
+    color: oklch(0.97 0.008 78);
   }
 }
 
@@ -84,6 +85,61 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* --- Keyframes --- */
+
+@keyframes wipe-reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.8;
+  }
+  to {
+    clip-path: inset(0 0 0% 0);
+    opacity: 1;
+  }
+}
+
+@keyframes wipe-conceal {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+}
+
+@keyframes loading-shimmer {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
   }
 }
 
