@@ -22,7 +22,7 @@ const socialLinks = [
         rel="noopener noreferrer"
         class="text-muted hover:text-foreground transition-colors duration-200"
       >
-        <component :is="social.icon" class="h-4 w-4" />
+        <component :is="social.icon" aria-hidden="true" class="h-4 w-4" />
       </a>
     </div>
     <p class="colophon">

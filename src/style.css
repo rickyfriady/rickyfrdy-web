@@ -188,10 +188,6 @@
   @apply text-muted text-xs tracking-[0.18em] uppercase;
 }
 
-@utility editorial-grid {
-  @apply grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.45fr];
-}
-
 @utility diff-tag {
   font-family: var(--font-mono);
   @apply border-border bg-secondary rounded-md border px-2.5 py-1 text-xs;

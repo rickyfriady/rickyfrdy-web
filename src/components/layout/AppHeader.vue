@@ -78,6 +78,7 @@ const isActive = (path: string) => (path === '/' ? route.path === '/' : route.pa
       >
         <span
           v-if="isActive(item.path)"
+          aria-hidden="true"
           class="absolute top-1.5 h-1 w-1 rounded-full"
           style="background: var(--color-accent)"
         />

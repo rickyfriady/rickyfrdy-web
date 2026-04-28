@@ -20,7 +20,7 @@ const items = [
         'border-b': i < 2
       }"
     >
-      <component :is="item.icon" class="text-muted h-3.5 w-3.5 shrink-0" />
+      <component :is="item.icon" aria-hidden="true" class="text-muted h-3.5 w-3.5 shrink-0" />
       <span class="text-foreground font-mono text-xs">{{ item.label }}</span>
     </div>
   </div>
