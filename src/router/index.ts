@@ -65,6 +65,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/experience',
+      name: 'experience',
+      component: () => import('@/components/page/experience/ExperiencePage.vue'),
+      meta: {
+        title: 'Experience - Ricki Friadi',
+        description: 'Full work history, projects, education, and skills'
+      }
+    },
+    {
       path: '/contact',
       name: 'contact',
       component: () => import('@/components/page/contact/ContactPage.vue'),

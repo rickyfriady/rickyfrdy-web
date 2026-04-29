@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Briefcase, Home, Info, Layers, Mail } from 'lucide-vue-next'
+import { Briefcase, FileText, Home, Info, Layers, Mail } from 'lucide-vue-next'
 import { RouterLink, useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -13,6 +13,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { name: 'Home', path: '/', icon: Home },
   { name: 'About', path: '/about', icon: Info },
+  { name: 'Experience', path: '/experience', icon: FileText },
   { name: 'Works', path: '/works', icon: Layers },
   { name: 'Projects', path: '/projects', icon: Briefcase },
   { name: 'Contact', path: '/contact', icon: Mail }

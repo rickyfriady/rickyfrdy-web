@@ -9,6 +9,7 @@ function makeRouter(path = '/') {
     routes: [
       { path: '/', component: { template: '<div />' } },
       { path: '/about', component: { template: '<div />' } },
+      { path: '/experience', component: { template: '<div />' } },
       { path: '/works', component: { template: '<div />' } },
       { path: '/projects', component: { template: '<div />' } },
       { path: '/contact', component: { template: '<div />' } }
@@ -27,12 +28,13 @@ describe('AppHeader', () => {
     expect(screen.getByText('Friadi')).toBeInTheDocument()
   })
 
-  it('renders all 5 nav links', async () => {
+  it('renders all 6 nav links', async () => {
     const router = makeRouter()
     await router.isReady()
     render(AppHeader, { global: { plugins: [router] } })
     expect(screen.getAllByRole('link', { name: /home/i })[0]).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /about/i })[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: /experience/i })[0]).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /works/i })[0]).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /projects/i })[0]).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /contact/i })[0]).toBeInTheDocument()
