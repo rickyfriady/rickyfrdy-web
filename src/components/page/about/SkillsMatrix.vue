@@ -1,124 +1,99 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-interface SkillCategory {
-  title: string
-  skills: Skill[]
+interface SkillGroup {
+  label: string
+  skills: { name: string; icon: string }[]
 }
 
-interface Skill {
-  name: string
-  level: number // 1-5
-  years: number
-}
-
-const skillCategories: SkillCategory[] = [
+const skillGroups: SkillGroup[] = [
   {
-    title: 'Backend',
+    label: 'Frameworks',
     skills: [
-      { name: 'Node.js', level: 5, years: 4 },
-      { name: 'TypeScript', level: 5, years: 3 },
-      { name: 'Express', level: 5, years: 4 },
-      { name: 'PostgreSQL', level: 4, years: 3 },
-      { name: 'MongoDB', level: 4, years: 3 },
-      { name: 'Redis', level: 4, years: 2 }
+      { name: 'Vue 3', icon: 'vue' },
+      { name: 'React', icon: 'react' },
+      { name: 'Node.js', icon: 'nodejs' },
+      { name: 'NestJS', icon: 'nestjs' },
+      { name: 'Express', icon: 'express' }
     ]
   },
   {
-    title: 'Frontend',
+    label: 'Languages & Styling',
     skills: [
-      { name: 'Vue 3', level: 5, years: 2 },
-      { name: 'React', level: 4, years: 2 },
-      { name: 'Tailwind CSS', level: 5, years: 2 },
-      { name: 'JavaScript', level: 5, years: 4 },
-      { name: 'HTML/CSS', level: 5, years: 4 }
+      { name: 'TypeScript', icon: 'ts' },
+      { name: 'JavaScript', icon: 'js' },
+      { name: 'Tailwind', icon: 'tailwind' },
+      { name: 'CSS', icon: 'css' },
+      { name: 'HTML', icon: 'html' },
+      { name: 'PHP', icon: 'php' },
+      { name: 'Python', icon: 'python' }
     ]
   },
   {
-    title: 'DevOps & Tools',
+    label: 'Databases & Infrastructure',
     skills: [
-      { name: 'Docker', level: 4, years: 2 },
-      { name: 'Git', level: 5, years: 4 },
-      { name: 'CI/CD', level: 4, years: 2 },
-      { name: 'AWS', level: 3, years: 1 },
-      { name: 'Kubernetes', level: 3, years: 1 }
+      { name: 'PostgreSQL', icon: 'postgres' },
+      { name: 'Redis', icon: 'redis' },
+      { name: 'MongoDB', icon: 'mongodb' },
+      { name: 'MySQL', icon: 'mysql' },
+      { name: 'Docker', icon: 'docker' },
+      { name: 'Git', icon: 'git' },
+      { name: 'GitLab', icon: 'gitlab' }
     ]
   },
   {
-    title: 'Other',
+    label: 'Tools',
     skills: [
-      { name: 'REST APIs', level: 5, years: 4 },
-      { name: 'GraphQL', level: 4, years: 2 },
-      { name: 'WebSocket', level: 4, years: 2 },
-      { name: 'Testing', level: 4, years: 3 },
-      { name: 'Agile/Scrum', level: 4, years: 3 }
+      { name: 'Postman', icon: 'postman' },
+      { name: 'Jenkins', icon: 'jenkins' },
+      { name: 'Redux', icon: 'redux' },
+      { name: 'Bootstrap', icon: 'bootstrap' },
+      { name: 'Flask', icon: 'flask' },
+      { name: 'Jest', icon: 'jest' },
+      { name: 'Vitest', icon: 'vitest' }
     ]
   }
 ]
 
-function getLevelText(level: number): string {
-  const levels = {
-    1: 'Beginner',
-    2: 'Elementary',
-    3: 'Intermediate',
-    4: 'Advanced',
-    5: 'Expert'
-  }
-  return levels[level as keyof typeof levels] || 'Unknown'
+function iconUrl(icon: string): string {
+  return `https://skillicons.dev/icons?i=${icon}`
 }
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="mb-12 text-center">
-      <h3 class="mb-4 text-3xl font-bold">Technical Skills</h3>
-      <p class="text-muted mx-auto max-w-2xl">
-        Technologies and tools I work with on a daily basis
+  <div class="space-y-7 px-4 pb-8">
+    <div
+      v-for="group in skillGroups"
+      :key="group.label"
+      v-motion
+      :initial="{ opacity: 0, y: 8 }"
+      :visible="{ opacity: 1, y: 0 }"
+    >
+      <!-- Group label -->
+      <p class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">
+        {{ group.label }}
       </p>
-    </div>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <Card
-        v-for="(category, categoryIndex) in skillCategories"
-        :key="category.title"
-        v-motion
-        :initial="{ opacity: 0, y: 30 }"
-        :visible="{ opacity: 1, y: 0 }"
-        :delay="categoryIndex * 100"
-        class="transition-shadow hover:shadow-lg"
-      >
-        <CardHeader>
-          <CardTitle class="text-xl">{{ category.title }}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-4">
-            <div v-for="skill in category.skills" :key="skill.name" class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-medium">{{ skill.name }}</span>
-                <Badge variant="secondary" class="text-xs"> {{ skill.years }}y </Badge>
-              </div>
-
-              <!-- Proficiency Bar -->
-              <div class="relative">
-                <div class="bg-muted/30 h-2 overflow-hidden rounded-full">
-                  <div
-                    class="bg-accent h-full rounded-full transition-all duration-1000"
-                    :style="{ width: `${(skill.level / 5) * 100}%` }"
-                    v-motion
-                    :initial="{ width: '0%' }"
-                    :visible="{ width: `${(skill.level / 5) * 100}%` }"
-                    :delay="categoryIndex * 100 + 200"
-                  />
-                </div>
-                <span class="text-muted mt-1 block text-xs">
-                  {{ getLevelText(skill.level) }}
-                </span>
-              </div>
-            </div>
+      <!-- Icon grid -->
+      <div class="flex flex-wrap gap-3">
+        <div
+          v-for="skill in group.skills"
+          :key="skill.name"
+          class="group flex flex-col items-center gap-1.5"
+        >
+          <div
+            class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5"
+          >
+            <img
+              :src="iconUrl(skill.icon)"
+              :alt="skill.name"
+              class="h-full w-full object-contain"
+              loading="lazy"
+              width="40"
+              height="40"
+            />
           </div>
-        </CardContent>
-      </Card>
+          <span class="text-muted font-mono text-[9px] tracking-[0.06em]">{{ skill.name }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>

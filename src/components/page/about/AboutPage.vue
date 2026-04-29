@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import GitHubHeatmap from '@/components/page/about/GitHubHeatmap.vue'
 import SkillsMatrix from '@/components/page/about/SkillsMatrix.vue'
-import SkillsTimeline from '@/components/page/about/SkillsTimeline.vue'
 import { Button } from '@/components/ui/button'
 </script>
 
@@ -119,26 +118,18 @@ import { Button } from '@/components/ui/button'
       </div>
     </section>
 
-    <!-- § 02 — Skills Timeline -->
+    <!-- § 02 — Skills -->
     <section class="border-border border-b">
       <div class="chapter-heading px-4">
-        <span class="chapter-label">§ 02 — Skills Timeline</span>
-      </div>
-      <SkillsTimeline />
-    </section>
-
-    <!-- § 03 — Skills Matrix -->
-    <section class="border-border border-b">
-      <div class="chapter-heading px-4">
-        <span class="chapter-label">§ 03 — Skills Matrix</span>
+        <span class="chapter-label">§ 02 — Skills</span>
       </div>
       <SkillsMatrix />
     </section>
 
-    <!-- § 04 — GitHub Activity -->
+    <!-- § 03 — GitHub Activity -->
     <section class="border-border border-b">
       <div class="chapter-heading px-4">
-        <span class="chapter-label">§ 04 — GitHub Activity</span>
+        <span class="chapter-label">§ 03 — GitHub Activity</span>
       </div>
       <div class="px-4 pb-6">
         <GitHubHeatmap />
