@@ -8,15 +8,15 @@
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Arctic White + Sky Blue palette */
-  --color-background: oklch(0.985 0.009 225);
-  --color-foreground: oklch(0.12 0.01 225);
-  --color-muted: oklch(0.52 0.01 220);
-  --color-border: oklch(0.88 0.008 220);
-  --color-secondary: oklch(0.94 0.009 220);
+  /* Cool Slate Gray + Sky Blue palette */
+  --color-background: oklch(0.975 0.005 240);
+  --color-foreground: oklch(0.12 0.01 240);
+  --color-muted: oklch(0.52 0.01 240);
+  --color-border: oklch(0.87 0.006 240);
+  --color-secondary: oklch(0.94 0.004 240);
   --color-accent: oklch(0.53 0.15 220);
   --color-accent-hover: oklch(0.45 0.15 220);
-  --color-surface: oklch(0.95 0.008 220);
+  --color-surface: oklch(0.935 0.004 240);
   --color-highlight: oklch(0.7 0.09 220);
 
   /* Easing tokens */
