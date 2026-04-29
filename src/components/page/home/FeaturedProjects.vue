@@ -17,33 +17,33 @@ interface Project {
 const featuredProjects: Project[] = [
   {
     id: '1',
-    title: 'E-Commerce Platform',
-    category: 'SaaS / E-Commerce',
+    title: 'Singel APP — Pegadaian Kita',
+    category: 'Micro-Frontend / Internal Platform',
     description:
-      'Full-stack e-commerce solution with payment integration, inventory management, and real-time order tracking.',
-    technologies: ['Node.js', 'TypeScript', 'PostgreSQL', 'Vue 3', 'Redis'],
-    metric: 'Handles 10K+ daily transactions',
-    slug: 'ecommerce-platform'
+      'Company-wide internal app for PT. Pegadaian built on Micro-Frontend Architecture. Modular Vue 3 components enabling multiple teams to deploy features independently without breaking other domains.',
+    technologies: ['Vue 3', 'NestJS', 'Tailwind', 'Pinia', 'Vitest'],
+    metric: '≥80% unit test coverage, CI/CD enforced',
+    slug: 'singel-app'
   },
   {
     id: '2',
-    title: 'Microservices API Gateway',
-    category: 'Backend Infrastructure',
+    title: 'Microsite Pinjaman Pegadaian',
+    category: 'Backend Microservices',
     description:
-      'Scalable API gateway with rate limiting, authentication, load balancing, and service discovery.',
-    technologies: ['Express', 'JWT', 'Docker', 'Kubernetes', 'MongoDB'],
-    metric: 'Reduced response time by 60%',
-    slug: 'api-gateway'
+      'Revamped a legacy CodeIgniter 3 monolith into a scalable NestJS microservices architecture for the loan lead generation platform. Designed 9 backend services with Factory pattern to support multiple loan products.',
+    technologies: ['NestJS', 'TypeScript', 'PostgreSQL', 'Redis', 'Vue 3'],
+    metric: '9 microservices, Factory pattern architecture',
+    slug: 'microsite-pinjaman'
   },
   {
     id: '3',
-    title: 'Real-time Analytics Dashboard',
-    category: 'Data / Frontend',
+    title: 'KAMILA Application',
+    category: 'Fullstack / Internal Tools',
     description:
-      'Interactive dashboard with WebSocket updates, data visualization, and custom reporting features.',
-    technologies: ['Socket.io', 'Chart.js', 'React', 'Tailwind', 'Node.js'],
-    metric: 'Processing 1M+ events/day',
-    slug: 'analytics-dashboard'
+      'Internal application for Pegadaian employees covering marketing progress tracking, KPI management, weekly reporting, and loan lead submission from external business partners.',
+    technologies: ['ExpressJS', 'ReactJS', 'PostgreSQL', 'Redis', 'TypeORM'],
+    metric: 'KPI tracking + marketing analytics pipeline',
+    slug: 'kamila-app'
   }
 ]
 </script>

@@ -5,7 +5,7 @@ const currentYear = new Date().getFullYear()
 
 const socialLinks = [
   { name: 'GitHub', icon: Github, url: 'https://github.com/rickyfrdy' },
-  { name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/rickyfrdy' },
+  { name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/rickifriadi' },
   { name: 'Email', icon: Mail, url: 'mailto:rickifriadi.dev@gmail.com' }
 ]
 </script>

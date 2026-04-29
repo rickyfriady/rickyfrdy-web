@@ -39,24 +39,28 @@ import { Button } from '@/components/ui/button'
         :visible="{ opacity: 1 }"
       >
         <p>
-          My journey into software development started 4 years ago when I discovered my passion for
-          solving complex problems through code. What began as curiosity quickly evolved into a deep
-          commitment to mastering the craft of fullstack development.
+          My journey into web development started in 2021 when I joined PT. Sumatera Kalimantan Jaya
+          as an intern and shipped a full company profile website in 14 days. That early deadline
+          pressure taught me to build fast and iterate — a habit that's stayed with me.
         </p>
         <p>
-          I specialize in the
-          <span class="text-foreground font-semibold">Node.js and TypeScript ecosystem</span>,
-          building scalable backend systems and modern frontend applications. I believe in writing
-          clean, maintainable code that not only works but also stands the test of time.
+          After freelancing with
+          <span class="text-foreground font-semibold">React, Node.js, and Express</span> for nearly
+          two years — integrating MongoDB, MySQL, and PostgreSQL backends for diverse clients — I
+          joined <span class="text-foreground font-semibold">PT. Pegadaian</span> in May 2023 as a
+          Software Engineer, working on the CSR Web App, B2B Web App, and internal tooling.
         </p>
         <p>
-          Throughout my career, I've had the privilege of working on diverse projects — from
-          e-commerce platforms handling thousands of transactions daily to real-time analytics
-          dashboards processing millions of events.
+          Since 2024 I've been deep in microservices and Micro-Frontend territory — revamping a
+          legacy CodeIgniter monolith into 9 NestJS microservices using the Factory pattern, and
+          contributing to a company-wide Micro-Frontend Architecture that lets multiple teams deploy
+          independently. I maintain ≥80% unit test coverage with Vitest across all my modules.
         </p>
         <p>
-          Beyond coding, I'm passionate about continuous learning, sharing knowledge with the
-          developer community, and staying updated with the latest technologies and best practices.
+          I use <span class="text-foreground font-semibold">TypeScript</span> as my core language
+          across the stack. On the frontend I reach for Vue 3 or React. On the backend, NestJS and
+          Express. I care about CI/CD hygiene, clean code, and building things that are actually
+          testable.
         </p>
       </div>
 

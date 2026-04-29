@@ -5,14 +5,14 @@ import { describe, expect, it } from 'vitest'
 describe('FeaturedProjects', () => {
   it('renders a file-path header for each project', () => {
     render(FeaturedProjects)
-    expect(screen.getByText('~/projects/ecommerce-platform/')).toBeInTheDocument()
-    expect(screen.getByText('~/projects/api-gateway/')).toBeInTheDocument()
-    expect(screen.getByText('~/projects/analytics-dashboard/')).toBeInTheDocument()
+    expect(screen.getByText('~/projects/singel-app/')).toBeInTheDocument()
+    expect(screen.getByText('~/projects/microsite-pinjaman/')).toBeInTheDocument()
+    expect(screen.getByText('~/projects/kamila-app/')).toBeInTheDocument()
   })
 
   it('renders metric lines with arrow prefix', () => {
     render(FeaturedProjects)
-    expect(screen.getByText('→ Handles 10K+ daily transactions')).toBeInTheDocument()
+    expect(screen.getByText('→ ≥80% unit test coverage, CI/CD enforced')).toBeInTheDocument()
   })
 
   it('renders case study links', () => {
@@ -23,7 +23,6 @@ describe('FeaturedProjects', () => {
 
   it('renders project title when no image is provided', () => {
     render(FeaturedProjects)
-    // All projects have no image in the default data — titles render as headings
-    expect(screen.getByRole('heading', { name: 'E-Commerce Platform' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Singel APP — Pegadaian Kita' })).toBeInTheDocument()
   })
 })

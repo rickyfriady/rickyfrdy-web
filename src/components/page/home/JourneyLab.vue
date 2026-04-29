@@ -13,40 +13,40 @@ interface JourneyItem {
 
 const journeyData: JourneyItem[] = [
   {
-    id: 'journey-2021',
+    id: 'journey-2021-apr',
     year: '2021',
-    month: 'September',
-    title: 'Started My Tech Journey',
+    month: 'April',
+    title: 'First Production Ship',
     description:
-      'Focused on web fundamentals and shipped first production-ready prototypes while learning software habits that scale.',
-    tags: ['HTML/CSS', 'JavaScript', 'First Ship']
+      'Joined PT. Sumatera Kalimantan Jaya and shipped a full company profile website in 14 days, plus an MPOS inventory app with a 3-person team.',
+    tags: ['PHP', 'Codeigniter', 'Bootstrap']
   },
   {
-    id: 'journey-2022',
-    year: '2022',
-    month: 'April',
-    title: 'Deepened Frontend Craft',
+    id: 'journey-2021-sep',
+    year: '2021',
+    month: 'September',
+    title: 'Freelance Full-Stack',
     description:
-      'Moved into component-driven UI work, animation orchestration, and stronger interaction patterns for real users.',
-    tags: ['Vue', 'Tailwind', 'Motion']
+      'Started freelancing — built responsive web apps for clients using React.js, Node.js, and Express.js, integrating MongoDB, MySQL, and PostgreSQL backends.',
+    tags: ['React.js', 'Node.js', 'Express.js']
   },
   {
     id: 'journey-2023',
     year: '2023',
-    month: 'November',
-    title: 'System Design & Backend Scale',
+    month: 'May',
+    title: 'Joined PT. Pegadaian',
     description:
-      'Started owning architecture decisions for APIs, data modeling, asynchronous processing, and deployment reliability.',
-    tags: ['Node.js', 'TypeScript', 'PostgreSQL']
+      'Hired as Software Engineer. Translated business requirements into technical specs and contributed to CSR Web App, B2B Web App, KAMILA, and Microsite Pinjaman.',
+    tags: ['Vue.js', 'NestJS', 'TypeScript']
   },
   {
     id: 'journey-2024',
     year: '2024',
-    month: 'August',
-    title: 'End-to-End Product Ownership',
+    month: 'January',
+    title: 'Microservices & Micro-Frontend',
     description:
-      'Combined architecture, implementation, and UI design quality to deliver complete product slices from zero to launch.',
-    tags: ['Architecture', 'DX', 'Performance']
+      'Revamped legacy monolith to NestJS microservices. Contributed to company-wide Micro-Frontend Architecture on Singel APP, achieving ≥80% test coverage with Vitest.',
+    tags: ['NestJS', 'Micro-Frontend', 'CI/CD']
   }
 ]
 

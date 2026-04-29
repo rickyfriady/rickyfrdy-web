@@ -3,7 +3,7 @@ import { Briefcase, Clock, MapPin, Zap } from 'lucide-vue-next'
 
 const items = [
   { icon: MapPin, label: 'Jakarta, Indonesia' },
-  { icon: Briefcase, label: '4 years experience' },
+  { icon: Briefcase, label: '3+ years experience' },
   { icon: Zap, label: 'Open to Work' },
   { icon: Clock, label: 'UTC +7 · WIB' }
 ]

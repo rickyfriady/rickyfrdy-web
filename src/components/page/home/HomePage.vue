@@ -11,7 +11,7 @@ import { ref } from 'vue'
 const photoError = ref(false)
 const photoSrc = `${import.meta.env.BASE_URL}photo.jpg`
 
-const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST APIs']
+const stack = ['TypeScript', 'Vue 3', 'React', 'NestJS', 'PostgreSQL', 'Redis']
 </script>
 
 <template>
@@ -88,7 +88,7 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
       </div>
       <div class="glass-card px-5 py-5">
         <p class="text-muted font-mono text-[10px] tracking-[0.14em] uppercase">Years Experience</p>
-        <p class="title-display mt-1 text-4xl">4</p>
+        <p class="title-display mt-1 text-4xl">3+</p>
       </div>
     </div>
 
@@ -102,9 +102,10 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
     >
       <h2 class="text-foreground mb-3 text-base font-semibold">About</h2>
       <p class="text-muted text-sm leading-relaxed">
-        I'm Ricki Friadi, a fullstack developer building reliable systems and clean interfaces
-        across the Node.js and TypeScript ecosystem — from backend APIs to frontend experiences. 4
-        years of professional experience shipping products.
+        Fullstack Engineer with 3+ years building end-to-end web solutions using TypeScript as the
+        core language. Expert in crafting dynamic frontend interfaces with Vue.js and React, and
+        developing robust backend services with NestJS and Express. Currently at PT. Pegadaian
+        contributing to Micro-Frontend Architecture and microservices at scale.
       </p>
       <p class="text-muted mt-3 text-sm leading-relaxed">
         Currently

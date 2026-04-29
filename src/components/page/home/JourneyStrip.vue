@@ -12,32 +12,32 @@ interface Milestone {
 
 const milestones: Milestone[] = [
   {
-    year: '2022',
-    title: 'Backend Foundations',
+    year: '2021',
+    title: 'Web Internship & First Ships',
     summary:
-      'Built and shipped API services with authentication, billing flows, and maintainable monorepo conventions.',
-    stack: ['Node.js', 'PostgreSQL', 'Docker']
+      'Built a company profile site in 14 days and an MPOS inventory app at PT. Sumatera Kalimantan Jaya, then pivoted to freelance building client sites with PHP and jQuery.',
+    stack: ['PHP', 'JavaScript', 'Codeigniter']
+  },
+  {
+    year: '2022',
+    title: 'Freelance Full-Stack',
+    summary:
+      'Developed responsive React + Node.js applications for freelance clients, integrating MongoDB, MySQL, and PostgreSQL with Material UI and Tailwind CSS frontends.',
+    stack: ['React.js', 'Node.js', 'Express.js']
   },
   {
     year: '2023',
-    title: 'Scale & Reliability',
+    title: 'Enterprise Engineering at Pegadaian',
     summary:
-      'Focused on performance bottlenecks, queue-driven jobs, and safer production rollout strategies.',
-    stack: ['TypeScript', 'Redis', 'CI/CD']
+      'Joined PT. Pegadaian as Software Engineer. Delivered CSR Web App, B2B Web App, and KAMILA internal application across Vue.js and NestJS stacks.',
+    stack: ['Vue.js', 'NestJS', 'Redis']
   },
   {
     year: '2024',
-    title: 'Product-Facing UX',
+    title: 'Microservices & Micro-Frontend',
     summary:
-      'Moved up-stack to deliver polished interfaces with stronger interaction design and better information architecture.',
-    stack: ['Vue 3', 'Tailwind', 'Design Systems']
-  },
-  {
-    year: '2025',
-    title: 'Architecture + Craft',
-    summary:
-      'Combined system-level backend decisions with premium frontend execution for full lifecycle ownership.',
-    stack: ['Architecture', 'DX', 'Performance']
+      'Revamped legacy monolith into 9 NestJS microservices. Contributed to company-wide Micro-Frontend Architecture on Singel APP with ≥80% test coverage.',
+    stack: ['NestJS', 'Micro-Frontend', 'CI/CD']
   }
 ]
 
