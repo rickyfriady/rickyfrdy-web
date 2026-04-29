@@ -13,7 +13,7 @@ const buttonVariants = cva(
           'border-accent bg-accent text-background hover:bg-accent-hover hover:-translate-y-px',
         secondary: 'border-border bg-secondary text-foreground hover:border-accent/40',
         outline:
-          'border-border bg-transparent text-foreground hover:border-accent hover:text-accent',
+          'border-border bg-background/50 text-foreground hover:border-accent hover:text-accent backdrop-blur-sm',
         ghost: 'border-transparent text-muted hover:bg-secondary hover:text-foreground',
         link: 'border-transparent text-accent underline-offset-4 hover:underline',
         unstyled: ''

@@ -22,9 +22,19 @@ const isActive = (path: string) => (path === '/' ? route.path === '/' : route.pa
 </script>
 
 <template>
-  <!-- Sticky horizontal top bar -->
+  <!-- Sticky horizontal top bar — glass matching the mobile pill nav -->
   <header
-    class="border-border bg-background/90 fixed top-0 right-0 left-0 z-50 h-14 border-b backdrop-blur-sm"
+    class="fixed top-0 right-0 left-0 z-50 h-14"
+    style="
+      background: color-mix(in oklch, var(--color-background) 78%, transparent);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid color-mix(in oklch, var(--color-border) 65%, transparent);
+      box-shadow:
+        0 1px 20px oklch(0 0 0 / 0.06),
+        0 0.5px 4px oklch(0 0 0 / 0.04),
+        inset 0 1px 0 oklch(1 0 0 / 0.08);
+    "
   >
     <div class="mx-auto flex h-full max-w-[680px] items-center justify-between px-4">
       <!-- Logo -->

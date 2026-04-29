@@ -15,10 +15,10 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
 </script>
 
 <template>
-  <div>
-    <!-- Profile Header -->
+  <div class="space-y-3 px-4 py-4">
+    <!-- Profile Header — glass card -->
     <section
-      class="border-border border-b px-4 py-6"
+      class="glass-card p-5"
       v-motion
       :initial="{ opacity: 0, y: 12 }"
       :visible="{ opacity: 1, y: 0 }"
@@ -26,7 +26,10 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
     >
       <div class="flex items-center gap-4">
         <!-- Circular photo -->
-        <div class="border-border h-16 w-16 shrink-0 overflow-hidden rounded-full border-2">
+        <div
+          class="h-16 w-16 shrink-0 overflow-hidden rounded-full"
+          style="border: 2px solid color-mix(in oklch, var(--color-border) 60%, transparent)"
+        >
           <img
             v-show="!photoError"
             :src="photoSrc"
@@ -48,9 +51,15 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
           <p class="text-muted mt-1 font-mono text-xs">Fullstack Developer</p>
         </div>
 
-        <!-- Availability badge -->
+        <!-- Availability badge — glass pill -->
         <div
-          class="border-accent/30 bg-accent/10 hidden shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 sm:flex"
+          class="hidden shrink-0 items-center gap-1.5 rounded-full px-3 py-1 sm:flex"
+          style="
+            background: color-mix(in oklch, var(--color-accent) 12%, transparent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid color-mix(in oklch, var(--color-accent) 30%, transparent);
+          "
         >
           <span class="bg-accent h-1.5 w-1.5 animate-pulse rounded-full" />
           <span class="text-accent font-mono text-[10px] tracking-[0.1em] uppercase"
@@ -60,39 +69,32 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
       </div>
     </section>
 
-    <!-- Hatch separator -->
-    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
+    <!-- Info grid — glass card -->
+    <div class="glass-card overflow-hidden">
+      <QuickStats />
+    </div>
 
-    <!-- Info grid -->
-    <QuickStats />
-
-    <!-- Hatch separator -->
-    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
-
-    <!-- Stat cards -->
+    <!-- Stat cards — glass panels side by side -->
     <div
-      class="border-border grid grid-cols-2 border-b"
+      class="grid grid-cols-2 gap-3"
       v-motion
       :initial="{ opacity: 0 }"
       :visible="{ opacity: 1 }"
       :delay="150"
     >
-      <div class="border-border border-r px-4 py-5">
+      <div class="glass-card px-5 py-5">
         <p class="text-muted font-mono text-[10px] tracking-[0.14em] uppercase">Projects Shipped</p>
         <p class="title-display mt-1 text-4xl">25</p>
       </div>
-      <div class="px-4 py-5">
+      <div class="glass-card px-5 py-5">
         <p class="text-muted font-mono text-[10px] tracking-[0.14em] uppercase">Years Experience</p>
         <p class="title-display mt-1 text-4xl">4</p>
       </div>
     </div>
 
-    <!-- Hatch separator -->
-    <div aria-hidden="true" class="hatch-gutter border-border h-5 border-b" />
-
-    <!-- About prose -->
+    <!-- About prose — glass card -->
     <section
-      class="border-border border-b px-4 py-6"
+      class="glass-card p-5"
       v-motion
       :initial="{ opacity: 0 }"
       :visible="{ opacity: 1 }"
@@ -107,7 +109,11 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
       <p class="text-muted mt-3 text-sm leading-relaxed">
         Currently
         <span
-          class="border-accent/30 bg-accent/10 text-accent rounded border px-1.5 py-0.5 font-mono text-[11px]"
+          style="
+            background: color-mix(in oklch, var(--color-accent) 12%, transparent);
+            border: 1px solid color-mix(in oklch, var(--color-accent) 28%, transparent);
+          "
+          class="text-accent rounded px-1.5 py-0.5 font-mono text-[11px]"
           >open to work</span
         >
         and building with
@@ -120,16 +126,16 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
       </p>
     </section>
 
-    <!-- § 02 — Journey Lab -->
-    <section class="border-border border-b">
+    <!-- § 02 — Journey Lab — glass card -->
+    <section class="glass-card overflow-hidden">
       <div class="chapter-heading px-4">
         <span class="chapter-label">§ 02 — Journey Lab</span>
       </div>
       <JourneyLab />
     </section>
 
-    <!-- § 03 — What Shaped My Work -->
-    <section class="border-border border-b">
+    <!-- § 03 — What Shaped My Work — glass card -->
+    <section class="glass-card overflow-hidden">
       <div class="chapter-heading px-4">
         <span class="chapter-label">§ 03 — What Shaped My Work</span>
       </div>
@@ -139,16 +145,16 @@ const stack = ['TypeScript', 'Node.js', 'Vue 3', 'PostgreSQL', 'Docker', 'REST A
     <!-- Investigation Board -->
     <ProjectCTA />
 
-    <!-- § 04 — Selected Work -->
-    <section class="border-border border-b">
+    <!-- § 04 — Selected Work — glass card -->
+    <section class="glass-card overflow-hidden">
       <div class="chapter-heading px-4">
         <span class="chapter-label">§ 04 — Selected Work</span>
       </div>
       <FeaturedProjects />
     </section>
 
-    <!-- Final CTA -->
-    <section class="px-4 py-12 text-center">
+    <!-- Final CTA — glass panel -->
+    <section class="glass-panel py-12 text-center">
       <p class="eyebrow mb-4">Collaboration</p>
       <h2 class="title-display" style="font-size: clamp(2rem, 5vw, 3.5rem)">
         Ready To Build<br />Your Next Product?

@@ -49,7 +49,7 @@ const featuredProjects: Project[] = [
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-4">
     <article
       v-for="(project, index) in featuredProjects"
       :key="project.id"
@@ -57,11 +57,21 @@ const featuredProjects: Project[] = [
       :initial="{ opacity: 0, y: 20 }"
       :visible="{ opacity: 1, y: 0 }"
       :delay="index * 120"
-      class="group border-border hover:border-accent/40 overflow-hidden rounded-2xl border transition-all duration-500"
-      :style="{ transitionTimingFunction: 'var(--ease-out-quart)' }"
+      class="group overflow-hidden rounded-xl transition-all duration-500"
+      :style="{
+        transitionTimingFunction: 'var(--ease-out-quart)',
+        background: 'color-mix(in oklch, var(--color-background) 60%, transparent)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid color-mix(in oklch, var(--color-border) 55%, transparent)',
+        boxShadow: '0 4px 24px oklch(0 0 0 / 0.05), inset 0 1px 0 oklch(1 0 0 / 0.1)'
+      }"
     >
       <!-- File-path header -->
-      <div class="border-border border-b px-6 py-2.5">
+      <div
+        class="px-6 py-2.5"
+        style="border-bottom: 1px solid color-mix(in oklch, var(--color-border) 50%, transparent)"
+      >
         <span class="text-muted font-mono text-xs">~/projects/{{ project.slug }}/</span>
       </div>
 
