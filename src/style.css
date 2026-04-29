@@ -8,16 +8,16 @@
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Sage palette — clean white, sage green accent */
-  --color-background: oklch(0.98 0.004 100);
-  --color-foreground: oklch(0.12 0.01 80);
-  --color-muted: oklch(0.52 0.01 80);
-  --color-border: oklch(0.88 0.005 80);
-  --color-secondary: oklch(0.95 0.005 100);
-  --color-accent: oklch(0.62 0.09 160);
-  --color-accent-hover: oklch(0.54 0.09 160);
-  --color-surface: oklch(0.96 0.005 100);
-  --color-highlight: oklch(0.75 0.07 160);
+  /* Arctic White + Sky Blue palette */
+  --color-background: oklch(0.985 0.009 225);
+  --color-foreground: oklch(0.12 0.01 225);
+  --color-muted: oklch(0.52 0.01 220);
+  --color-border: oklch(0.88 0.008 220);
+  --color-secondary: oklch(0.94 0.009 220);
+  --color-accent: oklch(0.53 0.15 220);
+  --color-accent-hover: oklch(0.45 0.15 220);
+  --color-surface: oklch(0.95 0.008 220);
+  --color-highlight: oklch(0.7 0.09 220);
 
   /* Easing tokens */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -67,7 +67,7 @@
 
   ::selection {
     background: var(--color-accent);
-    color: oklch(0.98 0.004 100);
+    color: oklch(0.99 0 0);
   }
 }
 
