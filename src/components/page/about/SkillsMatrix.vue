@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+
 interface SkillGroup {
   label: string
   skills: { name: string; icon: string }[]
@@ -74,25 +76,28 @@ function iconUrl(icon: string): string {
 
       <!-- Icon grid -->
       <div class="flex flex-wrap gap-3">
-        <div
-          v-for="skill in group.skills"
-          :key="skill.name"
-          class="group flex flex-col items-center gap-1.5"
-        >
-          <div
-            class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5"
-          >
-            <img
-              :src="iconUrl(skill.icon)"
-              :alt="skill.name"
-              class="h-full w-full object-contain"
-              loading="lazy"
-              width="40"
-              height="40"
-            />
-          </div>
-          <span class="text-muted font-mono text-[9px] tracking-[0.06em]">{{ skill.name }}</span>
-        </div>
+        <Tooltip v-for="skill in group.skills" :key="skill.name">
+          <TooltipTrigger as-child>
+            <div class="group flex flex-col items-center gap-1.5">
+              <div
+                class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5"
+              >
+                <img
+                  :src="iconUrl(skill.icon)"
+                  :alt="skill.name"
+                  class="h-full w-full object-contain"
+                  loading="lazy"
+                  width="40"
+                  height="40"
+                />
+              </div>
+              <span class="text-muted font-mono text-[9px] tracking-[0.06em]">{{
+                skill.name
+              }}</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{{ skill.name }}</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   </div>

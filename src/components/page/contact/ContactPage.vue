@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 
 const name = ref('')
 const email = ref('')
 const company = ref('')
 const message = ref('')
-const submitted = ref(false)
 
 function onSubmit() {
-  submitted.value = true
+  toast.success('Brief sent!', {
+    description: 'Please also email directly for faster coordination.'
+  })
+  name.value = ''
+  email.value = ''
+  company.value = ''
+  message.value = ''
 }
 </script>
 
@@ -51,7 +58,7 @@ function onSubmit() {
 
         <div class="mt-6 space-y-5">
           <div>
-            <label for="contact-name" class="mb-2 block text-sm font-medium">Name *</label>
+            <Label for="contact-name" class="mb-2 block">Name *</Label>
             <Input
               id="contact-name"
               v-model="name"
@@ -63,7 +70,7 @@ function onSubmit() {
           </div>
 
           <div>
-            <label for="contact-email" class="mb-2 block text-sm font-medium">Email *</label>
+            <Label for="contact-email" class="mb-2 block">Email *</Label>
             <Input
               id="contact-email"
               v-model="email"
@@ -78,7 +85,7 @@ function onSubmit() {
           </div>
 
           <div>
-            <label for="contact-company" class="mb-2 block text-sm font-medium">Company</label>
+            <Label for="contact-company" class="mb-2 block">Company</Label>
             <Input
               id="contact-company"
               v-model="company"
@@ -89,9 +96,7 @@ function onSubmit() {
           </div>
 
           <div>
-            <label for="contact-message" class="mb-2 block text-sm font-medium"
-              >Project Details *</label
-            >
+            <Label for="contact-message" class="mb-2 block">Project Details *</Label>
             <Textarea
               id="contact-message"
               v-model="message"
@@ -107,10 +112,6 @@ function onSubmit() {
           <Button as="button" type="submit">Send Brief</Button>
           <span class="text-muted text-xs">Response target: 1–2 business days.</span>
         </div>
-
-        <p v-if="submitted" class="text-accent mt-4 text-sm" aria-live="polite">
-          Brief captured. Please also email directly for faster coordination.
-        </p>
       </form>
     </div>
   </section>

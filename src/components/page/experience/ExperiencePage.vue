@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { BookOpen, ChevronDown, Code2, Cpu, GraduationCap, Wrench } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { BookOpen, Code2, Cpu, GraduationCap, Wrench } from 'lucide-vue-next'
 
 // ── Work Experience ─────────────────────────────────────────────────────────
 
@@ -70,11 +75,6 @@ const experiences: WorkExperience[] = [
     stack: ['PHP', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Codeigniter', 'Bootstrap']
   }
 ]
-
-const openIndex = ref<number>(0)
-function toggle(index: number) {
-  openIndex.value = openIndex.value === index ? -1 : index
-}
 
 // ── Project Experience ───────────────────────────────────────────────────────
 
@@ -177,11 +177,6 @@ const projects: Project[] = [
   }
 ]
 
-const openProjectIndex = ref<number>(-1)
-function toggleProject(index: number) {
-  openProjectIndex.value = openProjectIndex.value === index ? -1 : index
-}
-
 // ── Skills ───────────────────────────────────────────────────────────────────
 
 const skillCategories = [
@@ -266,20 +261,19 @@ const skillCategories = [
         <span class="chapter-label">§ 01 — Work Experience</span>
       </div>
 
-      <div class="divide-border divide-y">
-        <div
+      <Accordion type="single" default-value="exp-0" collapsible class="divide-border divide-y">
+        <AccordionItem
           v-for="(exp, index) in experiences"
           :key="exp.company + exp.period"
+          :value="`exp-${index}`"
+          class="border-b-0"
           v-motion
           :initial="{ opacity: 0, y: 10 }"
           :visible="{ opacity: 1, y: 0 }"
           :delay="index * 80"
         >
-          <!-- Accordion header -->
-          <button
-            class="hover:bg-secondary/40 flex w-full items-start justify-between gap-4 px-4 py-5 text-left transition-colors duration-200"
-            :aria-expanded="openIndex === index"
-            @click="toggle(index)"
+          <AccordionTrigger
+            class="hover:bg-secondary/40 px-4 py-5 text-left transition-colors duration-200 hover:no-underline"
           >
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -296,40 +290,24 @@ const skillCategories = [
                 }}</span>
               </div>
             </div>
-            <ChevronDown
-              aria-hidden="true"
-              class="text-muted mt-0.5 h-4 w-4 shrink-0 transition-transform duration-300"
-              :class="openIndex === index ? 'rotate-180' : ''"
-            />
-          </button>
-
-          <!-- Accordion body -->
-          <Transition
-            enter-active-class="transition-all duration-300 ease-out overflow-hidden"
-            enter-from-class="max-h-0 opacity-0"
-            enter-to-class="max-h-[600px] opacity-100"
-            leave-active-class="transition-all duration-200 ease-in overflow-hidden"
-            leave-from-class="max-h-[600px] opacity-100"
-            leave-to-class="max-h-0 opacity-0"
-          >
-            <div v-if="openIndex === index" class="px-4 pb-6">
-              <ul class="space-y-2">
-                <li
-                  v-for="bullet in exp.bullets"
-                  :key="bullet"
-                  class="text-muted flex gap-2 text-sm leading-relaxed"
-                >
-                  <span class="text-accent mt-0.5 shrink-0 font-mono text-xs">→</span>
-                  <span>{{ bullet }}</span>
-                </li>
-              </ul>
-              <div class="mt-4 flex flex-wrap gap-1.5">
-                <span v-for="tech in exp.stack" :key="tech" class="diff-tag">{{ tech }}</span>
-              </div>
+          </AccordionTrigger>
+          <AccordionContent class="px-4 pt-0 pb-6">
+            <ul class="space-y-2">
+              <li
+                v-for="bullet in exp.bullets"
+                :key="bullet"
+                class="text-muted flex gap-2 text-sm leading-relaxed"
+              >
+                <span class="text-accent mt-0.5 shrink-0 font-mono text-xs">→</span>
+                <span>{{ bullet }}</span>
+              </li>
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span v-for="tech in exp.stack" :key="tech" class="diff-tag">{{ tech }}</span>
             </div>
-          </Transition>
-        </div>
-      </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </section>
 
     <!-- § 02 — Project Experience -->
@@ -338,25 +316,22 @@ const skillCategories = [
         <span class="chapter-label">§ 02 — Project Experience</span>
       </div>
 
-      <div class="divide-border divide-y">
-        <div
+      <Accordion type="single" collapsible class="divide-border divide-y">
+        <AccordionItem
           v-for="(project, index) in projects"
           :key="project.title"
+          :value="`proj-${index}`"
+          class="border-b-0"
           v-motion
           :initial="{ opacity: 0, y: 10 }"
           :visible="{ opacity: 1, y: 0 }"
           :delay="index * 60"
         >
-          <!-- Project accordion header -->
-          <button
-            class="hover:bg-secondary/40 flex w-full items-start justify-between gap-4 px-4 py-5 text-left transition-colors duration-200"
-            :aria-expanded="openProjectIndex === index"
-            @click="toggleProject(index)"
+          <AccordionTrigger
+            class="hover:bg-secondary/40 px-4 py-5 text-left transition-colors duration-200 hover:no-underline"
           >
             <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span class="text-foreground text-sm font-semibold">{{ project.title }}</span>
-              </div>
+              <span class="text-foreground text-sm font-semibold">{{ project.title }}</span>
               <div class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
                 <span class="text-accent font-mono text-[10px] tracking-[0.08em]">{{
                   project.company
@@ -366,40 +341,24 @@ const skillCategories = [
                 }}</span>
               </div>
             </div>
-            <ChevronDown
-              aria-hidden="true"
-              class="text-muted mt-0.5 h-4 w-4 shrink-0 transition-transform duration-300"
-              :class="openProjectIndex === index ? 'rotate-180' : ''"
-            />
-          </button>
-
-          <!-- Project accordion body -->
-          <Transition
-            enter-active-class="transition-all duration-300 ease-out overflow-hidden"
-            enter-from-class="max-h-0 opacity-0"
-            enter-to-class="max-h-[600px] opacity-100"
-            leave-active-class="transition-all duration-200 ease-in overflow-hidden"
-            leave-from-class="max-h-[600px] opacity-100"
-            leave-to-class="max-h-0 opacity-0"
-          >
-            <div v-if="openProjectIndex === index" class="px-4 pb-6">
-              <ul class="space-y-2">
-                <li
-                  v-for="bullet in project.bullets"
-                  :key="bullet"
-                  class="text-muted flex gap-2 text-sm leading-relaxed"
-                >
-                  <span class="text-accent mt-0.5 shrink-0 font-mono text-xs">→</span>
-                  <span>{{ bullet }}</span>
-                </li>
-              </ul>
-              <div class="mt-4 flex flex-wrap gap-1.5">
-                <span v-for="tech in project.stack" :key="tech" class="diff-tag">{{ tech }}</span>
-              </div>
+          </AccordionTrigger>
+          <AccordionContent class="px-4 pt-0 pb-6">
+            <ul class="space-y-2">
+              <li
+                v-for="bullet in project.bullets"
+                :key="bullet"
+                class="text-muted flex gap-2 text-sm leading-relaxed"
+              >
+                <span class="text-accent mt-0.5 shrink-0 font-mono text-xs">→</span>
+                <span>{{ bullet }}</span>
+              </li>
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span v-for="tech in project.stack" :key="tech" class="diff-tag">{{ tech }}</span>
             </div>
-          </Transition>
-        </div>
-      </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </section>
 
     <!-- § 03 — Education -->

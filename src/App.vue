@@ -2,19 +2,24 @@
 import MainLayout from '@/components/layout/MainLayout.vue'
 import ToastContainer from '@/components/providers/ToastContainer.vue'
 import LoadingBar from '@/components/ui/LoadingBar.vue'
+import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <ToastContainer />
-  <LoadingBar />
-  <MainLayout>
-    <RouterView v-slot="{ Component }">
-      <Transition name="page-wipe" mode="out-in">
-        <component :is="Component" />
-      </Transition>
-    </RouterView>
-  </MainLayout>
+  <TooltipProvider>
+    <ToastContainer />
+    <Toaster rich-colors position="top-right" />
+    <LoadingBar />
+    <MainLayout>
+      <RouterView v-slot="{ Component }">
+        <Transition name="page-wipe" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </RouterView>
+    </MainLayout>
+  </TooltipProvider>
 </template>
 
 <style scoped>
