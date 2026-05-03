@@ -11,7 +11,7 @@ const isImmersiveRoute = computed(() => route.path === '/works')
 <template>
   <!-- Immersive route (/works): full-screen, no chrome -->
   <template v-if="isImmersiveRoute">
-    <main class="relative min-h-screen">
+    <main id="main-content" class="relative min-h-screen">
       <slot />
     </main>
   </template>
@@ -50,7 +50,7 @@ const isImmersiveRoute = computed(() => route.path === '/works')
         class="border-border mx-auto min-h-screen max-w-6xl border-x pt-14"
         style="background: color-mix(in oklch, var(--color-background) 91%, transparent)"
       >
-        <main class="pb-28 sm:pb-8">
+        <main id="main-content" class="pb-28 sm:pb-8">
           <slot />
         </main>
         <AppFooter />

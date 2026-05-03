@@ -3,7 +3,8 @@ import ProjectCard from '@/components/page/projects/ProjectCard.vue'
 import ProjectFilters from '@/components/page/projects/ProjectFilters.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProjects } from '@/hooks/useProjects'
-import { onMounted } from 'vue'
+import { useHead } from '@unhead/vue'
+import { computed, onMounted } from 'vue'
 
 const {
   loading,
@@ -21,6 +22,44 @@ const {
 } = useProjects()
 
 onMounted(() => fetchProjects())
+
+const jsonLd = computed(() => ({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Projects by Ricki Friadi',
+  url: 'https://rickifriadi.dev/projects',
+  itemListElement: filteredProjects.value.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.title,
+    description: p.shortDescription,
+    url: `https://rickifriadi.dev/projects/${p.slug}`
+  }))
+}))
+
+useHead({
+  title: 'Projects — Ricki Friadi',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Explore the portfolio of web applications and fullstack solutions built by Ricki Friadi.'
+    },
+    { property: 'og:title', content: 'Projects — Ricki Friadi' },
+    {
+      property: 'og:description',
+      content: 'Fullstack web applications — Vue 3, TypeScript, NestJS, PostgreSQL.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/projects' },
+    { name: 'twitter:title', content: 'Projects — Ricki Friadi' },
+    {
+      name: 'twitter:description',
+      content: 'Fullstack web applications — Vue 3, TypeScript, NestJS.'
+    }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/projects' }],
+  script: [{ type: 'application/ld+json', children: computed(() => JSON.stringify(jsonLd.value)) }]
+})
 </script>
 
 <template>

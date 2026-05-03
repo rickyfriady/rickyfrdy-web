@@ -1,5 +1,8 @@
-import router from '@/router'
+import { routes } from '@/router'
 import { describe, expect, it } from 'vitest'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({ history: createWebHistory(), routes })
 
 describe('router', () => {
   it('registers expected route names', () => {
@@ -12,6 +15,7 @@ describe('router', () => {
       expect.arrayContaining([
         'home',
         'about',
+        'experience',
         'projects',
         'project-detail',
         'blog',

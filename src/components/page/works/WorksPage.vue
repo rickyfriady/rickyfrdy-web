@@ -11,6 +11,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { useHandGesture } from '@/hooks/useHandGesture'
+import { useHead } from '@unhead/vue'
 import { ChevronLeft, ChevronRight, Hand, Home, Search, X, ZapOff } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -50,6 +51,30 @@ interface Point {
 }
 
 const router = useRouter()
+
+useHead({
+  title: 'Selected Works — Ricki Friadi',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Interactive investigation board showcasing selected work by Ricki Friadi — explore with hand gestures or mouse.'
+    },
+    { property: 'og:title', content: 'Selected Works — Ricki Friadi' },
+    {
+      property: 'og:description',
+      content: 'Interactive portfolio board with selected projects by Ricki Friadi.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/works' },
+    { name: 'twitter:title', content: 'Selected Works — Ricki Friadi' },
+    { name: 'twitter:description', content: 'Interactive investigation board of selected work.' }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/works' }]
+})
+
+function toWebp(src: string) {
+  return src.replace(/\.png$/, '.webp')
+}
 
 const works: Work[] = [
   {
@@ -656,12 +681,15 @@ onBeforeUnmount(() => {
           <div
             class="pointer-events-none relative mb-2 h-32 w-full overflow-hidden rounded-md md:h-40"
           >
-            <img
-              :src="work.image"
-              :alt="work.title"
-              class="h-full w-full object-cover"
-              loading="lazy"
-            />
+            <picture>
+              <source :srcset="toWebp(work.image)" type="image/webp" />
+              <img
+                :src="work.image"
+                :alt="work.title"
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </picture>
           </div>
           <h3 class="text-sm leading-tight font-bold text-[#141414] select-none md:text-base">
             {{ work.title }}
@@ -799,11 +827,14 @@ onBeforeUnmount(() => {
           </DialogClose>
 
           <div class="pointer-events-none relative h-56 w-full md:h-80">
-            <img
-              :src="selectedWork.image"
-              :alt="selectedWork.title"
-              class="h-full w-full object-cover"
-            />
+            <picture>
+              <source :srcset="toWebp(selectedWork.image)" type="image/webp" />
+              <img
+                :src="selectedWork.image"
+                :alt="selectedWork.title"
+                class="h-full w-full object-cover"
+              />
+            </picture>
             <div class="absolute inset-0 bg-gradient-to-t from-[#111111]/55 to-transparent" />
             <div class="absolute bottom-4 left-4">
               <span

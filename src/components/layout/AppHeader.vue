@@ -23,6 +23,14 @@ const isActive = (path: string) => (path === '/' ? route.path === '/' : route.pa
 </script>
 
 <template>
+  <!-- Skip to main content (screen readers + keyboard users) -->
+  <a
+    href="#main-content"
+    class="bg-accent text-background sr-only fixed top-2 left-2 z-[9999] rounded-md px-4 py-2 text-sm font-semibold focus:not-sr-only focus:outline-none"
+  >
+    Skip to main content
+  </a>
+
   <!-- Sticky horizontal top bar — glass matching the mobile pill nav -->
   <header
     class="fixed top-0 right-0 left-0 z-50 h-14"

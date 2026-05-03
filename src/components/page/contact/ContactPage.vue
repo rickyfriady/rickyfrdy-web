@@ -3,8 +3,33 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { useHead } from '@unhead/vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
+
+useHead({
+  title: 'Contact — Ricki Friadi',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Get in touch with Ricki Friadi for fullstack engineering roles, freelance projects, or technical collaborations.'
+    },
+    { property: 'og:title', content: 'Contact — Ricki Friadi' },
+    {
+      property: 'og:description',
+      content:
+        'Get in touch for fullstack engineering roles, freelance projects, or technical collaborations.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/contact' },
+    { name: 'twitter:title', content: 'Contact — Ricki Friadi' },
+    {
+      name: 'twitter:description',
+      content: 'Get in touch for fullstack engineering or freelance work.'
+    }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/contact' }]
+})
 
 const name = ref('')
 const email = ref('')

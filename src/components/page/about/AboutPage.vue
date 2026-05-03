@@ -2,6 +2,31 @@
 import GitHubHeatmap from '@/components/page/about/GitHubHeatmap.vue'
 import SkillsMatrix from '@/components/page/about/SkillsMatrix.vue'
 import { Button } from '@/components/ui/button'
+import { useHead } from '@unhead/vue'
+
+useHead({
+  title: 'About — Ricki Friadi',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Learn about my journey as a fullstack developer — from freelancing to building microservices and Micro-Frontend Architecture at PT. Pegadaian.'
+    },
+    { property: 'og:title', content: 'About — Ricki Friadi' },
+    {
+      property: 'og:description',
+      content:
+        'Fullstack developer journey: freelancing → microservices at PT. Pegadaian. Vue 3, TypeScript, NestJS.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/about' },
+    { name: 'twitter:title', content: 'About — Ricki Friadi' },
+    {
+      name: 'twitter:description',
+      content: 'Fullstack developer journey: freelancing → microservices at PT. Pegadaian.'
+    }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/about' }]
+})
 </script>
 
 <template>

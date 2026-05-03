@@ -5,8 +5,33 @@ import JourneyStrip from '@/components/page/home/JourneyStrip.vue'
 import ProjectCTA from '@/components/page/home/ProjectCTA.vue'
 import QuickStats from '@/components/page/home/QuickStats.vue'
 import { Button } from '@/components/ui/button'
+import { useHead } from '@unhead/vue'
 import { User } from 'lucide-vue-next'
 import { ref } from 'vue'
+
+useHead({
+  title: 'Ricki Friadi — Fullstack Developer',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Portfolio of Ricki Friadi, a Fullstack Developer specializing in Vue 3, TypeScript, and NestJS with 3+ years building scalable systems at PT. Pegadaian.'
+    },
+    { property: 'og:title', content: 'Ricki Friadi — Fullstack Developer' },
+    {
+      property: 'og:description',
+      content:
+        'Portfolio of Ricki Friadi, a Fullstack Developer specializing in Vue 3, TypeScript, and NestJS with 3+ years building scalable systems.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/' },
+    { name: 'twitter:title', content: 'Ricki Friadi — Fullstack Developer' },
+    {
+      name: 'twitter:description',
+      content: 'Fullstack Developer specializing in Vue 3, TypeScript, and NestJS.'
+    }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/' }]
+})
 
 const photoError = ref(false)
 const photoSrc = `${import.meta.env.BASE_URL}photo.jpg`

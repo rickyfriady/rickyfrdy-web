@@ -6,7 +6,31 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
+import { useHead } from '@unhead/vue'
 import { BookOpen, Code2, Cpu, GraduationCap, Wrench } from 'lucide-vue-next'
+
+useHead({
+  title: 'Experience — Ricki Friadi',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Work history, projects, education, and skills of Ricki Friadi — Software Engineer at PT. Pegadaian since May 2023.'
+    },
+    { property: 'og:title', content: 'Experience — Ricki Friadi' },
+    {
+      property: 'og:description',
+      content: 'Software Engineer at PT. Pegadaian. Work history, projects, education, and skills.'
+    },
+    { property: 'og:url', content: 'https://rickifriadi.dev/experience' },
+    { name: 'twitter:title', content: 'Experience — Ricki Friadi' },
+    {
+      name: 'twitter:description',
+      content: 'Software Engineer at PT. Pegadaian. Work history and skills.'
+    }
+  ],
+  link: [{ rel: 'canonical', href: 'https://rickifriadi.dev/experience' }]
+})
 
 // ── Work Experience ─────────────────────────────────────────────────────────
 

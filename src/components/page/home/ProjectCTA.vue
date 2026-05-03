@@ -230,13 +230,19 @@ function enterBoard() {
 
             <div class="rounded bg-[#e7e6e1] p-1.5 shadow-lg transition-shadow md:p-2">
               <div class="relative aspect-[4/3] w-full overflow-hidden rounded-sm">
-                <img
-                  :src="works[card.workIdx]?.image"
-                  :alt="works[card.workIdx]?.title"
-                  class="h-full w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <source
+                    :srcset="works[card.workIdx]?.image.replace('.png', '.webp')"
+                    type="image/webp"
+                  />
+                  <img
+                    :src="works[card.workIdx]?.image"
+                    :alt="works[card.workIdx]?.title"
+                    class="h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </div>
               <div class="mt-1 md:mt-1.5">
                 <p class="truncate text-[6px] leading-tight font-bold text-[#151515] md:text-[8px]">
