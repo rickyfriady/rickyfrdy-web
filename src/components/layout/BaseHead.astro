@@ -1,0 +1,63 @@
+---
+interface Props {
+  title: string
+  description: string
+  ogImage?: string | undefined
+}
+
+const { title, description, ogImage = '/og-default.png' } = Astro.props
+const siteTitle = title.includes('Ricki Friadi') ? title : `${title} — Ricki Friadi`
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const ogImageURL = new URL(ogImage, Astro.site)
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Ricki Friadi',
+  url: Astro.site?.toString(),
+  jobTitle: 'Fullstack Developer',
+  sameAs: [
+    'https://github.com/rickifriadi',
+    'https://www.linkedin.com/in/rickifriadi',
+  ],
+})
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Primary -->
+<title>{siteTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={siteTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Ricki Friadi" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={siteTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<!-- JSON-LD -->
+<script is:inline type="application/ld+json" set:html={jsonLd} />
+
+<!-- Theme init: runs before paint to avoid flash of wrong theme -->
+<script is:inline>
+  ;(function () {
+    const stored = localStorage.getItem('theme')
+    const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    const theme = stored || preferred
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+  })()
+</script>

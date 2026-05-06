@@ -1,0 +1,28 @@
+---
+import AppFooter from './AppFooter.astro'
+import AppHeader from './AppHeader.astro'
+import BaseHead from './BaseHead.astro'
+import '@/styles/global.css'
+
+interface Props {
+  title: string
+  description: string
+  ogImage?: string | undefined
+}
+
+const { title, description, ogImage } = Astro.props
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <BaseHead title={title} description={description} ogImage={ogImage} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <AppHeader />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <AppFooter />
+  </body>
+</html>

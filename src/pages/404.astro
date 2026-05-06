@@ -1,0 +1,19 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+---
+
+<MainLayout
+  title="404 — Page Not Found"
+  description="The page you're looking for doesn't exist."
+>
+  <section class="mx-auto flex max-w-6xl flex-col items-center justify-center px-6 py-48 text-center">
+    <p class="text-8xl font-black text-[hsl(var(--muted-foreground))]">404</p>
+    <h1 class="mt-4 text-2xl font-semibold">Page not found</h1>
+    <a
+      href="/"
+      class="mt-8 rounded-md bg-[hsl(var(--primary))] px-6 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+    >
+      Go home
+    </a>
+  </section>
+</MainLayout>
