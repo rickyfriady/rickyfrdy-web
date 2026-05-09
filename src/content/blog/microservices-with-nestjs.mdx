@@ -1,0 +1,75 @@
+---
+title: 'Building Microservices with NestJS and the Factory Pattern'
+description: 'How I replaced a legacy CodeIgniter monolith with 9 NestJS microservices at PT. Pegadaian — and why the Factory pattern made each new loan product a 1-hour addition.'
+pubDate: 2025-03-15
+tags: ['nestjs', 'microservices', 'typescript', 'architecture']
+draft: false
+---
+
+When I joined the Microsite Pinjaman project at PT. Pegadaian, the backend was a single
+CodeIgniter 3 monolith serving three different loan products — and adding a fourth meant
+touching code in a dozen places. Here's how we changed that.
+
+## The Problem
+
+The monolith handled `Kredit Usaha Rakyat`, `Serba Guna`, and `Cicil Kendaraan` through
+deeply interleaved conditional logic. Every route was a `switch` statement. Every controller
+had product-specific `if` blocks. Adding a new product meant finding every one of those
+branches and carefully inserting another case.
+
+## The Factory Pattern
+
+The solution was to model each loan product as a **strategy** and inject the right one at
+runtime via a factory.
+
+```typescript
+// loan-processor.factory.ts
+@Injectable()
+export class LoanProcessorFactory {
+  constructor(
+    private readonly kur: KurProcessor,
+    private readonly sg: SerbaGunaProcessor,
+    private readonly ck: CicilKendaraanProcessor,
+  ) {}
+
+  create(type: LoanType): LoanProcessor {
+    const map: Record<LoanType, LoanProcessor> = {
+      kur: this.kur,
+      'serba-guna': this.sg,
+      'cicil-kendaraan': this.ck,
+    }
+    const processor = map[type]
+    if (!processor) throw new Error(`Unknown loan type: ${type}`)
+    return processor
+  }
+}
+```
+
+Each `LoanProcessor` implements the same interface:
+
+```typescript
+interface LoanProcessor {
+  validate(data: LoanApplicationDto): Promise<void>
+  calculate(data: LoanApplicationDto): Promise<LoanQuote>
+  submit(data: LoanApplicationDto): Promise<LoanReference>
+}
+```
+
+## Adding a New Product
+
+When `Gadai Emas` was added three months later, the work was:
+
+1. Create `GadaiEmasProcessor` implementing `LoanProcessor`
+2. Register it in `LoanProcessorFactory`
+3. Write tests
+
+No other files changed. The migration from "new requirement" to "deployed" took four hours.
+
+## Lessons
+
+- **Code that's easy to extend is hard to break.** The factory boundary means each processor
+  is independently testable and independently deployable.
+- **Type-safe discriminated unions beat string checks.** Using `LoanType` as a union type
+  catches missing cases at compile time, not at 3am in production.
+- **Write the tests for the interface, not the implementation.** Our integration tests target
+  `LoanProcessor` — so swapping implementations is safe.
