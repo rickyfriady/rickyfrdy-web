@@ -1,6 +1,7 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
 import { projects } from '@/data/projects'
+import type { Project } from '@/data/projects'
 import type { GetStaticPaths } from 'astro'
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -8,6 +9,10 @@ export const getStaticPaths: GetStaticPaths = () => {
     params: { slug: project.slug },
     props: { project },
   }))
+}
+
+interface Props {
+  project: Project
 }
 
 const { project } = Astro.props
