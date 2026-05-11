@@ -10,7 +10,6 @@ export default defineConfig({
   output: 'static',
   integrations: [mdx(), react(), sitemap(), robotsTxt()],
   vite: {
-    // @ts-expect-error — @tailwindcss/vite type incompatible with Astro's bundled Vite version
     plugins: [tailwindcss()],
     resolve: {
       alias: {
