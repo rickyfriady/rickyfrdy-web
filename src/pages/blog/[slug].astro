@@ -1,0 +1,88 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection('blog', ({ data }) => !data.draft)
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }))
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<MainLayout title={`${post.data.title} — Ricki Friadi`} description={post.data.description}>
+  <!-- Back -->
+  <div class="border-border border-b px-4 py-4">
+    <a href="/blog" class="text-muted hover:text-foreground font-mono text-xs transition-colors">
+      ← All Posts
+    </a>
+  </div>
+
+  <!-- Header -->
+  <section class="border-border border-b px-4 py-8">
+    <div class="flex flex-wrap gap-2">
+      {post.data.tags.map((tag: string) => (
+        <span class="diff-tag">{tag}</span>
+      ))}
+    </div>
+    <h1
+      class="title-display mt-4"
+      style="font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 0.95"
+    >
+      {post.data.title}
+    </h1>
+    <p class="text-muted mt-3 text-sm">{post.data.description}</p>
+    <time
+      datetime={post.data.pubDate.toISOString()}
+      class="text-muted mt-4 block font-mono text-xs"
+    >
+      {post.data.pubDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}
+      {post.data.updatedDate && (
+        <span>
+          {' '}· Updated{' '}
+          {post.data.updatedDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </span>
+      )}
+    </time>
+  </section>
+
+  <!-- Content -->
+  <article class="prose prose-sm max-w-none px-4 py-8
+    prose-headings:font-display prose-headings:font-normal prose-headings:tracking-tight
+    prose-p:text-muted prose-p:leading-relaxed
+    prose-strong:text-foreground
+    prose-code:text-accent prose-code:bg-secondary prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono
+    prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:rounded-xl
+    prose-a:text-accent prose-a:no-underline hover:prose-a:underline
+    prose-li:text-muted">
+    <Content />
+  </article>
+
+  <!-- Back CTA -->
+  <div class="border-border border-t px-4 py-8 text-center">
+    <a
+      href="/blog"
+      class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+    >
+      ← Back to Blog
+    </a>
+  </div>
+</MainLayout>
