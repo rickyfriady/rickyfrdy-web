@@ -1,0 +1,166 @@
+---
+import { education, experiences, projects, skillCategories } from '@/data/experience'
+import MainLayout from '@/components/layout/MainLayout.astro'
+---
+
+<MainLayout
+  title="Experience — Ricki Friadi"
+  description="Work history, projects, education, and skills of Ricki Friadi — Software Engineer at PT. Pegadaian since May 2023."
+>
+  <!-- Hero -->
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">Experience</p>
+    <h1
+      class="title-display"
+      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
+    >
+      Career, Projects &amp;<br />
+      <span class="title-accent text-accent">Skills.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">
+      Software Engineer at PT. Pegadaian since May 2023, working across microservices, micro-frontends, and internal tooling.
+    </p>
+  </section>
+
+  <!-- § 01 — Work Experience -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Work Experience</span>
+    </div>
+
+    <div class="divide-border divide-y px-4">
+      {
+        experiences.map((exp) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 focus-visible:outline-none">
+              <div class="flex-1">
+                <div class="flex flex-wrap items-baseline gap-2">
+                  <span class="text-foreground font-semibold">{exp.role}</span>
+                  <span class="diff-tag">{exp.company}</span>
+                </div>
+                <p class="text-muted mt-1 text-xs">{exp.location} · {exp.period}</p>
+              </div>
+              <svg
+                class="text-muted mt-1 h-4 w-4 flex-shrink-0 rotate-0 transition-transform duration-200 group-open:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+
+            <div class="mt-4 space-y-4">
+              <ul class="text-muted space-y-2 text-sm">
+                {exp.bullets.map((bullet) => (
+                  <li class="flex gap-2">
+                    <span class="text-accent mt-1 flex-shrink-0">›</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="flex flex-wrap gap-1.5">
+                {exp.stack.map((tech) => (
+                  <span class="diff-tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- § 02 — Project Experience -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Project Experience</span>
+    </div>
+
+    <div class="divide-border divide-y px-4">
+      {
+        projects.map((proj) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 focus-visible:outline-none">
+              <div class="flex-1">
+                <div class="flex flex-wrap items-baseline gap-2">
+                  <span class="text-foreground font-semibold">{proj.title}</span>
+                  <span class="diff-tag">{proj.company}</span>
+                </div>
+                <p class="text-muted mt-1 text-xs">{proj.period}</p>
+              </div>
+              <svg
+                class="text-muted mt-1 h-4 w-4 flex-shrink-0 rotate-0 transition-transform duration-200 group-open:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+
+            <div class="mt-4 space-y-4">
+              <ul class="text-muted space-y-2 text-sm">
+                {proj.bullets.map((bullet) => (
+                  <li class="flex gap-2">
+                    <span class="text-accent mt-1 flex-shrink-0">›</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="flex flex-wrap gap-1.5">
+                {proj.stack.map((tech) => (
+                  <span class="diff-tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- § 03 — Education -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 03 — Education</span>
+    </div>
+
+    <div class="px-4 pb-8">
+      <div class="flex flex-wrap items-baseline gap-2">
+        <span class="text-foreground font-semibold">{education.degree}</span>
+        <span class="diff-tag">{education.institution}</span>
+      </div>
+      <p class="text-muted mt-1 text-xs">{education.location} · {education.period}</p>
+      <p class="text-muted mt-2 text-sm">GPA: <span class="text-foreground font-semibold">{education.gpa}</span></p>
+    </div>
+  </section>
+
+  <!-- § 04 — Skills -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 04 — Skills</span>
+    </div>
+
+    <div class="px-4 pb-8">
+      {
+        skillCategories.map((cat) => (
+          <div class="mb-6">
+            <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
+              {cat.label}
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              {cat.items.map((item) => (
+                <span class="diff-tag">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</MainLayout>
