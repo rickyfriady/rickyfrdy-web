@@ -10,7 +10,7 @@ export default defineConfig({
   output: 'static',
   integrations: [mdx(), react(), sitemap(), robotsTxt()],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss() as any],
     resolve: {
       alias: {
         '@': new URL('./src', import.meta.url).pathname
