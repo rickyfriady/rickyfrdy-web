@@ -2,8 +2,34 @@
 const year = new Date().getFullYear()
 ---
 
-<footer class="border-t border-[hsl(var(--border))] py-8">
-  <div class="mx-auto max-w-6xl px-6 text-center text-sm text-[hsl(var(--muted-foreground))]">
-    <p>© {year} Ricki Friadi. Built with Astro.</p>
+<footer class="border-border border-t py-8">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center">
+    <p class="text-muted font-mono text-xs">
+      © {year} Ricki Friadi — Built with Astro &amp; Tailwind v4
+    </p>
+    <div class="flex gap-4">
+      <a
+        href="https://github.com/rickyfrdy"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted hover:text-accent font-mono text-xs transition-colors"
+      >
+        GitHub ↗
+      </a>
+      <a
+        href="https://www.linkedin.com/in/rickifriadi"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted hover:text-accent font-mono text-xs transition-colors"
+      >
+        LinkedIn ↗
+      </a>
+      <a
+        href="/contact"
+        class="text-muted hover:text-accent font-mono text-xs transition-colors"
+      >
+        Contact
+      </a>
+    </div>
   </div>
 </footer>
