@@ -1,0 +1,135 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import { projects } from '@/data/projects'
+
+const categories = ['all', ...new Set(projects.map((p) => p.category))]
+
+const categoryLabel: Record<string, string> = {
+  all: 'All',
+  'web-app': 'Web App',
+  api: 'API',
+  tool: 'Tool',
+  'open-source': 'Open Source',
+}
+---
+
+<MainLayout
+  title="Works — Ricki Friadi"
+  description="Selected works by Ricki Friadi — Vue 3 micro-frontends, NestJS microservices, and internal tooling at PT. Pegadaian."
+>
+  <!-- Hero -->
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">Selected Works</p>
+    <h1
+      class="title-display"
+      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
+    >
+      Things I've<br />
+      <span class="title-accent text-accent">Shipped.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">
+      Production systems serving thousands of users across finance, internal tooling, and public-facing web.
+    </p>
+  </section>
+
+  <!-- § 01 — Works grid -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Projects</span>
+    </div>
+
+    <works-filter class="block px-4 pb-10">
+      <!-- Filter buttons -->
+      <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+        {categories.map((cat) => (
+          <button
+            type="button"
+            data-filter={cat}
+            data-active={cat === 'all' ? '' : undefined}
+            class="works-filter-btn border-border text-muted font-mono text-xs uppercase tracking-widest rounded-full border px-3 py-1 transition-colors hover:border-accent hover:text-accent data-[active]:border-accent data-[active]:text-foreground data-[active]:bg-accent/10"
+          >
+            {categoryLabel[cat] ?? cat}
+          </button>
+        ))}
+      </div>
+
+      <!-- Cards grid -->
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => (
+          <a
+            href={`/projects/${project.slug}`}
+            data-card
+            data-category={project.category}
+            class="glass-card group block overflow-hidden rounded-xl p-5 no-underline transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            <!-- Color band -->
+            <div
+              class:list={[
+                'mb-4 h-1 w-full rounded-full',
+                project.featured ? 'bg-accent' : 'bg-border',
+              ]}
+            />
+
+            <div class="mb-3 flex flex-wrap items-center gap-2">
+              <span class="diff-tag">{categoryLabel[project.category] ?? project.category}</span>
+              <span class="diff-tag">{project.year}</span>
+              {project.featured && <span class="eyebrow">Featured</span>}
+            </div>
+
+            <h2 class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors">
+              {project.title}
+            </h2>
+            <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
+              {project.shortDescription}
+            </p>
+
+            {project.keyMetric && (
+              <p class="text-accent mt-3 font-mono text-xs">{project.keyMetric}</p>
+            )}
+
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              {project.technologies.slice(0, 4).map((tech) => (
+                <span class="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]">
+                  {tech}
+                </span>
+              ))}
+              {project.technologies.length > 4 && (
+                <span class="text-muted font-mono text-[10px]">
+                  +{project.technologies.length - 4}
+                </span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    </works-filter>
+  </section>
+</MainLayout>
+
+<script is:inline>
+  class WorksFilter extends HTMLElement {
+    connectedCallback() {
+      const buttons = this.querySelectorAll('[data-filter]')
+      const cards = this.querySelectorAll('[data-card]')
+
+      buttons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const filter = btn.getAttribute('data-filter')
+
+          buttons.forEach(function(b) { b.removeAttribute('data-active') })
+          btn.setAttribute('data-active', '')
+
+          cards.forEach(function(card) {
+            const cat = card.getAttribute('data-category')
+            const visible = filter === 'all' || cat === filter
+            card.style.display = visible ? '' : 'none'
+          })
+        })
+      })
+    }
+  }
+
+  if (!customElements.get('works-filter')) {
+    customElements.define('works-filter', WorksFilter)
+  }
+</script>
