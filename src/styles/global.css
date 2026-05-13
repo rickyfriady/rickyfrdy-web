@@ -202,3 +202,19 @@
     @apply text-foreground border-accent border-b;
   }
 }
+
+/* --- Scroll-reveal --- */
+/* Only hides sections when JS has run; visible without JS */
+
+.js-reveal main > section:not(:first-child) {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 0.6s var(--ease-out-expo),
+    transform 0.6s var(--ease-out-expo);
+}
+
+.js-reveal main > section:not(:first-child).is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
