@@ -10,15 +10,15 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-  }),
+    draft: z.boolean().default(false)
+  })
 })
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
-    slug: z.string(),
-  }),
+    slug: z.string()
+  })
 })
 
 export const collections = { blog, projects }

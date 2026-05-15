@@ -10,8 +10,8 @@ export const ui = {
     'case.live': 'View Live Demo',
     'case.github': 'View on GitHub',
     'case.prev': '← Previous',
-    'case.next': 'Next →',
-  },
+    'case.next': 'Next →'
+  }
 } as const
 
 export type Lang = keyof typeof ui

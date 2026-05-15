@@ -40,7 +40,7 @@ function AnimatedCounter({ value, label }: Metric) {
           formatted = rounded >= 1000 ? rounded.toLocaleString('en-US') : rounded.toString()
         }
         setDisplay(`${prefix}${formatted}${suffix}`)
-      },
+      }
     })
     return controls.stop
   }, [isInView, prefersReduced, count, num, prefix, suffix, value])
@@ -48,6 +48,7 @@ function AnimatedCounter({ value, label }: Metric) {
   return (
     <div
       ref={ref}
+      role="img"
       className="border-border flex flex-col items-center gap-1.5 rounded-xl border p-5 text-center"
       aria-label={`${value} ${label}`}
     >
