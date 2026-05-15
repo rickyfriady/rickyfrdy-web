@@ -156,3 +156,80 @@ const pairs = project.challenges
     nextLabel={t(lang, 'case.next')}
   />
 </MainLayout>
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  function initAnimations() {
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      // Title character entrance — uses DOM methods (no innerHTML)
+      const titleEl = document.querySelector('#case-study-hero-title h1')
+      if (titleEl instanceof HTMLElement) {
+        const text = titleEl.textContent ?? ''
+        const fragment = document.createDocumentFragment()
+        for (const char of text) {
+          const span = document.createElement('span')
+          span.style.display = 'inline-block'
+          span.textContent = char === ' ' ? ' ' : char
+          fragment.appendChild(span)
+        }
+        titleEl.textContent = ''
+        titleEl.appendChild(fragment)
+
+        gsap.from(titleEl.querySelectorAll('span'), {
+          y: 40,
+          opacity: 0,
+          stagger: 0.025,
+          duration: 0.8,
+          ease: 'power4.out',
+        })
+      }
+
+      // Hero parallax
+      const heroBg = document.querySelector('[data-hero-bg]')
+      if (heroBg instanceof HTMLElement && heroBg.parentElement) {
+        gsap.to(heroBg, {
+          yPercent: 30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroBg.parentElement,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
+
+      // Section scroll reveals
+      document.querySelectorAll('[data-reveal]').forEach((section) => {
+        gsap.from(section, {
+          y: 30,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+          },
+        })
+      })
+    })
+  }
+
+  initAnimations()
+
+  // Clean up before ViewTransitions swaps the DOM
+  document.addEventListener('astro:before-swap', () => {
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+  })
+
+  // Re-run after ViewTransitions navigates back to a case study page
+  document.addEventListener('astro:after-swap', () => {
+    if (document.querySelector('#case-study-hero-title')) {
+      initAnimations()
+    }
+  })
+</script>
