@@ -1,0 +1,47 @@
+---
+import type { Project } from '@/data/projects'
+
+interface Props {
+  project: Project
+}
+
+const { project } = Astro.props
+---
+
+<header class="relative h-[52vh] min-h-[320px] overflow-hidden">
+  {project.heroImage ? (
+    <img
+      src={project.heroImage}
+      alt={project.title}
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+  ) : (
+    <div
+      class="paper-grid absolute inset-0"
+      style="background: linear-gradient(160deg, #0e2a22 0%, #142e24 50%, #0a1a14 100%);"
+      role="img"
+      aria-label={project.title}
+      data-hero-bg
+    />
+  )}
+
+  <!-- Gradient overlay for title legibility -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+  <!-- Left accent bar -->
+  <div class="bg-accent absolute top-0 bottom-0 left-0 w-0.5" />
+
+  <!-- Title block -->
+  <div class="absolute right-8 bottom-8 left-8" id="case-study-hero-title">
+    <p class="font-mono mb-3 text-xs tracking-[0.2em] uppercase text-white/50">
+      {project.category.replace(/-/g, ' ')} · {project.year}
+    </p>
+    <h1
+      class="title-display text-white"
+      style="font-size: clamp(2.5rem, 7vw, 5rem); font-style: italic; line-height: 0.95;"
+      transition:name={`project-title-${project.slug}`}
+    >
+      {project.title}
+    </h1>
+  </div>
+</header>
