@@ -27,6 +27,8 @@ const { title, description, ogImage } = Astro.props
 
     <script is:inline>
       (function () {
+        if (!('IntersectionObserver' in window)) return
+
         document.documentElement.classList.add('js-reveal')
 
         var observer = new IntersectionObserver(
