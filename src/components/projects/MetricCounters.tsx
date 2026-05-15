@@ -7,7 +7,9 @@ interface Metric {
 }
 
 function parseMetricValue(value: string): { prefix: string; num: number; suffix: string } {
-  const match = value.match(/^([^0-9]*)(\d+\.?\d*)(.*)$/)
+  // Strip thousands-separator commas from the numeric portion
+  const normalized = value.replace(/(\d),(\d)/g, '$1$2')
+  const match = normalized.match(/^([^0-9]*)(\d+\.?\d*)(.*)$/)
   if (!match) return { prefix: '', num: 0, suffix: value }
   return { prefix: match[1], num: parseFloat(match[2]), suffix: match[3] }
 }
@@ -30,7 +32,13 @@ function AnimatedCounter({ value, label }: Metric) {
       duration: 1.5,
       ease: 'easeOut',
       onUpdate: (v) => {
-        const formatted = num % 1 !== 0 ? v.toFixed(2) : Math.round(v).toString()
+        let formatted: string
+        if (num % 1 !== 0) {
+          formatted = v.toFixed(2)
+        } else {
+          const rounded = Math.round(v)
+          formatted = rounded >= 1000 ? rounded.toLocaleString('en-US') : rounded.toString()
+        }
         setDisplay(`${prefix}${formatted}${suffix}`)
       },
     })
