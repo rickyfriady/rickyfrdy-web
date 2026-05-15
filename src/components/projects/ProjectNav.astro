@@ -1,0 +1,49 @@
+---
+import type { Project } from '@/data/projects'
+
+interface Props {
+  prev: Project | null
+  next: Project | null
+  prevLabel: string
+  nextLabel: string
+}
+
+const { prev, next, prevLabel, nextLabel } = Astro.props
+---
+
+<nav
+  aria-label="Project navigation"
+  class="border-border flex items-start justify-between border-t px-4 py-10"
+>
+  {prev ? (
+    <a
+      href={`/projects/${prev.slug}`}
+      class="text-muted hover:text-foreground group flex max-w-[45%] flex-col gap-1 transition-colors"
+      aria-label={`Previous project: ${prev.title}`}
+    >
+      <span class="font-mono text-xs tracking-[0.15em] uppercase">{prevLabel}</span>
+      <span
+        class="title-display group-hover:text-accent text-lg leading-tight transition-colors"
+        transition:name={`project-title-${prev.slug}`}
+      >
+        {prev.title}
+      </span>
+    </a>
+  ) : <div aria-hidden="true" />}
+
+  {next ? (
+    <a
+      href={`/projects/${next.slug}`}
+      class="text-muted hover:text-foreground group ml-auto flex max-w-[45%] flex-col items-end gap-1 transition-colors"
+      aria-label={`Next project: ${next.title}`}
+    >
+      <span class="font-mono text-xs tracking-[0.15em] uppercase">{nextLabel}</span>
+      <span
+        class="title-display group-hover:text-accent text-right text-lg leading-tight transition-colors"
+        transition:name={`project-title-${next.slug}`}
+      >
+        {next.title}
+      </span>
+    </a>
+  ) : <div aria-hidden="true" />}
+</nav>
