@@ -1,10 +1,16 @@
 ---
+import { getCollection, render } from 'astro:content'
+import type { GetStaticPaths } from 'astro'
+import CaseStudyHero from '@/components/projects/CaseStudyHero.astro'
+import MetricCounters from '@/components/projects/MetricCounters'
+import ProjectCTAs from '@/components/projects/ProjectCTAs'
+import ProjectNav from '@/components/projects/ProjectNav.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import { projects } from '@/data/projects'
 import type { Project } from '@/data/projects'
-import type { GetStaticPaths } from 'astro'
+import { t } from '@/i18n/ui'
 
-export const getStaticPaths: GetStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   return projects.map((project) => ({
     params: { slug: project.slug },
     props: { project },
@@ -16,136 +22,137 @@ interface Props {
 }
 
 const { project } = Astro.props
+const lang = 'en'
+
+// Try MDX content — fallback to fullDescription
+const projectEntries = await getCollection('projects')
+const mdxEntry = projectEntries.find((e) => e.data.slug === project.slug)
+const Content = mdxEntry ? (await render(mdxEntry)).Content : null
+
+// Next / prev (wrap-around, null if only 1 project)
+const idx = projects.findIndex((p) => p.slug === project.slug)
+const prev = projects.length > 1 ? projects[(idx - 1 + projects.length) % projects.length] : null
+const next = projects.length > 1 ? projects[(idx + 1) % projects.length] : null
+
+// Zip challenges + solutions by index
+const pairs = project.challenges
+  .slice(0, Math.min(project.challenges.length, project.solutions.length))
+  .map((challenge, i) => ({ challenge, solution: project.solutions[i] }))
 ---
 
 <MainLayout
   title={`${project.title} — Ricki Friadi`}
   description={project.shortDescription}
+  noReveal
 >
-  <!-- Back -->
-  <div class="border-border border-b px-4 py-4">
-    <a href="/projects" class="text-muted hover:text-foreground font-mono text-xs transition-colors">
-      ← All Projects
+  <!-- Back link -->
+  <div class="border-border border-b px-4 py-3">
+    <a
+      href="/projects"
+      class="text-muted hover:text-foreground font-mono text-xs tracking-[0.15em] uppercase transition-colors"
+    >
+      {t(lang, 'case.back')}
     </a>
   </div>
 
-  <!-- Hero -->
-  <section class="border-border border-b px-4 py-8">
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="diff-tag">{project.category.replace('-', ' ')}</span>
-      <span class="diff-tag">{project.year}</span>
-      {project.featured && <span class="eyebrow">Featured</span>}
-    </div>
-    <h1
-      class="title-display mt-4"
-      style="font-size: clamp(2rem, 6vw, 4rem); line-height: 0.95"
-    >
-      {project.title}
-    </h1>
-    <p class="text-muted mt-4 max-w-2xl text-sm leading-relaxed">
-      {project.shortDescription}
-    </p>
-    {project.keyMetric && (
-      <p class="text-accent mt-3 text-sm font-semibold">{project.keyMetric}</p>
+  <!-- §2 Hero -->
+  <CaseStudyHero project={project} />
+
+  <!-- §3 Role + Tech + CTAs -->
+  <section class="border-border border-b px-4 py-8" data-reveal>
+    {project.role && (
+      <div class="mb-5 flex flex-wrap items-center gap-3">
+        <span class="font-mono text-xs tracking-[0.15em] uppercase text-accent">
+          {t(lang, 'case.role')}
+        </span>
+        <span class="text-foreground text-sm">{project.role}</span>
+      </div>
     )}
 
-    <!-- Links -->
-    <div class="mt-6 flex flex-wrap gap-3">
-      {project.liveUrl && (
-        <a
-          href={project.liveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="bg-accent text-background hover:bg-accent-hover inline-flex h-9 items-center rounded-lg px-4 text-xs font-medium transition-colors"
-        >
-          Live Demo ↗
-        </a>
-      )}
-      {project.githubUrl && (
-        <a
-          href={project.githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="border-border text-foreground hover:bg-secondary inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium transition-colors"
-        >
-          GitHub ↗
-        </a>
-      )}
-    </div>
-  </section>
-
-  <!-- Tech stack -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ Tech Stack</span>
-    </div>
-    <div class="flex flex-wrap gap-1.5 px-4 pb-8">
+    <div class="mb-6 flex flex-wrap gap-1.5">
       {project.technologies.map((tech) => (
         <span class="diff-tag">{tech}</span>
       ))}
     </div>
+
+    <ProjectCTAs
+      liveUrl={project.liveUrl}
+      githubUrl={project.githubUrl}
+      liveLabel={t(lang, 'case.live')}
+      githubLabel={t(lang, 'case.github')}
+      client:load
+    />
   </section>
 
-  <!-- Full description -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ Overview</span>
-    </div>
-    <p class="text-muted px-4 pb-8 text-sm leading-relaxed">{project.fullDescription}</p>
+  <!-- §4 Overview -->
+  <section class="border-border border-b px-4 py-8" data-reveal>
+    <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
+      {t(lang, 'case.overview')}
+    </h2>
+    {Content ? (
+      <div class="prose prose-sm text-foreground max-w-2xl leading-relaxed [&_strong]:text-foreground">
+        <Content />
+      </div>
+    ) : (
+      <p class="text-foreground max-w-2xl text-sm leading-relaxed">{project.fullDescription}</p>
+    )}
   </section>
 
-  <!-- Challenges -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ Challenges</span>
+  <!-- §5 Impact metrics (omitted if no metrics) -->
+  {project.metrics && project.metrics.length > 0 && (
+    <section class="border-border border-b px-4 py-8" data-reveal>
+      <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
+        {t(lang, 'case.impact')}
+      </h2>
+      <MetricCounters metrics={project.metrics} client:visible />
+    </section>
+  )}
+
+  <!-- §6 Problem → Solution -->
+  <section class="border-border border-b px-4 py-8" data-reveal>
+    <h2 class="font-mono mb-6 text-xs tracking-[0.15em] uppercase text-accent">
+      {t(lang, 'case.problem')} → {t(lang, 'case.solution')}
+    </h2>
+    <div class="space-y-6">
+      {pairs.map((pair) => (
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p class="font-mono mb-2 text-[10px] tracking-[0.2em] uppercase text-muted">
+              {t(lang, 'case.problem')}
+            </p>
+            <p class="text-foreground text-sm leading-relaxed">{pair.challenge}</p>
+          </div>
+          <div>
+            <p class="font-mono mb-2 text-[10px] tracking-[0.2em] uppercase text-muted">
+              {t(lang, 'case.solution')}
+            </p>
+            <p class="text-foreground text-sm leading-relaxed">{pair.solution}</p>
+          </div>
+        </div>
+      ))}
     </div>
-    <ul class="space-y-2 px-4 pb-8">
-      {project.challenges.map((c) => (
-        <li class="text-muted flex gap-2 text-sm">
-          <span class="text-accent mt-1 flex-shrink-0">›</span>
-          <span>{c}</span>
+  </section>
+
+  <!-- §7 Key highlights -->
+  <section class="border-border border-b px-4 py-8" data-reveal>
+    <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
+      {t(lang, 'case.highlights')}
+    </h2>
+    <ul class="space-y-3">
+      {project.results.map((result) => (
+        <li class="text-foreground flex gap-3 text-sm leading-relaxed">
+          <span class="text-accent mt-0.5 flex-shrink-0" aria-hidden="true">›</span>
+          <span>{result}</span>
         </li>
       ))}
     </ul>
   </section>
 
-  <!-- Solutions -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ Solutions</span>
-    </div>
-    <ul class="space-y-2 px-4 pb-8">
-      {project.solutions.map((s) => (
-        <li class="text-muted flex gap-2 text-sm">
-          <span class="text-accent mt-1 flex-shrink-0">›</span>
-          <span>{s}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <!-- Results -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ Results</span>
-    </div>
-    <ul class="space-y-2 px-4 pb-8">
-      {project.results.map((r) => (
-        <li class="text-foreground flex gap-2 text-sm font-semibold">
-          <span class="text-accent mt-1 flex-shrink-0">✓</span>
-          <span>{r}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <!-- Back CTA -->
-  <section class="px-4 py-10 text-center">
-    <a
-      href="/projects"
-      class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
-    >
-      ← Back to All Projects
-    </a>
-  </section>
+  <!-- §8 Next / prev navigation -->
+  <ProjectNav
+    prev={prev}
+    next={next}
+    prevLabel={t(lang, 'case.prev')}
+    nextLabel={t(lang, 'case.next')}
+  />
 </MainLayout>
