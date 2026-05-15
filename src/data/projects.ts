@@ -1,3 +1,8 @@
+export interface Metric {
+  value: string
+  label: string
+}
+
 export interface Project {
   slug: string
   title: string
@@ -7,6 +12,9 @@ export interface Project {
   category: 'web-app' | 'api' | 'tool' | 'open-source'
   technologies: string[]
   keyMetric?: string
+  heroImage?: string
+  role?: string
+  metrics?: Metric[]
   liveUrl?: string
   githubUrl?: string
   date: string
@@ -28,6 +36,12 @@ export const projects: Project[] = [
     category: 'web-app',
     technologies: ['Vue 3', 'NestJS', 'Tailwind', 'PostgreSQL', 'Redis', 'Zod', 'Pinia', 'Vitest'],
     keyMetric: '≥80% unit test coverage across all modules',
+    role: 'Lead Frontend Engineer · Fullstack Developer',
+    metrics: [
+      { value: '≥80%', label: 'unit test coverage' },
+      { value: '0', label: 'regression incidents' },
+      { value: '5+', label: 'teams deploy independently' },
+    ],
     date: '2024-11-01',
     year: 2024,
     challenges: [
@@ -57,6 +71,12 @@ export const projects: Project[] = [
     category: 'api',
     technologies: ['Vue.js', 'NestJS', 'TypeScript', 'Redis', 'PostgreSQL', 'Crontab', 'Pinia'],
     keyMetric: '9 independent microservices using Factory pattern',
+    role: 'Backend Engineer · System Architect',
+    metrics: [
+      { value: '9', label: 'microservices built' },
+      { value: '0', label: 'downtime during migration' },
+      { value: '3', label: 'sprints to complete' },
+    ],
     date: '2024-01-10',
     year: 2024,
     challenges: [
@@ -94,6 +114,12 @@ export const projects: Project[] = [
       'TypeORM',
       'Redux'
     ],
+    role: 'Fullstack Developer',
+    metrics: [
+      { value: '200+', label: 'marketing employees served' },
+      { value: '60%', label: 'of sessions from mobile' },
+      { value: '5 min', label: 'lead processing (was hours)' },
+    ],
     date: '2023-05-15',
     year: 2023,
     challenges: [
@@ -122,6 +148,12 @@ export const projects: Project[] = [
     featured: false,
     category: 'tool',
     technologies: ['PHP 5', 'PHP Native', 'SFTP', 'VM', 'MySQL'],
+    role: 'Backend Engineer',
+    metrics: [
+      { value: '3', label: 'partner banks onboarded' },
+      { value: '0', label: 'audit findings' },
+      { value: '100%', label: 'daily SLA met' },
+    ],
     date: '2024-01-20',
     year: 2024,
     challenges: [
@@ -151,6 +183,12 @@ export const projects: Project[] = [
     category: 'tool',
     technologies: ['Python', 'Flask', 'JavaScript', 'jQuery', 'Bootstrap', 'MySQL'],
     githubUrl: 'https://github.com/rickyfrdy/chatbot-kukerta',
+    role: 'Solo Developer · Thesis Author',
+    metrics: [
+      { value: '80%', label: 'question match rate' },
+      { value: '3,000', label: 'QA pairs curated' },
+      { value: '3.69', label: 'thesis GPA (out of 4.00)' },
+    ],
     date: '2020-09-01',
     year: 2020,
     challenges: [
