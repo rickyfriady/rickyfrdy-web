@@ -1,0 +1,9 @@
+---
+slug: singel-app
+---
+
+Singel APP is the unified digital workspace for all PT. Pegadaian employees — a **Micro-Frontend platform** where independent product teams ship features without coordinating deploys. I led the frontend architecture and built the shared design system that all teams consume.
+
+The platform runs on **Module Federation** (Vite), with each team owning their own bundle. A constellation of **NestJS microservices** handles the backend, connected via Redis pub/sub for async processing. Shared interfaces are enforced as npm packages with Zod schemas — if a contract breaks, the build fails before it reaches production.
+
+What I am most proud of: we went from a codebase where a single team could block all deploys, to one where **five teams ship independently every sprint** — with 80% Vitest coverage and zero regression incidents.
