@@ -176,7 +176,7 @@ export async function GET(context: APIContext) {
 
 **Feed URL:** `/rss.xml` — standard location, discoverable by feed readers.
 
-**`site` config:** `astro.config.ts` must have `site: 'https://rickifriadi.dev'` (or equivalent). Check and add if missing.
+**`site` config:** `astro.config.ts` already has `site: 'https://rickyfrdy.my.id'` — no change needed.
 
 ---
 
