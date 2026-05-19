@@ -14,7 +14,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'Ricki Friadi',
     description: 'Writing on systems & craft — essays on microservices, TypeScript, architecture.',
-    site: context.site!,
+    site: context.site ?? 'https://rickyfrdy.my.id',
     items: posts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.pubDate,
