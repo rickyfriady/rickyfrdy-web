@@ -1,8 +1,10 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import TableOfContents from '@/components/blog/TableOfContents.astro'
 import { getCollection, render } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
+import { readingTime } from '@/utils/readingTime'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('blog', ({ data }) => !data.draft)
@@ -17,7 +19,7 @@ interface Props {
 }
 
 const { post } = Astro.props
-const { Content } = await render(post)
+const { Content, headings } = await render(post)
 ---
 
 <MainLayout title={`${post.data.title} — Ricki Friadi`} description={post.data.description}>
@@ -32,7 +34,9 @@ const { Content } = await render(post)
   <section class="border-border border-b px-4 py-8">
     <div class="flex flex-wrap gap-2">
       {post.data.tags.map((tag: string) => (
-        <span class="diff-tag">{tag}</span>
+        <a href={`/blog/tag/${tag}`} class="diff-tag hover:border-accent/60 transition-colors">
+          {tag}
+        </a>
       ))}
     </div>
     <h1
@@ -42,26 +46,28 @@ const { Content } = await render(post)
       {post.data.title}
     </h1>
     <p class="text-muted mt-3 text-sm">{post.data.description}</p>
-    <time
-      datetime={post.data.pubDate.toISOString()}
-      class="text-muted mt-4 block font-mono text-xs"
-    >
-      {post.data.pubDate.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })}
+    <div class="text-muted mt-4 font-mono text-xs">
+      <time datetime={post.data.pubDate.toISOString()}>
+        {post.data.pubDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </time>
+      <span> · {readingTime(post.body ?? '')}</span>
       {post.data.updatedDate && (
         <span>
           {' '}· Updated{' '}
-          {post.data.updatedDate.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
+          <time datetime={post.data.updatedDate.toISOString()}>
+            {post.data.updatedDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
         </span>
       )}
-    </time>
+    </div>
   </section>
 
   <!-- Content -->
@@ -73,6 +79,7 @@ const { Content } = await render(post)
     prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:rounded-xl
     prose-a:text-accent prose-a:no-underline hover:prose-a:underline
     prose-li:text-muted">
+    <TableOfContents headings={headings} />
     <Content />
   </article>
 
