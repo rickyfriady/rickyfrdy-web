@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions'
 import AppFooter from './AppFooter.astro'
 import AppHeader from './AppHeader.astro'
 import BaseHead from './BaseHead.astro'
@@ -8,15 +9,17 @@ interface Props {
   title: string
   description: string
   ogImage?: string | undefined
+  noReveal?: boolean
 }
 
-const { title, description, ogImage } = Astro.props
+const { title, description, ogImage, noReveal = false } = Astro.props
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-no-reveal={noReveal || undefined}>
   <head>
     <BaseHead title={title} description={description} ogImage={ogImage} />
+    <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col">
     <AppHeader />
@@ -28,6 +31,7 @@ const { title, description, ogImage } = Astro.props
     <script is:inline>
       (function () {
         if (!('IntersectionObserver' in window)) return
+        if (document.documentElement.hasAttribute('data-no-reveal')) return
 
         document.documentElement.classList.add('js-reveal')
 
