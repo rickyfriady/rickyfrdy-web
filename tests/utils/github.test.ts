@@ -5,7 +5,9 @@ import {
   calculateLongestStreak,
   calculateTotalContributions,
   generateMockContributions,
-  getContributionLevel
+  getContributionLevel,
+  mapGraphQLLevel,
+  mapProxyContributions
 } from '@/utils/github'
 
 describe('getContributionLevel', () => {
@@ -120,5 +122,33 @@ describe('generateMockContributions', () => {
     for (const day of result) {
       expect(day.level).toBe(getContributionLevel(day.count))
     }
+  })
+})
+
+describe('mapGraphQLLevel()', () => {
+  it('maps NONE to 0', () => expect(mapGraphQLLevel('NONE')).toBe(0))
+  it('maps FIRST_QUARTILE to 1', () => expect(mapGraphQLLevel('FIRST_QUARTILE')).toBe(1))
+  it('maps SECOND_QUARTILE to 2', () => expect(mapGraphQLLevel('SECOND_QUARTILE')).toBe(2))
+  it('maps THIRD_QUARTILE to 3', () => expect(mapGraphQLLevel('THIRD_QUARTILE')).toBe(3))
+  it('maps FOURTH_QUARTILE to 4', () => expect(mapGraphQLLevel('FOURTH_QUARTILE')).toBe(4))
+  it('maps unknown strings to 0', () => expect(mapGraphQLLevel('UNKNOWN')).toBe(0))
+})
+
+describe('mapProxyContributions()', () => {
+  it('maps proxy items to ContributionDay[]', () => {
+    const result = mapProxyContributions([{ date: '2025-01-01', count: 3, level: 2 }])
+    expect(result).toEqual([{ date: '2025-01-01', count: 3, level: 2 }])
+  })
+  it('slices to last 365 when given more than 365 items', () => {
+    const input = Array.from({ length: 400 }, (_, i) => ({
+      date: `2025-01-01`,
+      count: i % 10,
+      level: 0 as const
+    }))
+    expect(mapProxyContributions(input)).toHaveLength(365)
+  })
+  it('returns all items when fewer than 365', () => {
+    const input = [{ date: '2025-01-01', count: 0, level: 0 as const }]
+    expect(mapProxyContributions(input)).toHaveLength(1)
   })
 })
