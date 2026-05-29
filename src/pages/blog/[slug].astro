@@ -22,7 +22,11 @@ const { post } = Astro.props
 const { Content, headings } = await render(post)
 ---
 
-<MainLayout title={`${post.data.title} — Ricki Friadi`} description={post.data.description}>
+<MainLayout
+  title={`${post.data.title} — Ricki Friadi`}
+  description={post.data.description}
+  ogImage={`/og/blog/${post.id}.png`}
+>
   <!-- Back -->
   <div class="border-border border-b px-4 py-4">
     <a href="/blog" class="text-muted hover:text-foreground font-mono text-xs transition-colors">
