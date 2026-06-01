@@ -29,6 +29,9 @@ export interface SkillCategory {
   items: string[]
 }
 
+export const summary =
+  'Fullstack developer with 4+ years delivering production systems in Indonesian fintech. At PT. Pegadaian, I build micro-frontend platforms and NestJS microservice backends powering a loan lead platform at 80% conversion facilitating Rp 3 miliar+ in loan originations, and an employee super-app serving 1.5 million active users.'
+
 export const experiences: WorkExperience[] = [
   {
     role: 'Software Engineer',
@@ -36,9 +39,9 @@ export const experiences: WorkExperience[] = [
     location: 'Jakarta Pusat, Indonesia',
     period: 'May 2023 – Present',
     bullets: [
-      'Translated business requirements into technical specifications and implemented robust, user-friendly interfaces.',
-      "Contributed to the continuous evolution of Pegadaian's digital landscape by extending and enhancing application functionalities.",
-      'Engaged with a diverse range of projects, including the CSR Web App, B2B Web App, and Microsite Pinjaman.'
+      'Led migration of Microsite Pinjaman from PHP/CodeIgniter monolith to 9 NestJS microservices, achieving 80% lead-to-approval conversion and facilitating Rp 3 miliar+ in loan originations across KUR, Serba Guna, and Cicil Kendaraan products.',
+      'Built micro-frontend modules for Singel APP (Pegadaian Kita) using Module Federation, contributing to a platform serving 1.5 million active users with parallel team deployments and independent delivery per feature.',
+      'Developed KPI tracking and marketing performance modules in KAMILA, enabling data-driven performance reviews and loan lead submission integration with external business partners.'
     ],
     stack: [
       'Vue.js',
@@ -58,9 +61,8 @@ export const experiences: WorkExperience[] = [
     location: 'Pekanbaru, Indonesia',
     period: 'Sep 2021 – Jan 2023',
     bullets: [
-      'Developed responsive and user-friendly web applications using React.js, Node.js, and Express.js.',
-      'Integrated web applications with databases such as MongoDB, MySQL, and PostgreSQL.',
-      'Used front-end frameworks such as React.js, Material UI, and Tailwind to create engaging user interfaces.'
+      'Delivered responsive web applications for SMB clients using React.js, Node.js, and PostgreSQL, enabling clients to establish digital presence and automate customer-facing processes.',
+      'Integrated third-party APIs and relational/document databases (MongoDB, MySQL, PostgreSQL), replacing manual workflows and enabling measurable operational efficiency gains.'
     ],
     stack: [
       'React.js',
@@ -79,8 +81,8 @@ export const experiences: WorkExperience[] = [
     location: 'Pekanbaru, Indonesia',
     period: 'Apr 2021 – Jul 2021',
     bullets: [
-      'Designed and implemented a Profile Company website using Codeigniter in 14 days.',
-      "Implemented MPOS application to regulate the sale and stock of the company's products with a 3-person team."
+      "Delivered a company profile website in 14 days using CodeIgniter, establishing the company's digital presence ahead of schedule.",
+      'Implemented an MPOS application for real-time sales and inventory management with a 3-person team, eliminating manual stock tracking and enabling accurate daily financial reporting.'
     ],
     stack: ['PHP', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Codeigniter', 'Bootstrap']
   }
@@ -92,11 +94,8 @@ export const projects: Project[] = [
     company: 'PT. Pegadaian',
     period: 'Nov 2024 – Present',
     bullets: [
-      'Built modular and reusable frontend components based on UI/UX team specifications using Vue 3 Composition API and Tailwind CSS.',
-      'Actively contributed to a company-wide Micro-Frontend Architecture, allowing multiple teams to work in parallel and independently deploy features.',
-      'Ensured seamless integration with microservice-based backends, collaborating closely with backend teams to define and consume APIs.',
-      'Developed and maintained unit tests using Vitest, consistently achieving ≥80% code coverage.',
-      'Advocated for clean code practices and component-driven development.'
+      'Built modular micro-frontend components with Module Federation serving 1.5 million active users; achieved ≥80% unit test coverage with Vitest, enabling continuous delivery at scale.',
+      'Advocated for clean code and component-driven development, reducing cross-team integration friction in a multi-team parallel deployment environment.'
     ],
     stack: [
       'Vue 3',
@@ -115,11 +114,8 @@ export const projects: Project[] = [
     company: 'PT. Pegadaian',
     period: 'Jan 2024 – Present',
     bullets: [
-      'Revamped legacy CodeIgniter 3 monolith into a scalable NestJS microservices architecture for the loan lead generation platform.',
-      'Designed and architected 9 backend services using Factory pattern, enabling dynamic support for Kredit Usaha Rakyat, Serba Guna, and Cicil Kendaraan.',
-      'Developed and maintained comprehensive unit testing, achieving high test coverage to reduce regression.',
-      'Created clear and structured technical documentation for knowledge transfer.',
-      'Integrated with App Mitra Pegadaian.'
+      'Factory-pattern architecture supports onboarding new loan types without codebase changes, directly enabling Rp 3 miliar+ origination volume at 80% lead-to-approval conversion.',
+      'Designed 9 backend microservices with clear contracts and comprehensive documentation, enabling knowledge transfer to subsequent engineers.'
     ],
     stack: [
       'Vue.js',
@@ -138,10 +134,8 @@ export const projects: Project[] = [
     company: 'PT. Pegadaian',
     period: 'May 2023 – Present',
     bullets: [
-      'Developed and maintained the FE and BE, ensuring a responsive, intuitive user interface for internal Pegadaian employees.',
-      'Developed backend modules for marketing progress tracking, marketing plans, and weekly marketing reporting.',
-      'Built a backend module to manage employee KPI tracking, enabling performance measurement and evaluation.',
-      "Continued development of the loan lead submission feature from Pegadaian's external business partners."
+      'Built KPI tracking and marketing performance reporting modules, giving management data-driven visibility into field team performance.',
+      "Developed loan lead submission integration with external business partners, expanding Pegadaian's origination channels beyond direct customer acquisition."
     ],
     stack: [
       'ExpressJS',
@@ -159,9 +153,7 @@ export const projects: Project[] = [
     company: 'PT. Pegadaian',
     period: 'Jan 2024 – Present',
     bullets: [
-      'Continued development of the reconciliation transaction module for integration with additional partner banks.',
-      "Ensured reconciliation processes are compatible and consumable by Pegadaian's core banking services.",
-      "Verified that reconciled transaction journal entries comply with the accounting division's standards."
+      "Extended bank reconciliation coverage to additional partner banks, ensuring financial transaction accuracy and compliance with Pegadaian's core banking accounting standards."
     ],
     stack: ['PHP 5', 'PHP Native', 'SFTP', 'VM']
   },
@@ -170,8 +162,7 @@ export const projects: Project[] = [
     company: 'Universitas Riau',
     period: '2020',
     bullets: [
-      'Created a conversation application with the kukerta admin using fuzzy string matching, achieving 80% question match rate.',
-      'Designed and implemented a dialogue dataset of 3,000 questionnaire entries processed for chatbot knowledge in 1 month.'
+      "Achieved 80% question match accuracy on a 3,000-entry dialogue dataset using fuzzy string matching, automating student information queries for the university's KKN program."
     ],
     stack: ['Python', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Flask', 'Bootstrap']
   }
