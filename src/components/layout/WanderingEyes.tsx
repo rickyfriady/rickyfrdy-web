@@ -1,13 +1,17 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useEffect, useRef } from 'react'
 
+function getIsMobile() {
+  return typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+}
+
 function Eye() {
   const eyeRef = useRef<HTMLDivElement>(null)
   const rotate = useMotionValue(0)
   const springRotate = useSpring(rotate, { damping: 20, stiffness: 300 })
 
   useEffect(() => {
-    const isMobile = navigator.maxTouchPoints > 0
+    const isMobile = getIsMobile()
     if (isMobile) return
 
     function onMove(e: MouseEvent) {
@@ -23,7 +27,7 @@ function Eye() {
     return () => window.removeEventListener('mousemove', onMove)
   }, [rotate])
 
-  const isMobile = typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+  const isMobile = getIsMobile()
 
   return (
     <div
