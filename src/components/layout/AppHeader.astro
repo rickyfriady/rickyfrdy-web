@@ -1,4 +1,6 @@
 ---
+import WanderingEyes from './WanderingEyes'
+
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
@@ -14,9 +16,7 @@ const currentPath = Astro.url.pathname
 
 <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
   <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-    <a href="/" class="text-foreground font-display text-lg font-light tracking-tight">
-      Ricki Friadi
-    </a>
+    <WanderingEyes client:load />
 
     <ul class="hidden items-center gap-6 md:flex">
       {navLinks.map(({ href, label }) => (
