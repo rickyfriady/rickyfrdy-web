@@ -11,6 +11,8 @@ function Eye() {
   const springRotate = useSpring(rotate, { damping: 20, stiffness: 300 })
   const prefersReduced = useReducedMotion()
   const [isMobile, setIsMobile] = useState(false)
+  const [isMouseActive, setIsMouseActive] = useState(false)
+  const isMouseActiveRef = useRef(false)
 
   useEffect(() => {
     setIsMobile(getIsMobile())
@@ -20,6 +22,10 @@ function Eye() {
     if (isMobile || prefersReduced) return
 
     function onMove(e: MouseEvent) {
+      if (!isMouseActiveRef.current) {
+        isMouseActiveRef.current = true
+        setIsMouseActive(true)
+      }
       if (!eyeRef.current) return
       const rect = eyeRef.current.getBoundingClientRect()
       const cx = rect.left + rect.width / 2
@@ -28,9 +34,21 @@ function Eye() {
       rotate.set(angle + 90)
     }
 
+    function onLeave() {
+      isMouseActiveRef.current = false
+      setIsMouseActive(false)
+    }
+
     window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    document.addEventListener('mouseleave', onLeave)
+
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseleave', onLeave)
+    }
   }, [rotate, isMobile, prefersReduced])
+
+  const shouldOrbit = (isMobile || !isMouseActive) && !prefersReduced
 
   return (
     <div
@@ -39,13 +57,9 @@ function Eye() {
     >
       <motion.div
         className="absolute inset-0"
-        style={!isMobile && !prefersReduced ? { rotate: springRotate } : undefined}
-        animate={isMobile && !prefersReduced ? { rotate: 360 } : undefined}
-        transition={
-          isMobile && !prefersReduced
-            ? { repeat: Infinity, duration: 3, ease: 'linear' }
-            : undefined
-        }
+        style={!shouldOrbit ? { rotate: springRotate } : undefined}
+        animate={shouldOrbit ? { rotate: 360 } : undefined}
+        transition={shouldOrbit ? { repeat: Infinity, duration: 3, ease: 'linear' } : undefined}
       >
         <div className="bg-accent absolute top-[3px] left-1/2 h-[5px] w-[5px] -translate-x-1/2 rounded-full" />
       </motion.div>
