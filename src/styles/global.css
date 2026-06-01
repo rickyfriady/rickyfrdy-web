@@ -40,6 +40,36 @@
   --color-highlight: oklch(0.55 0.07 160);
 }
 
+/* Theme toggle: disable default View Transition cross-fade — clip-path drives the reveal */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Wandering eyes look-around + blink animation */
+@keyframes we-look {
+  0%, 10%    { background-position: 0 0; }
+  13%, 40%   { background-position: -3px 0; }
+  43%, 70%   { background-position: 3px 0; }
+  73%, 90%   { background-position: 0 3px; }
+  93%, 100%  { background-position: 0 0; }
+}
+
+@keyframes we-blink {
+  0%, 10%, 12%, 20%, 22%, 40%, 42%, 60%, 62%, 70%, 72%, 90%, 92%, 98%, 100% { transform: scaleY(1); }
+  11%, 21%, 41%, 61%, 71%, 91%, 99% { transform: scaleY(0.375); }
+}
+
+.we-eye {
+  animation: we-look 10s infinite, we-blink 10s infinite;
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .we-eye { animation: none; }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
