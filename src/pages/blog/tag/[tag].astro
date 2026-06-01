@@ -6,15 +6,15 @@ import type { GetStaticPaths } from 'astro'
 import { readingTime } from '@/utils/readingTime'
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getCollection('blog', ({ data }) => !data.draft)
-  const tags = [...new Set(posts.flatMap((p) => p.data.tags))]
-  return tags.map((tag) => ({
+  const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[]).filter((entry) => !entry.data.draft)
+  const tags: string[] = [...new Set(posts.flatMap((p: CollectionEntry<'blog'>) => p.data.tags))]
+  return tags.map((tag: string) => ({
     params: { tag },
     props: {
       tag,
       posts: posts
-        .filter((p) => p.data.tags.includes(tag))
-        .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
+        .filter((p: CollectionEntry<'blog'>) => p.data.tags.includes(tag))
+        .sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
     },
   }))
 }

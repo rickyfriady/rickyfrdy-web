@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import CaseStudyHero from '@/components/projects/CaseStudyHero.astro'
 import MetricCounters from '@/components/projects/MetricCounters'
@@ -17,16 +18,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }))
 }
 
-interface Props {
-  project: Project
-}
-
-const { project } = Astro.props
+const { project } = Astro.props as { project: Project }
 const lang = 'en'
 
 // Try MDX content — fallback to fullDescription
-const projectEntries = await getCollection('projects')
-const mdxEntry = projectEntries.find((e) => e.data.slug === project.slug)
+const projectEntries = (await getCollection('projects')) as CollectionEntry<'projects'>[]
+const mdxEntry = projectEntries.find((e: CollectionEntry<'projects'>) => e.data.slug === project.slug)
 const Content = mdxEntry ? (await render(mdxEntry)).Content : null
 
 // Next / prev (wrap-around, null if only 1 project)
