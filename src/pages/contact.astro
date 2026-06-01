@@ -1,0 +1,66 @@
+---
+import ContactForm from '@/components/contact/ContactForm'
+import MainLayout from '@/components/layout/MainLayout.astro'
+---
+
+<MainLayout
+  title="Contact — Ricki Friadi"
+  description="Get in touch with Ricki Friadi — open to fullstack roles, freelance projects, and collaboration."
+>
+  <!-- Hero -->
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">Contact</p>
+    <h1
+      class="title-display"
+      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
+    >
+      Let's Build<br />
+      <span class="title-accent text-accent">Something Together.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">
+      Open to fullstack roles, freelance projects, and interesting collaborations.
+      Drop a message and I'll get back to you within a few days.
+    </p>
+  </section>
+
+  <!-- § 01 — Form -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Send a Message</span>
+    </div>
+    <div class="px-4 pb-10">
+      <div class="max-w-lg">
+        <ContactForm client:load />
+      </div>
+    </div>
+  </section>
+
+  <!-- § 02 — Other ways to reach me -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Other Channels</span>
+    </div>
+    <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+      <div class="py-4 sm:pr-6">
+        <p class="text-muted font-mono text-xs uppercase tracking-widest">Email</p>
+        <a
+          href="mailto:friadi.ricki@gmail.com"
+          class="text-foreground hover:text-accent mt-1 block text-sm transition-colors"
+        >
+          friadi.ricki@gmail.com ↗
+        </a>
+      </div>
+      <div class="py-4 sm:pl-6">
+        <p class="text-muted font-mono text-xs uppercase tracking-widest">LinkedIn</p>
+        <a
+          href="https://www.linkedin.com/in/rickifriadi"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-foreground hover:text-accent mt-1 block text-sm transition-colors"
+        >
+          linkedin.com/in/rickifriadi ↗
+        </a>
+      </div>
+    </div>
+  </section>
+</MainLayout>

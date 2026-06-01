@@ -2,6 +2,9 @@
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
 import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { fetchBuildTimeStats } from '@/utils/github'
+
+const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
 ---
 
 <MainLayout
@@ -116,7 +119,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
       <span class="chapter-label">§ 03 — GitHub Activity</span>
     </div>
     <div class="px-4 pb-6">
-      <GitHubHeatmap client:visible />
+      <GitHubHeatmap client:visible initialStats={initialStats} />
     </div>
   </section>
 
