@@ -23,6 +23,7 @@ const { title, description, ogImage, noReveal = false } = Astro.props
   </head>
   <body class="flex min-h-screen flex-col">
     <AppHeader />
+    <div id="page-accent-line" transition:persist aria-hidden="true"></div>
     <main transition:name="page-content" class="flex-1">
       <slot />
     </main>
@@ -53,6 +54,34 @@ const { title, description, ogImage, noReveal = false } = Astro.props
             observer.observe(section)
           })
       })()
+    </script>
+    <script>
+      import gsap from 'gsap'
+
+      document.addEventListener('astro:before-swap', () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+        const line = document.getElementById('page-accent-line')
+        if (!line) return
+        gsap.killTweensOf(line)
+        gsap.fromTo(
+          line,
+          { scaleX: 0, transformOrigin: 'left center' },
+          { scaleX: 1, duration: 0.2, ease: 'power2.inOut' },
+        )
+      })
+
+      document.addEventListener('astro:after-swap', () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+        const line = document.getElementById('page-accent-line')
+        if (!line) return
+        gsap.to(line, {
+          scaleX: 0,
+          transformOrigin: 'right center',
+          duration: 0.15,
+          ease: 'power2.in',
+          delay: 0.12,
+        })
+      })
     </script>
   </body>
 </html>
