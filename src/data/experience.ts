@@ -114,7 +114,7 @@ export const projects: Project[] = [
     company: 'PT. Pegadaian',
     period: 'Jan 2024 – Present',
     bullets: [
-      'Factory-pattern architecture supports onboarding new loan types without codebase changes, directly enabling Rp 3 miliar+ origination volume at 80% lead-to-approval conversion.',
+      'Designed a Factory-pattern architecture to support new loan types without codebase changes, enabling Rp 3 miliar+ origination volume at 80% lead-to-approval conversion.',
       'Designed 9 backend microservices with clear contracts and comprehensive documentation, enabling knowledge transfer to subsequent engineers.'
     ],
     stack: [
