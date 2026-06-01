@@ -1,5 +1,5 @@
-import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 function getIsMobile() {
   return typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
@@ -9,10 +9,15 @@ function Eye() {
   const eyeRef = useRef<HTMLDivElement>(null)
   const rotate = useMotionValue(0)
   const springRotate = useSpring(rotate, { damping: 20, stiffness: 300 })
+  const prefersReduced = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const isMobile = getIsMobile()
-    if (isMobile) return
+    setIsMobile(getIsMobile())
+  }, [])
+
+  useEffect(() => {
+    if (isMobile || prefersReduced) return
 
     function onMove(e: MouseEvent) {
       if (!eyeRef.current) return
@@ -25,24 +30,22 @@ function Eye() {
 
     window.addEventListener('mousemove', onMove)
     return () => window.removeEventListener('mousemove', onMove)
-  }, [rotate])
-
-  const isMobile = getIsMobile()
+  }, [rotate, isMobile, prefersReduced])
 
   return (
     <div
       ref={eyeRef}
       className="border-border relative h-4 w-4 overflow-hidden rounded-full border"
     >
-      {/*
-        motion.div fills the eye (inset-0) and rotates around its own center,
-        which is the eye's center. The pupil child rides along offset at the top.
-      */}
       <motion.div
         className="absolute inset-0"
-        style={isMobile ? undefined : { rotate: springRotate }}
-        animate={isMobile ? { rotate: 360 } : undefined}
-        transition={isMobile ? { repeat: Infinity, duration: 3, ease: 'linear' } : undefined}
+        style={!isMobile && !prefersReduced ? { rotate: springRotate } : undefined}
+        animate={isMobile && !prefersReduced ? { rotate: 360 } : undefined}
+        transition={
+          isMobile && !prefersReduced
+            ? { repeat: Infinity, duration: 3, ease: 'linear' }
+            : undefined
+        }
       >
         <div className="bg-accent absolute top-[3px] left-1/2 h-[5px] w-[5px] -translate-x-1/2 rounded-full" />
       </motion.div>
