@@ -56,65 +56,69 @@ const currentPath = Astro.url.pathname
   import gsap from 'gsap'
   import { applyThemeToDom, initTheme, theme, toggleTheme } from '@/stores/theme'
 
-  initTheme()
+  // astro:page-load fires on initial load AND every client-side navigation (ClientRouter).
+  // Without this, the script runs once and the button loses its listener after navigating.
+  document.addEventListener('astro:page-load', () => {
+    initTheme()
 
-  const btn = document.getElementById('theme-toggle')
+    const btn = document.getElementById('theme-toggle')
 
-  btn?.addEventListener('click', async (e) => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      toggleTheme()
-      applyThemeToDom(theme.get())
-      return
-    }
+    btn?.addEventListener('click', async (e) => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        toggleTheme()
+        applyThemeToDom(theme.get())
+        return
+      }
 
-    const { clientX: x, clientY: y } = e as MouseEvent
+      const { clientX: x, clientY: y } = e as MouseEvent
 
-    // Button press spring feedback
-    gsap
-      .timeline()
-      .to(btn, { scale: 0.82, duration: 0.08, ease: 'power2.in' })
-      .to(btn, { scale: 1, duration: 0.25, ease: 'back.out(3)', clearProps: 'transform' })
+      // Button press spring feedback
+      gsap
+        .timeline()
+        .to(btn, { scale: 0.82, duration: 0.08, ease: 'power2.in' })
+        .to(btn, { scale: 1, duration: 0.25, ease: 'back.out(3)', clearProps: 'transform' })
 
-    const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    )
-
-    // Circular wipe via View Transition API
-    if (!document.startViewTransition) {
-      toggleTheme()
-      applyThemeToDom(theme.get())
-      return
-    }
-
-    const transition = document.startViewTransition(() => {
-      toggleTheme()
-      applyThemeToDom(theme.get())
-    })
-
-    await transition.ready
-
-    document.documentElement.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${maxRadius}px at ${x}px ${y}px)`,
-        ],
-      },
-      { duration: 500, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
-    )
-
-    await transition.finished
-
-    // Spin in the newly visible icon
-    const isDark = document.documentElement.classList.contains('dark')
-    const newIcon = document.getElementById(isDark ? 'icon-moon' : 'icon-sun')
-    if (newIcon) {
-      gsap.fromTo(
-        newIcon,
-        { rotate: -180, scale: 0 },
-        { rotate: 0, scale: 1, duration: 0.4, ease: 'back.out(2)', clearProps: 'all' },
+      const maxRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y),
       )
-    }
+
+      // Circular wipe via View Transition API
+      if (!document.startViewTransition) {
+        toggleTheme()
+        applyThemeToDom(theme.get())
+        return
+      }
+
+      const transition = document.startViewTransition(() => {
+        toggleTheme()
+        applyThemeToDom(theme.get())
+      })
+
+      await transition.ready
+
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${maxRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        { duration: 500, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
+      )
+
+      await transition.finished
+
+      // Spin in the newly visible icon
+      const isDark = document.documentElement.classList.contains('dark')
+      const newIcon = document.getElementById(isDark ? 'icon-moon' : 'icon-sun')
+      if (newIcon) {
+        gsap.fromTo(
+          newIcon,
+          { rotate: -180, scale: 0 },
+          { rotate: 0, scale: 1, duration: 0.4, ease: 'back.out(2)', clearProps: 'all' },
+        )
+      }
+    })
   })
 </script>
