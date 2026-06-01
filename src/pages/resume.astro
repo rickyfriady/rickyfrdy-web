@@ -20,6 +20,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
           href="https://github.com/rickyfrdy"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Ricki Friadi on GitHub"
           class="text-accent hover:underline"
         >github.com/rickyfrdy</a>
       </div>
@@ -29,7 +30,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <!-- Summary -->
     <section class="mb-8">
-      <p class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">Summary</p>
+      <h2 class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">Summary</h2>
       <p class="text-foreground text-sm leading-relaxed">{summary}</p>
     </section>
 
@@ -37,7 +38,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <!-- Work Experience -->
     <section class="mb-8">
-      <p class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Work Experience</p>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Work Experience</h2>
       <div class="space-y-8">
         {experiences.map((exp) => (
           <div>
@@ -68,7 +69,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <!-- Project Experience -->
     <section class="mb-8">
-      <p class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Project Experience</p>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Project Experience</h2>
       <div class="space-y-8">
         {projects.map((proj) => (
           <div>
@@ -99,7 +100,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <!-- Education -->
     <section class="mb-8">
-      <p class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Education</p>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Education</h2>
       <div>
         <div class="flex flex-wrap items-baseline gap-2">
           <span class="text-foreground font-semibold text-sm">{education.degree}</span>
@@ -114,11 +115,11 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <!-- Skills -->
     <section class="mb-12">
-      <p class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Skills</p>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Skills</h2>
       <div class="space-y-4">
         {skillCategories.map((cat) => (
           <div>
-            <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">{cat.label}</p>
+            <h3 class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">{cat.label}</h3>
             <div class="flex flex-wrap gap-1.5">
               {cat.items.map((item) => (
                 <span class="diff-tag">{item}</span>
