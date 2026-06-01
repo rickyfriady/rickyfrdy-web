@@ -1,15 +1,14 @@
 import { resolve } from 'node:path'
-import { pathToFileURL } from 'node:url'
 import { Document, Font, Link, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import type { Education, Project, SkillCategory, WorkExperience } from '@/data/experience'
 
 Font.register({
   family: 'JetBrains Mono',
-  src: pathToFileURL(resolve('./public/fonts/JetBrainsMono-Regular.ttf')).href
+  src: resolve('./public/fonts/JetBrainsMono-Regular.ttf')
 })
 Font.register({
   family: 'Lora',
-  src: pathToFileURL(resolve('./public/fonts/Lora-Italic.ttf')).href
+  src: resolve('./public/fonts/Lora-Italic.ttf')
 })
 
 const C = {
