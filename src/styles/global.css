@@ -63,8 +63,14 @@
 }
 
 ::view-transition-new(page-content) {
-  animation: page-enter 300ms var(--ease-out-expo) forwards;
-  animation-delay: 80ms;
+  animation: page-enter 300ms var(--ease-out-expo) 80ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content) {
+    animation: none;
+  }
 }
 
 /* Wandering eyes look-around + blink animation */

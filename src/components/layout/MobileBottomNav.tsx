@@ -53,6 +53,14 @@ export default function MobileBottomNav() {
     return () => document.removeEventListener('astro:page-load', handler)
   }, [])
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMoreOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   const moreActive = moreLinks.some(({ href }) => isLinkActive(href, currentPath))
 
   return (
@@ -114,10 +122,12 @@ export default function MobileBottomNav() {
 
         <button
           type="button"
+          aria-expanded={moreOpen}
+          aria-controls="mobile-more-drawer"
           onClick={() => setMoreOpen((v) => !v)}
           className="relative flex flex-col items-center gap-[3px] px-3 py-2.5 rounded-[14px]"
         >
-          {(moreOpen || moreActive) && (
+          {moreActive && !moreOpen && (
             <motion.span
               layoutId="mobile-nav-pill"
               className="absolute inset-0 rounded-[14px]"
@@ -154,6 +164,9 @@ export default function MobileBottomNav() {
               onClick={() => setMoreOpen(false)}
             />
             <motion.div
+              id="mobile-more-drawer"
+              role="menu"
+              aria-label="More navigation"
               className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 overflow-hidden"
               style={{
                 background: 'rgba(14,22,19,0.96)',
