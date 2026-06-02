@@ -176,6 +176,28 @@
   @apply border-border bg-surface rounded-2xl border;
 }
 
+@utility glass-btn {
+  border: 1px solid transparent;
+  transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1);
+  &:hover {
+    background: color-mix(in oklch, var(--color-background) 60%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: color-mix(in oklch, var(--color-border) 50%, transparent);
+    box-shadow: 0 2px 12px oklch(0 0 0 / 0.07), inset 0 1px 0 oklch(1 0 0 / 0.08);
+  }
+}
+
+@utility header-glass {
+  background: color-mix(in oklch, var(--color-background) 60%, transparent);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-border) 45%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklch, var(--color-accent) 7%, transparent),
+    0 8px 32px oklch(0 0 0 / 0.08);
+}
+
 @utility glass-panel {
   background: color-mix(in oklch, var(--color-background) 70%, transparent);
   backdrop-filter: blur(24px);

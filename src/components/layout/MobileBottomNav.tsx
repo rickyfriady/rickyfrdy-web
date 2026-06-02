@@ -68,13 +68,13 @@ export default function MobileBottomNav() {
       <motion.div
         className="relative flex items-center gap-0.5 px-1.5 py-1.5"
         style={{
-          background: 'rgba(14,22,19,0.96)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          background: 'color-mix(in oklch, var(--color-background) 65%, transparent)',
+          backdropFilter: 'blur(24px) saturate(1.6)',
+          WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
           border: '1px solid color-mix(in oklch, var(--color-accent) 22%, transparent)',
           borderRadius: '22px',
           boxShadow:
-            '0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)'
+            '0 8px 32px oklch(0 0 0 / 0.18), 0 2px 8px oklch(0 0 0 / 0.12), inset 0 1px 0 oklch(1 0 0 / 0.08)'
         }}
         initial={{ opacity: 0, y: 16, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -169,9 +169,9 @@ export default function MobileBottomNav() {
               aria-label="More navigation"
               className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 overflow-hidden"
               style={{
-                background: 'rgba(14,22,19,0.96)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
+                background: 'color-mix(in oklch, var(--color-background) 65%, transparent)',
+                backdropFilter: 'blur(24px) saturate(1.6)',
+                WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
                 border: '1px solid color-mix(in oklch, var(--color-accent) 22%, transparent)',
                 borderRadius: '16px',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)'
