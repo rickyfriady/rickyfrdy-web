@@ -9,15 +9,16 @@ import '@/styles/global.css'
 interface Props {
   title: string
   description: string
+  lang?: 'en' | 'id'
   ogImage?: string | undefined
   noReveal?: boolean
 }
 
-const { title, description, ogImage, noReveal = false } = Astro.props
+const { title, description, lang = 'en', ogImage, noReveal = false } = Astro.props
 ---
 
 <!doctype html>
-<html lang="en" class="dark" data-no-reveal={noReveal || undefined}>
+<html lang={lang} class="dark" data-no-reveal={noReveal || undefined}>
   <head>
     <BaseHead title={title} description={description} ogImage={ogImage} />
     <ClientRouter />
