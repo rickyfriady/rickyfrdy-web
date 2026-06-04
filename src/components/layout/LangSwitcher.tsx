@@ -9,27 +9,31 @@ const pillStyle = {
   border: '1px solid color-mix(in oklch, var(--color-accent) 28%, transparent)'
 }
 
+function isIdLocale(pathname: string): boolean {
+  return pathname === '/id' || pathname.startsWith('/id/')
+}
+
 function getTargetHref(targetLang: 'en' | 'id'): string {
   const pathname = window.location.pathname
-  const isId = pathname.startsWith('/id')
+  const isId = isIdLocale(pathname)
   if (targetLang === 'id') {
     if (isId) return pathname
     return pathname === '/' ? '/id' : `/id${pathname}`
   }
   if (!isId) return pathname
-  return pathname.replace(/^\/id/, '') || '/'
+  return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
 }
 
 export default function LangSwitcher() {
   const [currentLang, setCurrentLang] = useState<'en' | 'id'>(() => {
     if (typeof window === 'undefined') return 'en'
-    return window.location.pathname.startsWith('/id') ? 'id' : 'en'
+    return isIdLocale(window.location.pathname) ? 'id' : 'en'
   })
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handler = () => {
-      setCurrentLang(window.location.pathname.startsWith('/id') ? 'id' : 'en')
+      setCurrentLang(isIdLocale(window.location.pathname) ? 'id' : 'en')
     }
     document.addEventListener('astro:page-load', handler)
     return () => document.removeEventListener('astro:page-load', handler)
