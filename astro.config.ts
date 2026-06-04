@@ -9,6 +9,11 @@ export default defineConfig({
   site: 'https://rickyfrdy.my.id',
   output: 'static',
   integrations: [mdx(), react(), sitemap(), robotsTxt()],
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'id'],
+    routing: { prefixDefaultLocale: false }
+  },
   vite: {
     // biome-ignore lint/suspicious/noExplicitAny: tailwindcss vite plugin type is incompatible with Vite's PluginOption
     plugins: [tailwindcss() as any],
