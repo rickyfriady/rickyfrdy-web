@@ -133,7 +133,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
     <hr class="border-border mb-8" />
 
     <!-- Download CTA -->
-    <div class="pb-4 text-center">
+    <div class="pb-4 flex flex-wrap items-center justify-center gap-3">
       <a
         href="/resume.pdf"
         download
@@ -150,6 +150,23 @@ import MainLayout from '@/components/layout/MainLayout.astro'
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
         Download PDF
+      </a>
+      <a
+        href="/resume-ats.pdf"
+        download
+        class="text-muted border-border hover:bg-secondary inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-xs transition-colors"
+      >
+        <svg
+          class="h-3.5 w-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        ATS Version
       </a>
     </div>
 
