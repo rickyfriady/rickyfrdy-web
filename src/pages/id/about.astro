@@ -1,0 +1,151 @@
+---
+import GitHubHeatmap from '@/components/about/GitHubHeatmap'
+import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
+import MainLayout from '@/components/layout/MainLayout.astro'
+import { fetchBuildTimeStats } from '@/utils/github'
+
+const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
+---
+
+<MainLayout
+  title="Tentang — Ricki Friadi"
+  description="Perjalanan saya sebagai fullstack developer — dari freelancing hingga membangun microservices dan Arsitektur Micro-Frontend di PT. Pegadaian."
+  lang="id"
+>
+  <!-- Hero -->
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">Tentang</p>
+    <h1
+      class="title-display"
+      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
+    >
+      Membangun Sistem Dengan<br />
+      <span class="title-accent text-accent">Kejelasan yang Manusiawi.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">
+      Seorang fullstack developer yang fokus pada arsitektur andal, kode yang mudah dipelihara, dan antarmuka
+      yang terasa disengaja.
+    </p>
+  </section>
+
+  <!-- § 01 — My Story -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Perjalanan Saya</span>
+    </div>
+
+    <div class="space-y-4 px-4 pb-8 text-sm leading-relaxed">
+      <p>
+        Perjalanan saya ke pengembangan web dimulai pada 2021 ketika saya bergabung dengan PT. Sumatera Kalimantan Jaya
+        sebagai magang dan meluncurkan website profil perusahaan lengkap dalam 14 hari. Tekanan deadline awal itu
+        mengajarkan saya untuk membangun cepat dan beritasi — kebiasaan yang terus ada pada diri saya.
+      </p>
+      <p>
+        Setelah freelancing dengan
+        <span class="text-foreground font-semibold">React, Node.js, dan Express</span> selama hampir
+        dua tahun — mengintegrasikan backend MongoDB, MySQL, dan PostgreSQL untuk berbagai klien — saya
+        bergabung dengan <span class="text-foreground font-semibold">PT. Pegadaian</span> pada Mei 2023 sebagai
+        Software Engineer, mengerjakan CSR Web App, B2B Web App, dan internal tooling.
+      </p>
+      <p>
+        Sejak 2024 saya terjun dalam microservices dan Micro-Frontend — merombak monolith CodeIgniter legacy
+        menjadi 9 microservices NestJS menggunakan Factory pattern, dan berkontribusi pada Arsitektur Micro-Frontend
+        skala perusahaan yang memungkinkan beberapa tim deploy secara independen. Saya mempertahankan cakupan unit test
+        ≥80% dengan Vitest di semua modul saya.
+      </p>
+      <p>
+        Saya menggunakan <span class="text-foreground font-semibold">TypeScript</span> sebagai bahasa inti
+        di seluruh stack. Di frontend saya menggunakan Vue 3 atau React. Di backend, NestJS dan
+        Express. Saya peduli dengan higienitas CI/CD, kode bersih, dan membangun hal-hal yang benar-benar
+        bisa diuji.
+      </p>
+    </div>
+
+    <!-- Annotation notes -->
+    <div class="border-border border-t px-4 pb-8">
+      <p class="eyebrow mt-6 mb-4">§ Catatan</p>
+      <div class="space-y-4">
+        <div class="border-border border-l-2 pl-4">
+          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
+            Filosofi Kode Bersih
+          </p>
+          <p class="text-muted mt-1 text-sm leading-relaxed">
+            Kode lebih banyak dibaca daripada ditulis. Setiap baris harus disengaja, jelas, dan
+            mudah dipelihara untuk developer berikutnya.
+          </p>
+        </div>
+        <div class="border-border border-l-2 pl-4">
+          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
+            Performa Itu Penting
+          </p>
+          <p class="text-muted mt-1 text-sm leading-relaxed">
+            Pengguna mengharapkan aplikasi yang cepat dan responsif. Saya mengoptimalkan setiap lapisan —
+            dari query database hingga rendering frontend.
+          </p>
+        </div>
+        <div class="border-border border-l-2 pl-4">
+          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
+            Pendekatan Berorientasi Pengguna
+          </p>
+          <p class="text-muted mt-1 text-sm leading-relaxed">
+            Teknologi hanyalah sebuah alat. Yang penting adalah memecahkan masalah nyata untuk orang nyata dengan
+            cara yang membuat hidup mereka lebih mudah.
+          </p>
+        </div>
+        <div class="border-accent/40 border-l-2 pl-4">
+          <p class="text-foreground mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
+            Di Luar Kode
+          </p>
+          <ul class="text-muted space-y-1 text-sm">
+            <li>Suka mendengarkan musik sambil coding</li>
+            <li>Aktif di komunitas developer dan open source</li>
+            <li>Saat ini mengeksplorasi arsitektur serverless</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 02 — Skills -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Keahlian</span>
+    </div>
+    <SkillsMatrix />
+  </section>
+
+  <!-- § 03 — GitHub Activity -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 03 — Aktivitas GitHub</span>
+    </div>
+    <div class="px-4 pb-6">
+      <GitHubHeatmap client:visible initialStats={initialStats} />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="px-4 py-12 text-center">
+    <p class="eyebrow mb-4">Kolaborasi</p>
+    <h2 class="title-display" style="font-size: clamp(1.8rem, 5vw, 3rem)">
+      Mari Bangun Sesuatu Bersama
+    </h2>
+    <p class="text-muted mx-auto mt-4 mb-8 max-w-sm text-sm">
+      Saya selalu tertarik mendengar tentang proyek dan peluang baru.
+    </p>
+    <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+      <a
+        href="/id/contact"
+        class="bg-accent text-background hover:bg-accent-hover inline-flex h-10 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+      >
+        Hubungi Saya
+      </a>
+      <a
+        href="/id/projects"
+        class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+      >
+        Lihat Proyek Saya
+      </a>
+    </div>
+  </section>
+</MainLayout>

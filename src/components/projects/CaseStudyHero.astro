@@ -1,5 +1,6 @@
 ---
 import type { Project } from '@/data/projects'
+import FinLogo from '@/components/ui/FinLogo.astro'
 
 interface Props {
   project: Project
@@ -33,6 +34,11 @@ const { project } = Astro.props
 
   <!-- Title block -->
   <div class="absolute right-8 bottom-8 left-8" id="case-study-hero-title">
+    {project.companyLogo && (
+      <div class="mb-3">
+        <FinLogo name={project.companyLogo} size={28} bg label={project.company} />
+      </div>
+    )}
     <p class="font-mono mb-3 text-xs tracking-[0.2em] uppercase text-white/50">
       {project.category.replace(/-/g, ' ')} · {project.year}
     </p>
