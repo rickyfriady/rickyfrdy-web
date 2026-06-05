@@ -1,0 +1,73 @@
+---
+/**
+ * FinLogo — renders a logo from the idn-finlogos CDN.
+ *
+ * Basic usage:
+ *   <FinLogo name="bca" />
+ *   <FinLogo name="gopay" category="e-wallet" size={32} />
+ *   <FinLogo name="mandiri" label="Bank Mandiri" bg size={48} />
+ *
+ * Props:
+ *   name      — logo slug (e.g. "bca", "gopay", "mandiri")
+ *   category  — optional grouping hint; does not affect the CDN URL
+ *   label     — alt text for accessibility; defaults to title-cased slug
+ *   size      — width & height in px (default 40)
+ *   bg        — wrap in a white rounded container for logos needing contrast
+ *   loading   — native img loading strategy (default "lazy")
+ *   class     — extra CSS classes on the img (or wrapper when bg is set)
+ */
+
+import type { FinLogoCategory } from './finlogos'
+import { finLogoUrl } from './finlogos'
+
+interface Props {
+  name: string
+  category?: FinLogoCategory
+  label?: string
+  size?: number
+  bg?: boolean
+  loading?: 'lazy' | 'eager'
+  class?: string
+}
+
+const {
+  name,
+  label = name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+  size = 40,
+  bg = false,
+  loading = 'lazy',
+  class: className,
+} = Astro.props
+
+const src = finLogoUrl(name)
+---
+
+{bg ? (
+  <span
+    class:list={[
+      'inline-flex items-center justify-center rounded-lg bg-white p-1.5',
+      className,
+    ]}
+    title={label}
+  >
+    <img
+      src={src}
+      alt={label}
+      width={size}
+      height={size}
+      loading={loading}
+      decoding="async"
+      class="block object-contain"
+    />
+  </span>
+) : (
+  <img
+    src={src}
+    alt={label}
+    width={size}
+    height={size}
+    loading={loading}
+    decoding="async"
+    class:list={['inline-block object-contain', className]}
+  />
+)}
