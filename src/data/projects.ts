@@ -17,6 +17,8 @@ export interface Project {
   metrics?: Metric[]
   liveUrl?: string
   githubUrl?: string
+  company?: string
+  companyLogo?: string
   date: string
   year: number
   challenges: string[]
@@ -36,6 +38,8 @@ export const projects: Project[] = [
     category: 'web-app',
     technologies: ['Vue 3', 'NestJS', 'Tailwind', 'PostgreSQL', 'Redis', 'Zod', 'Pinia', 'Vitest'],
     keyMetric: '≥80% unit test coverage across all modules',
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     role: 'Lead Frontend Engineer · Fullstack Developer',
     metrics: [
       { value: '≥80%', label: 'unit test coverage' },
@@ -71,6 +75,8 @@ export const projects: Project[] = [
     category: 'api',
     technologies: ['Vue.js', 'NestJS', 'TypeScript', 'Redis', 'PostgreSQL', 'Crontab', 'Pinia'],
     keyMetric: '9 independent microservices using Factory pattern',
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     role: 'Backend Engineer · System Architect',
     metrics: [
       { value: '9', label: 'microservices built' },
@@ -114,6 +120,8 @@ export const projects: Project[] = [
       'TypeORM',
       'Redux'
     ],
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     role: 'Fullstack Developer',
     metrics: [
       { value: '200+', label: 'marketing employees served' },
@@ -148,6 +156,8 @@ export const projects: Project[] = [
     featured: false,
     category: 'tool',
     technologies: ['PHP 5', 'PHP Native', 'SFTP', 'VM', 'MySQL'],
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     role: 'Backend Engineer',
     metrics: [
       { value: '3', label: 'partner banks onboarded' },

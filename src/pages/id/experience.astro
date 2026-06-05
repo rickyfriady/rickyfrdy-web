@@ -1,5 +1,6 @@
 ---
 import { education, experiences, projects, skillCategories } from '@/data/experience.id'
+import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 ---
 
@@ -35,7 +36,8 @@ import MainLayout from '@/components/layout/MainLayout.astro'
           <details class="group py-6">
             <summary class="flex cursor-pointer list-none items-start justify-between gap-4 focus-visible:outline-none">
               <div class="flex-1">
-                <div class="flex flex-wrap items-baseline gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  {exp.companyLogo && <FinLogo name={exp.companyLogo} size={22} bg label={exp.company} />}
                   <span class="text-foreground font-semibold">{exp.role}</span>
                   <span class="diff-tag">{exp.company}</span>
                 </div>
@@ -86,7 +88,8 @@ import MainLayout from '@/components/layout/MainLayout.astro'
           <details class="group py-6">
             <summary class="flex cursor-pointer list-none items-start justify-between gap-4 focus-visible:outline-none">
               <div class="flex-1">
-                <div class="flex flex-wrap items-baseline gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  {proj.companyLogo && <FinLogo name={proj.companyLogo} size={22} bg label={proj.company} />}
                   <span class="text-foreground font-semibold">{proj.title}</span>
                   <span class="diff-tag">{proj.company}</span>
                 </div>

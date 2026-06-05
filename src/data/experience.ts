@@ -5,6 +5,7 @@ export interface WorkExperience {
   period: string
   bullets: string[]
   stack: string[]
+  companyLogo?: string
 }
 
 export interface Project {
@@ -13,6 +14,7 @@ export interface Project {
   period: string
   bullets: string[]
   stack: string[]
+  companyLogo?: string
 }
 
 export interface Education {
@@ -53,7 +55,8 @@ export const experiences: WorkExperience[] = [
       'Codeigniter 3',
       'PostgreSQL',
       'SCSS'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     role: 'Web Development',
@@ -107,7 +110,8 @@ export const projects: Project[] = [
       'Zod',
       'Pinia',
       'Vitest'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Microsite Pinjaman Pegadaian',
@@ -127,7 +131,8 @@ export const projects: Project[] = [
       'Codeigniter 3',
       'PostgreSQL',
       'Crontab'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'KAMILA Application',
@@ -146,7 +151,8 @@ export const projects: Project[] = [
       'TypeORM',
       'Redux',
       'Node.js'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Reconciliation System (AIRA)',
@@ -155,7 +161,8 @@ export const projects: Project[] = [
     bullets: [
       "Extended bank reconciliation coverage to additional partner banks, ensuring financial transaction accuracy and compliance with Pegadaian's core banking accounting standards."
     ],
-    stack: ['PHP 5', 'PHP Native', 'SFTP', 'VM']
+    stack: ['PHP 5', 'PHP Native', 'SFTP', 'VM'],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Thesis — Chatbot Kukerta Information System',

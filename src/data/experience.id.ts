@@ -24,7 +24,8 @@ export const experiences: WorkExperience[] = [
       'Codeigniter 3',
       'PostgreSQL',
       'SCSS'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     role: 'Web Development',
@@ -78,7 +79,8 @@ export const projects: Project[] = [
       'Zod',
       'Pinia',
       'Vitest'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Microsite Pinjaman Pegadaian',
@@ -98,7 +100,8 @@ export const projects: Project[] = [
       'Codeigniter 3',
       'PostgreSQL',
       'Crontab'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Aplikasi KAMILA',
@@ -117,7 +120,8 @@ export const projects: Project[] = [
       'TypeORM',
       'Redux',
       'Node.js'
-    ]
+    ],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Sistem Rekonsiliasi (AIRA)',
@@ -126,7 +130,8 @@ export const projects: Project[] = [
     bullets: [
       'Memperluas cakupan rekonsiliasi bank ke bank mitra tambahan, memastikan akurasi transaksi keuangan dan kepatuhan terhadap standar akuntansi core banking Pegadaian.'
     ],
-    stack: ['PHP 5', 'PHP Native', 'SFTP', 'VM']
+    stack: ['PHP 5', 'PHP Native', 'SFTP', 'VM'],
+    companyLogo: 'pegadaian'
   },
   {
     title: 'Tugas Akhir — Chatbot Sistem Informasi Kukerta',

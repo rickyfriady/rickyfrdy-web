@@ -1,5 +1,6 @@
 ---
 import { education, experiences, projects, skillCategories, summary } from '@/data/experience.id'
+import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 ---
 
@@ -43,7 +44,8 @@ import MainLayout from '@/components/layout/MainLayout.astro'
       <div class="space-y-8">
         {experiences.map((exp) => (
           <div>
-            <div class="flex flex-wrap items-baseline gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              {exp.companyLogo && <FinLogo name={exp.companyLogo} size={22} bg label={exp.company} />}
               <span class="text-foreground font-semibold text-sm">{exp.role}</span>
               <span class="diff-tag">{exp.company}</span>
             </div>
@@ -74,7 +76,8 @@ import MainLayout from '@/components/layout/MainLayout.astro'
       <div class="space-y-8">
         {projects.map((proj) => (
           <div>
-            <div class="flex flex-wrap items-baseline gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              {proj.companyLogo && <FinLogo name={proj.companyLogo} size={22} bg label={proj.company} />}
               <span class="text-foreground font-semibold text-sm">{proj.title}</span>
               <span class="diff-tag">{proj.company}</span>
             </div>

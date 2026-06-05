@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import FinLogo from '@/components/ui/FinLogo.astro'
 import { projects } from '@/data/projects'
 
 const categories = ['all', ...new Set(projects.map((p) => p.category))]
@@ -71,6 +72,7 @@ const categoryLabel: Record<string, string> = {
             />
 
             <div class="mb-3 flex flex-wrap items-center gap-2">
+              {project.companyLogo && <FinLogo name={project.companyLogo} size={20} bg label={project.company} />}
               <span class="diff-tag">{categoryLabel[project.category] ?? project.category}</span>
               <span class="diff-tag">{project.year}</span>
               {project.featured && <span class="eyebrow">Featured</span>}
