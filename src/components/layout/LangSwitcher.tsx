@@ -1,13 +1,11 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
 
-const pillTransition = { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.8 }
-
-const pillStyle = {
-  background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
-  border: '1px solid color-mix(in oklch, var(--color-accent) 28%, transparent)'
-}
+const LANGS = [
+  { code: 'en' as const, flag: '🇺🇸', label: 'English' },
+  { code: 'id' as const, flag: '🇮🇩', label: 'Indonesia' }
+]
 
 function isIdLocale(pathname: string): boolean {
   return pathname === '/id' || pathname.startsWith('/id/')
@@ -24,12 +22,25 @@ function getTargetHref(targetLang: 'en' | 'id'): string {
   return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
 }
 
+const dropdownVariants = {
+  hidden: { opacity: 0, y: -6, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.6 }
+  },
+  exit: { opacity: 0, y: -4, scale: 0.97, transition: { duration: 0.12 } }
+}
+
 export default function LangSwitcher() {
   const [currentLang, setCurrentLang] = useState<'en' | 'id'>(() => {
     if (typeof window === 'undefined') return 'en'
     return isIdLocale(window.location.pathname) ? 'id' : 'en'
   })
+  const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const handler = () => {
@@ -39,14 +50,26 @@ export default function LangSwitcher() {
     return () => document.removeEventListener('astro:page-load', handler)
   }, [])
 
-  function handleClick(lang: 'en' | 'id') {
+  useEffect(() => {
+    if (!open) return
+    const onOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onOutside)
+    return () => document.removeEventListener('mousedown', onOutside)
+  }, [open])
+
+  function handleSelect(lang: 'en' | 'id') {
+    setOpen(false)
     if (lang === currentLang) return
     const href = getTargetHref(lang)
-    if (containerRef.current) {
+    if (buttonRef.current) {
       gsap
         .timeline()
-        .to(containerRef.current, { scale: 0.88, duration: 0.08, ease: 'power2.in' })
-        .to(containerRef.current, {
+        .to(buttonRef.current, { scale: 0.88, duration: 0.08, ease: 'power2.in' })
+        .to(buttonRef.current, {
           scale: 1,
           duration: 0.2,
           ease: 'back.out(3)',
@@ -60,46 +83,94 @@ export default function LangSwitcher() {
     }
   }
 
+  const active = LANGS.find((l) => l.code === currentLang)!
+
   return (
-    <motion.div
-      ref={containerRef}
-      className="hidden md:flex items-center gap-0.5 rounded-xl border p-1"
-      style={{ borderColor: 'color-mix(in oklch, var(--color-border) 40%, transparent)' }}
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={pillTransition}
-    >
-      {(['en', 'id'] as const).map((lang) => {
-        const active = currentLang === lang
-        const flag = lang === 'en' ? '🇺🇸' : '🇮🇩'
-        const label = lang === 'en' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'
-        return (
-          <button
-            key={lang}
-            type="button"
-            aria-label={label}
-            aria-pressed={active}
-            onClick={() => handleClick(lang)}
-            className="relative flex h-8 w-8 items-center justify-center rounded-lg"
+    <div ref={containerRef} className="relative hidden md:block">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={`Language: ${active.label}`}
+        onClick={() => setOpen((v) => !v)}
+        className="glass-btn flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm"
+      >
+        <span className="text-base leading-none">{active.flag}</span>
+        <span className="text-foreground font-mono text-xs uppercase tracking-wide">
+          {active.code}
+        </span>
+        <motion.svg
+          className="text-muted h-3 w-3"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.15 }}
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </motion.svg>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            role="listbox"
+            aria-label="Select language"
+            variants={dropdownVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute right-0 top-full mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
+            style={{
+              background: 'color-mix(in oklch, var(--color-background) 85%, transparent)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              borderColor: 'color-mix(in oklch, var(--color-border) 60%, transparent)'
+            }}
           >
-            {active && (
-              <motion.span
-                layoutId="lang-pill"
-                className="absolute inset-0 rounded-lg"
-                style={pillStyle}
-                transition={pillTransition}
-              />
-            )}
-            <motion.span
-              className="relative z-10 select-none text-base"
-              animate={{ scale: active ? 1.25 : 0.9, opacity: active ? 1 : 0.45 }}
-              transition={pillTransition}
-            >
-              {flag}
-            </motion.span>
-          </button>
-        )
-      })}
-    </motion.div>
+            {LANGS.map((lang) => {
+              const isActive = lang.code === currentLang
+              return (
+                <li key={lang.code}>
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    onClick={() => handleSelect(lang.code)}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors"
+                    style={
+                      isActive
+                        ? {
+                            background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
+                            color: 'var(--color-accent)'
+                          }
+                        : undefined
+                    }
+                  >
+                    <span className="text-base leading-none">{lang.flag}</span>
+                    <span className="font-medium">{lang.label}</span>
+                    {isActive && (
+                      <svg
+                        className="ml-auto h-3.5 w-3.5 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                </li>
+              )
+            })}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }

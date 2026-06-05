@@ -1,52 +1,76 @@
-# Ricki Portfolio
+# Ricki Friadi — Portfolio
 
-Portfolio website built with Vue 3, TypeScript, Tailwind, and Vite, now migrated to a Bun-first workflow.
+Personal portfolio and resume site built with Astro, React islands, and Tailwind CSS v4.
 
 ## Stack
 
-- Bun (`bun.lock`, `bun install`)
-- Vue 3 + Vue Router + Pinia
-- Vite + Tailwind CSS
-- Vitest + Testing Library
-- ESLint + Prettier + Husky + lint-staged
+- **Framework:** Astro 6 (SSG) with `@astrojs/react` island architecture
+- **UI:** React 19, Framer Motion 12, GSAP 3
+- **Styling:** Tailwind CSS v4, custom CSS utilities (glassmorphism, CSS custom properties)
+- **PDF:** `@react-pdf/renderer` for designed + ATS resume variants
+- **i18n:** Astro native i18n routing — English (`/`) and Indonesian (`/id/`)
+- **Content:** Astro MDX + Content Collections (blog)
+- **OG Images:** Satori + Sharp
+- **Package manager:** Bun
 
 ## Project Structure
 
-```txt
+```
 src/
 ├── components/
-│   ├── layout/      # App shell (header/footer/main layout)
-│   ├── page/        # Route pages + page-specific sections
-│   ├── providers/   # App-level provider registration
-│   └── ui/          # Shared UI primitives
-├── hooks/           # Reusable logic hooks (useGitHub/useProjects)
-├── router/          # Route definitions and meta handling
-├── types/           # Shared TypeScript types
-└── utils/           # Utilities (cn helper)
-tests/
-├── components/
-├── hooks/
-└── routes/
+│   ├── layout/       # AppHeader, AppFooter, MainLayout, LangSwitcher, MobileBottomNav
+│   ├── about/        # GitHubHeatmap, SkillsMatrix
+│   ├── contact/      # ContactForm
+│   ├── projects/     # ProjectsGrid
+│   └── resume/       # ResumePdf (designed), ResumePdfAts (ATS-friendly)
+├── content/
+│   └── blog/         # MDX blog posts
+├── data/
+│   ├── experience.ts    # Work history, projects, skills (English)
+│   ├── experience.id.ts # Work history, projects, skills (Indonesian)
+│   └── projects.ts      # Portfolio project entries
+├── i18n/
+│   └── ui.ts         # Translation strings (EN + ID)
+├── pages/
+│   ├── index.astro / about.astro / experience.astro / ...  # English routes
+│   ├── resume.pdf.ts / resume-ats.pdf.ts                   # English PDF routes
+│   └── id/                                                  # Indonesian routes
+│       ├── index.astro / about.astro / experience.astro / ...
+│       ├── resume.pdf.ts / resume-ats.pdf.ts
+│       └── resume.astro
+├── stores/           # Nanostores (theme)
+├── styles/           # global.css (Tailwind + custom utilities)
+└── utils/            # github.ts, cn helper
 ```
+
+## Routes
+
+| English | Indonesian | Description |
+|---------|-----------|-------------|
+| `/` | `/id/` | Home |
+| `/about` | `/id/about` | About |
+| `/experience` | `/id/experience` | Work history & skills |
+| `/projects` | `/id/projects` | Project portfolio |
+| `/works` | `/id/works` | Works grid with filter |
+| `/resume` | `/id/resume` | CV page |
+| `/contact` | `/id/contact` | Contact form |
+| `/resume.pdf` | `/id/resume.pdf` | Designed PDF download |
+| `/resume-ats.pdf` | `/id/resume-ats.pdf` | ATS-friendly PDF download |
 
 ## Scripts
 
-- `bun dev` start development server
-- `bun build` type-check + production build
-- `bun preview` preview production build
-- `bun lint` run ESLint
-- `bun lint:fix` run ESLint with autofix
-- `bun format` run Prettier write
-- `bun format:check` run Prettier check
-- `bun test` run Vitest watch
-- `bun test:run` run Vitest once
-- `bun test:coverage` run Vitest with coverage
+```bash
+bun dev          # start dev server
+bun build        # type-check + production build
+bun preview      # preview production build
+bun lint         # run ESLint
+bun lint:fix     # run ESLint with autofix
+bun test         # run Vitest watch
+bun test:run     # run Vitest once
+bun test:coverage  # run Vitest with coverage
+```
 
 ## Quality Gates
 
-- Pre-commit hook runs `bun lint-staged`.
-- `lint-staged` runs ESLint + Prettier on staged files.
-
-## Manual Preview
-
-Use [`MIGRATION_TODO_OPTION3.md`](./MIGRATION_TODO_OPTION3.md) for the full manual verification checklist.
+- Pre-commit hook runs `lint-staged` (ESLint + Biome on staged files).
+- `@astrojs/check` runs TypeScript checking across all `.astro` files.
