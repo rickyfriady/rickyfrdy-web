@@ -8,6 +8,7 @@ export const ui = {
     'nav.projects': 'Projects',
     'nav.works': 'Works',
     'nav.contact': 'Contact',
+
     // Resume page
     'resume.title': 'Resume — Ricki Friadi',
     'resume.description':
@@ -20,6 +21,7 @@ export const ui = {
     'resume.download': 'Download PDF',
     'resume.ats': 'ATS Version',
     'resume.gpa': 'GPA',
+
     // Case study (existing keys preserved)
     'case.back': '← Projects',
     'case.role': 'Role',
@@ -42,6 +44,7 @@ export const ui = {
     'nav.projects': 'Proyek',
     'nav.works': 'Karya',
     'nav.contact': 'Kontak',
+
     // Resume page
     'resume.title': 'CV — Ricki Friadi',
     'resume.description':
@@ -54,6 +57,7 @@ export const ui = {
     'resume.download': 'Unduh PDF',
     'resume.ats': 'Versi ATS',
     'resume.gpa': 'IPK',
+
     // Case study
     'case.back': '← Proyek',
     'case.role': 'Peran',
@@ -70,6 +74,7 @@ export const ui = {
 } as const
 
 export type Lang = keyof typeof ui
+
 export function t(lang: Lang, key: keyof (typeof ui)['en']): string {
   return ui[lang][key]
 }
