@@ -1,4 +1,3 @@
-// CDN: https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons/{slug}.svg
 // All slugs across categories are unique — category is metadata only.
 
 export type FinLogoCategory =
@@ -645,10 +644,4 @@ export const LOGOS_BY_CATEGORY: Record<FinLogoCategory, string[]> = {
     'pgn',
     'pln'
   ]
-}
-
-export const CDN_BASE = 'https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons'
-
-export function finLogoUrl(slug: string): string {
-  return `${CDN_BASE}/${slug}.svg`
 }
