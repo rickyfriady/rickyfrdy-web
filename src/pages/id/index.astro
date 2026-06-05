@@ -1,0 +1,233 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import { projects } from '@/data/projects'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+
+const featuredProjects = projects.slice(0, 3)
+
+const recentPosts = (await getCollection('blog') as CollectionEntry<'blog'>[])
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 2)
+
+const categoryLabel: Record<string, string> = {
+  'web-app': 'Web App',
+  api: 'API',
+  tool: 'Tool',
+  'open-source': 'Open Source',
+}
+
+const capabilities = [
+  {
+    area: 'Frontend',
+    description: 'UI berbasis komponen dengan Vue 3, React, dan Astro. Arsitektur Micro-Frontend dengan Module Federation.',
+    stack: ['Vue 3', 'React', 'Astro', 'TypeScript', 'Tailwind'],
+  },
+  {
+    area: 'Backend',
+    description: 'API REST dan event-driven dengan NestJS dan Node.js. Integrasi PostgreSQL, Redis, dan SFTP.',
+    stack: ['NestJS', 'Node.js', 'PostgreSQL', 'Redis', 'Express'],
+  },
+  {
+    area: 'Arsitektur',
+    description: 'Microservices dengan Factory pattern, desain API contract-first yang ditegakkan oleh Zod, pipeline GitLab CI.',
+    stack: ['Microservices', 'Module Federation', 'Zod', 'Docker', 'GitLab CI'],
+  },
+]
+---
+
+<MainLayout
+  title="Ricki Friadi — Fullstack Developer"
+  description="Fullstack Developer spesialis Vue 3, NestJS microservices, dan Arsitektur Micro-Frontend. Berbasis di Jakarta, Indonesia."
+  lang="id"
+>
+  <!-- ─── Hero ─────────────────────────────────────────────────── -->
+  <section class="border-border relative border-b px-4 py-16 md:py-24">
+    <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+    <div class="relative">
+      <p class="eyebrow mb-4">Fullstack Developer · Jakarta, Indonesia</p>
+      <h1
+        class="title-display max-w-3xl"
+        style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
+      >
+        Ricki<br />
+        <span class="title-accent text-accent">Friadi.</span>
+      </h1>
+      <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed">
+        Saya membangun sistem fullstack yang andal — dari micro-frontend Vue 3 dan microservices NestJS
+        hingga arsitektur yang membuatnya mudah dipelihara di skala besar.
+      </p>
+
+      <!-- Availability badge -->
+      <div class="mt-6 inline-flex items-center gap-2">
+        <span class="relative flex h-2 w-2">
+          <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+          <span class="bg-accent relative inline-flex h-2 w-2 rounded-full" />
+        </span>
+        <span class="text-muted font-mono text-xs">Terbuka untuk peluang baru</span>
+      </div>
+
+      <!-- CTAs -->
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href="/id/projects"
+          class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        >
+          Lihat Karya Saya
+        </a>
+        <a
+          href="/id/contact"
+          class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        >
+          Hubungi Saya
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── § 01 — Selected Work ─────────────────────────────────── -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Karya Pilihan</span>
+    </div>
+
+    <div class="divide-border divide-y px-4 md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+      {featuredProjects.map((project) => (
+        <a
+          href={`/projects/${project.slug}`}
+          class="group block py-6 no-underline md:px-6 md:first:pl-0 md:last:pr-0"
+        >
+          <div class="mb-3 flex flex-wrap items-center gap-2">
+            <span class="diff-tag">{categoryLabel[project.category] ?? project.category}</span>
+            <span class="diff-tag">{project.year}</span>
+          </div>
+          <h2 class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors">
+            {project.title}
+          </h2>
+          <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
+            {project.shortDescription}
+          </p>
+          {project.keyMetric && (
+            <p class="text-accent mt-3 font-mono text-xs">{project.keyMetric}</p>
+          )}
+          <span class="text-accent mt-4 block font-mono text-xs">Lihat studi kasus →</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="px-4 pb-8">
+      <a
+        href="/id/projects"
+        class="text-muted hover:text-accent font-mono text-xs transition-colors"
+      >
+        Semua proyek →
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── § 02 — What I Build ──────────────────────────────────── -->
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Yang Saya Bangun</span>
+    </div>
+
+    <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+      {capabilities.map((cap, i) => (
+        <div class="py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0">
+          <p class="text-muted font-mono text-[10px] uppercase tracking-widest">
+            0{i + 1}
+          </p>
+          <h3 class="text-foreground mt-2 text-base font-semibold">{cap.area}</h3>
+          <p class="text-muted mt-2 text-sm leading-relaxed">{cap.description}</p>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            {cap.stack.map((s) => (
+              <span class="diff-tag">{s}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ─── § 03 — Recent Writing ────────────────────────────────── -->
+  {recentPosts.length > 0 && (
+    <section class="border-border border-b">
+      <div class="chapter-heading px-4">
+        <span class="chapter-label">§ 03 — Tulisan Terbaru</span>
+      </div>
+
+      <div class="divide-border divide-y px-4">
+        {recentPosts.map((post) => (
+          <a
+            href={`/blog/${post.id}`}
+            class="group block py-6 no-underline"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <h2 class="text-foreground group-hover:text-accent text-base font-semibold transition-colors">
+                  {post.data.title}
+                </h2>
+                <p class="text-muted mt-1 line-clamp-1 text-sm leading-relaxed">
+                  {post.data.description}
+                </p>
+              </div>
+              <time
+                datetime={post.data.pubDate.toISOString()}
+                class="text-muted flex-shrink-0 font-mono text-xs"
+              >
+                {post.data.pubDate.toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'short',
+                })}
+              </time>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="px-4 pb-8">
+        <a
+          href="/blog"
+          class="text-muted hover:text-accent font-mono text-xs transition-colors"
+        >
+          Semua artikel →
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- ─── § 04 — Open to Work ──────────────────────────────────── -->
+  <section class="border-border border-b px-4 py-12">
+    <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="eyebrow mb-2">Ketersediaan</p>
+        <h2
+          class="title-display"
+          style="font-size: clamp(1.8rem, 4vw, 3rem); line-height: 0.95"
+        >
+          Terbuka untuk<br />
+          <span class="title-accent text-accent">Peran Baru.</span>
+        </h2>
+        <p class="text-muted mt-3 max-w-md text-sm leading-relaxed">
+          Mencari posisi fullstack atau backend-focused. Preferensi kuat untuk stack TypeScript,
+          Vue / React, dan NestJS. Remote atau berbasis di Jakarta.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/id/contact"
+          class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        >
+          Mulai Percakapan
+        </a>
+        <a
+          href="/id/experience"
+          class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        >
+          Lihat Pengalaman
+        </a>
+      </div>
+    </div>
+  </section>
+</MainLayout>
