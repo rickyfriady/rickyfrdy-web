@@ -1,0 +1,88 @@
+---
+/**
+ * FinLogo — renders a logo from the locally installed idn-finlogos package.
+ * SVG content is inlined at build time — no CDN or network request at runtime.
+ *
+ * Basic usage:
+ *   <FinLogo name="bca" />
+ *   <FinLogo name="gopay" category="e-wallet" size={32} />
+ *   <FinLogo name="mandiri" label="Bank Mandiri" bg size={48} />
+ *
+ * Props:
+ *   name      — logo slug (e.g. "bca", "gopay", "mandiri")
+ *   category  — optional grouping hint; no effect on rendering
+ *   label     — accessible label; defaults to title-cased slug
+ *   size      — width & height in px (default 40)
+ *   bg        — wrap in a white rounded container for logos needing contrast
+ *   class     — extra CSS classes on the wrapper/svg span
+ */
+
+import type { FinLogoCategory } from './finlogos'
+
+interface Props {
+  name: string
+  category?: FinLogoCategory
+  label?: string
+  size?: number
+  bg?: boolean
+  class?: string
+}
+
+const {
+  name,
+  label = name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+  size = 40,
+  bg = false,
+  class: className,
+} = Astro.props
+
+// Load all SVG modules from the locally installed package at build time.
+// Non-eager: only the icon(s) actually used on each page are loaded.
+const icons = import.meta.glob<string>(
+  '/node_modules/idn-finlogos/dist/icons/*.mjs',
+  { import: 'default' }
+)
+
+const loader = icons[`/node_modules/idn-finlogos/dist/icons/${name}.mjs`]
+let svgContent: string | null = null
+
+if (loader) {
+  const raw = await loader()
+  // Strip any hardcoded width/height so CSS controls sizing.
+  svgContent = raw
+    .replace(/\s+width="[^"]*"/g, '')
+    .replace(/\s+height="[^"]*"/g, '')
+    .replace('<svg', '<svg style="width:100%;height:100%;display:block;"')
+}
+---
+
+{svgContent ? (
+  bg ? (
+    <span
+      class:list={['inline-flex items-center justify-center rounded-lg bg-white p-1.5', className]}
+      title={label}
+    >
+      <span
+        role="img"
+        aria-label={label}
+        style={`display:inline-flex;width:${size}px;height:${size}px;flex-shrink:0;`}
+        set:html={svgContent}
+      />
+    </span>
+  ) : (
+    <span
+      role="img"
+      aria-label={label}
+      style={`display:inline-flex;width:${size}px;height:${size}px;flex-shrink:0;`}
+      class:list={[className]}
+      set:html={svgContent}
+    />
+  )
+) : (
+  <span
+    aria-label={label}
+    title={label}
+    style={`display:inline-block;width:${size}px;height:${size}px;flex-shrink:0;`}
+    class:list={['rounded bg-gray-200 dark:bg-gray-700', bg && 'rounded-lg bg-white p-1.5', className]}
+  />
+)}

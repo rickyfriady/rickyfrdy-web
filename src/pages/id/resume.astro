@@ -1,12 +1,13 @@
 ---
-import { education, experiences, projects, skillCategories, summary } from '@/data/experience'
+import { education, experiences, projects, skillCategories, summary } from '@/data/experience.id'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 ---
 
 <MainLayout
-  title="Resume — Ricki Friadi"
-  description="Fullstack Developer resume — Ricki Friadi. 4+ years building production systems in Indonesian fintech."
+  title="CV — Ricki Friadi"
+  description="CV Fullstack Developer — Ricki Friadi. 4+ tahun membangun sistem produksi di fintech Indonesia."
+  lang="id"
 >
   <div class="mx-auto max-w-2xl px-4 py-12">
 
@@ -21,7 +22,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
           href="https://github.com/rickyfrdy"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Ricki Friadi on GitHub"
+          aria-label="Ricki Friadi di GitHub"
           class="text-accent hover:underline"
         >github.com/rickyfrdy</a>
       </div>
@@ -29,17 +30,17 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <hr class="border-border mb-8" />
 
-    <!-- Summary -->
+    <!-- Ringkasan -->
     <section class="mb-8">
-      <h2 class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">Summary</h2>
+      <h2 class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">Ringkasan</h2>
       <p class="text-foreground text-sm leading-relaxed">{summary}</p>
     </section>
 
     <hr class="border-border mb-8" />
 
-    <!-- Work Experience -->
+    <!-- Pengalaman Kerja -->
     <section class="mb-8">
-      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Work Experience</h2>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Pengalaman Kerja</h2>
       <div class="space-y-8">
         {experiences.map((exp) => (
           <div>
@@ -69,9 +70,9 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <hr class="border-border mb-8" />
 
-    <!-- Project Experience -->
+    <!-- Pengalaman Proyek -->
     <section class="mb-8">
-      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Project Experience</h2>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Pengalaman Proyek</h2>
       <div class="space-y-8">
         {projects.map((proj) => (
           <div>
@@ -101,24 +102,24 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <hr class="border-border mb-8" />
 
-    <!-- Education -->
+    <!-- Pendidikan -->
     <section class="mb-8">
-      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Education</h2>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Pendidikan</h2>
       <div>
         <div class="flex flex-wrap items-baseline gap-2">
           <span class="text-foreground font-semibold text-sm">{education.degree}</span>
           <span class="diff-tag">{education.institution}</span>
         </div>
         <p class="text-muted mt-0.5 text-xs">{education.location} · {education.period}</p>
-        <p class="text-muted mt-2 text-sm">GPA: <span class="text-foreground font-semibold">{education.gpa}</span></p>
+        <p class="text-muted mt-2 text-sm">IPK: <span class="text-foreground font-semibold">{education.gpa}</span></p>
       </div>
     </section>
 
     <hr class="border-border mb-8" />
 
-    <!-- Skills -->
+    <!-- Keahlian -->
     <section class="mb-12">
-      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Skills</h2>
+      <h2 class="text-muted mb-4 font-mono text-[10px] tracking-[0.16em] uppercase">Keahlian</h2>
       <div class="space-y-4">
         {skillCategories.map((cat) => (
           <div>
@@ -135,10 +136,10 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
     <hr class="border-border mb-8" />
 
-    <!-- Download CTA -->
+    <!-- Unduh CTA -->
     <div class="pb-4 flex flex-wrap items-center justify-center gap-3">
       <a
-        href="/resume.pdf"
+        href="/id/resume.pdf"
         download
         class="bg-accent/10 text-accent border-accent/30 hover:bg-accent/20 inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-sm transition-colors"
       >
@@ -152,10 +153,10 @@ import MainLayout from '@/components/layout/MainLayout.astro'
         >
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
-        Download PDF
+        Unduh PDF
       </a>
       <a
-        href="/resume-ats.pdf"
+        href="/id/resume-ats.pdf"
         download
         class="text-muted border-border hover:bg-secondary inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-xs transition-colors"
       >
@@ -169,7 +170,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
         >
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        ATS Version
+        Versi ATS
       </a>
     </div>
 

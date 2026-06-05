@@ -9,25 +9,29 @@ import '@/styles/global.css'
 interface Props {
   title: string
   description: string
+  lang?: 'en' | 'id'
   ogImage?: string | undefined
   noReveal?: boolean
 }
 
-const { title, description, ogImage, noReveal = false } = Astro.props
+const { title, description, lang = 'en', ogImage, noReveal = false } = Astro.props
 ---
 
 <!doctype html>
-<html lang="en" class="dark" data-no-reveal={noReveal || undefined}>
+<html lang={lang} class="dark" data-no-reveal={noReveal || undefined}>
   <head>
     <BaseHead title={title} description={description} ogImage={ogImage} />
     <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col">
     <AppHeader />
+
     <div id="page-accent-line" transition:persist aria-hidden="true"></div>
-    <main transition:name="page-content" class="flex-1">
+
+    <main transition:name="page-content" class="flex-1 max-w-6xl mx-auto w-full">
       <slot />
     </main>
+
     <AppFooter />
 
     <MobileBottomNav client:load transition:persist />
