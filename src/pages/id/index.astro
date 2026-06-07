@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -92,27 +93,14 @@ const capabilities = [
       <span class="chapter-label">§ 01 — Karya Pilihan</span>
     </div>
 
-    <div class="divide-border divide-y px-4 md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+    <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
       {featuredProjects.map((project) => (
-        <a
-          href={`/projects/${project.slug}`}
-          class="group block py-6 no-underline md:px-6 md:first:pl-0 md:last:pr-0"
-        >
-          <div class="mb-3 flex flex-wrap items-center gap-2">
-            <span class="diff-tag">{categoryLabel[project.category] ?? project.category}</span>
-            <span class="diff-tag">{project.year}</span>
-          </div>
-          <h2 class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors">
-            {project.title}
-          </h2>
-          <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
-            {project.shortDescription}
-          </p>
-          {project.keyMetric && (
-            <p class="text-accent mt-3 font-mono text-xs">{project.keyMetric}</p>
-          )}
-          <span class="text-accent mt-4 block font-mono text-xs">Lihat studi kasus →</span>
-        </a>
+        <FeaturedProjectCard
+          project={project}
+          categoryLabel={categoryLabel[project.category] ?? project.category}
+          featuredLabel="Unggulan"
+          locale="id-ID"
+        />
       ))}
     </div>
 

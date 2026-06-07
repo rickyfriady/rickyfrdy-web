@@ -1,0 +1,95 @@
+---
+import type { Project } from '@/data/projects'
+import FinLogo from '@/components/ui/FinLogo.astro'
+
+interface Props {
+  project: Project
+  categoryLabel?: string
+  featuredLabel?: string
+  locale?: string
+}
+
+const { project, categoryLabel, featuredLabel = 'Featured', locale = 'en-US' } = Astro.props
+const catLabel = categoryLabel ?? project.category.replace('-', ' ')
+const dateStr = new Date(project.date).toLocaleDateString(locale, { month: 'short', year: 'numeric' })
+
+const stat1 = project.metrics?.[0]
+const stat2 = project.metrics?.[1]
+---
+
+<a
+  href={`/projects/${project.slug}`}
+  class="group relative flex flex-col overflow-hidden rounded-xl no-underline
+         border border-border transition-all duration-300
+         hover:border-accent/50 hover:shadow-[0_0_32px_color-mix(in_oklch,var(--color-accent)_12%,transparent)]"
+  style="background: color-mix(in oklch, var(--color-background) 70%, transparent); backdrop-filter: blur(16px);"
+>
+  <!-- Ambient glow (featherless warm-corner effect, uses site accent) -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    style="background: radial-gradient(ellipse at 18% 88%, color-mix(in oklch, var(--color-accent) 14%, transparent) 0%, transparent 62%)"
+  />
+
+  <div class="relative flex flex-1 flex-col p-5">
+    <!-- Top row: badges (left) + date pill (right) -->
+    <div class="mb-4 flex items-start justify-between gap-2">
+      <div class="flex flex-wrap items-center gap-1.5">
+        {project.featured && <span class="eyebrow">{featuredLabel}</span>}
+        <span class="diff-tag">{catLabel}</span>
+        <span class="diff-tag">{project.year}</span>
+      </div>
+      <span
+        class="flex-shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] leading-tight
+               border-accent/50 text-accent"
+      >
+        {dateStr}
+      </span>
+    </div>
+
+    <!-- Title + logo -->
+    <div class="flex items-start justify-between gap-3">
+      <h2
+        class="text-foreground group-hover:text-accent flex-1 text-base font-semibold leading-snug transition-colors duration-200"
+        transition:name={`project-title-${project.slug}`}
+      >
+        {project.title}
+      </h2>
+      {project.companyLogo && (
+        <div class="flex-shrink-0">
+          <FinLogo name={project.companyLogo} size={40} bg label={project.company} />
+        </div>
+      )}
+    </div>
+
+    <!-- Description -->
+    <p class="text-muted mt-2 line-clamp-2 flex-1 text-sm leading-relaxed">
+      {project.shortDescription}
+    </p>
+
+    <!-- Divider + stats row (like ♡ count · ⬇ count) -->
+    <div class="border-border mt-4 border-t pt-4">
+      <div class="text-muted flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
+        {stat1 && (
+          <span class="flex items-center gap-1.5">
+            <svg class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span class="text-foreground font-medium">{stat1.value}</span>
+            <span>{stat1.label}</span>
+          </span>
+        )}
+        {stat1 && stat2 && <span class="text-border select-none">·</span>}
+        {stat2 && (
+          <span class="flex items-center gap-1.5">
+            <svg class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span class="text-foreground font-medium">{stat2.value}</span>
+            <span>{stat2.label}</span>
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+</a>
