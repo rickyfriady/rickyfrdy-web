@@ -143,49 +143,84 @@ export default function ProjectsGrid({ projects }: Props) {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="flex flex-col gap-3">
             {filtered.map((project) => (
               <a
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                className="border-border hover:border-accent/40 group relative flex h-full flex-col rounded-2xl border transition-all duration-300 no-underline"
+                className="glass-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50"
               >
-                <div className="bg-secondary text-muted flex aspect-video items-center justify-center rounded-t-2xl px-4">
-                  <span className="font-mono text-xs tracking-[0.08em] uppercase">
-                    {project.title}
-                  </span>
+                {/* Left accent bar */}
+                <div className="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
+
+                {/* Right decoration */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-l from-secondary/90 via-secondary/40 to-transparent" />
+                  <div
+                    className="absolute inset-0 opacity-40"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, transparent 55%, color-mix(in oklch, var(--color-border) 60%, transparent) 55%)'
+                    }}
+                  />
                 </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="title-display group-hover:text-accent text-xl leading-tight transition-colors duration-300">
-                      {project.title}
-                    </h3>
-                    {project.featured && (
-                      <span className="bg-accent text-background flex-shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] tracking-[0.1em] uppercase">
-                        Featured
+
+                {/* Content */}
+                <div className="relative z-10 min-w-0 flex-1">
+                  <div className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    {project.company && (
+                      <span className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+                        {project.company}
                       </span>
                     )}
+                    {project.company && (
+                      <span className="text-border select-none text-[10px]">·</span>
+                    )}
+                    <span className="diff-tag">{project.category.replace('-', ' ')}</span>
+                    <span className="diff-tag">{project.year}</span>
+                    {project.featured && <span className="eyebrow">Featured</span>}
                   </div>
-                  <p className="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
-                    {project.shortDescription}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {project.technologies.slice(0, 4).map((t) => (
-                      <span key={t} className="diff-tag">
+
+                  <h3 className="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">
+                    {project.title}
+                  </h3>
+
+                  {project.role && (
+                    <p className="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>
+                  )}
+
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {project.keyMetric && (
+                      <>
+                        <span className="text-accent font-mono text-[10px]">
+                          {project.keyMetric}
+                        </span>
+                        {project.technologies.length > 0 && (
+                          <span className="text-border select-none text-[10px]">·</span>
+                        )}
+                      </>
+                    )}
+                    {project.technologies.slice(0, 3).map((t) => (
+                      <span
+                        key={t}
+                        className="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]"
+                      >
                         {t}
                       </span>
                     ))}
-                    {project.technologies.length > 4 && (
-                      <span className="diff-tag">+{project.technologies.length - 4}</span>
+                    {project.technologies.length > 3 && (
+                      <span className="text-muted font-mono text-[10px]">
+                        +{project.technologies.length - 3}
+                      </span>
                     )}
                   </div>
-                  {project.keyMetric && (
-                    <p className="text-accent mt-4 text-xs font-semibold">{project.keyMetric}</p>
-                  )}
-                  <div className="text-muted mt-auto flex items-center justify-between pt-4 text-xs font-medium tracking-wide uppercase">
-                    <span>{project.category.replace('-', ' ')}</span>
-                    <span>{project.year}</span>
-                  </div>
+                </div>
+
+                {/* Logo placeholder (initial circle — no Astro FinLogo in React) */}
+                <div className="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
+                  <span className="text-muted font-mono text-xs uppercase">
+                    {(project.company ?? project.title).charAt(0)}
+                  </span>
                 </div>
               </a>
             ))}
