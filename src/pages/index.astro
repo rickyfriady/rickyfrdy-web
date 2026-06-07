@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -16,6 +17,21 @@ const categoryLabel: Record<string, string> = {
   api: 'API',
   tool: 'Tool',
   'open-source': 'Open Source',
+}
+
+const skillIcon: Record<string, string> = {
+  'Vue 3': 'vue',
+  'React': 'react',
+  'Astro': 'astro',
+  'TypeScript': 'ts',
+  'Tailwind': 'tailwind',
+  'NestJS': 'nestjs',
+  'Node.js': 'nodejs',
+  'PostgreSQL': 'postgres',
+  'Redis': 'redis',
+  'Express': 'express',
+  'Docker': 'docker',
+  'GitLab CI': 'gitlab',
 }
 
 const capabilities = [
@@ -91,27 +107,14 @@ const capabilities = [
       <span class="chapter-label">§ 01 — Selected Work</span>
     </div>
 
-    <div class="divide-border divide-y px-4 md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+    <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
       {featuredProjects.map((project) => (
-        <a
-          href={`/projects/${project.slug}`}
-          class="group block py-6 no-underline md:px-6 md:first:pl-0 md:last:pr-0"
-        >
-          <div class="mb-3 flex flex-wrap items-center gap-2">
-            <span class="diff-tag">{categoryLabel[project.category] ?? project.category}</span>
-            <span class="diff-tag">{project.year}</span>
-          </div>
-          <h2 class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors">
-            {project.title}
-          </h2>
-          <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
-            {project.shortDescription}
-          </p>
-          {project.keyMetric && (
-            <p class="text-accent mt-3 font-mono text-xs">{project.keyMetric}</p>
-          )}
-          <span class="text-accent mt-4 block font-mono text-xs">View case study →</span>
-        </a>
+        <FeaturedProjectCard
+          project={project}
+          categoryLabel={categoryLabel[project.category] ?? project.category}
+          featuredLabel="Featured"
+          locale="en-US"
+        />
       ))}
     </div>
 
@@ -139,10 +142,26 @@ const capabilities = [
           </p>
           <h3 class="text-foreground mt-2 text-base font-semibold">{cap.area}</h3>
           <p class="text-muted mt-2 text-sm leading-relaxed">{cap.description}</p>
-          <div class="mt-4 flex flex-wrap gap-1.5">
-            {cap.stack.map((s) => (
-              <span class="diff-tag">{s}</span>
-            ))}
+          <div class="mt-4 flex flex-wrap gap-2">
+            {cap.stack.map((s) => {
+              const slug = skillIcon[s]
+              return slug ? (
+                <div class="flex flex-col items-center gap-1">
+                  <img
+                    src={`https://skillicons.dev/icons?i=${slug}`}
+                    alt={s}
+                    title={s}
+                    width="36"
+                    height="36"
+                    loading="lazy"
+                    class="rounded-lg"
+                  />
+                  <span class="text-muted font-mono text-[9px] leading-none">{s}</span>
+                </div>
+              ) : (
+                <span class="diff-tag self-center">{s}</span>
+              )
+            })}
           </div>
         </div>
       ))}
