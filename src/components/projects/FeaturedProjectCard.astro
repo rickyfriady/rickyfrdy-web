@@ -35,8 +35,8 @@ const stat2 = project.metrics?.[1]
         alt=""
         aria-hidden="true"
         class="h-full w-full object-cover object-left-top
-               transition-transform duration-700 ease-out will-change-transform
-               group-hover:scale-[1.07]"
+               grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
+               group-hover:scale-[1.07] group-hover:grayscale-0"
       />
       <!-- Bottom fade so stats row stays readable -->
       <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background/80 to-transparent" />
@@ -83,7 +83,8 @@ const stat2 = project.metrics?.[1]
 
     <!-- Title -->
     <h2
-      class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors duration-300 max-w-[58%]"
+      class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors duration-300 max-w-[58%]
+             group-hover:[text-shadow:0_0_20px_color-mix(in_oklch,var(--color-accent)_40%,transparent)]"
       transition:name={`project-title-${project.slug}`}
     >
       {project.title}
