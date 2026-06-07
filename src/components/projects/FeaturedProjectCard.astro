@@ -20,18 +20,35 @@ const stat2 = project.metrics?.[1]
 <a
   href={`/projects/${project.slug}`}
   class="group relative flex flex-col overflow-hidden rounded-xl no-underline
-         border border-border transition-all duration-300
-         hover:border-accent/50 hover:shadow-[0_0_32px_color-mix(in_oklch,var(--color-accent)_12%,transparent)]"
-  style="background: color-mix(in oklch, var(--color-background) 70%, transparent); backdrop-filter: blur(16px);"
+         border border-border transition-all duration-500
+         hover:border-accent/60 hover:shadow-[0_0_32px_color-mix(in_oklch,var(--color-accent)_14%,transparent)]"
 >
-  <!-- Ambient glow (featherless warm-corner effect, uses site accent) -->
+  <!-- Background image: grayscale when idle, full color on hover -->
+  {project.heroImage ? (
+    <div
+      class="absolute inset-0 bg-cover bg-center bg-no-repeat
+             grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+      style={`background-image: url('${project.heroImage}')`}
+    />
+  ) : (
+    <div class="paper-grid absolute inset-0 grayscale transition-[filter] duration-500 group-hover:grayscale-0" />
+  )}
+
+  <!-- Dark overlay: heavy + gray tint when idle, lifts on hover to let image breathe -->
   <div
-    class="pointer-events-none absolute inset-0"
-    aria-hidden="true"
-    style="background: radial-gradient(ellipse at 18% 88%, color-mix(in oklch, var(--color-accent) 14%, transparent) 0%, transparent 62%)"
+    class="absolute inset-0 transition-[background-color] duration-500
+           bg-background/85 group-hover:bg-background/50"
   />
 
-  <div class="relative flex flex-1 flex-col p-5">
+  <!-- Accent glow: invisible idle, blooms on hover -->
+  <div
+    class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+    aria-hidden="true"
+    style="background: radial-gradient(ellipse at 18% 88%, color-mix(in oklch, var(--color-accent) 16%, transparent) 0%, transparent 62%)"
+  />
+
+  <!-- Content -->
+  <div class="relative z-10 flex flex-1 flex-col p-5">
     <!-- Top row: badges (left) + date pill (right) -->
     <div class="mb-4 flex items-start justify-between gap-2">
       <div class="flex flex-wrap items-center gap-1.5">
@@ -50,7 +67,7 @@ const stat2 = project.metrics?.[1]
     <!-- Title + logo -->
     <div class="flex items-start justify-between gap-3">
       <h2
-        class="text-foreground group-hover:text-accent flex-1 text-base font-semibold leading-snug transition-colors duration-200"
+        class="text-foreground group-hover:text-accent flex-1 text-base font-semibold leading-snug transition-colors duration-300"
         transition:name={`project-title-${project.slug}`}
       >
         {project.title}
@@ -67,7 +84,7 @@ const stat2 = project.metrics?.[1]
       {project.shortDescription}
     </p>
 
-    <!-- Divider + stats row (like ♡ count · ⬇ count) -->
+    <!-- Divider + stats row -->
     <div class="border-border mt-4 border-t pt-4">
       <div class="text-muted flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
         {stat1 && (
