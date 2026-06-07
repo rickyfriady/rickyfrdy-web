@@ -29,6 +29,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     slug: 'singel-app',
+    heroImage: '/works/works-1.webp',
     title: 'Singel APP (Pegadaian Kita)',
     shortDescription:
       'Company-wide Micro-Frontend application built with Vue 3 and NestJS microservices, enabling independent team deployments.',
@@ -66,6 +67,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'microsite-pinjaman',
+    heroImage: '/works/works-2.webp',
     title: 'Microsite Pinjaman Pegadaian',
     shortDescription:
       'Revamped legacy CodeIgniter 3 monolith into 9 NestJS microservices using Factory pattern, serving loan lead generation at scale.',
@@ -103,6 +105,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'kamila',
+    heroImage: '/works/works-3.webp',
     title: 'KAMILA — Marketing & KPI Tracker',
     shortDescription:
       'Internal Pegadaian app for marketing progress tracking, KPI measurement, and loan lead submission from external partners.',
@@ -148,6 +151,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'aira-reconciliation',
+    heroImage: '/works/works-4.webp',
     title: 'AIRA — Reconciliation System',
     shortDescription:
       'Reconciliation transaction module for integration with partner banks, producing journal entries compliant with accounting standards.',
@@ -184,6 +188,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'chatbot-kukerta',
+    heroImage: '/works/works-5.webp',
     title: 'Thesis — Chatbot Kukerta',
     shortDescription:
       'Conversational chatbot using fuzzy string matching to answer student queries about the Kukerta internship program, achieving 80% match rate.',
