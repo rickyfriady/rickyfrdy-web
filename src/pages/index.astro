@@ -19,6 +19,21 @@ const categoryLabel: Record<string, string> = {
   'open-source': 'Open Source',
 }
 
+const skillIcon: Record<string, string> = {
+  'Vue 3': 'vue',
+  'React': 'react',
+  'Astro': 'astro',
+  'TypeScript': 'ts',
+  'Tailwind': 'tailwind',
+  'NestJS': 'nestjs',
+  'Node.js': 'nodejs',
+  'PostgreSQL': 'postgres',
+  'Redis': 'redis',
+  'Express': 'express',
+  'Docker': 'docker',
+  'GitLab CI': 'gitlab',
+}
+
 const capabilities = [
   {
     area: 'Frontend',
@@ -127,10 +142,26 @@ const capabilities = [
           </p>
           <h3 class="text-foreground mt-2 text-base font-semibold">{cap.area}</h3>
           <p class="text-muted mt-2 text-sm leading-relaxed">{cap.description}</p>
-          <div class="mt-4 flex flex-wrap gap-1.5">
-            {cap.stack.map((s) => (
-              <span class="diff-tag">{s}</span>
-            ))}
+          <div class="mt-4 flex flex-wrap gap-2">
+            {cap.stack.map((s) => {
+              const slug = skillIcon[s]
+              return slug ? (
+                <div class="flex flex-col items-center gap-1">
+                  <img
+                    src={`https://skillicons.dev/icons?i=${slug}`}
+                    alt={s}
+                    title={s}
+                    width="36"
+                    height="36"
+                    loading="lazy"
+                    class="rounded-lg"
+                  />
+                  <span class="text-muted font-mono text-[9px] leading-none">{s}</span>
+                </div>
+              ) : (
+                <span class="diff-tag self-center">{s}</span>
+              )
+            })}
           </div>
         </div>
       ))}
