@@ -99,11 +99,19 @@ export default function MobileBottomNav() {
               <Icon
                 size={18}
                 className="relative z-10"
-                style={{ color: active ? 'var(--color-accent)' : 'rgba(255,255,255,0.28)' }}
+                style={{
+                  color: active
+                    ? 'var(--color-accent)'
+                    : 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
+                }}
               />
               <span
                 className="relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase"
-                style={{ color: active ? 'var(--color-accent)' : 'rgba(255,255,255,0.28)' }}
+                style={{
+                  color: active
+                    ? 'var(--color-accent)'
+                    : 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
+                }}
               >
                 {label}
               </span>
@@ -139,13 +147,19 @@ export default function MobileBottomNav() {
             size={18}
             className="relative z-10"
             style={{
-              color: moreOpen || moreActive ? 'var(--color-accent)' : 'rgba(255,255,255,0.28)'
+              color:
+                moreOpen || moreActive
+                  ? 'var(--color-accent)'
+                  : 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
             }}
           />
           <span
             className="relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase"
             style={{
-              color: moreOpen || moreActive ? 'var(--color-accent)' : 'rgba(255,255,255,0.28)'
+              color:
+                moreOpen || moreActive
+                  ? 'var(--color-accent)'
+                  : 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
             }}
           >
             More
@@ -189,8 +203,13 @@ export default function MobileBottomNav() {
                     href={href}
                     className="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground"
                     style={{
-                      color: active ? 'var(--color-accent)' : 'rgba(255,255,255,0.45)',
-                      borderTop: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none'
+                      color: active
+                        ? 'var(--color-accent)'
+                        : 'color-mix(in oklch, var(--color-foreground) 55%, transparent)',
+                      borderTop:
+                        i > 0
+                          ? '1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent)'
+                          : 'none'
                     }}
                   >
                     <Icon size={14} className="flex-shrink-0" />

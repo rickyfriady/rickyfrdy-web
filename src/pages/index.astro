@@ -60,43 +60,83 @@ const capabilities = [
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="border-border relative border-b px-4 py-16 md:py-24">
     <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
-    <div class="relative">
-      <p class="eyebrow mb-4">Fullstack Developer · Jakarta, Indonesia</p>
-      <h1
-        class="title-display max-w-3xl"
-        style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
-      >
-        Ricki<br />
-        <span class="title-accent text-accent">Friadi.</span>
-      </h1>
-      <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed">
-        I build reliable fullstack systems — from Vue 3 micro-frontends and NestJS microservices
-        to the architecture that keeps them maintainable at scale.
-      </p>
+    <div class="relative flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
+      <!-- Left: text -->
+      <div class="flex-1">
+        <p class="eyebrow mb-4">Fullstack Developer · Jakarta, Indonesia</p>
+        <h1
+          class="title-display max-w-3xl"
+          style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
+        >
+          Ricki<br />
+          <span class="title-accent text-accent">Friadi.</span>
+        </h1>
+        <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed">
+          I build reliable fullstack systems — from Vue 3 micro-frontends and NestJS microservices
+          to the architecture that keeps them maintainable at scale.
+        </p>
 
-      <!-- Availability badge -->
-      <div class="mt-6 inline-flex items-center gap-2">
-        <span class="relative flex h-2 w-2">
-          <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-          <span class="bg-accent relative inline-flex h-2 w-2 rounded-full" />
-        </span>
-        <span class="text-muted font-mono text-xs">Open to opportunities</span>
+        <!-- Availability badge -->
+        <div class="mt-6 inline-flex items-center gap-2">
+          <span class="relative flex h-2 w-2">
+            <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+            <span class="bg-accent relative inline-flex h-2 w-2 rounded-full" />
+          </span>
+          <span class="text-muted font-mono text-xs">Open to opportunities</span>
+        </div>
+
+        <!-- CTAs -->
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href="/projects"
+            class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+          >
+            View My Work
+          </a>
+          <a
+            href="/contact"
+            class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+          >
+            Get in Touch
+          </a>
+        </div>
       </div>
 
-      <!-- CTAs -->
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a
-          href="/projects"
-          class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
-        >
-          View My Work
-        </a>
-        <a
-          href="/contact"
-          class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
-        >
-          Get in Touch
-        </a>
+      <!-- Right: avatar -->
+      <div class="flex-shrink-0 self-start md:self-center">
+        <div class="relative">
+          <!-- Accent ring -->
+          <div
+            class="absolute -inset-[3px] rounded-2xl opacity-60"
+            style="background: linear-gradient(135deg, var(--color-accent), transparent 60%)"
+            aria-hidden="true"
+          />
+          <div class="relative h-40 w-40 overflow-hidden rounded-2xl md:h-52 md:w-52"
+               style="background: color-mix(in oklch, var(--color-secondary) 80%, transparent);">
+            <!-- Fallback initials always rendered beneath the photo -->
+            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+              <span class="title-display text-accent" style="font-size: 4rem; line-height:1">RF</span>
+            </div>
+            <img
+              src="/images/avatar.jpg"
+              alt="Ricki Friadi"
+              width="208"
+              height="208"
+              class="absolute inset-0 h-full w-full object-cover object-top"
+            />
+          </div>
+          <!-- Floating badge -->
+          <div
+            class="absolute -bottom-3 -right-3 flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[10px]"
+            style="background: color-mix(in oklch, var(--color-background) 80%, transparent); backdrop-filter: blur(12px); border-color: color-mix(in oklch, var(--color-accent) 35%, transparent); color: var(--color-accent)"
+          >
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+              <span class="bg-accent relative inline-flex h-1.5 w-1.5 rounded-full" />
+            </span>
+            Available
+          </div>
+        </div>
       </div>
     </div>
   </section>
