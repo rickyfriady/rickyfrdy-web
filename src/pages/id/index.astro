@@ -1,6 +1,7 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
+import HeroPhoto from '@/components/ui/HeroPhoto'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -77,15 +78,6 @@ const capabilities = [
           hingga arsitektur yang membuatnya mudah dipelihara di skala besar.
         </p>
 
-        <!-- Availability badge -->
-        <div class="mt-6 inline-flex items-center gap-2">
-          <span class="relative flex h-2 w-2">
-            <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-            <span class="bg-accent relative inline-flex h-2 w-2 rounded-full" />
-          </span>
-          <span class="text-muted font-mono text-xs">Terbuka untuk peluang baru</span>
-        </div>
-
         <!-- CTAs -->
         <div class="mt-8 flex flex-wrap gap-3">
           <a
@@ -104,41 +96,7 @@ const capabilities = [
       </div>
 
       <!-- Right: avatar -->
-      <div class="flex-shrink-0 self-start md:self-center">
-        <div class="relative">
-          <!-- Accent ring -->
-          <div
-            class="absolute -inset-[3px] rounded-2xl opacity-60"
-            style="background: linear-gradient(135deg, var(--color-accent), transparent 60%)"
-            aria-hidden="true"
-          />
-          <div class="relative h-40 w-40 overflow-hidden rounded-2xl md:h-52 md:w-52"
-               style="background: color-mix(in oklch, var(--color-secondary) 80%, transparent);">
-            <!-- Fallback initials always rendered beneath the photo -->
-            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-              <span class="title-display text-accent" style="font-size: 4rem; line-height:1">RF</span>
-            </div>
-            <img
-              src="/images/avatar.jpg"
-              alt="Ricki Friadi"
-              width="208"
-              height="208"
-              class="absolute inset-0 h-full w-full object-cover object-top"
-            />
-          </div>
-          <!-- Floating badge -->
-          <div
-            class="absolute -bottom-3 -right-3 flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[10px]"
-            style="background: color-mix(in oklch, var(--color-background) 80%, transparent); backdrop-filter: blur(12px); border-color: color-mix(in oklch, var(--color-accent) 35%, transparent); color: var(--color-accent)"
-          >
-            <span class="relative flex h-1.5 w-1.5">
-              <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-              <span class="bg-accent relative inline-flex h-1.5 w-1.5 rounded-full" />
-            </span>
-            Tersedia
-          </div>
-        </div>
-      </div>
+      <HeroPhoto client:load />
     </div>
   </section>
 
