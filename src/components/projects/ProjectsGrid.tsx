@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import FeaturedBadge from '@/components/ui/FeaturedBadge'
 import type { Project } from '@/data/projects'
 
 interface Props {
@@ -178,7 +179,7 @@ export default function ProjectsGrid({ projects }: Props) {
                     )}
                     <span className="diff-tag">{project.category.replace('-', ' ')}</span>
                     <span className="diff-tag">{project.year}</span>
-                    {project.featured && <span className="eyebrow">Featured</span>}
+                    {project.featured && <FeaturedBadge label="Featured" />}
                   </div>
 
                   <h3 className="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">
