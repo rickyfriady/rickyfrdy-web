@@ -52,10 +52,7 @@ function AnimatedCounter({ value, label }: Metric) {
       className="border-border flex flex-col items-center gap-1.5 rounded-xl border p-5 text-center"
       aria-label={`${value} ${label}`}
     >
-      <span
-        className="title-display text-accent"
-        style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontStyle: 'italic' }}
-      >
+      <span className="title-display text-accent italic text-[clamp(1.8rem,4vw,2.8rem)]">
         {display}
       </span>
       <span className="text-muted font-mono text-xs uppercase tracking-[0.15em]">{label}</span>
