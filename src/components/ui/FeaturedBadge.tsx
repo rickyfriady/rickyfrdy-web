@@ -53,9 +53,12 @@ export default function FeaturedBadge({ label }: Props) {
   }, [])
 
   return (
-    <div ref={wrapperRef} className="inline-flex items-center gap-1">
+    <div
+      ref={wrapperRef}
+      className="inline-flex items-center justify-center gap-1 border border-yellow-500 rounded-full px-2 py-1 text-xs font-medium text-yellow-500"
+    >
       <span className="eyebrow">{label}</span>
-      <div ref={containerRef} aria-hidden="true" style={{ width: 18, height: 18, flexShrink: 0 }} />
+      <div ref={containerRef} aria-hidden="true" className="size-[18px] shrink-0" />
     </div>
   )
 }
