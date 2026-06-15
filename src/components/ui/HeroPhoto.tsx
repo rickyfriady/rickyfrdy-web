@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 export default function HeroPhoto() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
-  const [photoReady, setPhotoReady] = useState(false)
+  const [_photoReady, setPhotoReady] = useState(false)
 
   useEffect(() => {
     if (reduced || !wrapRef.current) return
@@ -35,31 +35,16 @@ export default function HeroPhoto() {
           whileHover={{ scale: 1.018 }}
           transition={{ type: 'spring', stiffness: 260, damping: 32 }}
         >
-          {/* Initials fallback */}
-          <div
-            className="absolute inset-0 flex select-none items-center justify-center"
-            aria-hidden="true"
-          >
-            <span
-              className="font-display font-bold leading-none tracking-[-0.04em] text-[clamp(2.5rem,6vw,3.5rem)]"
-              style={{ color: 'color-mix(in oklch, var(--color-accent) 30%, transparent)' }}
-            >
-              RF
-            </span>
-          </div>
-
           {/* Photo */}
           <img
-            src="/images/x.jpg"
+            src="/images/avatar.jpg"
             alt="Ricki Friadi"
             width={196}
             height={261}
             loading="eager"
             onLoad={() => setPhotoReady(true)}
             onError={() => setPhotoReady(false)}
-            className={`absolute inset-0 h-full w-full object-cover object-top text-transparent transition-opacity duration-700 ${
-              photoReady ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 h-full w-full object-cover object-top text-transparent transition-opacity duration-700 `}
           />
         </motion.div>
       </div>

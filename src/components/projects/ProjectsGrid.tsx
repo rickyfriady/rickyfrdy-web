@@ -227,7 +227,7 @@ export default function ProjectsGrid({ projects }: Props) {
               return project.featured ? (
                 <div key={project.slug} className="relative rounded-xl p-[2px]">
                   <AnimatedGradient
-                    config={{ preset: 'Prism', speed: 12 }}
+                    config={{ preset: 'Lava', speed: 12 }}
                     radius="12px"
                     noise={{ opacity: 0.12 }}
                     style={{ zIndex: 0 }}

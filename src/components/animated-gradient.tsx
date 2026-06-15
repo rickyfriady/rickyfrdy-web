@@ -66,12 +66,12 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 45
   },
   Lava: {
-    color1: '#FF9F21',
-    color2: '#FF0303',
+    color1: '#66ffb5',
+    color2: '#337f5a',
     color3: '#000000',
     lightColors: {
-      color1: '#FF9F21',
-      color2: '#FF0303',
+      color1: '#66ffb5',
+      color2: '#337f5a',
       color3: '#FAFAFA'
     },
     rotation: 114,
@@ -87,11 +87,11 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 12
   },
   Plasma: {
-    color1: '#B566FF',
+    color1: '#66ffb5',
     color2: '#000000',
     color3: '#000000',
     lightColors: {
-      color1: '#B566FF',
+      color1: '#66ffb5',
       color2: '#FAFAFA',
       color3: '#FAFAFA'
     },
