@@ -9,45 +9,87 @@ interface Props {
 const { project } = Astro.props
 ---
 
-<header class="relative h-[52vh] min-h-[320px] overflow-hidden">
+<header
+  class="relative flex min-h-screen flex-col justify-end overflow-hidden"
+  data-hero
+>
+  <!-- Background image / paper-grid fallback -->
   {project.heroImage ? (
     <img
       src={project.heroImage}
-      alt={project.title}
+      alt=""
+      aria-hidden="true"
+      data-hero-bg
       class="absolute inset-0 h-full w-full object-cover"
     />
   ) : (
     <div
       class="paper-grid absolute inset-0"
+      data-hero-bg
       style="background: linear-gradient(160deg, #0e2a22 0%, #142e24 50%, #0a1a14 100%);"
       role="img"
       aria-label={project.title}
-      data-hero-bg
     />
   )}
 
-  <!-- Gradient overlay for title legibility -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+  <!-- Layered overlay: full-page dark + stronger bottom -->
+  <div class="absolute inset-0 bg-background/30" />
+  <div class="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
 
-  <!-- Left accent bar -->
-  <div class="bg-accent absolute top-0 bottom-0 left-0 w-0.5" />
+  <!-- Left accent line -->
+  <div class="bg-accent absolute inset-y-0 left-0 w-[2px]" />
 
-  <!-- Title block -->
-  <div class="absolute right-8 bottom-8 left-8" id="case-study-hero-title">
+  <!-- Hero content -->
+  <div class="relative px-8 pb-20 pt-32 md:px-16 md:pb-24" id="case-study-hero-title">
+
+    <!-- Company logo -->
     {project.companyLogo && (
-      <div class="mb-3">
+      <div class="mb-6" data-hero-item style="opacity:0; transform:translateY(12px)">
         <FinLogo name={project.companyLogo} size={28} bg label={project.company} />
       </div>
     )}
-    <p class="font-mono mb-3 text-xs tracking-[0.2em] uppercase text-white/50">
-      {project.category.replace(/-/g, ' ')} · {project.year}
-    </p>
-    <h1
-      class="title-display text-white"
-      style="font-size: clamp(2.5rem, 7vw, 5rem); font-style: italic; line-height: 0.95;"
-      transition:name={`project-title-${project.slug}`}
+
+    <!-- Category · Year -->
+    <p
+      class="font-mono mb-4 text-[11px] tracking-[0.25em] uppercase text-white/50"
+      data-hero-item
+      style="opacity:0; transform:translateY(12px)"
     >
-      {project.title}
-    </h1>
+      {project.category.replace(/-/g, ' ')} &nbsp;·&nbsp; {project.year}
+    </p>
+
+    <!-- Title — clip-path reveal from overflow:hidden parent -->
+    <div class="overflow-hidden mb-6">
+      <h1
+        class="title-display text-white"
+        style="font-size: clamp(3rem, 9vw, 6.5rem); font-style: italic; line-height: 0.9; will-change: transform;"
+        transition:name={`project-title-${project.slug}`}
+        data-hero-title
+      >
+        {project.title}
+      </h1>
+    </div>
+
+    <!-- Short description -->
+    <p
+      class="max-w-xl text-sm leading-relaxed text-white/65"
+      data-hero-item
+      style="opacity:0; transform:translateY(12px)"
+    >
+      {project.shortDescription}
+    </p>
+
+    <!-- Scroll indicator -->
+    <div
+      class="mt-10 flex items-center gap-3"
+      data-hero-item
+      style="opacity:0; transform:translateY(12px)"
+      aria-hidden="true"
+    >
+      <div class="h-px w-10 bg-accent/50" />
+      <span class="font-mono text-[10px] tracking-[0.22em] uppercase text-white/35">
+        Scroll to explore
+      </span>
+    </div>
   </div>
 </header>
