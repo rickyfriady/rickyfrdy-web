@@ -2,6 +2,7 @@
 import type { Project } from '@/data/projects'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
+import AnimatedGradient from '@/components/animated-gradient'
 
 interface Props {
   project: Project
@@ -18,11 +19,24 @@ const stat1 = project.metrics?.[0]
 const stat2 = project.metrics?.[1]
 ---
 
+<div class:list={["relative rounded-xl", project.featured ? "p-[2px]" : ""]}>
+  {project.featured && (
+    <AnimatedGradient
+      client:visible
+      config={{ preset: 'Plasma', speed: 12 }}
+      radius="12px"
+      noise={{ opacity: 0.12 }}
+      style={{ zIndex: 0 }}
+    />
+  )}
 <a
   href={`/projects/${project.slug}`}
-  class="group relative flex flex-col overflow-hidden rounded-xl no-underline min-h-[220px]
-         border border-border transition-all duration-300
-         hover:border-accent/60 hover:shadow-[0_0_28px_color-mix(in_oklch,var(--color-accent)_12%,transparent)]"
+  class:list={[
+    "group relative flex flex-col overflow-hidden no-underline min-h-[220px] transition-all duration-300 hover:shadow-[0_0_28px_color-mix(in_oklch,var(--color-accent)_12%,transparent)]",
+    project.featured
+      ? "z-10 rounded-[10px]"
+      : "rounded-xl border border-border hover:border-accent/60"
+  ]}
   style="background: color-mix(in oklch, var(--color-background) 72%, transparent); backdrop-filter: blur(14px);"
 >
   <!-- ── Bottom-right corner image ─────────────────────────────── -->
@@ -125,3 +139,4 @@ const stat2 = project.metrics?.[1]
     </div>
   </div>
 </a>
+</div>

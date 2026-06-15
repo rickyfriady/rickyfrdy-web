@@ -21,17 +21,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { project } = Astro.props as { project: Project }
 const lang = 'en'
 
-// Try MDX content — fallback to fullDescription
 const projectEntries = (await getCollection('projects')) as CollectionEntry<'projects'>[]
 const mdxEntry = projectEntries.find((e: CollectionEntry<'projects'>) => e.data.slug === project.slug)
 const Content = mdxEntry ? (await render(mdxEntry)).Content : null
 
-// Next / prev (wrap-around, null if only 1 project)
 const idx = projects.findIndex((p) => p.slug === project.slug)
 const prev = projects.length > 1 ? projects[(idx - 1 + projects.length) % projects.length] : null
 const next = projects.length > 1 ? projects[(idx + 1) % projects.length] : null
 
-// Zip challenges + solutions by index
 const pairs = project.challenges
   .slice(0, Math.min(project.challenges.length, project.solutions.length))
   .map((challenge, i) => ({ challenge, solution: project.solutions[i] }))
@@ -44,7 +41,7 @@ const pairs = project.challenges
   noReveal
 >
   <!-- Back link -->
-  <div class="border-border border-b px-4 py-3">
+  <div class="border-border border-b px-6 py-3 md:px-16">
     <a
       href="/projects"
       class="text-muted hover:text-foreground font-mono text-xs tracking-[0.15em] uppercase transition-colors"
@@ -53,100 +50,132 @@ const pairs = project.challenges
     </a>
   </div>
 
-  <!-- §2 Hero -->
+  <!-- Hero -->
   <CaseStudyHero project={project} />
 
-  <!-- §3 Role + Tech + CTAs -->
-  <section class="border-border border-b px-4 py-8" data-reveal>
-    {project.role && (
-      <div class="mb-5 flex flex-wrap items-center gap-3">
-        <span class="font-mono text-xs tracking-[0.15em] uppercase text-accent">
-          {t(lang, 'case.role')}
-        </span>
-        <span class="text-foreground text-sm">{project.role}</span>
-      </div>
-    )}
+  <!-- § Role + Tech + CTAs -->
+  <section class="border-border border-b" data-reveal>
+    <div class="px-6 py-12 md:px-16 md:py-14">
 
-    <div class="mb-6 flex flex-wrap gap-1.5">
-      {project.technologies.map((tech) => (
-        <span class="diff-tag">{tech}</span>
-      ))}
+      {project.role && (
+        <div class="mb-6 flex flex-wrap items-baseline gap-3">
+          <span class="font-mono text-[10px] tracking-[0.22em] uppercase text-accent">
+            {t(lang, 'case.role')}
+          </span>
+          <span class="text-foreground text-sm">{project.role}</span>
+        </div>
+      )}
+
+      <div class="mb-8 flex flex-wrap gap-1.5">
+        {project.technologies.map((tech) => (
+          <span class="diff-tag" data-tech-chip>{tech}</span>
+        ))}
+      </div>
+
+      <ProjectCTAs
+        liveUrl={project.liveUrl}
+        githubUrl={project.githubUrl}
+        liveLabel={t(lang, 'case.live')}
+        githubLabel={t(lang, 'case.github')}
+        client:load
+      />
     </div>
-
-    <ProjectCTAs
-      liveUrl={project.liveUrl}
-      githubUrl={project.githubUrl}
-      liveLabel={t(lang, 'case.live')}
-      githubLabel={t(lang, 'case.github')}
-      client:load
-    />
   </section>
 
-  <!-- §4 Overview -->
-  <section class="border-border border-b px-4 py-8" data-reveal>
-    <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
-      {t(lang, 'case.overview')}
-    </h2>
-    {Content ? (
-      <div class="prose prose-sm text-foreground max-w-2xl leading-relaxed [&_strong]:text-foreground">
-        <Content />
-      </div>
-    ) : (
-      <p class="text-foreground max-w-2xl text-sm leading-relaxed">{project.fullDescription}</p>
-    )}
-  </section>
-
-  <!-- §5 Impact metrics (omitted if no metrics) -->
-  {project.metrics && project.metrics.length > 0 && (
-    <section class="border-border border-b px-4 py-8" data-reveal>
-      <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
-        {t(lang, 'case.impact')}
+  <!-- § Overview -->
+  <section class="border-border border-b" data-reveal>
+    <div class="px-6 py-12 md:px-16 md:py-14">
+      <p class="font-mono mb-6 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+        {t(lang, 'case.overview')}
+      </p>
+      <h2 class="text-foreground text-xl font-semibold leading-snug mb-5 max-w-2xl md:text-2xl">
+        {project.shortDescription}
       </h2>
-      <MetricCounters metrics={project.metrics} client:visible />
+      {Content ? (
+        <div class="prose prose-sm text-foreground max-w-2xl leading-relaxed [&_strong]:text-foreground">
+          <Content />
+        </div>
+      ) : (
+        <p class="text-muted max-w-2xl text-sm leading-relaxed">{project.fullDescription}</p>
+      )}
+    </div>
+  </section>
+
+  <!-- § Impact metrics -->
+  {project.metrics && project.metrics.length > 0 && (
+    <section class="border-border border-b" data-reveal>
+      <div class="px-6 py-12 md:px-16 md:py-14">
+        <p class="font-mono mb-8 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+          {t(lang, 'case.impact')}
+        </p>
+        <MetricCounters metrics={project.metrics} client:visible />
+      </div>
     </section>
   )}
 
-  <!-- §6 Problem → Solution -->
-  <section class="border-border border-b px-4 py-8" data-reveal>
-    <h2 class="font-mono mb-6 text-xs tracking-[0.15em] uppercase text-accent">
-      {t(lang, 'case.problem')} → {t(lang, 'case.solution')}
-    </h2>
-    <div class="space-y-6">
-      {pairs.map((pair) => (
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <p class="font-mono mb-2 text-[10px] tracking-[0.2em] uppercase text-muted">
-              {t(lang, 'case.problem')}
-            </p>
-            <p class="text-foreground text-sm leading-relaxed">{pair.challenge}</p>
+  <!-- § Problem → Solution -->
+  <section class="border-border border-b" data-reveal>
+    <div class="px-6 py-12 md:px-16 md:py-14">
+      <p class="font-mono mb-10 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+        {t(lang, 'case.problem')} → {t(lang, 'case.solution')}
+      </p>
+
+      <div class="space-y-10">
+        {pairs.map((pair) => (
+          <div class="grid gap-0 sm:grid-cols-[1fr_40px_1fr]" data-pair>
+            <!-- Challenge -->
+            <div class="pb-6 sm:pb-0 sm:pr-8">
+              <p class="font-mono mb-3 text-[9px] tracking-[0.25em] uppercase text-muted">
+                {t(lang, 'case.problem')}
+              </p>
+              <p class="text-foreground text-sm leading-relaxed">{pair.challenge}</p>
+            </div>
+
+            <!-- Connector -->
+            <div class="hidden sm:flex flex-col items-center pt-8">
+              <div class="h-full w-px bg-border/50 relative">
+                <span
+                  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                         bg-background text-accent font-mono text-xs px-1"
+                >
+                  →
+                </span>
+              </div>
+            </div>
+
+            <!-- Solution -->
+            <div class="border-t border-border pt-6 sm:border-0 sm:pt-0 sm:pl-8">
+              <p class="font-mono mb-3 text-[9px] tracking-[0.25em] uppercase text-muted">
+                {t(lang, 'case.solution')}
+              </p>
+              <p class="text-foreground text-sm leading-relaxed">{pair.solution}</p>
+            </div>
           </div>
-          <div>
-            <p class="font-mono mb-2 text-[10px] tracking-[0.2em] uppercase text-muted">
-              {t(lang, 'case.solution')}
-            </p>
-            <p class="text-foreground text-sm leading-relaxed">{pair.solution}</p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </section>
 
-  <!-- §7 Key highlights -->
-  <section class="border-border border-b px-4 py-8" data-reveal>
-    <h2 class="font-mono mb-5 text-xs tracking-[0.15em] uppercase text-accent">
-      {t(lang, 'case.highlights')}
-    </h2>
-    <ul class="space-y-3">
-      {project.results.map((result) => (
-        <li class="text-foreground flex gap-3 text-sm leading-relaxed">
-          <span class="text-accent mt-0.5 flex-shrink-0" aria-hidden="true">›</span>
-          <span>{result}</span>
-        </li>
-      ))}
-    </ul>
+  <!-- § Key highlights -->
+  <section class="border-border border-b" data-reveal>
+    <div class="px-6 py-12 md:px-16 md:py-14">
+      <p class="font-mono mb-8 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+        {t(lang, 'case.highlights')}
+      </p>
+      <ul class="space-y-4 max-w-2xl">
+        {project.results.map((result, i) => (
+          <li class="flex gap-4 text-sm leading-relaxed" data-result>
+            <span class="text-accent font-mono text-xs mt-0.5 flex-shrink-0 select-none">
+              0{i + 1}
+            </span>
+            <span class="text-foreground">{result}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 
-  <!-- §8 Next / prev navigation -->
+  <!-- § Prev / Next -->
   <ProjectNav
     prev={prev}
     next={next}
@@ -163,68 +192,122 @@ const pairs = project.challenges
 
   function initAnimations() {
     gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-      // Title character entrance — uses DOM methods (no innerHTML)
-      const titleEl = document.querySelector('#case-study-hero-title h1')
-      if (titleEl instanceof HTMLElement) {
-        const text = titleEl.textContent ?? ''
-        const fragment = document.createDocumentFragment()
-        for (const char of text) {
-          const span = document.createElement('span')
-          span.style.display = 'inline-block'
-          span.textContent = char === ' ' ? ' ' : char
-          fragment.appendChild(span)
-        }
-        titleEl.textContent = ''
-        titleEl.appendChild(fragment)
+      // ── Hero ──────────────────────────────────────────────────────
 
-        gsap.from(titleEl.querySelectorAll('span'), {
-          y: 40,
-          opacity: 0,
-          stagger: 0.025,
-          duration: 0.8,
-          ease: 'power4.out',
+      // 1. Background image: scale-in entrance + parallax on scroll
+      const heroBg = document.querySelector<HTMLElement>('[data-hero-bg]')
+      if (heroBg) {
+        gsap.from(heroBg, {
+          scale: 1.12,
+          duration: 1.8,
+          ease: 'power3.out',
         })
-      }
-
-      // Hero parallax
-      const heroBg = document.querySelector('[data-hero-bg]')
-      if (heroBg instanceof HTMLElement && heroBg.parentElement) {
         gsap.to(heroBg, {
-          yPercent: 30,
+          yPercent: 28,
           ease: 'none',
           scrollTrigger: {
-            trigger: heroBg.parentElement,
+            trigger: '[data-hero]',
             start: 'top top',
             end: 'bottom top',
-            scrub: true,
+            scrub: 1.2,
           },
         })
       }
 
-      // Section scroll reveals
+      // 2. Title: slide up from inside overflow:hidden parent (clip reveal)
+      const heroTitle = document.querySelector<HTMLElement>('[data-hero-title]')
+      if (heroTitle) {
+        gsap.from(heroTitle, {
+          y: '110%',
+          duration: 1.1,
+          ease: 'power4.out',
+          delay: 0.1,
+        })
+      }
+
+      // 3. Metadata items: stagger fade + rise
+      const heroItems = document.querySelectorAll<HTMLElement>('[data-hero-item]')
+      gsap.to(heroItems, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.12,
+        duration: 0.75,
+        ease: 'power3.out',
+        delay: 0.65,
+      })
+
+      // ── Sections: clip-path reveal ─────────────────────────────────
       document.querySelectorAll('[data-reveal]').forEach((section) => {
         gsap.from(section, {
-          y: 30,
           opacity: 0,
-          duration: 0.7,
+          y: 40,
+          duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
-            start: 'top 85%',
+            start: 'top 88%',
           },
         })
       })
+
+      // ── Tech chips: back.out stagger ──────────────────────────────
+      const techChips = document.querySelectorAll<HTMLElement>('[data-tech-chip]')
+      if (techChips.length) {
+        gsap.from(techChips, {
+          opacity: 0,
+          y: 14,
+          scale: 0.85,
+          stagger: 0.04,
+          duration: 0.5,
+          ease: 'back.out(1.5)',
+          scrollTrigger: {
+            trigger: techChips[0],
+            start: 'top 88%',
+          },
+        })
+      }
+
+      // ── Problem / Solution: alternating x-entrance ────────────────
+      document.querySelectorAll<HTMLElement>('[data-pair]').forEach((pair) => {
+        const children = [...pair.children] as HTMLElement[]
+        if (!children.length) return
+        gsap.from(children, {
+          opacity: 0,
+          x: (i) => (i === 0 ? -24 : i === 2 ? 24 : 0),
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: pair,
+            start: 'top 86%',
+          },
+        })
+      })
+
+      // ── Result items: stagger from left ──────────────────────────
+      const resultItems = document.querySelectorAll<HTMLElement>('[data-result]')
+      if (resultItems.length) {
+        gsap.from(resultItems, {
+          opacity: 0,
+          x: -20,
+          stagger: 0.1,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: resultItems[0],
+            start: 'top 88%',
+          },
+        })
+      }
     })
   }
 
   initAnimations()
 
-  // Clean up before ViewTransitions swaps the DOM
   document.addEventListener('astro:before-swap', () => {
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+    ScrollTrigger.getAll().forEach((t) => t.kill())
   })
 
-  // Re-run after ViewTransitions navigates back to a case study page
   document.addEventListener('astro:after-swap', () => {
     if (document.querySelector('#case-study-hero-title')) {
       initAnimations()
