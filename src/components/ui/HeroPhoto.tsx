@@ -2,9 +2,6 @@ import { motion, useReducedMotion } from 'framer-motion'
 import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
 
-const CLIP =
-  'polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px))'
-
 export default function HeroPhoto() {
   const scanRef = useRef<HTMLDivElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -59,14 +56,11 @@ export default function HeroPhoto() {
         </div>
 
         {/* Photo frame */}
-        <div className="relative" style={{ width: 'clamp(160px, 30vw, 224px)', aspectRatio: '1' }}>
-          {/* Ghost glitch layer — accent-tinted offset duplicate */}
+        <div className="relative w-[clamp(160px,30vw,224px)] aspect-square">
+          {/* Ghost glitch layer */}
           <motion.div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              clipPath: CLIP,
-              background: 'color-mix(in oklch, var(--color-accent) 18%, transparent)'
-            }}
+            className="pointer-events-none absolute inset-0 clip-diagonal"
+            style={{ background: 'color-mix(in oklch, var(--color-accent) 18%, transparent)' }}
             initial={{ x: 0, y: 0, opacity: 0 }}
             whileHover={{ x: 5, y: -4, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
@@ -75,8 +69,7 @@ export default function HeroPhoto() {
 
           {/* Main container */}
           <motion.div
-            className="group relative h-full w-full overflow-hidden"
-            style={{ clipPath: CLIP }}
+            className="group relative h-full w-full overflow-hidden clip-diagonal"
             whileHover={{ scale: 1.03 }}
             transition={{ type: 'spring', stiffness: 280, damping: 22 }}
           >
@@ -87,20 +80,14 @@ export default function HeroPhoto() {
               aria-hidden="true"
             >
               <span
-                className="font-bold tracking-tight"
-                style={{
-                  fontSize: 'clamp(3rem, 8vw, 5rem)',
-                  lineHeight: 1,
-                  color: 'color-mix(in oklch, var(--color-accent) 55%, transparent)',
-                  fontFamily: 'var(--font-display, serif)',
-                  letterSpacing: '-0.04em'
-                }}
+                className="font-bold leading-none font-display tracking-[-0.04em] text-[clamp(3rem,8vw,5rem)]"
+                style={{ color: 'color-mix(in oklch, var(--color-accent) 55%, transparent)' }}
               >
                 RF
               </span>
             </div>
 
-            {/* Actual photo — sits on top of fallback */}
+            {/* Actual photo */}
             <img
               src="/images/avatar.jpg"
               alt="Ricki Friadi"
@@ -109,20 +96,13 @@ export default function HeroPhoto() {
               loading="eager"
               onLoad={() => setPhotoReady(true)}
               onError={() => setPhotoReady(false)}
-              className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ${
+              className={`absolute inset-0 h-full w-full object-cover object-top text-transparent transition-opacity duration-700 ${
                 photoReady ? 'opacity-100' : 'opacity-0'
               }`}
-              style={{ color: 'transparent' }}
             />
 
             {/* Accent duotone on hover */}
-            <div
-              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-30"
-              style={{
-                background: 'var(--color-accent)',
-                mixBlendMode: 'color'
-              }}
-            />
+            <div className="pointer-events-none absolute inset-0 bg-accent mix-blend-color opacity-0 transition-opacity duration-500 group-hover:opacity-30" />
 
             {/* Scanline */}
             <div
@@ -148,16 +128,14 @@ export default function HeroPhoto() {
             />
           </motion.div>
 
-          {/* SVG corner brackets — drawn with Framer Motion pathLength */}
+          {/* SVG corner brackets */}
           <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
+            className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden="true"
-            style={{ overflow: 'visible' }}
           >
-            {/* top-left */}
             <motion.path
               d="M 18 0 L 0 0 L 0 18"
               stroke="var(--color-accent)"
@@ -168,7 +146,6 @@ export default function HeroPhoto() {
               initial="hidden"
               animate="visible"
             />
-            {/* top-right */}
             <motion.path
               d="M 82 0 L 100 0 L 100 18"
               stroke="var(--color-accent)"
@@ -179,7 +156,6 @@ export default function HeroPhoto() {
               initial="hidden"
               animate="visible"
             />
-            {/* bottom-left */}
             <motion.path
               d="M 0 82 L 0 100 L 18 100"
               stroke="var(--color-accent)"
@@ -190,7 +166,6 @@ export default function HeroPhoto() {
               initial="hidden"
               animate="visible"
             />
-            {/* bottom-right */}
             <motion.path
               d="M 100 82 L 100 100 L 82 100"
               stroke="var(--color-accent)"
@@ -201,7 +176,6 @@ export default function HeroPhoto() {
               initial="hidden"
               animate="visible"
             />
-            {/* diagonal cut accent line — top-right corner */}
             <motion.path
               d="M 76 0 L 100 24"
               stroke="var(--color-accent)"
@@ -224,14 +198,8 @@ export default function HeroPhoto() {
           transition={{ duration: 0.5, delay: 1.0 }}
         >
           <span className="relative flex h-[7px] w-[7px] flex-shrink-0">
-            <span
-              className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-              style={{ background: 'var(--color-accent)' }}
-            />
-            <span
-              className="relative inline-flex h-[7px] w-[7px] rounded-full"
-              style={{ background: 'var(--color-accent)' }}
-            />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+            <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-accent" />
           </span>
           <span
             className="font-mono text-[10px] tracking-[0.14em] uppercase"
@@ -240,8 +208,7 @@ export default function HeroPhoto() {
             open_to_work
           </span>
           <motion.span
-            className="font-mono text-[10px]"
-            style={{ color: 'var(--color-accent)' }}
+            className="font-mono text-[10px] text-accent"
             animate={{ opacity: [1, 0, 1] }}
             transition={{ duration: 0.8, repeat: Infinity, repeatType: 'mirror', ease: 'linear' }}
           >
