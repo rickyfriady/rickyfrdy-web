@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
-import AnimatedGradient from '@/components/animated-gradient'
 
 export default function HeroPhoto() {
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -21,20 +20,17 @@ export default function HeroPhoto() {
   }, [reduced])
 
   return (
-    <motion.div ref={wrapRef} className="flex-shrink-0 self-start md:self-center" initial={false}>
-      {/* Portrait photo card */}
-      <div className="relative w-[clamp(148px,20vw,196px)] aspect-[3/4]">
-        {/* Animated gradient border — low noise, slow speed = elegant */}
-        <AnimatedGradient
-          config={{ preset: 'Prism', speed: 12 }}
-          radius="20px"
-          noise={{ opacity: 0.12 }}
-          style={{ zIndex: 0 }}
-        />
-
-        {/* Inner frame — 2px inside = 2px gradient border visible */}
+    <div ref={wrapRef} className="flex-shrink-0 self-start md:self-center">
+      {/* Portrait photo card — static gradient border */}
+      <div
+        className="relative w-[clamp(148px,20vw,196px)] aspect-[3/4] rounded-[20px] p-[2px]"
+        style={{
+          background:
+            'linear-gradient(145deg, color-mix(in oklch, var(--color-accent) 55%, transparent), color-mix(in oklch, var(--color-accent) 18%, var(--color-border)))'
+        }}
+      >
         <motion.div
-          className="absolute inset-[2px] z-10 overflow-hidden rounded-[18px]"
+          className="relative h-full w-full overflow-hidden rounded-[18px]"
           style={{ background: 'color-mix(in oklch, var(--color-background) 96%, transparent)' }}
           whileHover={{ scale: 1.018 }}
           transition={{ type: 'spring', stiffness: 260, damping: 32 }}
@@ -91,6 +87,6 @@ export default function HeroPhoto() {
           </span>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   )
 }

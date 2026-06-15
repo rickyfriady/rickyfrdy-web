@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import AnimatedGradient from '@/components/animated-gradient'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
 import type { Project } from '@/data/projects'
 
@@ -145,86 +146,109 @@ export default function ProjectsGrid({ projects }: Props) {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            {filtered.map((project) => (
-              <a
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                className="glass-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50"
-              >
-                {/* Left accent bar */}
-                <div className="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
+            {filtered.map((project) => {
+              const cardBody = (
+                <>
+                  {/* Left accent bar */}
+                  <div className="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
 
-                {/* Right decoration */}
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-l from-secondary/90 via-secondary/40 to-transparent" />
-                  <div
-                    className="absolute inset-0 opacity-40"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, transparent 55%, color-mix(in oklch, var(--color-border) 60%, transparent) 55%)'
-                    }}
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="relative z-10 min-w-0 flex-1">
-                  <div className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                    {project.company && (
-                      <span className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
-                        {project.company}
-                      </span>
-                    )}
-                    {project.company && (
-                      <span className="text-border select-none text-[10px]">·</span>
-                    )}
-                    <span className="diff-tag">{project.category.replace('-', ' ')}</span>
-                    <span className="diff-tag">{project.year}</span>
-                    {project.featured && <FeaturedBadge label="Featured" />}
+                  {/* Right decoration */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-l from-secondary/90 via-secondary/40 to-transparent" />
+                    <div
+                      className="absolute inset-0 opacity-40"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, transparent 55%, color-mix(in oklch, var(--color-border) 60%, transparent) 55%)'
+                      }}
+                    />
                   </div>
 
-                  <h3 className="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">
-                    {project.title}
-                  </h3>
-
-                  {project.role && (
-                    <p className="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>
-                  )}
-
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {project.keyMetric && (
-                      <>
-                        <span className="text-accent font-mono text-[10px]">
-                          {project.keyMetric}
+                  {/* Content */}
+                  <div className="relative z-10 min-w-0 flex-1">
+                    <div className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      {project.company && (
+                        <span className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+                          {project.company}
                         </span>
-                        {project.technologies.length > 0 && (
-                          <span className="text-border select-none text-[10px]">·</span>
-                        )}
-                      </>
-                    )}
-                    {project.technologies.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                      <span className="text-muted font-mono text-[10px]">
-                        +{project.technologies.length - 3}
-                      </span>
-                    )}
-                  </div>
-                </div>
+                      )}
+                      {project.company && (
+                        <span className="text-border select-none text-[10px]">·</span>
+                      )}
+                      <span className="diff-tag">{project.category.replace('-', ' ')}</span>
+                      <span className="diff-tag">{project.year}</span>
+                      {project.featured && <FeaturedBadge label="Featured" />}
+                    </div>
 
-                {/* Logo placeholder (initial circle — no Astro FinLogo in React) */}
-                <div className="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                  <span className="text-muted font-mono text-xs uppercase">
-                    {(project.company ?? project.title).charAt(0)}
-                  </span>
+                    <h3 className="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">
+                      {project.title}
+                    </h3>
+
+                    {project.role && (
+                      <p className="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>
+                    )}
+
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {project.keyMetric && (
+                        <>
+                          <span className="text-accent font-mono text-[10px]">
+                            {project.keyMetric}
+                          </span>
+                          {project.technologies.length > 0 && (
+                            <span className="text-border select-none text-[10px]">·</span>
+                          )}
+                        </>
+                      )}
+                      {project.technologies.slice(0, 3).map((t) => (
+                        <span
+                          key={t}
+                          className="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                      {project.technologies.length > 3 && (
+                        <span className="text-muted font-mono text-[10px]">
+                          +{project.technologies.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Logo placeholder */}
+                  <div className="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
+                    <span className="text-muted font-mono text-xs uppercase">
+                      {(project.company ?? project.title).charAt(0)}
+                    </span>
+                  </div>
+                </>
+              )
+
+              return project.featured ? (
+                <div key={project.slug} className="relative rounded-xl p-[2px]">
+                  <AnimatedGradient
+                    config={{ preset: 'Prism', speed: 12 }}
+                    radius="12px"
+                    noise={{ opacity: 0.12 }}
+                    style={{ zIndex: 0 }}
+                  />
+                  <a
+                    href={`/projects/${project.slug}`}
+                    className="glass-card group relative z-10 flex items-center gap-4 overflow-hidden rounded-[10px] px-5 py-4 no-underline transition-colors duration-200"
+                  >
+                    {cardBody}
+                  </a>
                 </div>
-              </a>
-            ))}
+              ) : (
+                <a
+                  key={project.slug}
+                  href={`/projects/${project.slug}`}
+                  className="glass-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50"
+                >
+                  {cardBody}
+                </a>
+              )
+            })}
           </div>
         )}
       </div>
