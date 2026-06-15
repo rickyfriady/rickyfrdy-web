@@ -258,6 +258,10 @@
   @apply text-accent text-xs font-semibold tracking-[0.14em] uppercase;
 }
 
+@utility clip-diagonal {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+}
+
 @utility scrollbar-none {
   scrollbar-width: none;
   &::-webkit-scrollbar {
