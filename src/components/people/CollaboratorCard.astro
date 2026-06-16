@@ -1,0 +1,87 @@
+---
+import type { Collaborator } from '@/data/collaborators'
+
+interface Props {
+  collaborator: Collaborator
+}
+
+const { collaborator } = Astro.props
+const initials = collaborator.name
+  .split(' ')
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((w) => w[0])
+  .join('')
+  .toUpperCase()
+
+const primaryHref = collaborator.linkedin ?? collaborator.website ?? '#'
+---
+
+<a
+  href={primaryHref}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="group glass-card relative flex w-64 flex-shrink-0 flex-col items-start gap-3 p-5 no-underline transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_0_28px_color-mix(in_oklch,var(--color-accent)_10%,transparent)]"
+  data-collaborator-card
+>
+  <!-- Avatar -->
+  <div class="relative size-14 flex-shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+    <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+      <span class="font-display text-accent text-xl font-bold leading-none">
+        {initials}
+      </span>
+    </div>
+    {collaborator.photo && (
+      <img
+        src={collaborator.photo}
+        alt={collaborator.name}
+        width="56"
+        height="56"
+        loading="lazy"
+        class="absolute inset-0 h-full w-full object-cover object-center text-transparent grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+      />
+    )}
+  </div>
+
+  <!-- Name + Role -->
+  <div class="min-w-0 flex-1">
+    <h3 class="text-foreground text-sm font-semibold leading-tight transition-colors duration-300 group-hover:text-accent">
+      {collaborator.name}
+    </h3>
+    <p class="text-muted mt-1 font-mono text-[10px] uppercase tracking-[0.08em] leading-snug">
+      {collaborator.role}
+    </p>
+  </div>
+
+  <!-- Relationship -->
+  {collaborator.relationship && (
+    <p class="text-muted text-xs leading-relaxed italic">
+      "{collaborator.relationship}"
+    </p>
+  )}
+
+  <!-- Links -->
+  <div class="mt-auto flex items-center gap-2 pt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+    {collaborator.linkedin && (
+      <span class="inline-flex items-center gap-1 transition-colors duration-200 group-hover:text-accent">
+        <svg class="size-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14M8.6 18.3v-7.4H6.2v7.4h2.4M7.4 9.9a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8M18.3 18.3v-4.1c0-2.1-1.1-3-2.6-3-1.2 0-1.7.6-2 1.1v-1H11.3v7.4h2.4v-4.1c0-1 .4-1.7 1.3-1.7s1.3.7 1.3 1.7v4.1h2"/>
+        </svg>
+        LinkedIn
+      </span>
+    )}
+    {collaborator.linkedin && collaborator.website && (
+      <span class="text-border select-none">·</span>
+    )}
+    {collaborator.website && (
+      <span class="inline-flex items-center gap-1 transition-colors duration-200 group-hover:text-accent">
+        <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Website
+      </span>
+    )}
+  </div>
+</a>

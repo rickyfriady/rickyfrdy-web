@@ -1,0 +1,25 @@
+---
+import CollaboratorCard from './CollaboratorCard.astro'
+import { collaborators } from '@/data/collaborators'
+
+interface Props {
+  sectionLabel: string
+}
+
+const { sectionLabel } = Astro.props
+---
+
+{collaborators.length > 0 && (
+  <section class="border-border border-b">
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">{sectionLabel}</span>
+    </div>
+
+    <!-- Horizontal scroll on mobile, grid on desktop -->
+    <div class="scrollbar-none -mx-4 flex gap-4 overflow-x-auto px-4 pb-10 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-4 lg:grid-cols-4">
+      {collaborators.map((person) => (
+        <CollaboratorCard collaborator={person} />
+      ))}
+    </div>
+  </section>
+)}

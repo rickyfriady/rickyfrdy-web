@@ -1,6 +1,7 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
+import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import HeroPhoto from '@/components/ui/HeroPhoto'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
@@ -167,11 +168,14 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── § 03 — Recent Writing ────────────────────────────────── -->
+  <!-- ─── § 03 — Orang yang Pernah Bekerja dengan Saya ─────────── -->
+  <CollaboratorsSection sectionLabel="§ 03 — Orang yang pernah bekerja dengan saya" />
+
+  <!-- ─── § 04 — Recent Writing ────────────────────────────────── -->
   {recentPosts.length > 0 && (
     <section class="border-border border-b">
       <div class="chapter-heading px-4">
-        <span class="chapter-label">§ 03 — Tulisan Terbaru</span>
+        <span class="chapter-label">§ 04 — Tulisan Terbaru</span>
       </div>
 
       <div class="divide-border divide-y px-4">
@@ -214,7 +218,7 @@ const capabilities = [
     </section>
   )}
 
-  <!-- ─── § 04 — Open to Work ──────────────────────────────────── -->
+  <!-- ─── § 05 — Open to Work ──────────────────────────────────── -->
   <section class="border-border border-b px-4 py-12">
     <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
       <div>
