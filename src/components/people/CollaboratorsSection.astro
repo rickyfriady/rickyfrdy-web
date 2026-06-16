@@ -1,25 +1,387 @@
 ---
-import CollaboratorCard from './CollaboratorCard.astro'
-import { collaborators } from '@/data/collaborators'
+import { collaborators, type Collaborator } from '@/data/collaborators'
 
 interface Props {
   sectionLabel: string
+  showMoreLabel?: string
 }
 
-const { sectionLabel } = Astro.props
+const { sectionLabel, showMoreLabel = 'Show more' } = Astro.props
+
+const featured = collaborators.filter((c) => c.featured)
+const rest = collaborators.filter((c) => !c.featured)
+
+const big = featured[0]
+const mediums = featured.slice(1, 3)
+const smalls = featured.slice(3, 6)
+
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+}
+
+function primaryHref(c: Collaborator): string {
+  return c.linkedin ?? c.website ?? '#'
+}
 ---
 
 {collaborators.length > 0 && (
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-collab-section>
     <div class="chapter-heading px-4">
       <span class="chapter-label">{sectionLabel}</span>
     </div>
 
-    <!-- Horizontal scroll on mobile, grid on desktop -->
-    <div class="scrollbar-none -mx-4 flex gap-4 overflow-x-auto px-4 pb-10 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-4 lg:grid-cols-4">
-      {collaborators.map((person) => (
-        <CollaboratorCard collaborator={person} />
-      ))}
+    <div class="px-4 pb-12 space-y-3">
+
+      <!-- ── Bento row 1: 1 BIG quote + 2 MEDIUM quotes ──────────── -->
+      {big && (
+        <div class="grid gap-3 md:grid-cols-3">
+          <!-- BIG quote card — spans 2 columns -->
+          <article
+            class="glass-card group relative overflow-hidden p-6 md:col-span-2 md:p-8"
+            data-collab-big
+          >
+            <!-- Editorial pull quote mark -->
+            <span
+              class="font-display text-accent absolute -top-2 left-4 select-none leading-none italic md:left-6"
+              style="font-size: clamp(7rem, 14vw, 11rem); opacity: 0.18"
+              aria-hidden="true"
+              data-collab-quotemark
+            >
+              "
+            </span>
+
+            <div class="relative grid gap-6 md:grid-cols-[180px_1fr] md:gap-8">
+              <!-- Portrait -->
+              <a
+                href={primaryHref(big)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="relative block aspect-[4/5] overflow-hidden rounded-lg border border-border bg-secondary no-underline"
+                aria-label={big.name}
+              >
+                <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                  <span class="font-display text-accent text-5xl font-bold leading-none">
+                    {initials(big.name)}
+                  </span>
+                </div>
+                {big.photo && (
+                  <img
+                    src={big.photo}
+                    alt={big.name}
+                    loading="lazy"
+                    class="absolute inset-0 h-full w-full object-cover object-center text-transparent grayscale transition-[filter,transform] duration-700 group-hover:grayscale-0 group-hover:scale-[1.04]"
+                  />
+                )}
+              </a>
+
+              <!-- Quote + attribution -->
+              <div class="flex flex-col justify-center">
+                {big.quote && (
+                  <blockquote
+                    class="font-display text-foreground italic leading-snug"
+                    style="font-size: clamp(1.3rem, 2.5vw, 1.8rem)"
+                  >
+                    {big.quote}
+                  </blockquote>
+                )}
+                <div class="mt-6 border-t border-border/60 pt-4">
+                  <p class="text-foreground text-sm font-semibold">{big.name}</p>
+                  <p class="text-muted mt-0.5 font-mono text-[10px] uppercase tracking-[0.12em]">
+                    {big.role}
+                  </p>
+                  <div class="mt-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                    {big.linkedin && (
+                      <a
+                        href={big.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="hover:text-accent inline-flex items-center gap-1 transition-colors"
+                      >
+                        in &nbsp;→
+                      </a>
+                    )}
+                    {big.website && (
+                      <a
+                        href={big.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="hover:text-accent inline-flex items-center gap-1 transition-colors"
+                      >
+                        web &nbsp;↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Two MEDIUM cards stacked in column 3 -->
+          {mediums.length > 0 && (
+            <div class="grid gap-3">
+              {mediums.map((m) => (
+                <a
+                  href={primaryHref(m)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="glass-card group relative flex flex-col gap-3 p-5 no-underline transition-colors duration-300 hover:border-accent/40"
+                  data-collab-med
+                >
+                  <div class="flex items-start gap-3">
+                    <div class="relative size-12 flex-shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+                      <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                        <span class="font-display text-accent text-lg font-bold leading-none">
+                          {initials(m.name)}
+                        </span>
+                      </div>
+                      {m.photo && (
+                        <img
+                          src={m.photo}
+                          alt={m.name}
+                          loading="lazy"
+                          class="absolute inset-0 h-full w-full object-cover object-center text-transparent grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+                        />
+                      )}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-foreground text-sm font-semibold leading-tight">{m.name}</p>
+                      <p class="text-muted mt-1 font-mono text-[10px] uppercase tracking-[0.08em] leading-snug">
+                        {m.role}
+                      </p>
+                    </div>
+                  </div>
+                  {m.quote && (
+                    <p class="text-foreground/85 line-clamp-3 text-sm leading-relaxed italic">
+                      "{m.quote}"
+                    </p>
+                  )}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <!-- ── Bento row 2: 3 SMALL compact cards ──────────────────── -->
+      {smalls.length > 0 && (
+        <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          {smalls.map((s) => (
+            <a
+              href={primaryHref(s)}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="glass-card group relative flex items-center gap-4 p-4 no-underline transition-colors duration-300 hover:border-accent/40"
+              data-collab-small
+            >
+              <div class="relative size-14 flex-shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+                <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                  <span class="font-display text-accent text-xl font-bold leading-none">
+                    {initials(s.name)}
+                  </span>
+                </div>
+                {s.photo && (
+                  <img
+                    src={s.photo}
+                    alt={s.name}
+                    loading="lazy"
+                    class="absolute inset-0 h-full w-full object-cover object-center text-transparent grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+                  />
+                )}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-foreground text-sm font-semibold leading-tight group-hover:text-accent transition-colors duration-300">
+                  {s.name}
+                </p>
+                <p class="text-muted mt-1 font-mono text-[10px] uppercase tracking-[0.08em] leading-snug">
+                  {s.role}
+                </p>
+              </div>
+              <span
+                class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted group-hover:text-accent transition-colors duration-300"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
+
+      <!-- ── Show more toggle + revealed list ────────────────────── -->
+      {rest.length > 0 && (
+        <div class="pt-4">
+          <button
+            type="button"
+            data-collab-toggle
+            aria-expanded="false"
+            aria-controls="collab-rest-list"
+            class="text-muted hover:text-accent font-mono text-xs uppercase tracking-[0.14em] transition-colors inline-flex items-center gap-2"
+          >
+            <span data-collab-toggle-label>+ {rest.length} {showMoreLabel}</span>
+            <span data-collab-toggle-icon class="inline-block transition-transform duration-300">↓</span>
+          </button>
+
+          <div
+            id="collab-rest-list"
+            data-collab-rest
+            class="grid overflow-hidden"
+            style="grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease-out-quart, ease)"
+          >
+            <div class="min-h-0">
+              <ul class="grid gap-x-8 gap-y-3 pt-6 sm:grid-cols-2">
+                {rest.map((p) => (
+                  <li data-collab-rest-row>
+                    <a
+                      href={primaryHref(p)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="group flex items-center gap-3 border-b border-border/40 py-2 no-underline"
+                    >
+                      <div class="relative size-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+                        <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                          <span class="text-accent font-mono text-[10px] font-bold leading-none">
+                            {initials(p.name)}
+                          </span>
+                        </div>
+                        {p.photo && (
+                          <img
+                            src={p.photo}
+                            alt={p.name}
+                            loading="lazy"
+                            class="absolute inset-0 h-full w-full object-cover object-center text-transparent grayscale transition-[filter] duration-300 group-hover:grayscale-0"
+                          />
+                        )}
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <p class="text-foreground text-sm font-medium truncate leading-tight group-hover:text-accent transition-colors">
+                          {p.name}
+                        </p>
+                        <p class="text-muted truncate font-mono text-[10px] uppercase tracking-[0.08em] mt-0.5">
+                          {p.role}
+                        </p>
+                      </div>
+                      <span class="text-muted group-hover:text-accent font-mono text-[10px] uppercase tracking-[0.14em] transition-colors" aria-hidden="true">
+                        {p.linkedin ? 'in' : 'web'} &nbsp;→
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </section>
 )}
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  function initCollaborators() {
+    const section = document.querySelector<HTMLElement>('[data-collab-section]')
+    if (!section) return
+
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      // BIG card reveal
+      const big = section.querySelector<HTMLElement>('[data-collab-big]')
+      if (big) {
+        gsap.from(big, {
+          opacity: 0,
+          y: 40,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: big, start: 'top 85%' },
+        })
+
+        // Editorial quote mark pops in after the card
+        const mark = big.querySelector<HTMLElement>('[data-collab-quotemark]')
+        if (mark) {
+          gsap.fromTo(
+            mark,
+            { scale: 0, opacity: 0, transformOrigin: 'top left' },
+            {
+              scale: 1,
+              opacity: 0.18,
+              duration: 0.9,
+              ease: 'back.out(2.2)',
+              scrollTrigger: { trigger: big, start: 'top 85%' },
+            }
+          )
+        }
+      }
+
+      // MEDIUM cards: stagger from right
+      const meds = section.querySelectorAll<HTMLElement>('[data-collab-med]')
+      if (meds.length) {
+        gsap.from(meds, {
+          opacity: 0,
+          x: 24,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: meds[0], start: 'top 88%' },
+        })
+      }
+
+      // SMALL cards: stagger from below
+      const smalls = section.querySelectorAll<HTMLElement>('[data-collab-small]')
+      if (smalls.length) {
+        gsap.from(smalls, {
+          opacity: 0,
+          y: 24,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: smalls[0], start: 'top 90%' },
+        })
+      }
+    })
+
+    // ── Show-more toggle (works regardless of reduced motion) ─────
+    const btn = section.querySelector<HTMLButtonElement>('[data-collab-toggle]')
+    const rest = section.querySelector<HTMLElement>('[data-collab-rest]')
+    const icon = section.querySelector<HTMLElement>('[data-collab-toggle-icon]')
+    const rows = section.querySelectorAll<HTMLElement>('[data-collab-rest-row]')
+
+    if (btn && rest) {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true'
+        const next = !expanded
+        btn.setAttribute('aria-expanded', String(next))
+        rest.style.gridTemplateRows = next ? '1fr' : '0fr'
+        if (icon) icon.style.transform = next ? 'rotate(180deg)' : 'rotate(0deg)'
+
+        // Stagger the rows when opening
+        if (next && rows.length) {
+          gsap.fromTo(
+            rows,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, stagger: 0.035, duration: 0.4, ease: 'power2.out' }
+          )
+        }
+      })
+    }
+  }
+
+  initCollaborators()
+
+  document.addEventListener('astro:before-swap', () => {
+    ScrollTrigger.getAll().forEach((t) => t.kill())
+  })
+
+  document.addEventListener('astro:after-swap', () => {
+    if (document.querySelector('[data-collab-section]')) {
+      initCollaborators()
+    }
+  })
+</script>
