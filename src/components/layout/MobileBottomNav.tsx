@@ -1,15 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
-import {
-  Briefcase,
-  FileText,
-  FolderOpen,
-  Home,
-  LayoutGrid,
-  Mail,
-  MoreHorizontal,
-  User
-} from 'lucide-react'
+import { Briefcase, FileText, FolderOpen, Home, Mail, MoreHorizontal, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type NavItem = { href: string; label: string; Icon: LucideIcon }
@@ -17,13 +8,12 @@ type NavItem = { href: string; label: string; Icon: LucideIcon }
 const mainLinks: NavItem[] = [
   { href: '/', label: 'Home', Icon: Home },
   { href: '/about', label: 'About', Icon: User },
-  { href: '/works', label: 'Works', Icon: LayoutGrid }
+  { href: '/projects', label: 'Projects', Icon: FolderOpen }
 ]
 
 const moreLinks: NavItem[] = [
   { href: '/experience', label: 'Experience', Icon: Briefcase },
   { href: '/resume', label: 'Resume', Icon: FileText },
-  { href: '/projects', label: 'Projects', Icon: FolderOpen },
   { href: '/contact', label: 'Contact', Icon: Mail }
 ]
 

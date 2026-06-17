@@ -1,149 +1,241 @@
 ---
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
-import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
 
 const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
+
+const stack = ['TypeScript', 'Vue 3', 'React', 'NestJS', 'Node.js', 'PostgreSQL', 'Redis', 'Docker']
+
+const beyondCode = [
+  { label: 'Solo travel', detail: 'Slow trips through Sumatra & Java — 4 provinces in 2025' },
+  { label: 'Open source', detail: 'Contribute to small Vue + Astro tooling on weekends' },
+  { label: 'Photography', detail: 'Manual lens shooter — Fujifilm X-T2 + 35mm prime' },
+  { label: 'Reading', detail: 'Currently on Designing Data-Intensive Applications (slow re-read)' },
+]
 ---
 
 <MainLayout
   title="About — Ricki Friadi"
-  description="Learn about my journey as a fullstack developer — from freelancing to building microservices and Micro-Frontend Architecture at PT. Pegadaian."
+  description="Ricki Friadi — a fullstack developer in Jakarta. Story, current work, and the experience behind the systems."
 >
-  <!-- Hero -->
-  <section class="border-border border-b px-4 py-8">
-    <p class="eyebrow mb-3">About</p>
-    <h1
-      class="title-display"
-      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
-    >
-      Building Systems With<br />
-      <span class="title-accent text-accent">Human-First Clarity.</span>
-    </h1>
-    <p class="text-muted mt-4 text-sm leading-relaxed">
-      A fullstack developer focused on reliable architecture, maintainable code, and interfaces
-      that feel intentional.
-    </p>
-  </section>
+  <PageAnimations />
 
-  <!-- § 01 — My Story -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 01 — My Story</span>
-    </div>
+  <!-- ─── Hero ─────────────────────────────────────────────────── -->
+  <section class="border-border relative border-b px-4 py-12 md:py-20">
+    <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
 
-    <div class="space-y-4 px-4 pb-8 text-sm leading-relaxed">
-      <p>
-        My journey into web development started in 2021 when I joined PT. Sumatera Kalimantan Jaya
-        as an intern and shipped a full company profile website in 14 days. That early deadline
-        pressure taught me to build fast and iterate — a habit that's stayed with me.
-      </p>
-      <p>
-        After freelancing with
-        <span class="text-foreground font-semibold">React, Node.js, and Express</span> for nearly
-        two years — integrating MongoDB, MySQL, and PostgreSQL backends for diverse clients — I
-        joined <span class="text-foreground font-semibold">PT. Pegadaian</span> in May 2023 as a
-        Software Engineer, working on the CSR Web App, B2B Web App, and internal tooling.
-      </p>
-      <p>
-        Since 2024 I've been deep in microservices and Micro-Frontend territory — revamping a
-        legacy CodeIgniter monolith into 9 NestJS microservices using the Factory pattern, and
-        contributing to a company-wide Micro-Frontend Architecture that lets multiple teams deploy
-        independently. I maintain ≥80% unit test coverage with Vitest across all my modules.
-      </p>
-      <p>
-        I use <span class="text-foreground font-semibold">TypeScript</span> as my core language
-        across the stack. On the frontend I reach for Vue 3 or React. On the backend, NestJS and
-        Express. I care about CI/CD hygiene, clean code, and building things that are actually
-        testable.
-      </p>
-    </div>
+    <div class="relative grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end md:gap-16">
+      <!-- Title block -->
+      <div>
+        <p class="eyebrow mb-4" data-hero-reveal>About</p>
+        <h1
+          class="title-display"
+          style="font-size: clamp(2.4rem, 7vw, 5rem); line-height: 0.93"
+          data-hero-reveal
+        >
+          A story of<br />
+          <span class="title-accent text-accent">shipping things</span><br />
+          that last.
+        </h1>
+        <p class="text-muted mt-6 max-w-md text-sm leading-relaxed" data-hero-reveal>
+          Fullstack developer based in Jakarta. I build the systems behind Indonesian fintech —
+          micro-frontends, NestJS microservices, and the architecture that keeps them
+          maintainable at scale.
+        </p>
 
-    <!-- Annotation notes -->
-    <div class="border-border border-t px-4 pb-8">
-      <p class="eyebrow mt-6 mb-4">§ Notes</p>
-      <div class="space-y-4">
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            Clean Code Philosophy
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Code is read more than it's written. Every line should be intentional, clear, and
-            maintainable for the next developer.
-          </p>
-        </div>
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            Performance Matters
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Users expect fast, responsive applications. I optimize every layer — from database
-            queries to frontend rendering.
-          </p>
-        </div>
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            User-Centric Approach
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Technology is just a tool. What matters is solving real problems for real people in
-            ways that make their lives easier.
-          </p>
-        </div>
-        <div class="border-accent/40 border-l-2 pl-4">
-          <p class="text-foreground mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
-            Beyond Code
-          </p>
-          <ul class="text-muted space-y-1 text-sm">
-            <li>Love listening to music while coding</li>
-            <li>Active in developer communities and open source</li>
-            <li>Currently exploring serverless architecture</li>
-          </ul>
+        <!-- Quick metadata strip -->
+        <dl class="text-muted mt-8 grid max-w-md grid-cols-3 gap-x-4 gap-y-2 border-t border-border/60 pt-5 font-mono text-[10px] uppercase tracking-[0.12em]" data-hero-reveal>
+          <div>
+            <dt class="opacity-50">Based</dt>
+            <dd class="text-foreground mt-1">Jakarta, ID</dd>
+          </div>
+          <div>
+            <dt class="opacity-50">Years</dt>
+            <dd class="text-foreground mt-1">4+ in prod</dd>
+          </div>
+          <div>
+            <dt class="opacity-50">Status</dt>
+            <dd class="text-accent mt-1">Open to work</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Twin photo composition -->
+      <div class="relative grid gap-3 sm:max-w-sm md:max-w-none" data-hero-reveal data-parallax-wrap>
+        <div class="grid grid-cols-2 gap-3" data-parallax-target>
+          <!-- Primary portrait -->
+          <div
+            class="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-secondary"
+          >
+            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+              <span
+                class="font-display text-5xl font-bold leading-none"
+                style="color: color-mix(in oklch, var(--color-accent) 35%, transparent)"
+              >
+                RF
+              </span>
+            </div>
+            <img
+              src="/images/avatar.jpg"
+              alt="Ricki Friadi"
+              loading="eager"
+              class="absolute inset-0 h-full w-full object-cover object-top text-transparent"
+            />
+          </div>
+
+          <!-- Scene / secondary -->
+          <div
+            class="relative aspect-[3/4] mt-8 overflow-hidden rounded-lg border border-border bg-secondary"
+          >
+            <!-- Fallback pattern when no scene.jpg exists -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
+              <div class="grid grid-cols-3 gap-1.5 opacity-30">
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+              </div>
+              <span class="font-mono text-muted text-[10px] uppercase tracking-[0.15em]">
+                Jakarta, ID
+              </span>
+            </div>
+            <img
+              src="/images/scene.jpg"
+              alt="A scene from my work"
+              loading="lazy"
+              data-scene-img
+              class="absolute inset-0 h-full w-full object-cover object-center"
+            />
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- § 02 — Skills -->
-  <section class="border-border border-b">
+  <!-- ─── § 01 — Story ─────────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 02 — Skills</span>
+      <span class="chapter-label">§ 01 — Story</span>
     </div>
-    <SkillsMatrix />
+
+    <div class="max-w-2xl space-y-5 px-4 pb-12 text-sm leading-relaxed">
+      <p data-stagger-item>
+        I started writing code in 2020 during a final-year thesis project — a Python chatbot that
+        answered student questions about Universitas Riau's community service program. It hit
+        80% match accuracy on a hand-curated 3,000-pair dataset and shipped to the administrative
+        office. I thought I was done.
+      </p>
+      <p data-stagger-item>
+        Then in April 2021, my first internship at PT. Sumatera Kalimantan Jaya gave me 14 days
+        to ship a company profile site. CodeIgniter, PHP, deadline pressure. We shipped on time.
+        That habit — <span class="text-foreground font-semibold">ship fast, iterate honestly</span>
+        — has stayed with me ever since.
+      </p>
+      <p data-stagger-item>
+        Two years of freelancing followed: React, Node.js, Express, integrating MongoDB, MySQL,
+        and PostgreSQL for SMB clients across Pekanbaru. The work was unglamorous but it forced
+        a kind of generalist fluency you can't get from one stack at one company.
+      </p>
+      <p data-stagger-item>
+        I joined <span class="text-foreground font-semibold">PT. Pegadaian</span> in May 2023 as
+        a Software Engineer. Since 2024 I've been deep in micro-frontends and microservices —
+        migrating a CodeIgniter monolith to 9 NestJS services using the Factory pattern,
+        contributing to a Module Federation platform that serves 1.5 million users, and
+        maintaining ≥80% Vitest coverage on everything I ship.
+      </p>
+    </div>
   </section>
 
-  <!-- § 03 — GitHub Activity -->
+  <!-- ─── § 02 — Currently ─────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Currently</span>
+    </div>
+
+    <div class="grid gap-10 px-4 pb-12 md:grid-cols-2">
+      <div data-stagger-item>
+        <p class="text-foreground text-sm font-semibold mb-3">Working on</p>
+        <p class="text-muted text-sm leading-relaxed">
+          Micro-frontend modules for Singel APP at Pegadaian, the Microsite Pinjaman Factory-pattern
+          rewrite, and KAMILA's marketing performance reporting. I write a lot of Vitest specs.
+        </p>
+      </div>
+
+      <div data-stagger-item>
+        <p class="text-foreground text-sm font-semibold mb-3">Daily stack</p>
+        <ul class="flex flex-wrap gap-1.5">
+          {stack.map((t) => (
+            <li class="diff-tag">{t}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── § 03 — Beyond Code ───────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 03 — Beyond code</span>
+    </div>
+
+    <div class="px-4 pb-12">
+      <ul class="grid gap-x-10 gap-y-6 sm:grid-cols-2 max-w-3xl">
+        {beyondCode.map((item) => (
+          <li class="border-l-2 border-accent/40 pl-4" data-stagger-item>
+            <p class="text-foreground text-sm font-semibold">{item.label}</p>
+            <p class="text-muted mt-1 text-sm leading-relaxed">{item.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─── § 04 — People I've worked with ───────────────────────── -->
+  <CollaboratorsSection sectionLabel="§ 04 — People I've worked with" />
+
+  <!-- ─── § 05 — GitHub Activity ───────────────────────────────── -->
   <section class="border-border border-b">
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 03 — GitHub Activity</span>
+      <span class="chapter-label">§ 05 — GitHub activity</span>
     </div>
-    <div class="px-4 pb-6">
+    <div class="px-4 pb-8">
       <GitHubHeatmap client:visible initialStats={initialStats} />
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="px-4 py-12 text-center">
+  <!-- ─── CTA ──────────────────────────────────────────────────── -->
+  <section class="px-4 py-16 text-center">
     <p class="eyebrow mb-4">Collaboration</p>
-    <h2 class="title-display" style="font-size: clamp(1.8rem, 5vw, 3rem)">
-      Let's Build Something Together
+    <h2 class="title-display" style="font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1">
+      Let's build<br />
+      <span class="title-accent text-accent">something together.</span>
     </h2>
-    <p class="text-muted mx-auto mt-4 mb-8 max-w-sm text-sm">
-      I'm always interested in hearing about new projects and opportunities.
+    <p class="text-muted mx-auto mt-5 mb-8 max-w-sm text-sm leading-relaxed">
+      Open to fullstack roles, freelance projects, or just a coffee chat about the systems
+      problem you're stuck on.
     </p>
     <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
       <a
         href="/contact"
-        class="bg-accent text-background hover:bg-accent-hover inline-flex h-10 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
-        Get In Touch
+        Get in touch
       </a>
       <a
         href="/projects"
-        class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
-        View My Projects
+        See my projects
       </a>
     </div>
   </section>
