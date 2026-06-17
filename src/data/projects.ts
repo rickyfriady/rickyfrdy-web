@@ -10,6 +10,7 @@ export interface Project {
   fullDescription: string
   featured: boolean
   category: 'web-app' | 'api' | 'tool' | 'open-source'
+  type: 'project' | 'work'
   technologies: string[]
   keyMetric?: string
   heroImage?: string
@@ -37,6 +38,7 @@ export const projects: Project[] = [
       'Singel APP is the unified employee super-app for PT. Pegadaian built on a Micro-Frontend Architecture. Multiple product teams build and deploy their features independently using Module Federation. The backend is a constellation of NestJS microservices connected via Redis pub/sub.',
     featured: true,
     category: 'web-app',
+    type: 'project',
     technologies: ['Vue 3', 'NestJS', 'Tailwind', 'PostgreSQL', 'Redis', 'Zod', 'Pinia', 'Vitest'],
     keyMetric: '≥80% unit test coverage across all modules',
     company: 'PT. Pegadaian',
@@ -75,6 +77,7 @@ export const projects: Project[] = [
       'A complete backend rewrite of the loan lead generation platform for PT. Pegadaian. Replaced a single CodeIgniter 3 monolith with 9 purpose-built NestJS microservices. The Factory pattern enables dynamic product support without code changes when new loan products are introduced.',
     featured: true,
     category: 'api',
+    type: 'project',
     technologies: ['Vue.js', 'NestJS', 'TypeScript', 'Redis', 'PostgreSQL', 'Crontab', 'Pinia'],
     keyMetric: '9 independent microservices using Factory pattern',
     company: 'PT. Pegadaian',
@@ -113,6 +116,7 @@ export const projects: Project[] = [
       'KAMILA is the internal tool used by PT. Pegadaian marketing teams to track plans, weekly reports, KPIs, and leads submitted from external business partners. Built with a React frontend and Express/Node.js backend.',
     featured: false,
     category: 'web-app',
+    type: 'project',
     technologies: [
       'ReactJS',
       'ExpressJS',
@@ -159,6 +163,7 @@ export const projects: Project[] = [
       "AIRA handles financial reconciliation between PT. Pegadaian's core banking system and external partner banks. The system validates transactions over SFTP, generates journal entries to accounting standards, and produces daily reports consumed by the finance division.",
     featured: false,
     category: 'tool',
+    type: 'project',
     technologies: ['PHP 5', 'PHP Native', 'SFTP', 'VM', 'MySQL'],
     company: 'PT. Pegadaian',
     companyLogo: 'pegadaian',
@@ -196,6 +201,7 @@ export const projects: Project[] = [
       'Final thesis project at Universitas Riau. Built a Python/Flask chatbot that answers student questions about the Kukerta community service program using a fuzzy string matching algorithm trained on 3,000 manually curated question-answer pairs.',
     featured: false,
     category: 'tool',
+    type: 'project',
     technologies: ['Python', 'Flask', 'JavaScript', 'jQuery', 'Bootstrap', 'MySQL'],
     githubUrl: 'https://github.com/rickyfrdy/chatbot-kukerta',
     role: 'Solo Developer · Thesis Author',

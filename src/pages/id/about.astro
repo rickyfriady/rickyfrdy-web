@@ -1,8 +1,8 @@
 ---
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
 import MainLayout from '@/components/layout/MainLayout.astro'
-import FinLogo from '@/components/ui/FinLogo.astro'
-import { experiences } from '@/data/experience.id'
+import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
 
 const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
@@ -22,28 +22,33 @@ const beyondCode = [
   description="Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun."
   lang="id"
 >
+  <PageAnimations />
+
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="border-border relative border-b px-4 py-12 md:py-20">
     <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
 
     <div class="relative grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end md:gap-16">
+      <!-- Title block -->
       <div>
-        <p class="eyebrow mb-4">Tentang</p>
+        <p class="eyebrow mb-4" data-hero-reveal>Tentang</p>
         <h1
           class="title-display"
           style="font-size: clamp(2.4rem, 7vw, 5rem); line-height: 0.93"
+          data-hero-reveal
         >
           Cerita tentang<br />
           <span class="title-accent text-accent">membangun hal</span><br />
           yang bertahan.
         </h1>
-        <p class="text-muted mt-6 max-w-md text-sm leading-relaxed">
+        <p class="text-muted mt-6 max-w-md text-sm leading-relaxed" data-hero-reveal>
           Fullstack developer berbasis di Jakarta. Saya membangun sistem di balik fintech
           Indonesia — micro-frontends, microservices NestJS, dan arsitektur yang membuatnya
           tetap mudah dipelihara di skala besar.
         </p>
 
-        <dl class="text-muted mt-8 grid max-w-md grid-cols-3 gap-x-4 gap-y-2 border-t border-border/60 pt-5 font-mono text-[10px] uppercase tracking-[0.12em]">
+        <!-- Quick metadata strip -->
+        <dl class="text-muted mt-8 grid max-w-md grid-cols-3 gap-x-4 gap-y-2 border-t border-border/60 pt-5 font-mono text-[10px] uppercase tracking-[0.12em]" data-hero-reveal>
           <div>
             <dt class="opacity-50">Lokasi</dt>
             <dd class="text-foreground mt-1">Jakarta, ID</dd>
@@ -59,8 +64,10 @@ const beyondCode = [
         </dl>
       </div>
 
-      <div class="relative grid gap-3 sm:max-w-sm md:max-w-none">
-        <div class="grid grid-cols-2 gap-3">
+      <!-- Twin photo composition -->
+      <div class="relative grid gap-3 sm:max-w-sm md:max-w-none" data-hero-reveal data-parallax-wrap>
+        <div class="grid grid-cols-2 gap-3" data-parallax-target>
+          <!-- Primary portrait -->
           <div
             class="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-secondary"
           >
@@ -80,19 +87,33 @@ const beyondCode = [
             />
           </div>
 
+          <!-- Scene / secondary -->
           <div
             class="relative aspect-[3/4] mt-8 overflow-hidden rounded-lg border border-border bg-secondary"
           >
-            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+            <!-- Fallback pattern when no scene.jpg exists -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
+              <div class="grid grid-cols-3 gap-1.5 opacity-30">
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+              </div>
               <span class="font-mono text-muted text-[10px] uppercase tracking-[0.15em]">
-                Cerita
+                Jakarta, ID
               </span>
             </div>
             <img
               src="/images/scene.jpg"
               alt="Suasana kerja"
               loading="lazy"
-              class="absolute inset-0 h-full w-full object-cover object-center text-transparent"
+              data-scene-img
+              class="absolute inset-0 h-full w-full object-cover object-center"
             />
           </div>
         </div>
@@ -101,31 +122,31 @@ const beyondCode = [
   </section>
 
   <!-- ─── § 01 — Cerita ────────────────────────────────────────── -->
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
       <span class="chapter-label">§ 01 — Cerita</span>
     </div>
 
     <div class="max-w-2xl space-y-5 px-4 pb-12 text-sm leading-relaxed">
-      <p>
+      <p data-stagger-item>
         Saya mulai menulis kode tahun 2020 lewat proyek skripsi — chatbot Python yang menjawab
         pertanyaan mahasiswa Universitas Riau tentang program Kukerta. Akurasinya mencapai
         80% pada dataset 3.000 pasangan yang saya kurasi manual, dan dirilis ke kantor administrasi.
         Saya pikir saya sudah selesai.
       </p>
-      <p>
+      <p data-stagger-item>
         Lalu di April 2021, magang pertama di PT. Sumatera Kalimantan Jaya memberi saya 14 hari
         untuk merilis website profil perusahaan. CodeIgniter, PHP, tekanan deadline. Kami rilis
         tepat waktu. Kebiasaan itu —
         <span class="text-foreground font-semibold">rilis cepat, iterasi dengan jujur</span> —
         masih melekat sampai sekarang.
       </p>
-      <p>
+      <p data-stagger-item>
         Dua tahun freelancing menyusul: React, Node.js, Express, integrasi MongoDB, MySQL, dan
         PostgreSQL untuk klien UKM di Pekanbaru. Kerjanya tidak glamor tapi memaksa saya jadi
         generalis — sesuatu yang sulit didapat kalau cuma di satu stack di satu perusahaan.
       </p>
-      <p>
+      <p data-stagger-item>
         Saya bergabung dengan <span class="text-foreground font-semibold">PT. Pegadaian</span>
         bulan Mei 2023 sebagai Software Engineer. Sejak 2024 saya fokus di micro-frontends dan
         microservices — migrasi monolith CodeIgniter ke 9 microservices NestJS dengan Factory
@@ -136,13 +157,13 @@ const beyondCode = [
   </section>
 
   <!-- ─── § 02 — Saat Ini ──────────────────────────────────────── -->
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
       <span class="chapter-label">§ 02 — Saat ini</span>
     </div>
 
     <div class="grid gap-10 px-4 pb-12 md:grid-cols-2">
-      <div>
+      <div data-stagger-item>
         <p class="text-foreground text-sm font-semibold mb-3">Sedang dikerjakan</p>
         <p class="text-muted text-sm leading-relaxed">
           Modul micro-frontend untuk Singel APP di Pegadaian, rewrite Microsite Pinjaman
@@ -151,7 +172,7 @@ const beyondCode = [
         </p>
       </div>
 
-      <div>
+      <div data-stagger-item>
         <p class="text-foreground text-sm font-semibold mb-3">Stack sehari-hari</p>
         <ul class="flex flex-wrap gap-1.5">
           {stack.map((t) => (
@@ -163,7 +184,7 @@ const beyondCode = [
   </section>
 
   <!-- ─── § 03 — Di Luar Kode ──────────────────────────────────── -->
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
       <span class="chapter-label">§ 03 — Di luar kode</span>
     </div>
@@ -171,7 +192,7 @@ const beyondCode = [
     <div class="px-4 pb-12">
       <ul class="grid gap-x-10 gap-y-6 sm:grid-cols-2 max-w-3xl">
         {beyondCode.map((item) => (
-          <li class="border-l-2 border-accent/40 pl-4">
+          <li class="border-l-2 border-accent/40 pl-4" data-stagger-item>
             <p class="text-foreground text-sm font-semibold">{item.label}</p>
             <p class="text-muted mt-1 text-sm leading-relaxed">{item.detail}</p>
           </li>
@@ -180,64 +201,8 @@ const beyondCode = [
     </div>
   </section>
 
-  <!-- ─── § 04 — Pengalaman ────────────────────────────────────── -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 04 — Pengalaman</span>
-    </div>
-
-    <div class="px-4 pb-12">
-      <ol class="space-y-12">
-        {experiences.map((exp) => (
-          <li class="grid gap-4 md:grid-cols-[200px_1fr] md:gap-10">
-            <div class="flex items-start gap-3 md:flex-col md:gap-4">
-              {exp.companyLogo ? (
-                <FinLogo name={exp.companyLogo} size={40} bg label={exp.company} />
-              ) : (
-                <div class="size-10 flex-shrink-0 rounded-full border border-border bg-secondary flex items-center justify-center">
-                  <span class="text-accent font-display text-base font-bold leading-none">
-                    {exp.company.charAt(0)}
-                  </span>
-                </div>
-              )}
-              <div>
-                <p class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] leading-snug">
-                  {exp.period}
-                </p>
-                <p class="text-muted mt-1 font-mono text-[10px] uppercase tracking-[0.08em] opacity-70 leading-snug">
-                  {exp.location}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <p class="text-foreground text-base font-semibold leading-snug">
-                {exp.role}
-              </p>
-              <p class="text-accent mt-1 font-mono text-xs tracking-[0.1em]">
-                {exp.company}
-              </p>
-
-              <ul class="text-muted mt-4 space-y-3 text-sm leading-relaxed">
-                {exp.bullets.map((b) => (
-                  <li class="flex gap-3">
-                    <span class="text-accent/60 mt-2 size-1 flex-shrink-0 rounded-full bg-current" aria-hidden="true" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <ul class="mt-5 flex flex-wrap gap-1.5">
-                {exp.stack.map((s) => (
-                  <li class="diff-tag">{s}</li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
+  <!-- ─── § 04 — Orang yang pernah bekerja dengan saya ─────────── -->
+  <CollaboratorsSection sectionLabel="§ 04 — Orang yang pernah bekerja dengan saya" />
 
   <!-- ─── § 05 — Aktivitas GitHub ──────────────────────────────── -->
   <section class="border-border border-b">
@@ -264,12 +229,14 @@ const beyondCode = [
       <a
         href="/id/contact"
         class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
         Hubungi saya
       </a>
       <a
         href="/id/projects"
         class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
         Lihat proyek
       </a>

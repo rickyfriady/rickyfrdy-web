@@ -2,15 +2,18 @@ import { useMemo, useState } from 'react'
 import AnimatedGradient from '@/components/animated-gradient'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
 import type { Project } from '@/data/projects'
+import { type Lang, t } from '@/i18n/ui'
 
 interface Props {
   projects: Project[]
+  lang?: Lang
 }
 
 type CategoryFilter = 'all' | Project['category']
 type SortOrder = 'featured' | 'recent' | 'year'
 
-export default function ProjectsGrid({ projects }: Props) {
+export default function ProjectsGrid({ projects, lang }: Props) {
+  const [typeFilter, setTypeFilter] = useState<'all' | 'project' | 'work'>('all')
   const [category, setCategory] = useState<CategoryFilter>('all')
   const [tech, setTech] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortOrder>('featured')
@@ -29,6 +32,9 @@ export default function ProjectsGrid({ projects }: Props) {
     if (category !== 'all') {
       result = result.filter((p) => p.category === category)
     }
+    if (typeFilter !== 'all') {
+      result = result.filter((p) => p.type === typeFilter)
+    }
     if (tech !== 'all') {
       result = result.filter((p) =>
         p.technologies.some((t) => t.toLowerCase().includes(tech.toLowerCase()))
@@ -46,9 +52,10 @@ export default function ProjectsGrid({ projects }: Props) {
       }
       return b.year - a.year
     })
-  }, [projects, category, tech, sortBy])
+  }, [projects, category, tech, sortBy, typeFilter])
 
   function reset() {
+    setTypeFilter('all')
     setCategory('all')
     setTech('all')
     setSortBy('featured')
@@ -59,6 +66,32 @@ export default function ProjectsGrid({ projects }: Props) {
       {/* Sidebar filters */}
       <aside className="lg:w-56 lg:flex-shrink-0">
         <div className="border-border sticky top-24 space-y-6 rounded-2xl border p-5">
+          <div>
+            <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
+              {t(lang ?? 'en', 'filter.type')}
+            </p>
+            <div className="space-y-1">
+              {(['all', 'project', 'work'] as const).map((ft) => (
+                <button
+                  key={ft}
+                  type="button"
+                  onClick={() => setTypeFilter(ft)}
+                  className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
+                    typeFilter === ft
+                      ? 'bg-secondary text-foreground'
+                      : 'text-muted hover:text-foreground hover:bg-secondary/60'
+                  }`}
+                >
+                  {ft === 'all'
+                    ? t(lang ?? 'en', 'filter.all')
+                    : ft === 'project'
+                      ? t(lang ?? 'en', 'filter.projects')
+                      : t(lang ?? 'en', 'filter.works')}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
               Category
@@ -129,9 +162,7 @@ export default function ProjectsGrid({ projects }: Props) {
             Reset filters
           </button>
 
-          <p className="text-muted font-mono text-[10px]">
-            {filtered.length} project{filtered.length !== 1 ? 's' : ''}
-          </p>
+          <p className="text-muted font-mono text-[10px]">{filtered.length} items</p>
         </div>
       </aside>
 
@@ -139,7 +170,7 @@ export default function ProjectsGrid({ projects }: Props) {
       <div className="flex-1">
         {filtered.length === 0 ? (
           <div className="border-border flex flex-col items-center rounded-2xl border p-12 text-center">
-            <p className="text-muted mb-4 text-sm">No projects match your filters</p>
+            <p className="text-muted mb-4 text-sm">No items match your filters</p>
             <button type="button" onClick={reset} className="text-accent text-sm hover:underline">
               Reset filters
             </button>

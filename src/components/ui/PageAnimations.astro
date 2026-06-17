@@ -1,0 +1,149 @@
+---
+// PageAnimations.astro
+// Drops into any page to automatically handle GSAP entrances + ScrollTrigger
+---
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  function initAnimations() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // 1. Hero Reveal (Top of page items)
+    // Elements with data-hero-reveal (optional data-hero-delay)
+    const heroItems = document.querySelectorAll('[data-hero-reveal]')
+    if (heroItems.length > 0) {
+      // Set initial state immediately to prevent flash
+      gsap.set(heroItems, { opacity: 0, y: 20 })
+
+      gsap.to(heroItems, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.1,
+        delay: 0.1
+      })
+    }
+
+    // 2. ScrollTrigger Stagger Groups (Grids, lists)
+    const staggerGroups = document.querySelectorAll('[data-stagger-group]')
+    staggerGroups.forEach(group => {
+      const items = group.querySelectorAll('[data-stagger-item]')
+      if (items.length === 0) return
+
+      gsap.fromTo(items,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: group,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    })
+
+    // 3. Simple fade-in sections (replacing CSS .js-reveal)
+    const sections = document.querySelectorAll('main > section:not(:first-child)')
+    sections.forEach(section => {
+      // Don't double animate if it's a stagger group
+      if (section.hasAttribute('data-stagger-group')) return
+
+      gsap.fromTo(section,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    })
+
+    // 4. Button / Link Hover Micro-interactions
+    const btns = document.querySelectorAll('[data-btn-hover]')
+    btns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'power4.out' })
+      })
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { scale: 1, duration: 0.4, ease: 'power4.out' })
+      })
+      btn.addEventListener('mousedown', () => {
+        gsap.to(btn, { scale: 0.96, duration: 0.2, ease: 'power2.out' })
+      })
+      btn.addEventListener('mouseup', () => {
+        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'power4.out' })
+      })
+    })
+
+    // 5. Mouse Parallax (for about page photos)
+    const parallaxContainers = document.querySelectorAll('[data-parallax-wrap]')
+    parallaxContainers.forEach(wrap => {
+      const target = wrap.querySelector('[data-parallax-target]') as HTMLElement
+      if (!target) return
+
+      wrap.addEventListener('mousemove', (e: Event) => {
+        const mouseEvent = e as MouseEvent
+        const rect = wrap.getBoundingClientRect()
+        const x = (mouseEvent.clientX - rect.left) / rect.width - 0.5
+        const y = (mouseEvent.clientY - rect.top) / rect.height - 0.5
+
+        gsap.to(target, {
+          x: x * 20,
+          y: y * 20,
+          duration: 0.6,
+          ease: 'power2.out'
+        })
+      })
+
+      wrap.addEventListener('mouseleave', () => {
+        gsap.to(target, {
+          x: 0,
+          y: 0,
+          duration: 1,
+          ease: 'elastic.out(1, 0.3)'
+        })
+      })
+    })
+  }
+
+  // Hide broken scene images (avoids inline onerror which fails jsx-a11y lint)
+  function initSceneImages() {
+    document.querySelectorAll<HTMLImageElement>('img[data-scene-img]').forEach(img => {
+      img.addEventListener('error', () => { img.style.display = 'none' })
+      // Already errored before listener attached (cached)
+      if (img.complete && !img.naturalWidth) img.style.display = 'none'
+    })
+  }
+
+  // Run on first load
+  initSceneImages()
+  initAnimations()
+
+  // Run on view transition swap
+  document.addEventListener('astro:after-swap', () => {
+    ScrollTrigger.getAll().forEach(t => t.kill())
+    initSceneImages()
+    initAnimations()
+  })
+
+  // Cleanup on swap
+  document.addEventListener('astro:before-swap', () => {
+    ScrollTrigger.getAll().forEach(t => t.kill())
+  })
+</script>
