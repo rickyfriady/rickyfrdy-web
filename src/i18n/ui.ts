@@ -6,8 +6,13 @@ export const ui = {
     'nav.experience': 'Experience',
     'nav.resume': 'Resume',
     'nav.projects': 'Projects',
-    'nav.works': 'Works',
     'nav.contact': 'Contact',
+
+    // Filter labels
+    'filter.type': 'Type',
+    'filter.all': 'All',
+    'filter.projects': 'Projects',
+    'filter.works': 'Works',
 
     // Resume page
     'resume.title': 'Resume — Ricki Friadi',
@@ -42,8 +47,13 @@ export const ui = {
     'nav.experience': 'Pengalaman',
     'nav.resume': 'CV',
     'nav.projects': 'Proyek',
-    'nav.works': 'Karya',
     'nav.contact': 'Kontak',
+
+    // Filter labels
+    'filter.type': 'Tipe',
+    'filter.all': 'Semua',
+    'filter.projects': 'Proyek',
+    'filter.works': 'Karya',
 
     // Resume page
     'resume.title': 'CV — Ricki Friadi',

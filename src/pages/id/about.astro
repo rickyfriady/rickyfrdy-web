@@ -1,150 +1,244 @@
 ---
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
-import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
 
 const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
+
+const stack = ['TypeScript', 'Vue 3', 'React', 'NestJS', 'Node.js', 'PostgreSQL', 'Redis', 'Docker']
+
+const beyondCode = [
+  { label: 'Perjalanan solo', detail: 'Jalan-jalan pelan ke Sumatera & Jawa — 4 provinsi tahun 2025' },
+  { label: 'Open source', detail: 'Kontribusi ke tooling kecil Vue + Astro di akhir pekan' },
+  { label: 'Fotografi', detail: 'Pemakai lensa manual — Fujifilm X-T2 + 35mm prime' },
+  { label: 'Membaca', detail: 'Sedang baca ulang Designing Data-Intensive Applications (pelan-pelan)' },
+]
 ---
 
 <MainLayout
   title="Tentang — Ricki Friadi"
-  description="Perjalanan saya sebagai fullstack developer — dari freelancing hingga membangun microservices dan Arsitektur Micro-Frontend di PT. Pegadaian."
+  description="Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun."
   lang="id"
 >
-  <!-- Hero -->
-  <section class="border-border border-b px-4 py-8">
-    <p class="eyebrow mb-3">Tentang</p>
-    <h1
-      class="title-display"
-      style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
-    >
-      Membangun Sistem Dengan<br />
-      <span class="title-accent text-accent">Kejelasan yang Manusiawi.</span>
-    </h1>
-    <p class="text-muted mt-4 text-sm leading-relaxed">
-      Seorang fullstack developer yang fokus pada arsitektur andal, kode yang mudah dipelihara, dan antarmuka
-      yang terasa disengaja.
-    </p>
-  </section>
+  <PageAnimations />
 
-  <!-- § 01 — My Story -->
-  <section class="border-border border-b">
-    <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 01 — Perjalanan Saya</span>
-    </div>
+  <!-- ─── Hero ─────────────────────────────────────────────────── -->
+  <section class="border-border relative border-b px-4 py-12 md:py-20">
+    <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
 
-    <div class="space-y-4 px-4 pb-8 text-sm leading-relaxed">
-      <p>
-        Perjalanan saya ke pengembangan web dimulai pada 2021 ketika saya bergabung dengan PT. Sumatera Kalimantan Jaya
-        sebagai magang dan meluncurkan website profil perusahaan lengkap dalam 14 hari. Tekanan deadline awal itu
-        mengajarkan saya untuk membangun cepat dan beritasi — kebiasaan yang terus ada pada diri saya.
-      </p>
-      <p>
-        Setelah freelancing dengan
-        <span class="text-foreground font-semibold">React, Node.js, dan Express</span> selama hampir
-        dua tahun — mengintegrasikan backend MongoDB, MySQL, dan PostgreSQL untuk berbagai klien — saya
-        bergabung dengan <span class="text-foreground font-semibold">PT. Pegadaian</span> pada Mei 2023 sebagai
-        Software Engineer, mengerjakan CSR Web App, B2B Web App, dan internal tooling.
-      </p>
-      <p>
-        Sejak 2024 saya terjun dalam microservices dan Micro-Frontend — merombak monolith CodeIgniter legacy
-        menjadi 9 microservices NestJS menggunakan Factory pattern, dan berkontribusi pada Arsitektur Micro-Frontend
-        skala perusahaan yang memungkinkan beberapa tim deploy secara independen. Saya mempertahankan cakupan unit test
-        ≥80% dengan Vitest di semua modul saya.
-      </p>
-      <p>
-        Saya menggunakan <span class="text-foreground font-semibold">TypeScript</span> sebagai bahasa inti
-        di seluruh stack. Di frontend saya menggunakan Vue 3 atau React. Di backend, NestJS dan
-        Express. Saya peduli dengan higienitas CI/CD, kode bersih, dan membangun hal-hal yang benar-benar
-        bisa diuji.
-      </p>
-    </div>
+    <div class="relative grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end md:gap-16">
+      <!-- Title block -->
+      <div>
+        <p class="eyebrow mb-4" data-hero-reveal>Tentang</p>
+        <h1
+          class="title-display"
+          style="font-size: clamp(2.4rem, 7vw, 5rem); line-height: 0.93"
+          data-hero-reveal
+        >
+          Cerita tentang<br />
+          <span class="title-accent text-accent">membangun hal</span><br />
+          yang bertahan.
+        </h1>
+        <p class="text-muted mt-6 max-w-md text-sm leading-relaxed" data-hero-reveal>
+          Fullstack developer berbasis di Jakarta. Saya membangun sistem di balik fintech
+          Indonesia — micro-frontends, microservices NestJS, dan arsitektur yang membuatnya
+          tetap mudah dipelihara di skala besar.
+        </p>
 
-    <!-- Annotation notes -->
-    <div class="border-border border-t px-4 pb-8">
-      <p class="eyebrow mt-6 mb-4">§ Catatan</p>
-      <div class="space-y-4">
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            Filosofi Kode Bersih
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Kode lebih banyak dibaca daripada ditulis. Setiap baris harus disengaja, jelas, dan
-            mudah dipelihara untuk developer berikutnya.
-          </p>
-        </div>
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            Performa Itu Penting
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Pengguna mengharapkan aplikasi yang cepat dan responsif. Saya mengoptimalkan setiap lapisan —
-            dari query database hingga rendering frontend.
-          </p>
-        </div>
-        <div class="border-border border-l-2 pl-4">
-          <p class="text-foreground text-xs font-semibold tracking-[0.1em] uppercase">
-            Pendekatan Berorientasi Pengguna
-          </p>
-          <p class="text-muted mt-1 text-sm leading-relaxed">
-            Teknologi hanyalah sebuah alat. Yang penting adalah memecahkan masalah nyata untuk orang nyata dengan
-            cara yang membuat hidup mereka lebih mudah.
-          </p>
-        </div>
-        <div class="border-accent/40 border-l-2 pl-4">
-          <p class="text-foreground mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
-            Di Luar Kode
-          </p>
-          <ul class="text-muted space-y-1 text-sm">
-            <li>Suka mendengarkan musik sambil coding</li>
-            <li>Aktif di komunitas developer dan open source</li>
-            <li>Saat ini mengeksplorasi arsitektur serverless</li>
-          </ul>
+        <!-- Quick metadata strip -->
+        <dl class="text-muted mt-8 grid max-w-md grid-cols-3 gap-x-4 gap-y-2 border-t border-border/60 pt-5 font-mono text-[10px] uppercase tracking-[0.12em]" data-hero-reveal>
+          <div>
+            <dt class="opacity-50">Lokasi</dt>
+            <dd class="text-foreground mt-1">Jakarta, ID</dd>
+          </div>
+          <div>
+            <dt class="opacity-50">Pengalaman</dt>
+            <dd class="text-foreground mt-1">4+ tahun</dd>
+          </div>
+          <div>
+            <dt class="opacity-50">Status</dt>
+            <dd class="text-accent mt-1">Terbuka untuk kerja</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Twin photo composition -->
+      <div class="relative grid gap-3 sm:max-w-sm md:max-w-none" data-hero-reveal data-parallax-wrap>
+        <div class="grid grid-cols-2 gap-3" data-parallax-target>
+          <!-- Primary portrait -->
+          <div
+            class="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-secondary"
+          >
+            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+              <span
+                class="font-display text-5xl font-bold leading-none"
+                style="color: color-mix(in oklch, var(--color-accent) 35%, transparent)"
+              >
+                RF
+              </span>
+            </div>
+            <img
+              src="/images/avatar.jpg"
+              alt="Ricki Friadi"
+              loading="eager"
+              class="absolute inset-0 h-full w-full object-cover object-top text-transparent"
+            />
+          </div>
+
+          <!-- Scene / secondary -->
+          <div
+            class="relative aspect-[3/4] mt-8 overflow-hidden rounded-lg border border-border bg-secondary"
+          >
+            <!-- Fallback pattern when no scene.jpg exists -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
+              <div class="grid grid-cols-3 gap-1.5 opacity-30">
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+                <div class="size-6 rounded-sm bg-accent/40" />
+              </div>
+              <span class="font-mono text-muted text-[10px] uppercase tracking-[0.15em]">
+                Jakarta, ID
+              </span>
+            </div>
+            <img
+              src="/images/scene.jpg"
+              alt="Suasana kerja"
+              loading="lazy"
+              data-scene-img
+              class="absolute inset-0 h-full w-full object-cover object-center"
+            />
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- § 02 — Skills -->
-  <section class="border-border border-b">
+  <!-- ─── § 01 — Cerita ────────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 02 — Keahlian</span>
+      <span class="chapter-label">§ 01 — Cerita</span>
     </div>
-    <SkillsMatrix />
+
+    <div class="max-w-2xl space-y-5 px-4 pb-12 text-sm leading-relaxed">
+      <p data-stagger-item>
+        Saya mulai menulis kode tahun 2020 lewat proyek skripsi — chatbot Python yang menjawab
+        pertanyaan mahasiswa Universitas Riau tentang program Kukerta. Akurasinya mencapai
+        80% pada dataset 3.000 pasangan yang saya kurasi manual, dan dirilis ke kantor administrasi.
+        Saya pikir saya sudah selesai.
+      </p>
+      <p data-stagger-item>
+        Lalu di April 2021, magang pertama di PT. Sumatera Kalimantan Jaya memberi saya 14 hari
+        untuk merilis website profil perusahaan. CodeIgniter, PHP, tekanan deadline. Kami rilis
+        tepat waktu. Kebiasaan itu —
+        <span class="text-foreground font-semibold">rilis cepat, iterasi dengan jujur</span> —
+        masih melekat sampai sekarang.
+      </p>
+      <p data-stagger-item>
+        Dua tahun freelancing menyusul: React, Node.js, Express, integrasi MongoDB, MySQL, dan
+        PostgreSQL untuk klien UKM di Pekanbaru. Kerjanya tidak glamor tapi memaksa saya jadi
+        generalis — sesuatu yang sulit didapat kalau cuma di satu stack di satu perusahaan.
+      </p>
+      <p data-stagger-item>
+        Saya bergabung dengan <span class="text-foreground font-semibold">PT. Pegadaian</span>
+        bulan Mei 2023 sebagai Software Engineer. Sejak 2024 saya fokus di micro-frontends dan
+        microservices — migrasi monolith CodeIgniter ke 9 microservices NestJS dengan Factory
+        pattern, ikut bangun platform Module Federation yang melayani 1,5 juta pengguna, dan
+        menjaga coverage Vitest ≥80% di semua modul.
+      </p>
+    </div>
   </section>
 
-  <!-- § 03 — GitHub Activity -->
+  <!-- ─── § 02 — Saat Ini ──────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — Saat ini</span>
+    </div>
+
+    <div class="grid gap-10 px-4 pb-12 md:grid-cols-2">
+      <div data-stagger-item>
+        <p class="text-foreground text-sm font-semibold mb-3">Sedang dikerjakan</p>
+        <p class="text-muted text-sm leading-relaxed">
+          Modul micro-frontend untuk Singel APP di Pegadaian, rewrite Microsite Pinjaman
+          dengan Factory pattern, dan reporting performa marketing KAMILA. Banyak Vitest specs
+          juga.
+        </p>
+      </div>
+
+      <div data-stagger-item>
+        <p class="text-foreground text-sm font-semibold mb-3">Stack sehari-hari</p>
+        <ul class="flex flex-wrap gap-1.5">
+          {stack.map((t) => (
+            <li class="diff-tag">{t}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── § 03 — Di Luar Kode ──────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 03 — Di luar kode</span>
+    </div>
+
+    <div class="px-4 pb-12">
+      <ul class="grid gap-x-10 gap-y-6 sm:grid-cols-2 max-w-3xl">
+        {beyondCode.map((item) => (
+          <li class="border-l-2 border-accent/40 pl-4" data-stagger-item>
+            <p class="text-foreground text-sm font-semibold">{item.label}</p>
+            <p class="text-muted mt-1 text-sm leading-relaxed">{item.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─── § 04 — Orang yang pernah bekerja dengan saya ─────────── -->
+  <CollaboratorsSection sectionLabel="§ 04 — Orang yang pernah bekerja dengan saya" />
+
+  <!-- ─── § 05 — Aktivitas GitHub ──────────────────────────────── -->
   <section class="border-border border-b">
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 03 — Aktivitas GitHub</span>
+      <span class="chapter-label">§ 05 — Aktivitas GitHub</span>
     </div>
-    <div class="px-4 pb-6">
+    <div class="px-4 pb-8">
       <GitHubHeatmap client:visible initialStats={initialStats} />
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="px-4 py-12 text-center">
+  <!-- ─── CTA ──────────────────────────────────────────────────── -->
+  <section class="px-4 py-16 text-center">
     <p class="eyebrow mb-4">Kolaborasi</p>
-    <h2 class="title-display" style="font-size: clamp(1.8rem, 5vw, 3rem)">
-      Mari Bangun Sesuatu Bersama
+    <h2 class="title-display" style="font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1">
+      Mari bangun<br />
+      <span class="title-accent text-accent">sesuatu bersama.</span>
     </h2>
-    <p class="text-muted mx-auto mt-4 mb-8 max-w-sm text-sm">
-      Saya selalu tertarik mendengar tentang proyek dan peluang baru.
+    <p class="text-muted mx-auto mt-5 mb-8 max-w-sm text-sm leading-relaxed">
+      Terbuka untuk peran fullstack, proyek freelance, atau sekadar ngopi membahas problem
+      sistem yang sedang Anda hadapi.
     </p>
     <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
       <a
         href="/id/contact"
-        class="bg-accent text-background hover:bg-accent-hover inline-flex h-10 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
-        Hubungi Saya
+        Hubungi saya
       </a>
       <a
         href="/id/projects"
-        class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        data-btn-hover
       >
-        Lihat Proyek Saya
+        Lihat proyek
       </a>
     </div>
   </section>

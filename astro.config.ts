@@ -8,6 +8,11 @@ import robotsTxt from 'astro-robots-txt'
 export default defineConfig({
   site: 'https://rickyfrdy.my.id',
   output: 'static',
+  redirects: {
+    // /works merged into /projects; preserve old links
+    '/works': '/projects',
+    '/id/works': '/id/projects'
+  },
   integrations: [mdx(), react(), sitemap(), robotsTxt()],
   i18n: {
     defaultLocale: 'en',

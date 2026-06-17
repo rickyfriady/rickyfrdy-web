@@ -2,6 +2,7 @@
 import MainLayout from '@/components/layout/MainLayout.astro'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
 import HeroPhoto from '@/components/ui/HeroPhoto'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -58,36 +59,41 @@ const capabilities = [
   title="Ricki Friadi — Fullstack Developer"
   description="Fullstack Developer specializing in Vue 3, NestJS microservices, and Micro-Frontend Architecture. Based in Jakarta, Indonesia."
 >
+  <PageAnimations />
+
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="border-border relative border-b px-4 py-16 md:py-24">
     <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
     <div class="relative flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
       <!-- Left: text -->
       <div class="flex-1">
-        <p class="eyebrow mb-4">Fullstack Developer · Jakarta, Indonesia</p>
+        <p class="eyebrow mb-4" data-hero-reveal>Fullstack Developer · Jakarta, Indonesia</p>
         <h1
           class="title-display max-w-3xl"
           style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
+          data-hero-reveal
         >
           Ricki<br />
           <span class="title-accent text-accent">Friadi.</span>
         </h1>
-        <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed">
+        <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed" data-hero-reveal>
           I build reliable fullstack systems — from Vue 3 micro-frontends and NestJS microservices
           to the architecture that keeps them maintainable at scale.
         </p>
 
         <!-- CTAs -->
-        <div class="mt-8 flex flex-wrap gap-3">
+        <div class="mt-8 flex flex-wrap gap-3" data-hero-reveal>
           <a
             href="/projects"
             class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+            data-btn-hover
           >
             View My Work
           </a>
           <a
             href="/contact"
             class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+            data-btn-hover
           >
             Get in Touch
           </a>
@@ -100,19 +106,21 @@ const capabilities = [
   </section>
 
   <!-- ─── § 01 — Selected Work ─────────────────────────────────── -->
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
       <span class="chapter-label">§ 01 — Selected Work</span>
     </div>
 
     <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
       {featuredProjects.map((project) => (
-        <FeaturedProjectCard
-          project={project}
-          categoryLabel={categoryLabel[project.category] ?? project.category}
-          featuredLabel="Featured"
-          locale="en-US"
-        />
+        <div data-stagger-item>
+          <FeaturedProjectCard
+            project={project}
+            categoryLabel={categoryLabel[project.category] ?? project.category}
+            featuredLabel="Featured"
+            locale="en-US"
+          />
+        </div>
       ))}
     </div>
 
@@ -127,14 +135,14 @@ const capabilities = [
   </section>
 
   <!-- ─── § 02 — What I Build ──────────────────────────────────── -->
-  <section class="border-border border-b">
+  <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
       <span class="chapter-label">§ 02 — What I Build</span>
     </div>
 
     <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       {capabilities.map((cap, i) => (
-        <div class="py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0">
+        <div class="py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0" data-stagger-item>
           <p class="text-muted font-mono text-[10px] uppercase tracking-widest">
             0{i + 1}
           </p>
@@ -168,7 +176,7 @@ const capabilities = [
 
   <!-- ─── § 03 — Recent Writing ────────────────────────────────── -->
   {recentPosts.length > 0 && (
-    <section class="border-border border-b">
+    <section class="border-border border-b" data-stagger-group>
       <div class="chapter-heading px-4">
         <span class="chapter-label">§ 03 — Recent Writing</span>
       </div>
@@ -178,6 +186,7 @@ const capabilities = [
           <a
             href={`/blog/${post.id}`}
             class="group block py-6 no-underline"
+            data-stagger-item
           >
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1">
@@ -234,12 +243,14 @@ const capabilities = [
         <a
           href="/contact"
           class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+          data-btn-hover
         >
           Start a Conversation
         </a>
         <a
           href="/experience"
           class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+          data-btn-hover
         >
           View Experience
         </a>
