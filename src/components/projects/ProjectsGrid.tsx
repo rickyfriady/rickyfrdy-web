@@ -3,6 +3,7 @@ import AnimatedGradient from '@/components/animated-gradient'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
 import type { Project } from '@/data/projects'
 import { type Lang, t } from '@/i18n/ui'
+import { getSkillIconUrl } from '@/utils/skillIcon'
 
 interface Props {
   projects: Project[]
@@ -230,16 +231,35 @@ export default function ProjectsGrid({ projects, lang }: Props) {
                           )}
                         </>
                       )}
-                      {project.technologies.slice(0, 3).map((t) => (
-                        <span
-                          key={t}
-                          className="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]"
-                        >
-                          {t}
-                        </span>
-                      ))}
+                      {project.technologies.slice(0, 3).map((t) => {
+                        const url = getSkillIconUrl(t)
+                        return url ? (
+                          <span
+                            key={t}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2 py-1 font-mono text-xs text-muted"
+                          >
+                            <img
+                              src={url}
+                              alt={t}
+                              title={t}
+                              width="16"
+                              height="16"
+                              className="rounded-sm"
+                              loading="lazy"
+                            />
+                            {t}
+                          </span>
+                        ) : (
+                          <span
+                            key={t}
+                            className="bg-secondary text-muted rounded-lg px-2 py-1 font-mono text-xs"
+                          >
+                            {t}
+                          </span>
+                        )
+                      })}
                       {project.technologies.length > 3 && (
-                        <span className="text-muted font-mono text-[10px]">
+                        <span className="text-muted font-mono text-xs">
                           +{project.technologies.length - 3}
                         </span>
                       )}

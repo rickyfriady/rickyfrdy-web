@@ -1,9 +1,13 @@
 ---
+import GitHubActivity from '@/components/about/GitHubActivity'
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
+import GitHubLanguages from '@/components/about/GitHubLanguages'
+import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
+import { getSkillIconUrl } from '@/utils/skillIcon'
 
 const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
 
@@ -174,11 +178,19 @@ const beyondCode = [
 
       <div data-stagger-item>
         <p class="text-foreground text-sm font-semibold mb-3">Stack sehari-hari</p>
-        <ul class="flex flex-wrap gap-1.5">
-          {stack.map((t) => (
-            <li class="diff-tag">{t}</li>
-          ))}
-        </ul>
+        <div class="flex flex-wrap gap-2">
+          {stack.map((t) => {
+            const url = getSkillIconUrl(t)
+            return url ? (
+              <span class="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2.5 py-1 font-mono text-xs text-muted">
+                <img src={url} alt={t} title={t} width="18" height="18" class="rounded-sm" loading="lazy" />
+                {t}
+              </span>
+            ) : (
+              <span class="diff-tag">{t}</span>
+            )
+          })}
+        </div>
       </div>
     </div>
   </section>
@@ -204,13 +216,24 @@ const beyondCode = [
   <!-- ─── § 04 — Orang yang pernah bekerja dengan saya ─────────── -->
   <CollaboratorsSection sectionLabel="§ 04 — Orang yang pernah bekerja dengan saya" />
 
-  <!-- ─── § 05 — Aktivitas GitHub ──────────────────────────────── -->
+  <!-- ─── § 05 — GitHub ────────────────────────────────────────── -->
   <section class="border-border border-b">
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 05 — Aktivitas GitHub</span>
+      <span class="chapter-label">§ 05 — GitHub</span>
     </div>
-    <div class="px-4 pb-8">
+
+    <div class="grid gap-6 px-4 pb-12">
+      <!-- Heatmap — full width -->
       <GitHubHeatmap client:visible initialStats={initialStats} />
+
+      <!-- 2-col: Languages+PinnedRepos (left) | Activity (right) -->
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="space-y-6">
+          <GitHubLanguages client:idle languages={initialStats.languages} />
+          <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+        </div>
+        <GitHubActivity client:visible />
+      </div>
     </div>
   </section>
 
