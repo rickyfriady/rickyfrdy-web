@@ -1,5 +1,8 @@
 ---
+import GitHubActivity from '@/components/about/GitHubActivity'
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
+import GitHubLanguages from '@/components/about/GitHubLanguages'
+import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
@@ -201,13 +204,24 @@ const beyondCode = [
   <!-- ─── § 04 — People I've worked with ───────────────────────── -->
   <CollaboratorsSection sectionLabel="§ 04 — People I've worked with" />
 
-  <!-- ─── § 05 — GitHub Activity ───────────────────────────────── -->
+  <!-- ─── § 05 — GitHub ────────────────────────────────────────── -->
   <section class="border-border border-b">
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 05 — GitHub activity</span>
+      <span class="chapter-label">§ 05 — GitHub</span>
     </div>
-    <div class="px-4 pb-8">
+
+    <div class="grid gap-6 px-4 pb-12">
+      <!-- Heatmap — full width -->
       <GitHubHeatmap client:visible initialStats={initialStats} />
+
+      <!-- 2-col: Languages+PinnedRepos (left) | Activity (right) -->
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="space-y-6">
+          <GitHubLanguages client:idle languages={initialStats.languages} />
+          <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+        </div>
+        <GitHubActivity client:visible />
+      </div>
     </div>
   </section>
 

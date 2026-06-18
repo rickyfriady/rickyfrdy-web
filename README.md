@@ -6,6 +6,16 @@ Personal portfolio and resume site built with Astro, React islands, GSAP, and Ta
 
 ---
 
+## Quick Start
+
+```bash
+cp .env.example .env   # optional — GITHUB_TOKEN for /about stats
+bun install
+bun dev                # or: bun build
+```
+
+---
+
 ## Stack
 
 | Layer | Tech |
@@ -30,7 +40,8 @@ src/
 ├── components/
 │   ├── layout/         AppHeader, AppFooter, MainLayout, LangSwitcher,
 │   │                   MobileBottomNav, NavLinks, WanderingEyes
-│   ├── about/          GitHubHeatmap, SkillsMatrix
+│   ├── about/          GitHub sections: Heatmap, Activity, Languages,
+│   │                   PinnedRepos, SkillsMatrix
 │   ├── contact/        ContactForm
 │   ├── projects/       ProjectsGrid
 │   ├── resume/         ResumePdf (designed), ResumePdfAts (ATS-friendly)
@@ -76,7 +87,7 @@ src/
 | English | Indonesian | Description |
 |---------|-----------|-------------|
 | `/` | `/id/` | Home |
-| `/about` | `/id/about` | About + GitHub heatmap |
+| `/about` | `/id/about` | About + GitHub contribution heatmap, pinned repos, languages, activity |
 | `/experience` | `/id/experience` | Work history, projects, education, skills |
 | `/projects` | `/id/projects` | Project portfolio (filterable grid) |
 | `/works` | `/id/works` | Works grid with category filter |
@@ -94,6 +105,16 @@ src/
 **ATS PDF** (`ResumePdfAts.tsx`) — parallel resume template using only Helvetica, black on white, comma-separated skills, and no decorative elements — optimised for applicant tracking systems.
 
 **FinLogo component** (`components/ui/FinLogo.astro`) — renders logos from the [`idn-finlogos`](https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons/) CDN. Supports 24 categories (banks, e-wallets, logistics, insurance, etc.). See [Usage](#finlogo-usage) below.
+
+**GitHub integration** (`/about` page) — four React island components powered by three data sources:
+
+| Source | Auth | Used by | Timing |
+|--------|------|---------|--------|
+| **GraphQL API** (`fetchBuildTimeStats`) | `GITHUB_TOKEN` (env) | Heatmap initial data, PinnedRepos, Languages | Build-time (SSG) |
+| **Contributions proxy** (`fetchProxyStats`) | None (public) | Heatmap client refresh | Client-side on mount |
+| **REST Events API** (`fetchRecentEvents`) | None (public, 60 req/hr) | Activity timeline | Client-side on mount |
+
+Set `GITHUB_TOKEN` in `.env` (see `.env.example`) for real build-time data. Without it, the GraphQL fetch falls back to realistic mock data.
 
 ---
 
