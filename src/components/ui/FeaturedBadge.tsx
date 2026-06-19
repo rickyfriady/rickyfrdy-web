@@ -11,6 +11,11 @@ export default function FeaturedBadge({ label }: Props) {
   useEffect(() => {
     if (!containerRef.current) return
 
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
     const anim = lottie.loadAnimation({
       container: containerRef.current,
       renderer: 'svg',

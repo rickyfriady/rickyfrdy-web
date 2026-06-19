@@ -5,6 +5,9 @@ import WanderingEyes from './WanderingEyes'
 ---
 
 <header class="header-glass sticky top-0 z-50">
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress" class="absolute bottom-0 left-0 h-[2px] bg-accent/60" style="width:0%" aria-hidden="true" />
+
   <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
     <WanderingEyes />
 
@@ -36,6 +39,18 @@ import WanderingEyes from './WanderingEyes'
 
   document.addEventListener('astro:page-load', () => {
     initTheme()
+
+    // Scroll progress
+    const progressBar = document.getElementById('scroll-progress')
+    function updateProgress() {
+      if (!progressBar) return
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
+      const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0
+      progressBar.style.width = `${Math.min(pct, 100)}%`
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true })
+    updateProgress()
 
     const btn = document.getElementById('theme-toggle')
 

@@ -3,6 +3,7 @@ import GitHubActivity from '@/components/about/GitHubActivity'
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
 import GitHubLanguages from '@/components/about/GitHubLanguages'
 import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
+import SkillsMatrix from '@/components/about/SkillsMatrix'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
@@ -211,6 +212,17 @@ const beyondCode = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- ─── § 03½ — Skills ──────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">Skills</span>
+    </div>
+
+    <div class="px-4 pb-12" data-stagger-item>
+      <SkillsMatrix client:load />
     </div>
   </section>
 
