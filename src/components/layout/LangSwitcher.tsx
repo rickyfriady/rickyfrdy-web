@@ -150,7 +150,7 @@ export default function LangSwitcher() {
                     role="option"
                     aria-selected={isActive}
                     onClick={() => handleSelect(lang.code)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
                     style={
                       isActive
                         ? {

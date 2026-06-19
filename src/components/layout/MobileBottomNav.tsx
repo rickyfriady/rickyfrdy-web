@@ -75,7 +75,7 @@ export default function MobileBottomNav() {
             <a
               key={href}
               href={href}
-              className="relative flex flex-col items-center gap-[3px] px-3 py-2.5 rounded-[14px]"
+              className="relative flex flex-col items-center gap-[3px] px-3 py-2.5 rounded-[14px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
               {active && (
                 <motion.span
@@ -186,7 +186,7 @@ export default function MobileBottomNav() {
                   <a
                     key={href}
                     href={href}
-                    className="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground"
+                    className="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
                     style={{
                       color: active
                         ? 'var(--color-accent)'

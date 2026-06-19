@@ -56,14 +56,14 @@ export default function GitHubPinnedRepos({ repos }: Props) {
               )}
               <div className="ml-auto flex items-center gap-1.5 flex-wrap">
                 {repo.stars > 0 && (
-                  <span className="text-muted flex items-center gap-1 font-mono text-[9px]">
-                    <Star className="h-4 w-4" />
+                  <span className="text-muted flex items-center gap-1 font-mono text-[10px]">
+                    <Star className="h-3 w-3" aria-hidden="true" />
                     {repo.stars}
                   </span>
                 )}
                 {repo.forks > 0 && (
-                  <span className="text-muted flex items-center gap-1 font-mono text-[9px]">
-                    <GitFork className="h-4 w-4" />
+                  <span className="text-muted flex items-center gap-1 font-mono text-[10px]">
+                    <GitFork className="h-3 w-3" aria-hidden="true" />
                     {repo.forks}
                   </span>
                 )}

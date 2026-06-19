@@ -15,7 +15,7 @@ export default function WanderingEyes() {
   return (
     <a
       href="/"
-      className="text-foreground font-display inline-flex items-center gap-2 text-lg font-light tracking-tight"
+      className="text-foreground font-display inline-flex items-center gap-2 text-lg font-light tracking-tight rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
       <span aria-hidden="true" className="inline-flex items-center gap-1">
         <span className="we-eye" style={eyeStyle} />

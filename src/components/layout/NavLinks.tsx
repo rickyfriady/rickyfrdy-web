@@ -53,7 +53,7 @@ export default function NavLinks() {
             <a
               href={href}
               data-active={active ? '' : undefined}
-              className={`nav-link-item relative inline-flex items-center rounded-md px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase transition-colors duration-[180ms] ${active ? 'text-foreground' : 'text-muted hover:text-foreground'}`}
+              className={`nav-link-item relative inline-flex items-center rounded-md px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase transition-colors duration-[180ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${active ? 'text-foreground' : 'text-muted hover:text-foreground'}`}
             >
               {active && (
                 <motion.span
