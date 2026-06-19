@@ -1,3 +1,5 @@
+import { AnimatePresence, motion } from 'framer-motion'
+import { ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import AnimatedGradient from '@/components/animated-gradient'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
@@ -18,6 +20,7 @@ export default function ProjectsGrid({ projects, lang }: Props) {
   const [category, setCategory] = useState<CategoryFilter>('all')
   const [tech, setTech] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortOrder>('featured')
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const allTechs = useMemo(() => {
     const set = new Set<string>()
@@ -62,109 +65,169 @@ export default function ProjectsGrid({ projects, lang }: Props) {
     setSortBy('featured')
   }
 
+  const hasActiveFilters =
+    typeFilter !== 'all' || category !== 'all' || tech !== 'all' || sortBy !== 'featured'
+
+  const filterContent = (
+    <div className="space-y-6">
+      <div>
+        <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
+          {t(lang ?? 'en', 'filter.type')}
+        </p>
+        <div className="space-y-1">
+          {(['all', 'project', 'work'] as const).map((ft) => (
+            <button
+              key={ft}
+              type="button"
+              onClick={() => setTypeFilter(ft)}
+              className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
+                typeFilter === ft
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted hover:text-foreground hover:bg-secondary/60'
+              }`}
+            >
+              {ft === 'all'
+                ? t(lang ?? 'en', 'filter.all')
+                : ft === 'project'
+                  ? t(lang ?? 'en', 'filter.projects')
+                  : t(lang ?? 'en', 'filter.works')}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
+          Category
+        </p>
+        <div className="space-y-1">
+          {(['all', 'web-app', 'api', 'tool', 'open-source'] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
+                category === c
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted hover:text-foreground hover:bg-secondary/60'
+              }`}
+            >
+              {c === 'all' ? 'All' : c.replace('-', ' ')}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">Sort</p>
+        <div className="space-y-1">
+          {(['featured', 'recent', 'year'] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setSortBy(s)}
+              className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
+                sortBy === s
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted hover:text-foreground hover:bg-secondary/60'
+              }`}
+            >
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
+          Technology
+        </p>
+        <select
+          value={tech}
+          onChange={(e) => setTech(e.target.value)}
+          className="border-border bg-background text-foreground w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent"
+        >
+          <option value="all">All technologies</option>
+          {allTechs.map((tech) => (
+            <option key={tech} value={tech}>
+              {tech}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={reset}
+          className="text-muted hover:text-foreground font-mono text-xs transition-colors"
+        >
+          Reset filters
+        </button>
+        <p className="text-muted font-mono text-[10px]">{filtered.length} items</p>
+      </div>
+    </div>
+  )
+
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
-      {/* Sidebar filters */}
-      <aside className="lg:w-56 lg:flex-shrink-0">
-        <div className="border-border sticky top-24 space-y-6 rounded-2xl border p-5">
-          <div>
-            <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
-              {t(lang ?? 'en', 'filter.type')}
-            </p>
-            <div className="space-y-1">
-              {(['all', 'project', 'work'] as const).map((ft) => (
-                <button
-                  key={ft}
-                  type="button"
-                  onClick={() => setTypeFilter(ft)}
-                  className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
-                    typeFilter === ft
-                      ? 'bg-secondary text-foreground'
-                      : 'text-muted hover:text-foreground hover:bg-secondary/60'
-                  }`}
-                >
-                  {ft === 'all'
-                    ? t(lang ?? 'en', 'filter.all')
-                    : ft === 'project'
-                      ? t(lang ?? 'en', 'filter.projects')
-                      : t(lang ?? 'en', 'filter.works')}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
-              Category
-            </p>
-            <div className="space-y-1">
-              {(['all', 'web-app', 'api', 'tool', 'open-source'] as const).map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCategory(c)}
-                  className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
-                    category === c
-                      ? 'bg-secondary text-foreground'
-                      : 'text-muted hover:text-foreground hover:bg-secondary/60'
-                  }`}
-                >
-                  {c === 'all' ? 'All' : c.replace('-', ' ')}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
-              Sort
-            </p>
-            <div className="space-y-1">
-              {(['featured', 'recent', 'year'] as const).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSortBy(s)}
-                  className={`w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${
-                    sortBy === s
-                      ? 'bg-secondary text-foreground'
-                      : 'text-muted hover:text-foreground hover:bg-secondary/60'
-                  }`}
-                >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">
-              Technology
-            </p>
-            <select
-              value={tech}
-              onChange={(e) => setTech(e.target.value)}
-              className="border-border bg-background text-foreground w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent"
+      {/* ── Mobile filter toggle ─────────────────────────────── */}
+      <div className="lg:hidden">
+        <button
+          type="button"
+          aria-expanded={filtersOpen}
+          aria-controls="projects-filters"
+          onClick={() => setFiltersOpen((v) => !v)}
+          className="border-border bg-secondary/40 hover:bg-secondary flex w-full items-center justify-between rounded-xl border px-4 py-3 transition-colors"
+        >
+          <span className="flex items-center gap-2 font-mono text-xs tracking-[0.12em] uppercase">
+            <SlidersHorizontal size={13} />
+            Filters
+            {hasActiveFilters && (
+              <span className="bg-accent text-background rounded-full px-1.5 py-0.5 font-mono text-[9px]">
+                {
+                  [
+                    typeFilter !== 'all',
+                    category !== 'all',
+                    tech !== 'all',
+                    sortBy !== 'featured'
+                  ].filter(Boolean).length
+                }
+              </span>
+            )}
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="text-muted font-mono text-[10px]">{filtered.length} items</span>
+            <motion.span
+              animate={{ rotate: filtersOpen ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-muted"
             >
-              <option value="all">All technologies</option>
-              {allTechs.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
+              <ChevronDown size={14} />
+            </motion.span>
+          </span>
+        </button>
 
-          <button
-            type="button"
-            onClick={reset}
-            className="text-muted hover:text-foreground w-full font-mono text-xs transition-colors"
-          >
-            Reset filters
-          </button>
+        <AnimatePresence initial={false}>
+          {filtersOpen && (
+            <motion.div
+              id="projects-filters"
+              key="mobile-filters"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="border-border mt-2 rounded-xl border p-5">{filterContent}</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-          <p className="text-muted font-mono text-[10px]">{filtered.length} items</p>
-        </div>
+      {/* ── Desktop sidebar ──────────────────────────────────── */}
+      <aside className="hidden lg:block lg:w-56 lg:flex-shrink-0">
+        <div className="border-border sticky top-24 rounded-2xl border p-5">{filterContent}</div>
       </aside>
 
       {/* Grid */}
