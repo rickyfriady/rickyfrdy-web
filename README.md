@@ -42,6 +42,7 @@ src/
 │   │                   MobileBottomNav, NavLinks, WanderingEyes
 │   ├── about/          GitHub sections: Heatmap, Activity, Languages,
 │   │                   PinnedRepos, SkillsMatrix
+│   ├── experience/     ProjectsAccordion (animated React island)
 │   ├── contact/        ContactForm
 │   ├── projects/       ProjectsGrid
 │   ├── resume/         ResumePdf (designed), ResumePdfAts (ATS-friendly)
@@ -77,7 +78,7 @@ src/
 │       └── resume-ats.pdf.ts   ATS PDF (ID)
 ├── stores/             theme.ts (Nanostores)
 ├── styles/             global.css (Tailwind + custom utilities)
-└── utils/              github.ts · cn helper
+└── utils/              github.ts · skillIcon.ts · finlogo.ts · cn helper
 ```
 
 ---
@@ -106,12 +107,11 @@ src/
 
 **FinLogo component** (`components/ui/FinLogo.astro`) — renders logos from the [`idn-finlogos`](https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons/) CDN. Supports 24 categories (banks, e-wallets, logistics, insurance, etc.). See [Usage](#finlogo-usage) below.
 
-**GitHub integration** (`/about` page) — four React island components powered by three data sources:
+**GitHub integration** (`/about` page) — four React island components powered by two data sources:
 
 | Source | Auth | Used by | Timing |
 |--------|------|---------|--------|
-| **GraphQL API** (`fetchBuildTimeStats`) | `GITHUB_TOKEN` (env) | Heatmap initial data, PinnedRepos, Languages | Build-time (SSG) |
-| **Contributions proxy** (`fetchProxyStats`) | None (public) | Heatmap client refresh | Client-side on mount |
+| **GraphQL API** (`fetchBuildTimeStats`) | `GITHUB_TOKEN` (env) | Heatmap, PinnedRepos, Languages | Build-time (SSG) |
 | **REST Events API** (`fetchRecentEvents`) | None (public, 60 req/hr) | Activity timeline | Client-side on mount |
 
 Set `GITHUB_TOKEN` in `.env` (see `.env.example`) for real build-time data. Without it, the GraphQL fetch falls back to realistic mock data.

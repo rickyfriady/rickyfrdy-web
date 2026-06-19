@@ -203,7 +203,7 @@ export const projects: Project[] = [
     category: 'tool',
     type: 'project',
     technologies: ['Python', 'Flask', 'JavaScript', 'jQuery', 'Bootstrap', 'MySQL'],
-    githubUrl: 'https://github.com/rickyfrdy/chatbot-kukerta',
+    githubUrl: 'https://github.com/rickyfriady/chatbot-kukerta',
     role: 'Solo Developer · Thesis Author',
     metrics: [
       { value: '80%', label: 'question match rate' },

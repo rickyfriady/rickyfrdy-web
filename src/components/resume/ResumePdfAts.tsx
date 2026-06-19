@@ -54,7 +54,7 @@ export default function ResumePdfAts({
         <View style={s.contactRow}>
           <Text style={s.contactText}>Jakarta, Indonesia</Text>
           <Text style={s.contactText}>friadi.ricki@gmail.com</Text>
-          <Text style={s.contactText}>github.com/rickyfrdy</Text>
+          <Text style={s.contactText}>github.com/rickyfriady</Text>
         </View>
 
         <View style={s.hr} />
