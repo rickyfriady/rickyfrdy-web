@@ -34,7 +34,7 @@ function EventIcon({ type }: { type: RecentEvent['type'] }) {
 
 function SkeletonRow() {
   return (
-    <div className="flex items-start gap-3 py-3">
+    <div className="flex items-start gap-2.5 py-2.5 min-h-[44px]">
       <div className="mt-0.5 h-5 w-5 flex-shrink-0 animate-pulse rounded-full bg-secondary" />
       <div className="flex-1 space-y-1.5">
         <div className="h-3 w-3/4 animate-pulse rounded bg-secondary" />
@@ -56,8 +56,8 @@ export default function GitHubActivity() {
   }, [])
 
   return (
-    <div className="rounded-xl border border-border bg-secondary/30 p-5 md:p-6">
-      <p className="text-foreground mb-4 text-sm font-semibold">Recent Activity</p>
+    <div className="rounded-xl border border-border bg-secondary/30 p-4 md:p-6">
+      <p className="text-foreground mb-3 text-sm font-semibold">Recent Activity</p>
 
       {loading ? (
         <div className="divide-border divide-y">
@@ -67,15 +67,18 @@ export default function GitHubActivity() {
           <SkeletonRow />
         </div>
       ) : events.length === 0 ? (
-        <p className="text-muted py-8 text-center text-xs">No recent activity found.</p>
+        <p className="text-muted py-6 text-center text-xs">No recent activity found.</p>
       ) : (
         <div className="relative">
           {/* Vertical timeline line */}
-          <div className="absolute left-[9.5px] top-2 bottom-2 w-px bg-border" aria-hidden="true" />
+          <div
+            className="absolute left-[10px] top-2 bottom-2 w-px bg-border/60"
+            aria-hidden="true"
+          />
 
           <div className="space-y-0">
             {events.map((e) => (
-              <div key={e.id} className="relative flex items-start gap-3 py-2.5">
+              <div key={e.id} className="relative flex items-start gap-2.5 py-2 min-h-[44px]">
                 {/* Icon dot — sits on the timeline line */}
                 <div
                   className="relative z-10 mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
@@ -83,6 +86,7 @@ export default function GitHubActivity() {
                     background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
                     color: 'var(--color-accent)'
                   }}
+                  aria-hidden="true"
                 >
                   <EventIcon type={e.type} />
                 </div>
@@ -93,12 +97,13 @@ export default function GitHubActivity() {
                       {e.message}
                     </p>
                   )}
-                  <div className="mt-0.5 flex items-center gap-1.5">
+                  <div className="mt-0.5 flex items-center gap-1.5 flex-wrap">
                     <a
                       href={e.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted hover:text-accent max-w-[160px] truncate font-mono text-[10px] transition-colors"
+                      className="text-muted hover:text-accent max-w-[140px] truncate font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+                      aria-label={`View ${e.repo} on GitHub`}
                     >
                       {e.repo}
                     </a>
@@ -114,12 +119,13 @@ export default function GitHubActivity() {
         </div>
       )}
 
-      <div className="mt-4 border-t border-border/40 pt-3">
+      <div className="mt-3 border-t border-border/40 pt-3">
         <a
           href="https://github.com/rickyfriady"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted hover:text-accent font-mono text-[11px] uppercase tracking-wider transition-colors"
+          className="text-muted hover:text-accent font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+          aria-label="View all GitHub activity"
         >
           View all activity →
         </a>

@@ -218,7 +218,7 @@ function mockFallback(): GitHubStats {
       {
         name: 'rickyfrdy-web',
         description: 'Personal portfolio built with Astro, Tailwind, GSAP, and Framer Motion.',
-        url: 'https://github.com/rickyfrdy/rickyfrdy-web',
+        url: 'https://github.com/rickyfriady/rickyfrdy-web',
         stars: 2,
         forks: 0,
         primaryLanguage: { name: 'TypeScript', color: '#3178c6' },
@@ -227,7 +227,7 @@ function mockFallback(): GitHubStats {
       {
         name: 'nestjs-factory-microservices',
         description: 'NestJS microservices with Factory pattern for loan product management.',
-        url: 'https://github.com/rickyfrdy/nestjs-factory-microservices',
+        url: 'https://github.com/rickyfriady/nestjs-factory-microservices',
         stars: 4,
         forks: 1,
         primaryLanguage: { name: 'TypeScript', color: '#3178c6' },
