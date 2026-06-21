@@ -3,6 +3,7 @@ import GitHubActivity from '@/components/about/GitHubActivity'
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
 import GitHubLanguages from '@/components/about/GitHubLanguages'
 import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
+import SkillsMatrix from '@/components/about/SkillsMatrix'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
@@ -85,6 +86,8 @@ const beyondCode = [
             <img
               src="/images/avatar.jpg"
               alt="Ricki Friadi"
+              width={400}
+              height={533}
               loading="eager"
               class="absolute inset-0 h-full w-full object-cover object-top text-transparent"
             />
@@ -114,6 +117,8 @@ const beyondCode = [
             <img
               src="/images/scene.jpg"
               alt="A scene from my work"
+              width={400}
+              height={533}
               loading="lazy"
               data-scene-img
               class="absolute inset-0 h-full w-full object-cover object-center"
@@ -130,7 +135,7 @@ const beyondCode = [
       <span class="chapter-label">§ 01 — Story</span>
     </div>
 
-    <div class="max-w-2xl space-y-5 px-4 pb-12 text-sm leading-relaxed">
+    <div class="max-w-prose space-y-5 px-4 pb-12 text-sm leading-relaxed" style="text-wrap: pretty">
       <p data-stagger-item>
         I started writing code in 2020 during a final-year thesis project — a Python chatbot that
         answered student questions about Universitas Riau's community service program. It hit
@@ -175,16 +180,16 @@ const beyondCode = [
 
       <div data-stagger-item>
         <p class="text-foreground text-sm font-semibold mb-3">Daily stack</p>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 justify-start">
           {stack.map((t) => {
             const url = getSkillIconUrl(t)
             return url ? (
-              <span class="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2.5 py-1 font-mono text-xs text-muted">
-                <img src={url} alt={t} title={t} width="18" height="18" class="rounded-sm" loading="lazy" />
+              <span class="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2.5 py-1.5 font-mono text-xs text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2" aria-label={t}>
+                <img src={url} alt="" aria-hidden="true" width="18" height="18" class="rounded-sm" loading="lazy" />
                 {t}
               </span>
             ) : (
-              <span class="diff-tag">{t}</span>
+              <span class="diff-tag min-h-[44px] flex items-center" aria-label={t}>{t}</span>
             )
           })}
         </div>
@@ -207,6 +212,17 @@ const beyondCode = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- ─── § 03½ — Skills ──────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">Skills</span>
+    </div>
+
+    <div class="px-4 pb-12" data-stagger-item>
+      <SkillsMatrix client:load />
     </div>
   </section>
 
@@ -248,14 +264,14 @@ const beyondCode = [
     <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
       <a
         href="/contact"
-        class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+        class="bg-accent text-background hover:bg-accent-hover inline-flex min-h-[44px] items-center rounded-lg px-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         data-btn-hover
       >
         Get in touch
       </a>
       <a
         href="/projects"
-        class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+        class="border-border text-foreground hover:bg-secondary inline-flex min-h-[44px] items-center rounded-lg border px-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         data-btn-hover
       >
         See my projects

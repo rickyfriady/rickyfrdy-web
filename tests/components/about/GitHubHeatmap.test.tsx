@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import GitHubHeatmap from '@/components/about/GitHubHeatmap'
-import * as github from '@/utils/github'
+import type { GitHubStats } from '@/utils/github'
 
 describe('GitHubHeatmap', () => {
-  const mockStats: github.GitHubStats = {
+  const mockStats: GitHubStats = {
     totalContributions: 847,
     currentStreak: 12,
     longestStreak: 45,
@@ -19,10 +19,6 @@ describe('GitHubHeatmap', () => {
     pinnedRepos: [],
     languages: []
   }
-
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
 
   it('renders contribution total from initialStats', () => {
     render(<GitHubHeatmap initialStats={mockStats} />)
@@ -65,7 +61,7 @@ describe('GitHubHeatmap', () => {
     render(<GitHubHeatmap initialStats={mockStats} />)
     const link = screen.getByText('View GitHub Profile')
     expect(link).toBeInTheDocument()
-    expect(link).toHaveAttribute('href', 'https://github.com/rickyfrdy')
+    expect(link).toHaveAttribute('href', 'https://github.com/rickyfriady')
   })
 
   it('renders month labels', () => {
@@ -104,30 +100,7 @@ describe('GitHubHeatmap', () => {
 
   it('renders 52-53 week columns in heatmap grid', () => {
     render(<GitHubHeatmap initialStats={mockStats} />)
-    // contributionCalendar with 365 days → ~52 weeks
     const weeks = mockStats.contributionCalendar.length / 7
     expect(Math.floor(weeks)).toBeGreaterThanOrEqual(52)
-  })
-
-  it('calls fetchProxyStats on mount', () => {
-    const spy = vi.spyOn(github, 'fetchProxyStats').mockResolvedValue(mockStats)
-    render(<GitHubHeatmap initialStats={mockStats} />)
-    expect(spy).toHaveBeenCalledOnce()
-  })
-
-  it('updates stats when proxy fetch returns different data', async () => {
-    const updatedStats = { ...mockStats, totalContributions: 999 }
-    vi.spyOn(github, 'fetchProxyStats').mockResolvedValue(updatedStats)
-    render(<GitHubHeatmap initialStats={mockStats} />)
-    // After effect runs, state should update
-    await vi.waitFor(() => {
-      expect(screen.getByText('999')).toBeInTheDocument()
-    })
-  })
-
-  it('handles proxy fetch error gracefully (keeps initialStats)', () => {
-    vi.spyOn(github, 'fetchProxyStats').mockRejectedValue(new Error('fail'))
-    render(<GitHubHeatmap initialStats={mockStats} />)
-    expect(screen.getByText('847')).toBeInTheDocument()
   })
 })

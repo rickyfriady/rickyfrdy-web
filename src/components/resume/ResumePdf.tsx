@@ -95,8 +95,8 @@ export default function ResumePdf({
           <Link src="mailto:friadi.ricki@gmail.com" style={s.contactLink}>
             friadi.ricki@gmail.com
           </Link>
-          <Link src="https://github.com/rickyfrdy" style={s.contactLink}>
-            github.com/rickyfrdy
+          <Link src="https://github.com/rickyfriady" style={s.contactLink}>
+            github.com/rickyfriady
           </Link>
         </View>
 

@@ -34,6 +34,8 @@ export default function ProjectsAccordion({ projects }: Props) {
             <button
               type="button"
               onClick={() => toggle(i)}
+              aria-expanded={isOpen}
+              aria-controls={`accordion-panel-${i}`}
               className="flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3.5 text-left focus-visible:outline-none sm:px-5 sm:py-4"
             >
               <div className="flex min-w-0 items-center gap-3 sm:gap-4">

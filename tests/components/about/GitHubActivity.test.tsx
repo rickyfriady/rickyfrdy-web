@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import GitHubActivity from '@/components/about/GitHubActivity'
+import GitHubActivity, { clearRelativeTimeCache } from '@/components/about/GitHubActivity'
 
 /** Raw GitHub API response shape that fetchRecentEvents parses */
 const rawApiEvents = [
@@ -66,6 +66,7 @@ function mockFetch(data: unknown) {
 describe('GitHubActivity', () => {
   afterEach(() => {
     vi.restoreAllMocks()
+    clearRelativeTimeCache()
   })
 
   it('shows skeleton loading state initially', () => {

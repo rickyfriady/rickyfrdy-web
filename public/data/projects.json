@@ -16,7 +16,7 @@
     "technologies": ["Node.js", "TypeScript", "PostgreSQL", "Vue 3", "Redis", "Stripe", "Docker"],
     "keyMetric": "Handles 10K+ daily transactions",
     "liveUrl": "https://demo-ecommerce.example.com",
-    "githubUrl": "https://github.com/rickyfrdy/ecommerce-platform",
+    "githubUrl": "https://github.com/rickyfriady/ecommerce-platform",
     "date": "2024-01-15",
     "year": 2024,
     "challenges": [
@@ -58,7 +58,7 @@
     "category": "api",
     "technologies": ["Express", "JWT", "Docker", "Kubernetes", "MongoDB", "Redis", "Nginx"],
     "keyMetric": "Reduced API latency by 60%",
-    "githubUrl": "https://github.com/rickyfrdy/api-gateway",
+    "githubUrl": "https://github.com/rickyfriady/api-gateway",
     "date": "2023-09-20",
     "year": 2023,
     "challenges": [
@@ -130,7 +130,7 @@
     "category": "tool",
     "technologies": ["Node.js", "TypeScript", "Commander.js", "Inquirer", "Jest"],
     "keyMetric": "Saves 10+ hours/week for teams",
-    "githubUrl": "https://github.com/rickyfrdy/dev-automation-cli",
+    "githubUrl": "https://github.com/rickyfriady/dev-automation-cli",
     "date": "2023-11-30",
     "year": 2023,
     "challenges": [
@@ -164,7 +164,7 @@
     "category": "web-app",
     "technologies": ["Node.js", "TypeScript", "PostgreSQL", "Express", "AWS S3", "JWT"],
     "keyMetric": "Powers 50+ active blogs",
-    "githubUrl": "https://github.com/rickyfrdy/headless-blog-cms",
+    "githubUrl": "https://github.com/rickyfriady/headless-blog-cms",
     "date": "2024-03-05",
     "year": 2024,
     "challenges": [
@@ -198,7 +198,7 @@
     "category": "open-source",
     "technologies": ["Vue 3", "TypeScript", "Tailwind CSS", "Vite", "Storybook", "Vitest"],
     "keyMetric": "1K+ GitHub stars",
-    "githubUrl": "https://github.com/rickyfrdy/vue-ui-components",
+    "githubUrl": "https://github.com/rickyfriady/vue-ui-components",
     "liveUrl": "https://vue-ui-docs.example.com",
     "date": "2024-06-12",
     "year": 2024,
