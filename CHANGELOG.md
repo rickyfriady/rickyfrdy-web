@@ -37,3 +37,9 @@
 - Installed full [transitions.dev](https://transitions.dev) `_root.css` token block with 10 transition kits
 - Wired 7 transitions into components (menu-dropdown, icon-swap, shimmer-text, success-check, error-shake, tabs-sliding, avatar-hover)
 - All transitions include `prefers-reduced-motion: reduce` guards
+- **SkillsMatrix** — category filter buttons converted to `t-tabs` with sliding pill
+- **CollaboratorsSection** — avatar hover with distance-falloff lift + bouncy spring return
+- **ContactForm** — field-level error-shake (multi-segment cubic-bezier shake + auto-revert)
+- **FeaturedBadge** — Lottie → inline SVG icon-swap (removed 45KB dep)
+- **Shared element morphing** — `transition:name="project-image-{slug}"` on project hero images, enhanced view-transition keyframes
+- **CLS prevention** — skeleton min-height wrappers for all lazy islands, Google Fonts `rel=preload`
