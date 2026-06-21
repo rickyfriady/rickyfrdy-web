@@ -29,6 +29,7 @@ coverage
 .env
 .env.local
 .env.*.local
+.agents/
 
 # Dev tooling artifacts
 .claude/
