@@ -20,6 +20,7 @@ const { project } = Astro.props
       alt=""
       aria-hidden="true"
       data-hero-bg
+      transition:name={`project-image-${project.slug}`}
       class="absolute inset-0 h-full w-full object-cover"
     />
   ) : (

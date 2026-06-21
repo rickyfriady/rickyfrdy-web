@@ -49,6 +49,7 @@ const stat2 = project.metrics?.[1]
         src={project.heroImage}
         alt=""
         aria-hidden="true"
+        transition:name={`project-image-${project.slug}`}
         class="h-full w-full object-cover object-left-top
                grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
                group-hover:scale-[1.07] group-hover:grayscale-0"

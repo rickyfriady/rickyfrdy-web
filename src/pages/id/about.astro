@@ -220,7 +220,7 @@ const beyondCode = [
       <span class="chapter-label">Keahlian</span>
     </div>
 
-    <div class="px-4 pb-12" data-stagger-item>
+    <div class="px-4 pb-12 skills-grid-skel" data-stagger-item>
       <SkillsMatrix client:load />
     </div>
   </section>
@@ -236,15 +236,23 @@ const beyondCode = [
 
     <div class="grid gap-6 px-4 pb-12">
       <!-- Heatmap — full width -->
-      <GitHubHeatmap client:visible initialStats={initialStats} />
+      <div class="github-heatmap-skel">
+        <GitHubHeatmap client:visible initialStats={initialStats} />
+      </div>
 
       <!-- 2-col: Languages+PinnedRepos (left) | Activity (right) -->
       <div class="grid gap-6 md:grid-cols-2">
         <div class="space-y-6">
-          <GitHubLanguages client:idle languages={initialStats.languages} />
-          <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+          <div class="github-languages-skel">
+            <GitHubLanguages client:idle languages={initialStats.languages} />
+          </div>
+          <div class="github-repos-skel">
+            <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+          </div>
         </div>
-        <GitHubActivity client:visible />
+        <div class="github-activity-skel">
+          <GitHubActivity client:visible />
+        </div>
       </div>
     </div>
   </section>

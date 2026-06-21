@@ -301,12 +301,47 @@
   to { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0% 0); }
 }
 
+@keyframes page-content-morph-old {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.4; transform: scale(0.96); border-radius: 12px; }
+}
+
+@keyframes page-content-morph-new {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Morph animations for project shared elements */
 ::view-transition-old(page-content) {
-  animation: page-exit 150ms var(--ease-out-expo) forwards;
+  animation: page-content-morph-old 200ms var(--ease-out-expo) forwards;
 }
 
 ::view-transition-new(page-content) {
-  animation: page-enter 300ms var(--ease-out-expo) 80ms both;
+  animation: page-content-morph-new 300ms var(--ease-out-expo) 150ms both;
+}
+
+/* Shared element morph (project images, titles) — cross-fade with scale */
+::view-transition-old(*), ::view-transition-new(*) {
+  animation-duration: 350ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+
+::view-transition-old(*):only-child {
+  animation: vtm-scale-out 200ms var(--ease-out-expo) forwards;
+}
+
+::view-transition-new(*):only-child {
+  animation: vtm-scale-in 300ms var(--ease-out-expo) 100ms both;
+}
+
+@keyframes vtm-scale-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.3; transform: scale(0.95); }
+}
+
+@keyframes vtm-scale-in {
+  from { opacity: 0; transform: scale(1.05); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* ━━━━ Animations: Ambient ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -400,6 +435,28 @@
   .no-print {
     display: none !important;
   }
+}
+
+/* ━━━━ CLS prevention ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Reserve space for React islands that hydrate lazily */
+.github-heatmap-skel { min-height: 180px; }
+.github-activity-skel { min-height: 280px; }
+.github-languages-skel { min-height: 120px; }
+.github-repos-skel { min-height: 220px; }
+.skills-grid-skel { min-height: 300px; }
+
+/* Ensure all images have explicit dimensions to prevent layout shifts */
+img:not([width]) {
+  aspect-ratio: auto;
+}
+img[loading="lazy"] {
+  background: var(--color-secondary);
+}
+
+/* Reserve space for lazy components during hydration */
+astro-island[await-children] > :not(.hydrated) {
+  display: block;
+  min-height: inherit;
 }
 
 /* ━━━━ Transitions.dev — installs ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
