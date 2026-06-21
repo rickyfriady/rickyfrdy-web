@@ -53,6 +53,7 @@ export default function NavLinks() {
             <a
               href={href}
               data-active={active ? '' : undefined}
+              aria-current={active ? 'page' : undefined}
               className={`nav-link-item relative inline-flex items-center rounded-md px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase transition-colors duration-[180ms] ${active ? 'text-foreground' : 'text-muted hover:text-foreground'}`}
             >
               {active && (

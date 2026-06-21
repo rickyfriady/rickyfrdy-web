@@ -3,15 +3,28 @@ import { useEffect, useState } from 'react'
 import type { RecentEvent } from '@/utils/github'
 import { fetchRecentEvents } from '@/utils/github'
 
+const relativeTimeCache = new Map<string, string>()
+
+/** @visibleForTesting */
+export function clearRelativeTimeCache() {
+  relativeTimeCache.clear()
+}
+
 function relativeTime(dateStr: string): string {
+  const cached = relativeTimeCache.get(dateStr)
+  if (cached) return cached
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  const days = Math.floor(hrs / 24)
-  if (days < 30) return `${days}d ago`
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  const result =
+    mins < 60
+      ? `${mins}m ago`
+      : mins < 1440
+        ? `${Math.floor(mins / 60)}h ago`
+        : mins < 43200
+          ? `${Math.floor(mins / 1440)}d ago`
+          : new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  relativeTimeCache.set(dateStr, result)
+  return result
 }
 
 function EventIcon({ type }: { type: RecentEvent['type'] }) {

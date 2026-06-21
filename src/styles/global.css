@@ -1,12 +1,15 @@
+/* ━━━━ Tailwind ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @import 'tailwindcss';
 
-/* Class-based dark variant (html.dark) */
+/* ━━━━ Dark variant — prefers-color-scheme + class toggle ━━━━━━━━━━━━ */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ━━━━ Design Tokens ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @theme {
+  /* Typefaces */
   --font-sans:
-    'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
+    'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -25,9 +28,12 @@
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Spacing scale */
+  --nav-height: 3.5rem;
 }
 
-/* Dark mode overrides — applied when html has .dark class */
+/* ━━━━ Dark mode overrides ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .dark {
   --color-background: oklch(0.14 0.015 160);
   --color-foreground: oklch(0.95 0.005 80);
@@ -40,62 +46,7 @@
   --color-highlight: oklch(0.55 0.07 160);
 }
 
-/* Theme toggle: disable default View Transition cross-fade — clip-path drives the reveal */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-/* Page content View Transition — exit: fade + drift up; enter: clip-path wipe + fade + drift up */
-@keyframes page-exit {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-14px); }
-}
-
-@keyframes page-enter {
-  from { opacity: 0; transform: translateY(14px); clip-path: inset(0 0 100% 0); }
-  to   { opacity: 1; transform: translateY(0);    clip-path: inset(0 0 0% 0); }
-}
-
-::view-transition-old(page-content) {
-  animation: page-exit 150ms var(--ease-out-expo) forwards;
-}
-
-::view-transition-new(page-content) {
-  animation: page-enter 300ms var(--ease-out-expo) 80ms both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(page-content),
-  ::view-transition-new(page-content) {
-    animation: none;
-  }
-}
-
-/* Wandering eyes look-around + blink animation */
-@keyframes we-look {
-  0%, 10%    { background-position: 0 0; }
-  13%, 40%   { background-position: -3px 0; }
-  43%, 70%   { background-position: 3px 0; }
-  73%, 90%   { background-position: 0 3px; }
-  93%, 100%  { background-position: 0 0; }
-}
-
-@keyframes we-blink {
-  0%, 10%, 12%, 20%, 22%, 40%, 42%, 60%, 62%, 70%, 72%, 90%, 92%, 98%, 100% { transform: scaleY(1); }
-  11%, 21%, 41%, 61%, 71%, 91%, 99% { transform: scaleY(0.375); }
-}
-
-.we-eye {
-  animation: we-look 10s infinite, we-blink 10s infinite;
-  transform-origin: center center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .we-eye { animation: none; }
-}
-
+/* ━━━━ Layer: settings ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @layer base {
   * {
     box-sizing: border-box;
@@ -117,43 +68,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* --- Keyframes --- */
-
-@keyframes wipe-reveal {
-  from {
-    clip-path: inset(0 0 100% 0);
-    opacity: 0.8;
-  }
-  to {
-    clip-path: inset(0 0 0% 0);
-    opacity: 1;
-  }
-}
-
-@keyframes toast-in {
-  from {
-    transform: translateY(-110%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* --- Utility classes --- */
-
+/* ━━━━ Layer: utilities ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @utility mask-x-gradient {
   mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
@@ -161,11 +76,7 @@
 
 @utility hatch-gutter {
   background-image: repeating-linear-gradient(
-    45deg,
-    var(--color-border) 0,
-    var(--color-border) 1px,
-    transparent 0,
-    transparent 50%
+    45deg, var(--color-border) 0, var(--color-border) 1px, transparent 0, transparent 50%
   );
   background-size: 6px 6px;
 }
@@ -198,8 +109,7 @@
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
   border-bottom: 1px solid color-mix(in oklch, var(--color-border) 45%, transparent);
-  box-shadow:
-    0 1px 0 color-mix(in oklch, var(--color-accent) 7%, transparent),
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-accent) 7%, transparent),
     0 8px 32px oklch(0 0 0 / 0.08);
 }
 
@@ -208,9 +118,7 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
-  box-shadow:
-    0 8px 32px oklch(0 0 0 / 0.07),
-    inset 0 1px 0 oklch(1 0 0 / 0.12);
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.07), inset 0 1px 0 oklch(1 0 0 / 0.12);
   border-radius: 1rem;
 }
 
@@ -219,9 +127,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
-  box-shadow:
-    0 4px 24px oklch(0 0 0 / 0.06),
-    inset 0 1px 0 oklch(1 0 0 / 0.1);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.06), inset 0 1px 0 oklch(1 0 0 / 0.1);
   border-radius: 0.75rem;
 }
 
@@ -251,12 +157,8 @@
 @utility title-display {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.01em;
   line-height: 0.95;
-}
-
-@media (min-width: 768px) {
-  .title-display {
+  @media (min-width: 768px) {
     letter-spacing: -0.02em;
   }
 }
@@ -280,26 +182,79 @@
   }
 }
 
+/* ━━━━ Layer: components ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @layer components {
   .nav-link {
     @apply text-muted relative inline-flex items-center rounded px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase;
     transition: all 0.2s var(--ease-out-quart);
   }
-
   .nav-link:hover {
     @apply text-foreground bg-secondary;
   }
-
   .nav-link.is-active {
     @apply text-foreground border-accent border-b;
   }
 }
 
-/* --- Scroll-reveal (CSS fallback — GSAP PageAnimations takes over when present) --- */
-/* Only hides sections when JS has run; visible without JS */
+/* ━━━━ Animations: View Transitions ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
 
-/* GSAP ScrollTrigger handles [data-stagger-group] and plain sections when PageAnimations loads.
-   CSS reveal is a fallback for pages that don't use PageAnimations. */
+@keyframes page-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-14px); }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(14px); clip-path: inset(0 0 100% 0); }
+  to { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0% 0); }
+}
+
+::view-transition-old(page-content) {
+  animation: page-exit 150ms var(--ease-out-expo) forwards;
+}
+
+::view-transition-new(page-content) {
+  animation: page-enter 300ms var(--ease-out-expo) 80ms both;
+}
+
+/* ━━━━ Animations: Ambient ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes wipe-reveal {
+  from { clip-path: inset(0 0 100% 0); opacity: 0.8; }
+  to { clip-path: inset(0 0 0% 0); opacity: 1; }
+}
+
+@keyframes toast-in {
+  from { transform: translateY(-110%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ━━━━ Reduced Motion ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content) {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ━━━━ Scroll-reveal ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .js-reveal main > section:not(:first-child):not([data-stagger-group]) {
   opacity: 0;
   transform: translateY(1.5rem);
@@ -313,7 +268,7 @@
   transform: translateY(0);
 }
 
-/* --- Desktop nav hover underline (NavLinks island) --- */
+/* ━━━━ Nav hover underline ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .nav-link-item::after {
   content: '';
   position: absolute;
@@ -337,10 +292,10 @@
   opacity: 0.5;
 }
 
-/* --- Page transition accent line --- */
+/* ━━━━ Page accent line ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #page-accent-line {
   position: fixed;
-  top: 57px;
+  top: calc(var(--nav-height) + 1px);
   left: 0;
   width: 100%;
   height: 2px;
@@ -350,4 +305,11 @@
   transform-origin: left center;
   z-index: 9999;
   pointer-events: none;
+}
+
+/* ━━━━ Print ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }
