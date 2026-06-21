@@ -1,8 +1,10 @@
-import { GitBranch, GitFork, GitMerge, Star, Upload, Zap } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ChevronDown, GitBranch, GitFork, GitMerge, Star, Upload, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { RecentEvent } from '@/utils/github'
 import { fetchRecentEvents } from '@/utils/github'
 
+const PAGE_SIZE = 5
 const relativeTimeCache = new Map<string, string>()
 
 /** @visibleForTesting */
@@ -57,9 +59,60 @@ function SkeletonRow() {
   )
 }
 
+function EventRow({ event }: { event: RecentEvent }) {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+      className="relative flex items-start gap-2.5 py-2 min-h-[44px]"
+    >
+      {/* Icon dot — sits on the timeline line */}
+      <div
+        className="relative z-10 mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+        style={{
+          background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
+          color: 'var(--color-accent)'
+        }}
+        aria-hidden="true"
+      >
+        <EventIcon type={event.type} />
+      </div>
+
+      <div className="min-w-0 flex-1 pt-[1px]">
+        {event.message && (
+          <p className="text-foreground truncate text-xs font-medium leading-snug">
+            {event.message}
+          </p>
+        )}
+        <div className="mt-0.5 flex items-center gap-1.5 flex-wrap">
+          <a
+            href={event.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted hover:text-accent max-w-[140px] truncate font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+            aria-label={`View ${event.repo} on GitHub`}
+          >
+            {event.repo}
+          </a>
+          <span className="text-muted/30 font-mono text-[10px]" aria-hidden="true">
+            ·
+          </span>
+          <span className="text-muted/60 flex-shrink-0 font-mono text-[10px]">
+            {relativeTime(event.date)}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function GitHubActivity() {
   const [events, setEvents] = useState<RecentEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   useEffect(() => {
     fetchRecentEvents()
@@ -68,9 +121,27 @@ export default function GitHubActivity() {
       .finally(() => setLoading(false))
   }, [])
 
+  const visible = events.slice(0, visibleCount)
+  const hasMore = visibleCount < events.length
+
+  function loadMore() {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, events.length))
+  }
+
+  function reset() {
+    setVisibleCount(PAGE_SIZE)
+  }
+
   return (
     <div className="rounded-xl border border-border bg-secondary/30 p-4 md:p-6">
-      <p className="text-foreground mb-3 text-sm font-semibold">Recent Activity</p>
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-foreground text-sm font-semibold">Recent Activity</p>
+        {events.length > PAGE_SIZE && (
+          <span className="text-muted font-mono text-[9px] tracking-wider">
+            {Math.min(visibleCount, events.length)} / {events.length}
+          </span>
+        )}
+      </div>
 
       {loading ? (
         <div className="divide-border divide-y">
@@ -89,46 +160,37 @@ export default function GitHubActivity() {
             aria-hidden="true"
           />
 
-          <div className="space-y-0">
-            {events.map((e) => (
-              <div key={e.id} className="relative flex items-start gap-2.5 py-2 min-h-[44px]">
-                {/* Icon dot — sits on the timeline line */}
-                <div
-                  className="relative z-10 mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-                  style={{
-                    background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
-                    color: 'var(--color-accent)'
-                  }}
-                  aria-hidden="true"
-                >
-                  <EventIcon type={e.type} />
-                </div>
-
-                <div className="min-w-0 flex-1 pt-[1px]">
-                  {e.message && (
-                    <p className="text-foreground truncate text-xs font-medium leading-snug">
-                      {e.message}
-                    </p>
-                  )}
-                  <div className="mt-0.5 flex items-center gap-1.5 flex-wrap">
-                    <a
-                      href={e.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted hover:text-accent max-w-[140px] truncate font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-                      aria-label={`View ${e.repo} on GitHub`}
-                    >
-                      {e.repo}
-                    </a>
-                    <span className="text-muted/30 font-mono text-[10px]">·</span>
-                    <span className="text-muted/60 flex-shrink-0 font-mono text-[10px]">
-                      {relativeTime(e.date)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+          <AnimatePresence mode="popLayout">
+            {visible.map((e) => (
+              <EventRow key={e.id} event={e} />
             ))}
-          </div>
+          </AnimatePresence>
+
+          {/* Show more / show less */}
+          {hasMore && (
+            <motion.button
+              type="button"
+              onClick={loadMore}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-accent hover:text-accent-hover mt-1 flex w-full items-center justify-center gap-1 py-2 font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+            >
+              Show {Math.min(PAGE_SIZE, events.length - visibleCount)} more
+              <ChevronDown size={12} />
+            </motion.button>
+          )}
+
+          {!hasMore && visibleCount > PAGE_SIZE && (
+            <motion.button
+              type="button"
+              onClick={reset}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-muted hover:text-foreground mt-1 flex w-full items-center justify-center gap-1 py-2 font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+            >
+              Show less
+            </motion.button>
+          )}
         </div>
       )}
 
