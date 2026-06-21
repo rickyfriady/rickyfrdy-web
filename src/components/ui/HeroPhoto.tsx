@@ -42,6 +42,8 @@ export default function HeroPhoto() {
             width={196}
             height={261}
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
             onLoad={() => setPhotoReady(true)}
             onError={() => setPhotoReady(false)}
             className={`absolute inset-0 h-full w-full object-cover object-top text-transparent transition-opacity duration-700 `}

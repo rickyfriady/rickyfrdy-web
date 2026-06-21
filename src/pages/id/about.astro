@@ -87,7 +87,11 @@ const beyondCode = [
             <img
               src="/images/avatar.jpg"
               alt="Ricki Friadi"
+              width={400}
+              height={533}
               loading="eager"
+              fetchpriority="high"
+              decoding="async"
               class="absolute inset-0 h-full w-full object-cover object-top text-transparent"
             />
           </div>
@@ -221,7 +225,7 @@ const beyondCode = [
     </div>
 
     <div class="px-4 pb-12 skills-grid-skel" data-stagger-item>
-      <SkillsMatrix client:load />
+      <SkillsMatrix client:visible />
     </div>
   </section>
 
