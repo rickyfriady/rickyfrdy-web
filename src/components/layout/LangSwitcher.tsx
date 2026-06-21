@@ -57,8 +57,18 @@ export default function LangSwitcher() {
         setOpen(false)
       }
     }
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        buttonRef.current?.focus()
+      }
+    }
     document.addEventListener('mousedown', onOutside)
-    return () => document.removeEventListener('mousedown', onOutside)
+    document.addEventListener('keydown', onEscape)
+    return () => {
+      document.removeEventListener('mousedown', onOutside)
+      document.removeEventListener('keydown', onEscape)
+    }
   }, [open])
 
   function handleSelect(lang: 'en' | 'id') {
@@ -83,7 +93,7 @@ export default function LangSwitcher() {
     }
   }
 
-  const active = LANGS.find((l) => l.code === currentLang)!
+  const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 
   return (
     <div ref={containerRef} className="relative hidden md:block">

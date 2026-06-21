@@ -1,6 +1,8 @@
+import { useCallback, useRef } from 'react'
 import type { ContributionDay, GitHubStats } from '@/utils/github'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function getColorClass(level: number): string {
   const colors: Record<number, string> = {
@@ -14,7 +16,6 @@ function getColorClass(level: number): string {
 }
 
 function getLevelPattern(level: number): string {
-  // Pattern overlays for color-only accessibility
   switch (level) {
     case 0:
       return 'none'
@@ -33,7 +34,8 @@ function getLevelPattern(level: number): string {
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
+    weekday: 'long',
+    month: 'long',
     day: 'numeric',
     year: 'numeric'
   })
@@ -73,6 +75,7 @@ interface Props {
 
 export default function GitHubHeatmap({ initialStats }: Props) {
   const stats = initialStats
+  const tableRef = useRef<HTMLTableElement>(null)
 
   const weeks = groupByWeek(stats.contributionCalendar)
   const monthLabels = alignMonthLabels(weeks)
@@ -84,6 +87,28 @@ export default function GitHubHeatmap({ initialStats }: Props) {
     ...(stats.publicRepos > 0 ? [{ label: 'Repos', value: stats.publicRepos }] : []),
     ...(stats.followers > 0 ? [{ label: 'Followers', value: stats.followers }] : [])
   ]
+
+  // Arrow-key navigation within the table grid
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTableCellElement>, weekIdx: number, dayIdx: number) => {
+      const arrows: Record<string, [number, number]> = {
+        ArrowRight: [weekIdx + 1, dayIdx],
+        ArrowLeft: [weekIdx - 1, dayIdx],
+        ArrowDown: [weekIdx, dayIdx + 1],
+        ArrowUp: [weekIdx, dayIdx - 1]
+      }
+      const target = arrows[e.key]
+      if (!target) return
+      e.preventDefault()
+      const [nw, nd] = target
+      if (nw < 0 || nw >= weeks.length || nd < 0 || nd > 6) return
+      const cell = tableRef.current?.querySelector<HTMLElement>(
+        `[data-week="${nw}"][data-day="${nd}"]`
+      )
+      cell?.focus()
+    },
+    [weeks.length]
+  )
 
   return (
     <div className="rounded-xl border border-border bg-secondary/30 p-4 md:p-6">
@@ -101,60 +126,94 @@ export default function GitHubHeatmap({ initialStats }: Props) {
         ))}
       </div>
 
-      {/* Heatmap */}
-      <div className="overflow-x-auto pb-3 scrollbar-none mask-x-gradient">
-        <div className="inline-block min-w-full mask-x-gradient">
-          {/* Month labels — aligned to week columns */}
-          <div className="mb-1.5 flex pl-8 text-[9px] font-medium uppercase tracking-wider text-muted">
-            {monthLabels.map((m) => (
+      {/* Heatmap table */}
+      <div className="overflow-x-auto pb-3 scrollbar-none">
+        <table
+          ref={tableRef}
+          aria-label="GitHub contribution heatmap"
+          className="border-separate"
+          style={{ borderSpacing: '2px' }}
+        >
+          <caption className="sr-only">
+            GitHub contributions over the past year — use arrow keys to navigate cells
+          </caption>
+
+          {/* Month column headers */}
+          <thead>
+            <tr>
+              {/* Empty corner cell above day-of-week labels */}
+              <td aria-hidden="true" className="w-8" />
+              {monthLabels.map((m) => (
+                <th
+                  key={m.label}
+                  scope="col"
+                  colSpan={m.span}
+                  className="text-left font-mono text-[9px] font-medium uppercase tracking-wider text-muted pb-1.5"
+                  style={{ width: `${m.span * 14}px` }}
+                >
+                  {m.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {/* 7 rows = Sun–Sat */}
+            {DAY_LABELS.map((day, dayIdx) => (
+              <tr key={day}>
+                {/* Row header: day label (only Mon/Wed/Fri visible) */}
+                <th
+                  scope="row"
+                  className={`pr-2 font-mono text-[8px] font-medium uppercase tracking-wider text-muted/60 text-right${
+                    dayIdx % 2 === 0 ? ' invisible' : ''
+                  }`}
+                  aria-label={day}
+                >
+                  {day.slice(0, 3)}
+                </th>
+
+                {weeks.map((week, weekIdx) => {
+                  const d = week[dayIdx]
+                  if (!d) {
+                    return (
+                      <td
+                        key={`pad-${day}-col${weeks[weekIdx]?.[0]?.date ?? weekIdx}`}
+                        aria-hidden="true"
+                        className="h-[10px] w-[10px] md:h-[10px] md:w-[10px]"
+                      />
+                    )
+                  }
+                  return (
+                    <td
+                      key={d.date}
+                      data-week={weekIdx}
+                      data-day={dayIdx}
+                      tabIndex={weekIdx === 0 && dayIdx === 0 ? 0 : -1}
+                      aria-label={`${d.count} contribution${d.count !== 1 ? 's' : ''} on ${formatDate(d.date)}`}
+                      title={`${d.count} contributions on ${formatDate(d.date)}`}
+                      onKeyDown={(e) => handleKeyDown(e, weekIdx, dayIdx)}
+                      className={`${getColorClass(d.level)} h-[12px] w-[12px] md:h-[10px] md:w-[10px] cursor-default rounded-[2px] transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:scale-125 hover:scale-125 hover:ring-2 hover:ring-accent`}
+                      style={{ backgroundImage: getLevelPattern(d.level) }}
+                    />
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Legend */}
+        <div className="mt-3 flex items-center gap-2 text-[9px] text-muted/60" aria-hidden="true">
+          <span>Less</span>
+          <div className="flex gap-[2px]">
+            {[0, 1, 2, 3, 4].map((level) => (
               <div
-                key={m.label}
-                className="flex-none text-left"
-                style={{ width: `${m.span * 12}px` }}
-              >
-                {m.label}
-              </div>
+                key={level}
+                className={`${getColorClass(level)} h-[10px] w-[10px] rounded-[2px]`}
+              />
             ))}
           </div>
-
-          <div className="flex gap-[2px]">
-            {/* Day-of-week labels */}
-            <div className="flex flex-col justify-around gap-[2px] pr-2 text-[8px] font-medium uppercase tracking-wider text-muted/60 hidden md:flex">
-              <span>Mon</span>
-              <span>Wed</span>
-              <span>Fri</span>
-            </div>
-
-            {/* Grid — 12px cells on mobile, 10px on desktop */}
-            <div className="flex gap-[2px]">
-              {weeks.map((week) => (
-                <div key={week[0]?.date ?? 'empty'} className="flex flex-col gap-[2px]">
-                  {week.map((day) => (
-                    <div
-                      key={day.date}
-                      className={`${getColorClass(day.level)} hover:ring-accent h-[12px] w-[12px] md:h-[10px] md:w-[10px] cursor-pointer rounded-[2px] transition-all hover:scale-125 hover:ring-2`}
-                      style={{ backgroundImage: getLevelPattern(day.level) }}
-                      title={`${day.count} contributions on ${formatDate(day.date)}`}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Legend */}
-          <div className="mt-3 flex items-center gap-2 text-[9px] text-muted/60">
-            <span>Less</span>
-            <div className="flex gap-[2px]">
-              {[0, 1, 2, 3, 4].map((level) => (
-                <div
-                  key={level}
-                  className={`${getColorClass(level)} h-[10px] w-[10px] rounded-[2px]`}
-                />
-              ))}
-            </div>
-            <span>More</span>
-          </div>
+          <span>More</span>
         </div>
       </div>
 
