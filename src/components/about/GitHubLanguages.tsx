@@ -31,20 +31,16 @@ export default function GitHubLanguages({ languages }: Props) {
       {/* Legend — compact, wraps on mobile */}
       <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5" aria-label="Language breakdown">
         {languages.map((lang) => (
-          <li
-            key={lang.name}
-            className="flex items-center gap-1.5 flex-shrink-0"
-            aria-label={`${lang.name}: ${lang.percentage}%`}
-          >
+          <li key={lang.name} className="flex items-center gap-1.5 flex-shrink-0">
             <span
               className="block h-2 w-2 flex-shrink-0 rounded-full"
               style={{ background: lang.color }}
               aria-hidden="true"
             />
-            <span className="text-foreground font-mono text-[10px] leading-none hidden sm:inline">
+            <span className="text-foreground font-mono text-[9px] leading-none sm:text-[10px]">
               {lang.name}
             </span>
-            <span className="text-muted font-mono text-[10px] leading-none">
+            <span className="text-muted font-mono text-[9px] leading-none sm:text-[10px]">
               {lang.percentage}%
             </span>
           </li>
