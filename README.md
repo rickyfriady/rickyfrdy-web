@@ -22,7 +22,7 @@ bun dev                # or: bun build
 |-------|------|
 | Framework | Astro 6 (SSG, `output: static`) |
 | UI components | React 19 islands via `@astrojs/react` |
-| Animation | Framer Motion 12 · GSAP 3 |
+| Animation | Framer Motion 12 · GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) |
 | Styling | Tailwind CSS v4 · custom CSS utilities (glassmorphism) |
 | PDF | `@react-pdf/renderer` — designed + ATS variants |
 | i18n | Astro native i18n routing — EN (`/`) · ID (`/id/`) |
@@ -115,6 +115,25 @@ src/
 | **REST Events API** (`fetchRecentEvents`) | None (public, 60 req/hr) | Activity timeline | Client-side on mount |
 
 Set `GITHUB_TOKEN` in `.env` (see `.env.example`) for real build-time data. Without it, the GraphQL fetch falls back to realistic mock data.
+
+---
+
+## UI Transitions
+
+The project uses CSS transition kits from [transitions.dev](https://transitions.dev) — lightweight, framework-independent animations driven by CSS custom properties. All triggered via semantic class names and data attributes.
+
+| Transition | Component | What it does |
+|---|---|---|
+| **menu-dropdown** | `LangSwitcher` | Scaled origin-aware dropdown open/close |
+| **icon-swap** | `ContactForm` submit · `FeaturedBadge` | Cross-fade two icons with blur+scale (Send↔Loader2, star↔bolt) |
+| **shimmer-text** | `ContactForm` "Sending…" | Sweeping highlight band across muted text |
+| **success-check** | `ContactForm` success state | SVG stroke-draw + rotate + blur + Y-bob on submit |
+| **error-shake** | `ContactForm` fields | Per-segment cubic-bezier shake + border color tween + auto-revert |
+| **tabs-sliding** | `SkillsMatrix` category filters | Sliding pill that follows the active tab (offsetLeft/offsetWidth JS + CSS transition) |
+| **avatar-hover** | `CollaboratorsSection` | Distance-falloff lift + scale on avatar rows, bouncy spring on return |
+| **notification-badge** · **card-resize** · **skeleton-loader** | (CSS available, unused) | Ready for future components |
+
+All transitions respect `prefers-reduced-motion` at the OS level.
 
 ---
 
