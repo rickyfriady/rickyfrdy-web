@@ -36,6 +36,10 @@ function clearDraft() {
 }
 
 function Confetti() {
+  // Hydration-safe: random only on client, SSR renders null
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
   const particles = Array.from({ length: 20 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,

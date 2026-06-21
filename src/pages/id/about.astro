@@ -100,7 +100,7 @@ const beyondCode = [
           <div
             class="relative aspect-[3/4] mt-8 overflow-hidden rounded-lg border border-border bg-secondary"
           >
-            <!-- Fallback pattern when no scene.jpg exists -->
+            <!-- Fallback scene pattern (no scene.jpg on server) -->
             <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
               <div class="grid grid-cols-3 gap-1.5 opacity-30">
                 <div class="size-6 rounded-sm bg-accent/40" />
@@ -117,13 +117,6 @@ const beyondCode = [
                 Jakarta, ID
               </span>
             </div>
-            <img
-              src="/images/scene.jpg"
-              alt="Suasana kerja"
-              loading="lazy"
-              data-scene-img
-              class="absolute inset-0 h-full w-full object-cover object-center"
-            />
           </div>
         </div>
       </div>
