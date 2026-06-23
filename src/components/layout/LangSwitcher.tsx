@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import gsap from 'gsap'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const LANGS = [
   { code: 'en' as const, flag: '🇺🇸', label: 'English' },
@@ -22,17 +22,6 @@ function getTargetHref(targetLang: 'en' | 'id'): string {
   return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
 }
 
-const dropdownVariants = {
-  hidden: { opacity: 0, y: -6, scale: 0.97 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.6 }
-  },
-  exit: { opacity: 0, y: -4, scale: 0.97, transition: { duration: 0.12 } }
-}
-
 export default function LangSwitcher() {
   const [currentLang, setCurrentLang] = useState<'en' | 'id'>(() => {
     if (typeof window === 'undefined') return 'en'
@@ -41,6 +30,35 @@ export default function LangSwitcher() {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLUListElement>(null)
+  const closeRef = useRef<number>(0)
+
+  const closeMs = 150
+
+  const closeDropdown = useCallback((ret?: boolean) => {
+    if (closeRef.current) clearTimeout(closeRef.current)
+    const ul = dropdownRef.current
+    if (!ul) {
+      setOpen(false)
+      return
+    }
+    ul.classList.remove('is-open')
+    ul.classList.add('is-closing')
+    closeRef.current = window.setTimeout(() => {
+      ul.classList.remove('is-closing')
+      setOpen(false)
+      if (ret && buttonRef.current) buttonRef.current.focus()
+    }, closeMs)
+  }, [])
+
+  const openDropdown = useCallback(() => {
+    if (closeRef.current) clearTimeout(closeRef.current)
+    setOpen(true)
+    requestAnimationFrame(() => {
+      dropdownRef.current?.classList.remove('is-closing')
+      dropdownRef.current?.classList.add('is-open')
+    })
+  }, [])
 
   useEffect(() => {
     const handler = () => {
@@ -54,13 +72,12 @@ export default function LangSwitcher() {
     if (!open) return
     const onOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false)
+        closeDropdown()
       }
     }
     const onEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setOpen(false)
-        buttonRef.current?.focus()
+        closeDropdown(true)
       }
     }
     document.addEventListener('mousedown', onOutside)
@@ -69,10 +86,10 @@ export default function LangSwitcher() {
       document.removeEventListener('mousedown', onOutside)
       document.removeEventListener('keydown', onEscape)
     }
-  }, [open])
+  }, [open, closeDropdown])
 
   function handleSelect(lang: 'en' | 'id') {
-    setOpen(false)
+    closeDropdown()
     if (lang === currentLang) return
     const href = getTargetHref(lang)
     if (buttonRef.current) {
@@ -103,7 +120,7 @@ export default function LangSwitcher() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Language: ${active.label}`}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? closeDropdown(true) : openDropdown())}
         className="glass-btn flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm"
       >
         <span className="text-base leading-none">{active.flag}</span>
@@ -124,63 +141,60 @@ export default function LangSwitcher() {
         </motion.svg>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.ul
-            role="listbox"
-            aria-label="Select language"
-            variants={dropdownVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="absolute right-0 top-full mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
-            style={{
-              background: 'color-mix(in oklch, var(--color-background) 85%, transparent)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              borderColor: 'color-mix(in oklch, var(--color-border) 60%, transparent)'
-            }}
-          >
-            {LANGS.map((lang) => {
-              const isActive = lang.code === currentLang
-              return (
-                <li key={lang.code}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={isActive}
-                    onClick={() => handleSelect(lang.code)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
-                    style={
-                      isActive
-                        ? {
-                            background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
-                            color: 'var(--color-accent)'
-                          }
-                        : undefined
-                    }
-                  >
-                    <span className="text-base leading-none">{lang.flag}</span>
-                    <span className="font-medium">{lang.label}</span>
-                    {isActive && (
-                      <svg
-                        className="ml-auto h-3.5 w-3.5 flex-shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
-                        aria-hidden="true"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                </li>
-              )
-            })}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+      {open && (
+        <ul
+          ref={dropdownRef}
+          // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: <ul role="listbox"> is correct ARIA
+          role="listbox"
+          aria-label="Select language"
+          data-origin="top-right"
+          className="t-dropdown absolute right-0 top-full mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
+          style={{
+            background: 'color-mix(in oklch, var(--color-background) 85%, transparent)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            borderColor: 'color-mix(in oklch, var(--color-border) 60%, transparent)'
+          }}
+        >
+          {LANGS.map((lang) => {
+            const isActive = lang.code === currentLang
+            return (
+              <li key={lang.code}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={isActive}
+                  onClick={() => handleSelect(lang.code)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+                  style={
+                    isActive
+                      ? {
+                          background: 'color-mix(in oklch, var(--color-accent) 12%, transparent)',
+                          color: 'var(--color-accent)'
+                        }
+                      : undefined
+                  }
+                >
+                  <span className="text-base leading-none">{lang.flag}</span>
+                  <span className="font-medium">{lang.label}</span>
+                  {isActive && (
+                    <svg
+                      className="ml-auto h-3.5 w-3.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }

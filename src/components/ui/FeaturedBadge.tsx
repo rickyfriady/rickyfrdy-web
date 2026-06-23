@@ -6,33 +6,36 @@ interface Props {
 }
 
 export default function FeaturedBadge({ label }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
-
-    // Respect reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return
-    }
+    const el = containerRef.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const anim = lottie.loadAnimation({
-      container: containerRef.current,
+      container: el,
       renderer: 'svg',
       loop: true,
       autoplay: true,
       path: '/lottie/fire.json'
     })
 
-    return () => {
-      anim.destroy()
-    }
+    return () => anim.destroy()
   }, [])
 
   return (
-    <div className="inline-flex items-center justify-center gap-1">
-      <div ref={containerRef} aria-hidden="true" className="size-[18px] shrink-0" />
+    <span
+      className="inline-flex items-center justify-center gap-1"
+      role="img"
+      aria-label={`${label} project`}
+    >
+      <span
+        ref={containerRef}
+        aria-hidden="true"
+        style={{ width: 16, height: 22, flexShrink: 0 }}
+      />
       <span className="eyebrow">{label}</span>
-    </div>
+    </span>
   )
 }

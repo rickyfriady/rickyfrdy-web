@@ -59,7 +59,7 @@ const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
                       <a
                         href={`/blog/tag/${tag}`}
                         class="diff-tag hover:border-accent/60 transition-colors"
-                        onclick="event.stopPropagation()"
+                        data-stop-prop
                       >
                         {tag}
                       </a>
@@ -84,3 +84,10 @@ const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
     )}
   </section>
 </MainLayout>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const target = (e.target as Element)?.closest('[data-stop-prop]')
+    if (target) e.stopPropagation()
+  })
+</script>

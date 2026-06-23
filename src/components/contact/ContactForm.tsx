@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { CheckCircle, Loader2, Send } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { Loader2, Send } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ContactFormData } from '@/utils/contactSchema'
 import { contactSchema } from '@/utils/contactSchema'
 
@@ -86,7 +86,7 @@ export default function ContactForm() {
     return { name, email, message }
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const raw = getRaw()
 
@@ -144,13 +144,20 @@ export default function ContactForm() {
         className="relative rounded-xl border border-accent/20 bg-accent/5 p-8 text-center overflow-hidden"
       >
         <Confetti />
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }}
-        >
-          <CheckCircle className="text-accent mx-auto h-10 w-10" />
-        </motion.div>
+        <span className="t-success-check" data-state="in" aria-hidden="true">
+          <svg
+            viewBox="0 0 48 48"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-accent mx-auto h-[42px] w-[42px]"
+            aria-hidden="true"
+          >
+            <path d="M14 24l7 7L34 17" />
+          </svg>
+        </span>
         <p className="text-accent font-display mt-4 text-2xl font-light">Message sent.</p>
         <p className="text-muted mt-2 text-sm">
           Thank you. I&apos;ll get back to you within a few days.
@@ -236,16 +243,20 @@ export default function ContactForm() {
         disabled={state === 'submitting'}
         className="bg-accent text-background hover:bg-accent-hover disabled:opacity-50 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       >
-        {state === 'submitting' ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Sending…
-          </>
-        ) : (
-          <>
+        <span className="t-icon-swap" data-state={state === 'submitting' ? 'b' : 'a'}>
+          <span className="t-icon" data-icon="a">
             <Send className="h-4 w-4" />
-            Send Message
-          </>
+          </span>
+          <span className="t-icon" data-icon="b">
+            <Loader2 className="h-4 w-4" />
+          </span>
+        </span>
+        {state === 'submitting' ? (
+          <span className="t-shimmer" data-text="Sending…">
+            Sending…
+          </span>
+        ) : (
+          'Send Message'
         )}
       </button>
     </motion.form>
@@ -263,19 +274,32 @@ function Field({
   error?: string
   children: React.ReactNode
 }) {
+  const inputRef = useRef<HTMLDivElement>(null)
+  const prevError = useRef(error)
+
+  // Trigger shake when error first appears
+  useEffect(() => {
+    if (error && !prevError.current) {
+      const el = inputRef.current
+      if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.classList.remove('is-shaking')
+        void el.offsetWidth
+        el.classList.add('is-shaking')
+        setTimeout(() => el.classList.remove('is-shaking'), 280)
+      }
+    }
+    prevError.current = error
+  }, [error])
+
   return (
-    <div className="space-y-1">
+    <div className={`t-input-wrap ${error ? 'is-error' : ''}`}>
       <label htmlFor={id} className="text-muted font-mono text-xs tracking-widest uppercase">
         {name}
       </label>
-      {children}
-      <motion.p
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: error ? 1 : 0, height: error ? 'auto' : 0 }}
-        className="text-xs text-red-400 overflow-hidden"
-      >
-        {error ?? ' '}
-      </motion.p>
+      <div ref={inputRef} className={`t-input ${error ? 'is-error' : ''}`}>
+        {children}
+      </div>
+      <p className={`t-error-msg ${error ? '' : ''}`}>{error ?? ' '}</p>
     </div>
   )
 }

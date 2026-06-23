@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Search, X } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { skillGroups } from '@/data/skills'
 
 const allSkills = skillGroups.flatMap((g) => g.skills.map((s) => ({ ...s, group: g.label })))
@@ -8,6 +8,8 @@ const allSkills = skillGroups.flatMap((g) => g.skills.map((s) => ({ ...s, group:
 export default function SkillsMatrix() {
   const [query, setQuery] = useState('')
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const pillRef = useRef<HTMLSpanElement>(null)
 
   const filtered = useMemo(() => {
     let result = query
@@ -36,6 +38,50 @@ export default function SkillsMatrix() {
 
   const groups = skillGroups.map((g) => g.label)
 
+  // Tabs sliding pill
+  // biome-ignore lint/correctness/useExhaustiveDependencies: selectedGroup triggers pill re-position
+  useEffect(() => {
+    const bar = tabsRef.current
+    const pill = pillRef.current
+    if (!bar || !pill) return
+
+    const b = bar
+    const p = pill
+
+    function moveTo(tab: HTMLElement, animate: boolean) {
+      if (!animate) {
+        const prev = p.style.transition
+        p.style.transition = 'none'
+        p.style.transform = `translateX(${tab.offsetLeft}px)`
+        p.style.width = `${tab.offsetWidth}px`
+        void p.offsetWidth
+        p.style.transition = prev
+      } else {
+        p.style.transform = `translateX(${tab.offsetLeft}px)`
+        p.style.width = `${tab.offsetWidth}px`
+      }
+    }
+
+    function getActive() {
+      return (
+        b.querySelector<HTMLElement>('.t-tab[aria-selected="true"]') ??
+        b.querySelector<HTMLElement>('.t-tab')
+      )
+    }
+
+    requestAnimationFrame(() => {
+      const t = getActive()
+      if (t) moveTo(t, false)
+    })
+
+    const onResize = () => {
+      const t = getActive()
+      if (t) moveTo(t, false)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [selectedGroup])
+
   return (
     <div>
       {/* Search + filter bar */}
@@ -62,15 +108,14 @@ export default function SkillsMatrix() {
           )}
         </div>
 
-        <fieldset aria-label="Filter by category" className="flex flex-wrap gap-1.5">
+        <div ref={tabsRef} className="t-tabs flex-wrap sm:flex-nowrap" role="tablist">
+          <span ref={pillRef} className="t-tabs-pill" aria-hidden="true" />
           <button
             type="button"
             onClick={() => setSelectedGroup(null)}
-            className={`rounded-md px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors ${
-              !selectedGroup
-                ? 'bg-accent text-background'
-                : 'bg-secondary text-muted hover:text-foreground'
-            }`}
+            className="t-tab"
+            role="tab"
+            aria-selected={selectedGroup === null}
           >
             All
           </button>
@@ -79,16 +124,14 @@ export default function SkillsMatrix() {
               key={g}
               type="button"
               onClick={() => setSelectedGroup(selectedGroup === g ? null : g)}
-              className={`rounded-md px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors ${
-                selectedGroup === g
-                  ? 'bg-accent text-background'
-                  : 'bg-secondary text-muted hover:text-foreground'
-              }`}
+              className="t-tab"
+              role="tab"
+              aria-selected={selectedGroup === g}
             >
               {g}
             </button>
           ))}
-        </fieldset>
+        </div>
       </div>
 
       {/* Results count */}
