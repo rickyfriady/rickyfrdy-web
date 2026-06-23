@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { CheckCircle, Loader2, Send } from 'lucide-react'
+import { Loader2, Send } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import type { ContactFormData } from '@/utils/contactSchema'
 import { contactSchema } from '@/utils/contactSchema'
@@ -144,13 +144,20 @@ export default function ContactForm() {
         className="relative rounded-xl border border-accent/20 bg-accent/5 p-8 text-center overflow-hidden"
       >
         <Confetti />
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }}
-        >
-          <CheckCircle className="text-accent mx-auto h-10 w-10" />
-        </motion.div>
+        <span className="t-success-check" data-state="in" aria-hidden="true">
+          <svg
+            viewBox="0 0 48 48"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-accent mx-auto h-[42px] w-[42px]"
+            aria-hidden="true"
+          >
+            <path d="M14 24l7 7L34 17" />
+          </svg>
+        </span>
         <p className="text-accent font-display mt-4 text-2xl font-light">Message sent.</p>
         <p className="text-muted mt-2 text-sm">
           Thank you. I&apos;ll get back to you within a few days.
@@ -236,16 +243,20 @@ export default function ContactForm() {
         disabled={state === 'submitting'}
         className="bg-accent text-background hover:bg-accent-hover disabled:opacity-50 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       >
-        {state === 'submitting' ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Sending…
-          </>
-        ) : (
-          <>
+        <span className="t-icon-swap" data-state={state === 'submitting' ? 'b' : 'a'}>
+          <span className="t-icon" data-icon="a">
             <Send className="h-4 w-4" />
-            Send Message
-          </>
+          </span>
+          <span className="t-icon" data-icon="b">
+            <Loader2 className="h-4 w-4" />
+          </span>
+        </span>
+        {state === 'submitting' ? (
+          <span className="t-shimmer" data-text="Sending…">
+            Sending…
+          </span>
+        ) : (
+          'Send Message'
         )}
       </button>
     </motion.form>
