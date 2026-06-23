@@ -1,4 +1,4 @@
-// biome-ignore lint/correctness/noUnusedImports: z from astro:content is deprecated but required for type compatibility
+// biome-ignore lint/correctness/noUnusedImports: z from astro:content deprecated but required for type compatibility
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 

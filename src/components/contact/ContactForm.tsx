@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Loader2, Send } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ContactFormData } from '@/utils/contactSchema'
 import { contactSchema } from '@/utils/contactSchema'
 
@@ -86,7 +86,7 @@ export default function ContactForm() {
     return { name, email, message }
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const raw = getRaw()
 
@@ -289,7 +289,7 @@ function Field({
       }
     }
     prevError.current = error
-  }, [error, prevError.current, prevError, inputRef.current])
+  }, [error])
 
   return (
     <div className={`t-input-wrap ${error ? 'is-error' : ''}`}>
