@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Loader2, Send } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { ContactFormData } from '@/utils/contactSchema'
 import { contactSchema } from '@/utils/contactSchema'
 
@@ -289,7 +289,7 @@ function Field({
       }
     }
     prevError.current = error
-  }, [error])
+  }, [error, prevError.current, prevError, inputRef.current])
 
   return (
     <div className={`t-input-wrap ${error ? 'is-error' : ''}`}>
