@@ -274,19 +274,32 @@ function Field({
   error?: string
   children: React.ReactNode
 }) {
+  const inputRef = useRef<HTMLDivElement>(null)
+  const prevError = useRef(error)
+
+  // Trigger shake when error first appears
+  useEffect(() => {
+    if (error && !prevError.current) {
+      const el = inputRef.current
+      if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.classList.remove('is-shaking')
+        void el.offsetWidth
+        el.classList.add('is-shaking')
+        setTimeout(() => el.classList.remove('is-shaking'), 280)
+      }
+    }
+    prevError.current = error
+  }, [error, prevError.current, prevError, inputRef.current])
+
   return (
-    <div className="space-y-1">
+    <div className={`t-input-wrap ${error ? 'is-error' : ''}`}>
       <label htmlFor={id} className="text-muted font-mono text-xs tracking-widest uppercase">
         {name}
       </label>
-      {children}
-      <motion.p
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: error ? 1 : 0, height: error ? 'auto' : 0 }}
-        className="text-xs text-red-400 overflow-hidden"
-      >
-        {error ?? ' '}
-      </motion.p>
+      <div ref={inputRef} className={`t-input ${error ? 'is-error' : ''}`}>
+        {children}
+      </div>
+      <p className={`t-error-msg ${error ? '' : ''}`}>{error ?? ' '}</p>
     </div>
   )
 }
