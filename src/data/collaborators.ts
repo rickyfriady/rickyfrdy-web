@@ -26,7 +26,7 @@ export const collaborators: Collaborator[] = [
     name: 'Rivaldy Firmansyah',
     role: 'Engineering Lead · PT. Pegadaian',
     photo: '/collaborators/rivaldy-firmansyah-profile.jpeg',
-    linkedin: 'https://www.linkedin.com/in/rivaldy-firmansyah',
+    linkedin: 'https://www.linkedin.com/in/rivaldyfirmansyah',
     website: 'https://mayawijaya.dev',
     featured: true,
     quote: 'One of the few engineers who treats observability as a first-class concern.'
