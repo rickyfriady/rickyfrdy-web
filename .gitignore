@@ -32,9 +32,15 @@ coverage
 .agents/
 
 # Dev tooling artifacts
+.astro/
 .claude/
+.opencode/
 .playwright-mcp/
+skills-lock.json
 visual-*.png
+
+# OpenSpec
+openspec/
 FRONTEND_REVIEW_TODO.md
 MIGRATION_TODO_OPTION3.md
 thoughts/ledgers/

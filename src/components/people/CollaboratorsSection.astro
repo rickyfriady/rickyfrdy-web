@@ -375,7 +375,7 @@ function primaryHref(c: Collaborator): string {
     // ── Avatar group hover (transitions.dev) ────────────────────
     const group = section.querySelector<HTMLElement>('.t-avatar-group')
     if (group) {
-      const avatars = Array.from(group.querySelectorAll('.t-avatar'))
+      const avatars = Array.from(group.querySelectorAll<HTMLElement>('.t-avatar'))
       const cs = getComputedStyle(document.documentElement)
       const num = (name: string, fb: number) => {
         const v = parseFloat(cs.getPropertyValue(name))
