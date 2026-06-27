@@ -1,40 +1,9 @@
-export interface WorkExperience {
-  role: string
-  company: string
-  location: string
-  period: string
-  bullets: string[]
-  stack: string[]
-  companyLogo?: string
-}
-
-export interface Project {
-  title: string
-  company: string
-  period: string
-  bullets: string[]
-  stack: string[]
-  companyLogo?: string
-}
-
-export interface Education {
-  institution: string
-  degree: string
-  location: string
-  period: string
-  gpa: string
-}
-
-export interface SkillCategory {
-  label: string
-  icon: string
-  items: string[]
-}
+import type { Education, ExperienceProject, SkillCategory, WorkExperience } from '@/models'
 
 export const summary =
   'Fullstack developer with 4+ years delivering production systems in Indonesian fintech. At PT. Pegadaian, I build micro-frontend platforms and NestJS microservice backends powering a loan lead platform at 80% conversion facilitating Rp 3 miliar+ in loan originations, and an employee super-app serving 1.5 million active users.'
 
-export const experiences: WorkExperience[] = [
+export const experiences = [
   {
     role: 'Software Engineer',
     company: 'PT. Pegadaian',
@@ -89,9 +58,9 @@ export const experiences: WorkExperience[] = [
     ],
     stack: ['PHP', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Codeigniter', 'Bootstrap']
   }
-]
+] satisfies WorkExperience[]
 
-export const projects: Project[] = [
+export const projects = [
   {
     title: 'Singel APP (Pegadaian Kita)',
     company: 'PT. Pegadaian',
@@ -173,7 +142,7 @@ export const projects: Project[] = [
     ],
     stack: ['Python', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Flask', 'Bootstrap']
   }
-]
+] satisfies ExperienceProject[]
 
 export const education: Education = {
   institution: 'Universitas Riau',
@@ -183,7 +152,7 @@ export const education: Education = {
   gpa: '3.69 / 4.00'
 }
 
-export const skillCategories: SkillCategory[] = [
+export const skillCategories = [
   {
     label: 'Frameworks',
     icon: 'code-2',
@@ -204,4 +173,4 @@ export const skillCategories: SkillCategory[] = [
     icon: 'wrench',
     items: ['Git', 'Postman', 'Jenkins', 'Vitest', 'Jest', 'Vite', 'ESLint', 'Biome']
   }
-]
+] satisfies SkillCategory[]

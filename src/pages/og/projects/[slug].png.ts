@@ -1,6 +1,6 @@
 import type { APIRoute, GetStaticPaths } from 'astro'
-import type { Project } from '@/data/projects'
 import { projects } from '@/data/projects'
+import type { Project } from '@/models'
 import { renderProjectOgCard } from '@/utils/ogCard'
 
 export const getStaticPaths: GetStaticPaths = () => {

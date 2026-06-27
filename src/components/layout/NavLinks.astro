@@ -13,6 +13,11 @@ const navLinks = [
 function isActive(href: string): boolean {
   return href === '/' ? pathname === '/' : pathname.startsWith(href)
 }
+
+function setBackgroundColor(active: boolean): string {
+  return active ? 'text-foreground' : 'text-muted hover:text-foreground'
+}
+
 ---
 
 <ul class="hidden items-center gap-0.5 md:flex">
@@ -23,8 +28,8 @@ function isActive(href: string): boolean {
         <a
           href={href}
           class:list={[
-            'relative inline-flex items-center rounded-full px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase transition-colors duration-[180ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
-            active ? 'text-foreground' : 'text-muted hover:text-foreground',
+            'relative inline-flex items-center rounded-full px-3 py-1.5 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            setBackgroundColor(active),
           ]}
         >
           {active && (

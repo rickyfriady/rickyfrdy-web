@@ -1,16 +1,6 @@
-export interface Collaborator {
-  name: string
-  role: string
-  photo?: string
-  linkedin?: string
-  website?: string
-  /** Featured collaborators surface in the bento grid; rest go in the "Show more" list. */
-  featured?: boolean
-  /** Short pull quote — shown only when featured. */
-  quote?: string
-}
+import type { Collaborator } from '@/models'
 
-export const collaborators: Collaborator[] = [
+export const collaborators = [
   // ── Featured (6) ─────────────────────────────────────────────────
   {
     name: 'Laura Elisabeth Sinaga',
@@ -131,4 +121,4 @@ export const collaborators: Collaborator[] = [
   //   role: 'Engineering Manager · Freelance',
   //   linkedin: 'https://www.linkedin.com/in/example-kartika'
   // }
-]
+] satisfies Collaborator[]

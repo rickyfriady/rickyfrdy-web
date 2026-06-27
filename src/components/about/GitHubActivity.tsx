@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronDown, GitBranch, GitFork, GitMerge, Star, Upload, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { RecentEvent } from '@/utils/github'
+import type { RecentEvent } from '@/models'
 import { fetchRecentEvents } from '@/utils/github'
 
 const PAGE_SIZE = 5
