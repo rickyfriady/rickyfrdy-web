@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
-import type { Project } from '@/data/experience'
+import type { ExperienceProject } from '@/models'
 import { getLogoSvg } from '@/utils/finlogo'
 import { getSkillIconUrl } from '@/utils/skillIcon'
 
 interface Props {
-  projects: Project[]
+  projects: ExperienceProject[]
 }
 
 export default function ProjectsAccordion({ projects }: Props) {
@@ -14,6 +14,12 @@ export default function ProjectsAccordion({ projects }: Props) {
 
   function toggle(i: number) {
     setOpenIndex((prev) => (prev === i ? null : i))
+  }
+
+  function setBorderColor(isOpen: boolean) {
+    return isOpen
+      ? 'border-border bg-secondary/40 shadow-xs'
+      : 'border-transparent hover:boder-border/60 hover:bbg-secondary/15'
   }
 
   return (
@@ -24,11 +30,7 @@ export default function ProjectsAccordion({ projects }: Props) {
         return (
           <div
             key={proj.title}
-            className={`rounded-xl border transition-all duration-200 ${
-              isOpen
-                ? 'border-border bg-secondary/40 shadow-xs'
-                : 'border-transparent hover:border-border/60 hover:bg-secondary/15'
-            }`}
+            className={`rounded-xl border transition-all duration-200 ${setBorderColor(isOpen)}`}
           >
             {/* ─── Summary button ────────────────────────────── */}
             <button
@@ -57,7 +59,7 @@ export default function ProjectsAccordion({ projects }: Props) {
                       )
                     }
                     return (
-                      <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
+                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
                         <span className="font-display text-base font-bold leading-none text-accent">
                           {proj.company.charAt(0)}
                         </span>
@@ -65,7 +67,7 @@ export default function ProjectsAccordion({ projects }: Props) {
                     )
                   })()
                 ) : (
-                  <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
+                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
                     <span className="font-display text-base font-bold leading-none text-accent">
                       {proj.company.charAt(0)}
                     </span>
@@ -88,7 +90,7 @@ export default function ProjectsAccordion({ projects }: Props) {
               <motion.div
                 animate={{ rotate: isOpen ? 180 : 0 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className="text-muted/30 flex-shrink-0"
+                className="text-muted/30 shrink-0 transition-colors duration-200 group-hover:text-muted/60"
               >
                 <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6" />
               </motion.div>
@@ -119,7 +121,7 @@ export default function ProjectsAccordion({ projects }: Props) {
                           transition={{ delay: 0.05, duration: 0.25 }}
                           className="flex gap-3"
                         >
-                          <span className="text-muted/40 mt-1.5 flex-shrink-0 font-mono text-sm leading-none sm:mt-2">
+                          <span className="text-muted/40 mt-1.5 shrink-0 font-mono text-sm leading-none sm:mt-2">
                             ▸
                           </span>
                           <span>{bullet}</span>

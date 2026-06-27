@@ -60,8 +60,8 @@ export default function WanderingEyes() {
       className="text-foreground font-display inline-flex items-center gap-2 text-lg font-light tracking-tight rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
       <span aria-hidden="true" className="inline-flex gap-1">
-        <Eye isMobile={isMobile} />
-        <Eye isMobile={isMobile} />
+        <Eye isMobile={!isMobile} />
+        <Eye isMobile={!isMobile} />
       </span>
       Ricki Friadi
     </a>

@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import { Document, Font, Link, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
-import type { Education, Project, SkillCategory, WorkExperience } from '@/data/experience'
+import type { Education, ExperienceProject, SkillCategory, WorkExperience } from '@/models'
 
 Font.register({
   family: 'JetBrains Mono',
@@ -71,7 +71,7 @@ const s = StyleSheet.create({
 
 interface Props {
   experiences: WorkExperience[]
-  projects: Project[]
+  projects: ExperienceProject[]
   education: Education
   skillCategories: SkillCategory[]
   summary: string

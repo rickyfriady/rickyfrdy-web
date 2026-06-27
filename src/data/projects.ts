@@ -1,33 +1,6 @@
-export interface Metric {
-  value: string
-  label: string
-}
+import type { Project } from '@/models'
 
-export interface Project {
-  slug: string
-  title: string
-  shortDescription: string
-  fullDescription: string
-  featured: boolean
-  category: 'web-app' | 'api' | 'tool' | 'open-source'
-  type: 'project' | 'work'
-  technologies: string[]
-  keyMetric?: string
-  heroImage?: string
-  role?: string
-  metrics?: Metric[]
-  liveUrl?: string
-  githubUrl?: string
-  company?: string
-  companyLogo?: string
-  date: string
-  year: number
-  challenges: string[]
-  solutions: string[]
-  results: string[]
-}
-
-export const projects: Project[] = [
+export const projects = [
   {
     slug: 'singel-app',
     heroImage: '/works/works-1.webp',
@@ -228,4 +201,4 @@ export const projects: Project[] = [
       'Thesis awarded "Very Satisfactory" grade (3.69/4.00 GPA)'
     ]
   }
-]
+] satisfies Project[]

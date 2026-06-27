@@ -1,6 +1,6 @@
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { useRef } from 'react'
-import type { LanguageStat } from '@/utils/github'
+import type { LanguageStat } from '@/models'
 
 interface Props {
   languages: LanguageStat[]

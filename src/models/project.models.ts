@@ -1,23 +1,6 @@
-export interface Project {
-  id: string
-  slug: string
-  title: string
-  shortDescription: string
-  fullDescription: string
-  thumbnail: string
-  images: string[]
-  featured: boolean
-  category: 'web-app' | 'api' | 'tool' | 'open-source'
-  technologies: string[]
-  keyMetric?: string
-  liveUrl?: string
-  githubUrl?: string
-  date: string
-  year: number
-  challenges: string[]
-  solutions: string[]
-  results: string[]
-  codeSnippets?: CodeSnippet[]
+export interface Metric {
+  value: string
+  label: string
 }
 
 export interface CodeSnippet {
@@ -27,5 +10,31 @@ export interface CodeSnippet {
   code: string
 }
 
+export interface Project {
+  slug: string
+  title: string
+  shortDescription: string
+  fullDescription: string
+  featured: boolean
+  category: 'web-app' | 'api' | 'tool' | 'open-source'
+  type: 'project' | 'work'
+  technologies: string[]
+  keyMetric?: string
+  heroImage?: string
+  role?: string
+  metrics?: Metric[]
+  liveUrl?: string
+  githubUrl?: string
+  company?: string
+  companyLogo?: string
+  date: string
+  year: number
+  challenges: string[]
+  solutions: string[]
+  results: string[]
+  codeSnippets?: CodeSnippet[]
+}
+
 export type ProjectCategory = Project['category']
-export type ProjectFilter = 'all' | ProjectCategory | string
+export type ProjectFilter = 'all' | ProjectCategory
+export type SortOrder = 'featured' | 'recent' | 'year'

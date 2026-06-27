@@ -84,7 +84,8 @@ export const ui = {
 } as const
 
 export type Lang = keyof typeof ui
+export type UIKey = keyof (typeof ui)['en']
 
-export function t(lang: Lang, key: keyof (typeof ui)['en']): string {
+export function t(lang: Lang, key: UIKey): string {
   return ui[lang][key]
 }
