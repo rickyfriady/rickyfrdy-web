@@ -22,7 +22,7 @@ bun dev                # or: bun build
 |-------|------|
 | Framework | Astro 6 (SSG, `output: static`) |
 | UI components | React 19 islands via `@astrojs/react` |
-| Animation | Framer Motion 12 · GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) |
+| Animation | Framer Motion 12 (React islands) · GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) · Astro View Transitions (nav pill) |
 | Styling | Tailwind CSS v4 · custom CSS utilities (glassmorphism) |
 | PDF | `@react-pdf/renderer` — designed + ATS variants |
 | i18n | Astro native i18n routing — EN (`/`) · ID (`/id/`) |
@@ -38,8 +38,8 @@ bun dev                # or: bun build
 ```
 src/
 ├── components/
-│   ├── layout/         AppHeader, AppFooter, MainLayout, LangSwitcher,
-│   │                   MobileBottomNav, NavLinks, WanderingEyes
+│   ├── layout/         AppHeader (floating island pill), AppFooter, MainLayout,
+│   │                   LangSwitcher, MobileBottomNav, NavLinks.astro, WanderingEyes
 │   ├── about/          GitHub sections: Heatmap, Activity, Languages,
 │   │                   PinnedRepos, SkillsMatrix
 │   ├── experience/     ProjectsAccordion (animated React island)

@@ -31,7 +31,7 @@ const { title, description, lang = 'en', ogImage, noReveal = false } = Astro.pro
 
     <div id="page-accent-line" transition:persist aria-hidden="true"></div>
 
-    <main id="main-content" transition:name="page-content" class="flex-1 max-w-6xl mx-auto w-full">
+    <main id="main-content" transition:name="page-content" class="flex-1 max-w-6xl mx-auto w-full pt-[calc(var(--nav-height)+1.5rem)]">
       <slot />
     </main>
 
