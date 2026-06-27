@@ -1,17 +1,16 @@
 ---
 import LangSwitcher from './LangSwitcher'
-import NavLinks from './NavLinks'
+import NavLinks from './NavLinks.astro'
 import WanderingEyes from './WanderingEyes'
 ---
 
-<header class="header-glass sticky top-0 z-50">
-  <!-- Scroll progress bar -->
-  <div id="scroll-progress" class="absolute bottom-0 left-0 h-[2px] bg-accent/60" style="width:0%" aria-hidden="true" />
+<div id="scroll-progress" class="fixed top-0 left-0 z-[51] h-[2px] bg-accent/60" style="width:0%" aria-hidden="true" />
 
-  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+<header class="nav-island z-50">
+  <nav class="flex items-center gap-6 px-5 py-2.5">
     <WanderingEyes client:load />
 
-    <NavLinks client:load transition:persist />
+    <NavLinks />
 
     <div class="flex items-center gap-2">
       <LangSwitcher client:load transition:persist />

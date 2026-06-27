@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.2.7] — 2026-06-27
+
+### Added
+- **NavLinks.astro** — pure Astro replacement for `NavLinks.tsx`; active state resolved server-side via `Astro.url.pathname` (zero client hydration for the nav)
+- **`nav-island` CSS utility** — floating centered pill navbar with glassmorphism (`backdrop-filter: blur(20px) saturate(1.8)`), theme-aware background via `color-mix(in oklch, var(--color-background) 72%, transparent)`, and border from `--color-border`
+- **`nav-island-pill` CSS utility** — accent-tinted active link indicator using existing `--color-accent` token
+- **View Transitions active pill** — `transition:name="nav-active-pill"` on active link span; shared-element animation slides the pill between links on navigation via Astro's `ClientRouter`
+- **`prefers-reduced-motion` guard** — `::view-transition-group/old/new(nav-active-pill)` collapses to `0.01ms` on reduced-motion
+
+### Changed
+- **AppHeader** — refactored from full-width sticky glass bar to floating island pill (`position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); border-radius: 9999px`); scroll progress bar moved to separate fixed element above the pill (`z-[51]`)
+- **NavLinks** — migrated from React island (`client:load`) to pure `.astro` component; removes Framer Motion `layoutId` from desktop nav; `transition:persist` removed so active state re-renders correctly on each navigation
+- **MainLayout** — `<main>` receives `pt-[calc(var(--nav-height)+1.5rem)]` to compensate for fixed navbar positioning
+
+### Removed
+- **`NavLinks.tsx`** — deleted; replaced by `NavLinks.astro`
+
 ## [v1.2.6] — 2026-06-21
 
 ### Added

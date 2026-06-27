@@ -201,6 +201,35 @@
     0 8px 32px oklch(0 0 0 / 0.08);
 }
 
+@utility nav-island {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: color-mix(in oklch, var(--color-background) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid color-mix(in oklch, var(--color-border) 55%, transparent);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.12), 0 1px 0 oklch(1 0 0 / 0.08) inset;
+}
+
+@utility nav-island-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in oklch, var(--color-accent) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-accent) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(nav-active-pill),
+  ::view-transition-old(nav-active-pill),
+  ::view-transition-new(nav-active-pill) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
 @utility glass-panel {
   background: color-mix(in oklch, var(--color-background) 70%, transparent);
   backdrop-filter: blur(24px);
