@@ -45,7 +45,7 @@ export default function ProjectsAccordion({ projects }: Props) {
                     const svg = getLogoSvg(proj.companyLogo)
                     if (svg) {
                       return (
-                        <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white p-1 ring-1 ring-border/30 sm:h-10 sm:w-10 sm:p-1.5">
+                        <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white p-1 sm:h-10 sm:w-10 sm:p-1.5">
                           <img
                             src={`data:image/svg+xml,${encodeURIComponent(svg)}`}
                             alt={proj.company}
@@ -57,14 +57,18 @@ export default function ProjectsAccordion({ projects }: Props) {
                       )
                     }
                     return (
-                      <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-accent ring-1 ring-border/40 sm:h-10 sm:w-10">
-                        {proj.company.charAt(0)}
+                      <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
+                        <span className="font-display text-base font-bold leading-none text-accent">
+                          {proj.company.charAt(0)}
+                        </span>
                       </span>
                     )
                   })()
                 ) : (
-                  <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-accent ring-1 ring-border/40 sm:h-10 sm:w-10">
-                    {proj.company.charAt(0)}
+                  <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary sm:h-10 sm:w-10">
+                    <span className="font-display text-base font-bold leading-none text-accent">
+                      {proj.company.charAt(0)}
+                    </span>
                   </span>
                 )}
 

@@ -10,7 +10,7 @@
   --font-sans:
     'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Patrick Hand', cursive;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Light mode — Cool Slate Gray + Sky Blue */
@@ -252,7 +252,7 @@
 }
 
 @utility title-accent {
-  font-style: italic;
+  font-style: normal;
 }
 
 @utility eyebrow {

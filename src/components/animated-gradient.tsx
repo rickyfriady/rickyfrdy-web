@@ -45,13 +45,13 @@ interface PresetParams extends PresetColors {
 
 const presets: Record<PresetName, PresetParams> = {
   Prism: {
-    color1: '#050505',
-    color2: '#66B3FF',
-    color3: '#FFFFFF',
+    color1: '#0c1a14',
+    color2: '#3460a8',
+    color3: '#111f18',
     lightColors: {
-      color1: '#FAFAFA',
-      color2: '#66B3FF',
-      color3: '#050505'
+      color1: '#f5f6f9',
+      color2: '#3460a8',
+      color3: '#d4d8e5'
     },
     rotation: -50,
     proportion: 1,
@@ -66,13 +66,13 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 45
   },
   Lava: {
-    color1: '#66ffb5',
-    color2: '#337f5a',
-    color3: '#000000',
+    color1: '#7bc5a0',
+    color2: '#2a5c3a',
+    color3: '#0c1a14',
     lightColors: {
-      color1: '#66ffb5',
-      color2: '#337f5a',
-      color3: '#FAFAFA'
+      color1: '#3460a8',
+      color2: '#d4d8e5',
+      color3: '#f5f6f9'
     },
     rotation: 114,
     proportion: 100,
@@ -87,13 +87,13 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 12
   },
   Plasma: {
-    color1: '#66ffb5',
-    color2: '#000000',
-    color3: '#000000',
+    color1: '#7bc5a0',
+    color2: '#0c1a14',
+    color3: '#0c1a14',
     lightColors: {
-      color1: '#66ffb5',
-      color2: '#FAFAFA',
-      color3: '#FAFAFA'
+      color1: '#3460a8',
+      color2: '#f5f6f9',
+      color3: '#f5f6f9'
     },
     rotation: 0,
     proportion: 63,
@@ -108,13 +108,13 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 28
   },
   Pulse: {
-    color1: '#66FF85',
-    color2: '#000000',
-    color3: '#000000',
+    color1: '#7bc5a0',
+    color2: '#0c1a14',
+    color3: '#0c1a14',
     lightColors: {
-      color1: '#66FF85',
-      color2: '#FAFAFA',
-      color3: '#FAFAFA'
+      color1: '#3460a8',
+      color2: '#f5f6f9',
+      color3: '#f5f6f9'
     },
     rotation: -167,
     proportion: 92,
@@ -129,13 +129,13 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 79
   },
   Vortex: {
-    color1: '#000000',
-    color2: '#FFFFFF',
-    color3: '#000000',
+    color1: '#0c1a14',
+    color2: '#f0f2f0',
+    color3: '#0c1a14',
     lightColors: {
-      color1: '#FAFAFA',
-      color2: '#000000',
-      color3: '#FAFAFA'
+      color1: '#f5f6f9',
+      color2: '#111827',
+      color3: '#f5f6f9'
     },
     rotation: 50,
     proportion: 41,
@@ -150,13 +150,13 @@ const presets: Record<PresetName, PresetParams> = {
     shapeSize: 80
   },
   Mist: {
-    color1: '#050505',
-    color2: '#FF66B8',
-    color3: '#050505',
+    color1: '#0c1a14',
+    color2: '#7bc5a0',
+    color3: '#0c1a14',
     lightColors: {
-      color1: '#FAFAFA',
-      color2: '#FF66B8',
-      color3: '#FAFAFA'
+      color1: '#f5f6f9',
+      color2: '#3460a8',
+      color3: '#f5f6f9'
     },
     rotation: 0,
     proportion: 33,
