@@ -3,8 +3,8 @@ import { ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import AnimatedGradient from '@/components/animated-gradient'
 import FeaturedBadge from '@/components/ui/FeaturedBadge'
-import type { Project } from '@/data/projects'
 import { type Lang, t } from '@/i18n/ui'
+import type { Project, ProjectFilter, SortOrder } from '@/models'
 import { getSkillIconUrl } from '@/utils/skillIcon'
 
 interface Props {
@@ -12,12 +12,9 @@ interface Props {
   lang?: Lang
 }
 
-type CategoryFilter = 'all' | Project['category']
-type SortOrder = 'featured' | 'recent' | 'year'
-
 export default function ProjectsGrid({ projects, lang }: Props) {
   const [typeFilter, setTypeFilter] = useState<'all' | 'project' | 'work'>('all')
-  const [category, setCategory] = useState<CategoryFilter>('all')
+  const [category, setCategory] = useState<ProjectFilter>('all')
   const [tech, setTech] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortOrder>('featured')
   const [filtersOpen, setFiltersOpen] = useState(false)

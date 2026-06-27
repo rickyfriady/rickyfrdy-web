@@ -1,5 +1,5 @@
 import { GitFork, Star } from 'lucide-react'
-import type { PinnedRepo } from '@/utils/github'
+import type { PinnedRepo } from '@/models'
 
 interface Props {
   repos: PinnedRepo[]
