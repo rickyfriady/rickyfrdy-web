@@ -1,0 +1,42 @@
+---
+const { pathname } = Astro.url
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/experience', label: 'Experience' },
+  { href: '/resume', label: 'Resume' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/contact', label: 'Contact' },
+] as const
+
+function isActive(href: string): boolean {
+  return href === '/' ? pathname === '/' : pathname.startsWith(href)
+}
+---
+
+<ul class="hidden items-center gap-0.5 md:flex">
+  {navLinks.map(({ href, label }) => {
+    const active = isActive(href)
+    return (
+      <li>
+        <a
+          href={href}
+          class:list={[
+            'relative inline-flex items-center rounded-full px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase transition-colors duration-[180ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            active ? 'text-foreground' : 'text-muted hover:text-foreground',
+          ]}
+        >
+          {active && (
+            <span
+              transition:name="nav-active-pill"
+              class="nav-island-pill"
+              aria-hidden="true"
+            />
+          )}
+          <span class="relative z-10">{label}</span>
+        </a>
+      </li>
+    )
+  })}
+</ul>
