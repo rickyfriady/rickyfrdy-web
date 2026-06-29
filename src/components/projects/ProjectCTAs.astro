@@ -1,0 +1,35 @@
+---
+interface Props {
+  liveUrl?: string
+  githubUrl?: string
+  liveLabel: string
+  githubLabel: string
+}
+
+const { liveUrl, githubUrl, liveLabel, githubLabel } = Astro.props
+---
+
+{(liveUrl || githubUrl) && (
+  <div class="flex flex-wrap gap-3">
+    {liveUrl && (
+      <a
+        href={liveUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-accent text-background inline-flex h-10 items-center rounded-lg px-5 font-mono text-xs font-medium tracking-[0.1em] uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+      >
+        {liveLabel} ↗
+      </a>
+    )}
+    {githubUrl && (
+      <a
+        href={githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-5 font-mono text-xs font-medium tracking-[0.1em] uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+      >
+        {githubLabel} ↗
+      </a>
+    )}
+  </div>
+)}

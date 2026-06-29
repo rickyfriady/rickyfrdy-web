@@ -1,9 +1,9 @@
 ---
-import GitHubActivity from '@/components/about/GitHubActivity'
-import GitHubHeatmap from '@/components/about/GitHubHeatmap'
-import GitHubLanguages from '@/components/about/GitHubLanguages'
-import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
-import SkillsMatrix from '@/components/about/SkillsMatrix'
+import GitHubActivity from '@/components/about/GitHubActivity.astro'
+import GitHubHeatmap from '@/components/about/GitHubHeatmap.astro'
+import GitHubLanguages from '@/components/about/GitHubLanguages.astro'
+import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos.astro'
+import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
@@ -221,7 +221,7 @@ const beyondCode = [
     </div>
 
     <div class="px-4 pb-12" data-stagger-item>
-      <SkillsMatrix client:load />
+      <SkillsMatrix />
     </div>
   </section>
 
@@ -236,15 +236,15 @@ const beyondCode = [
 
     <div class="grid gap-6 px-4 pb-12">
       <!-- Heatmap — full width -->
-      <GitHubHeatmap client:visible initialStats={initialStats} />
+      <GitHubHeatmap initialStats={initialStats} />
 
       <!-- 2-col: Languages+PinnedRepos (left) | Activity (right) -->
       <div class="grid gap-6 md:grid-cols-2">
         <div class="space-y-6">
-          <GitHubLanguages client:idle languages={initialStats.languages} />
-          <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+          <GitHubLanguages languages={initialStats.languages} />
+          <GitHubPinnedRepos repos={initialStats.pinnedRepos} />
         </div>
-        <GitHubActivity client:visible />
+        <GitHubActivity />
       </div>
     </div>
   </section>

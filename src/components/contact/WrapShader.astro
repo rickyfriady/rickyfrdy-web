@@ -1,0 +1,68 @@
+---
+---
+
+<div id="wrap-shader-root" class="absolute inset-0" aria-hidden="true"></div>
+
+<script>
+  import {
+    ShaderMount,
+    ShaderFitOptions,
+    warpFragmentShader,
+    WarpPatterns,
+    getShaderColorFromString
+  } from '@paper-design/shaders'
+
+  const LIGHT_COLORS = ['#eef2f8', '#b0c8e8', '#dde8f8', '#6b9bcc']
+  const DARK_COLORS = ['#0b1a14', '#102510', '#16301e', '#2a5c3a']
+
+  function buildUniforms(isDark: boolean) {
+    const colors = (isDark ? DARK_COLORS : LIGHT_COLORS).map(getShaderColorFromString)
+    return {
+      u_colors: colors,
+      u_colorsCount: colors.length,
+      u_proportion: 0.5,
+      u_softness: 1.5,
+      u_shape: WarpPatterns.edge,
+      u_shapeScale: 0.15,
+      u_distortion: 0.2,
+      u_swirl: 0.8,
+      u_swirlIterations: 8,
+      u_fit: ShaderFitOptions.cover,
+      u_scale: 1,
+      u_rotation: 0,
+      u_originX: 0.5,
+      u_originY: 0.5,
+      u_offsetX: 0,
+      u_offsetY: 0,
+      u_worldWidth: 0,
+      u_worldHeight: 0
+    }
+  }
+
+  function initWrapShader() {
+    const root = document.getElementById('wrap-shader-root')
+    if (!root || root.dataset.wsInit) return
+    root.dataset.wsInit = '1'
+
+    const isDark = document.documentElement.classList.contains('dark')
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const speed = reducedMotion ? 0 : 0.4
+
+    const mount = new ShaderMount(root, warpFragmentShader, buildUniforms(isDark), undefined, speed)
+
+    const observer = new MutationObserver(() => {
+      const nowDark = document.documentElement.classList.contains('dark')
+      mount.setUniforms(buildUniforms(nowDark))
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
+    document.addEventListener('astro:before-swap', () => {
+      observer.disconnect()
+      mount.dispose()
+      delete root.dataset.wsInit
+    }, { once: true })
+  }
+
+  initWrapShader()
+  document.addEventListener('astro:page-load', initWrapShader)
+</script>

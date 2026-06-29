@@ -1,24 +1,65 @@
 ---
 import { skillGroups } from '@/data/skills'
 
-function iconUrl(icon: string): string {
-  return `https://skillicons.dev/icons?i=${icon}`
-}
+const allSkillCount = skillGroups.reduce((n, g) => n + g.skills.length, 0)
+const groups = skillGroups.map((g) => g.label)
 ---
 
-<div class="space-y-7 px-4 pb-8">
-  {
-    skillGroups.map((group) => (
-      <div>
-        <p class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">
-          {group.label}
-        </p>
-        <div class="flex flex-wrap gap-3">
+<div id="skills-matrix-root">
+  <!-- Search + filter bar -->
+  <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div class="relative max-w-xs flex-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted/40 pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input
+        type="text"
+        id="skills-search"
+        placeholder="Search skills…"
+        aria-label="Search skills"
+        class="border-border bg-secondary text-foreground placeholder:text-muted/50 focus:ring-accent w-full rounded-lg border py-2 pl-9 pr-8 text-sm outline-none focus:ring-2"
+      />
+      <button
+        type="button"
+        id="skills-search-clear"
+        class="text-muted/40 hover:text-muted absolute right-2 top-1/2 hidden -translate-y-1/2"
+        aria-label="Clear search"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="skills-tabs" class="t-tabs flex-wrap sm:flex-nowrap" role="tablist">
+      <span id="skills-pill" class="t-tabs-pill" aria-hidden="true"></span>
+      <button type="button" class="t-tab" role="tab" aria-selected="true" data-group="all">All</button>
+      {groups.map((g) => (
+        <button type="button" class="t-tab" role="tab" aria-selected="false" data-group={g}>{g}</button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Results count -->
+  <p id="skills-count" class="text-muted/50 mb-4 font-mono text-[10px]">
+    {allSkillCount} skills
+  </p>
+
+  <!-- Skills grid (all groups rendered server-side) -->
+  <div id="skills-grid" class="space-y-6">
+    {skillGroups.map((group) => (
+      <div data-skill-group={group.label}>
+        <p class="text-muted mb-3 font-mono text-[10px] tracking-[0.16em] uppercase">{group.label}</p>
+        <div class="flex flex-wrap gap-2">
           {group.skills.map((skill) => (
-            <div class="group flex flex-col items-center gap-1.5">
-              <div class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5">
+            <div
+              class="group flex flex-col items-center gap-1.5"
+              data-skill-name={skill.name.toLowerCase()}
+              data-skill-group-name={group.label.toLowerCase()}
+            >
+              <div class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:shadow-sm">
                 <img
-                  src={iconUrl(skill.icon)}
+                  src={`https://skillicons.dev/icons?i=${skill.icon}`}
                   alt={skill.name}
                   title={skill.name}
                   class="h-full w-full object-contain"
@@ -32,6 +73,111 @@ function iconUrl(icon: string): string {
           ))}
         </div>
       </div>
-    ))
-  }
+    ))}
+  </div>
+
+  <p id="skills-empty" class="text-muted hidden py-8 text-center text-sm">No skills match your search.</p>
 </div>
+
+<script>
+  function initSkillsMatrix() {
+    const root = document.getElementById('skills-matrix-root')
+    if (!root || root.dataset.smInit) return
+    root.dataset.smInit = '1'
+
+    const searchInput = root.querySelector<HTMLInputElement>('#skills-search')!
+    const clearBtn = root.querySelector<HTMLButtonElement>('#skills-search-clear')!
+    const tabsBar = root.querySelector<HTMLElement>('#skills-tabs')!
+    const pill = root.querySelector<HTMLElement>('#skills-pill')!
+    const countEl = root.querySelector<HTMLElement>('#skills-count')!
+    const emptyEl = root.querySelector<HTMLElement>('#skills-empty')!
+    const groupSections = Array.from(root.querySelectorAll<HTMLElement>('[data-skill-group]'))
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.t-tab[data-group]'))
+
+    let activeGroup = 'all'
+    let query = ''
+
+    function movePill(tab: HTMLElement, animate: boolean) {
+      if (!animate) {
+        const prev = pill.style.transition
+        pill.style.transition = 'none'
+        pill.style.transform = `translateX(${tab.offsetLeft}px)`
+        pill.style.width = `${tab.offsetWidth}px`
+        void pill.offsetWidth
+        pill.style.transition = prev
+      } else {
+        pill.style.transform = `translateX(${tab.offsetLeft}px)`
+        pill.style.width = `${tab.offsetWidth}px`
+      }
+    }
+
+    function syncPill(animate: boolean) {
+      const active = tabsBar.querySelector<HTMLElement>('.t-tab[aria-selected="true"]') ?? tabs[0]
+      if (active) movePill(active, animate)
+    }
+
+    requestAnimationFrame(() => syncPill(false))
+
+    const onResize = () => syncPill(false)
+    window.addEventListener('resize', onResize)
+
+    function applyFilters() {
+      const q = query.toLowerCase()
+      let visibleCount = 0
+
+      for (const section of groupSections) {
+        const sectionGroup = section.dataset.skillGroup ?? ''
+        const groupMatches = activeGroup === 'all' || sectionGroup === activeGroup
+        let anyVisible = false
+
+        const cards = section.querySelectorAll<HTMLElement>('[data-skill-name]')
+        for (const card of cards) {
+          const name = card.dataset.skillName ?? ''
+          const grp = card.dataset.skillGroupName ?? ''
+          const visible = groupMatches && (q === '' || name.includes(q) || grp.includes(q))
+          card.style.display = visible ? '' : 'none'
+          if (visible) { anyVisible = true; visibleCount++ }
+        }
+
+        section.style.display = anyVisible ? '' : 'none'
+      }
+
+      emptyEl.classList.toggle('hidden', visibleCount > 0)
+      countEl.textContent = q
+        ? `${visibleCount} skill${visibleCount !== 1 ? 's' : ''} matching "${query}"`
+        : `${visibleCount} skill${visibleCount !== 1 ? 's' : ''}`
+    }
+
+    for (const tab of tabs) {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.setAttribute('aria-selected', 'false'))
+        tab.setAttribute('aria-selected', 'true')
+        activeGroup = tab.dataset.group ?? 'all'
+        movePill(tab, true)
+        applyFilters()
+      })
+    }
+
+    searchInput.addEventListener('input', () => {
+      query = searchInput.value
+      clearBtn.classList.toggle('hidden', query === '')
+      applyFilters()
+    })
+
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = ''
+      query = ''
+      clearBtn.classList.add('hidden')
+      applyFilters()
+    })
+
+    applyFilters()
+  }
+
+  initSkillsMatrix()
+  document.addEventListener('astro:page-load', () => {
+    const root = document.getElementById('skills-matrix-root')
+    if (root) delete root.dataset.smInit
+    initSkillsMatrix()
+  })
+</script>

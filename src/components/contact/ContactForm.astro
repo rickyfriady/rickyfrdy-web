@@ -1,0 +1,296 @@
+---
+---
+
+<div id="contact-form-root">
+  <!-- Error banner -->
+  <div id="cf-error-banner" class="mb-6 hidden rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+    <p id="cf-error-msg" class="text-sm text-red-500"></p>
+  </div>
+
+  <!-- Form -->
+  <form id="cf-form" novalidate class="space-y-6">
+    <!-- Honeypot -->
+    <div class="absolute -left-[9999px]" aria-hidden="true">
+      <label for="cf-website">Website</label>
+      <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <!-- Name -->
+    <div class="t-input-wrap" id="cf-wrap-name">
+      <label for="cf-name" class="text-muted font-mono text-xs tracking-widest uppercase">Name</label>
+      <div class="t-input" id="cf-input-name">
+        <input
+          id="cf-name"
+          name="name"
+          type="text"
+          required
+          autocomplete="name"
+          placeholder="Your name"
+          class="border-border bg-secondary text-foreground placeholder:text-muted focus:ring-accent w-full rounded-lg border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-offset-0"
+        />
+      </div>
+      <p class="t-error-msg" id="cf-err-name">&nbsp;</p>
+    </div>
+
+    <!-- Email -->
+    <div class="t-input-wrap" id="cf-wrap-email">
+      <label for="cf-email" class="text-muted font-mono text-xs tracking-widest uppercase">Email</label>
+      <div class="t-input" id="cf-input-email">
+        <input
+          id="cf-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder="your@email.com"
+          class="border-border bg-secondary text-foreground placeholder:text-muted focus:ring-accent w-full rounded-lg border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-offset-0"
+        />
+      </div>
+      <p class="t-error-msg" id="cf-err-email">&nbsp;</p>
+    </div>
+
+    <!-- Message -->
+    <div class="t-input-wrap" id="cf-wrap-message">
+      <label for="cf-message" class="text-muted font-mono text-xs tracking-widest uppercase">Message</label>
+      <div class="t-input" id="cf-input-message">
+        <textarea
+          id="cf-message"
+          name="message"
+          rows="6"
+          required
+          placeholder="What's on your mind?"
+          class="border-border bg-secondary text-foreground placeholder:text-muted focus:ring-accent w-full resize-none rounded-lg border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-offset-0"
+        ></textarea>
+      </div>
+      <p class="t-error-msg" id="cf-err-message">&nbsp;</p>
+    </div>
+
+    <!-- Submit button -->
+    <button
+      id="cf-submit"
+      type="submit"
+      class="bg-accent text-background hover:bg-accent-hover disabled:opacity-50 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+    >
+      <span class="t-icon-swap" id="cf-icon-swap" data-state="a">
+        <span class="t-icon" data-icon="a" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+          </svg>
+        </span>
+        <span class="t-icon" data-icon="b" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+        </span>
+      </span>
+      <span id="cf-btn-text">Send Message</span>
+    </button>
+  </form>
+
+  <!-- Success state -->
+  <div id="cf-success" class="relative hidden overflow-hidden rounded-xl border border-accent/20 bg-accent/5 p-8 text-center">
+    <div id="cf-confetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
+    <span class="t-success-check" data-state="in" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-accent mx-auto h-[42px] w-[42px]" aria-hidden="true">
+        <path d="M14 24l7 7L34 17"/>
+      </svg>
+    </span>
+    <p class="text-accent font-display mt-4 text-2xl font-light">Message sent.</p>
+    <p class="text-muted mt-2 text-sm">Thank you. I&apos;ll get back to you within a few days.</p>
+    <button
+      id="cf-reset"
+      type="button"
+      class="text-accent hover:text-accent-hover mt-5 font-mono text-xs uppercase tracking-wider transition-colors"
+    >
+      Send another →
+    </button>
+  </div>
+</div>
+
+<script>
+  import { contactSchema } from '@/utils/contactSchema'
+  import gsap from 'gsap'
+
+  const DRAFT_KEY = 'contact-draft'
+  const DEBOUNCE_MS = 800
+
+  function loadDraft() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY) ?? '{}') } catch { return {} }
+  }
+  function saveDraft(data: Record<string, string>) {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)) } catch { /* quota */ }
+  }
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY) } catch { /* noop */ }
+  }
+
+  function launchConfetti(container: HTMLElement) {
+    const colors = ['#2563eb', '#7c3aed', '#06b6d4', '#10b981', '#f59e0b']
+    for (let i = 0; i < 20; i++) {
+      const dot = document.createElement('div')
+      dot.style.cssText = `position:absolute;width:8px;height:8px;border-radius:50%;left:${Math.random() * 100}%;top:-10px;background:${colors[Math.floor(Math.random() * 5)]}`
+      container.appendChild(dot)
+      gsap.to(dot, {
+        y: 400, opacity: 0, scale: 1.5, rotate: 360, duration: 1.2,
+        delay: Math.random() * 0.3, ease: 'power2.out',
+        onComplete: () => dot.remove()
+      })
+    }
+  }
+
+  function shakeInput(wrapId: string) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const el = document.getElementById(wrapId.replace('wrap', 'input'))
+    if (!el) return
+    el.classList.remove('is-shaking')
+    void el.offsetWidth
+    el.classList.add('is-shaking')
+    setTimeout(() => el.classList.remove('is-shaking'), 280)
+  }
+
+  function setFieldError(field: string, msg: string) {
+    const wrap = document.getElementById(`cf-wrap-${field}`)
+    const errEl = document.getElementById(`cf-err-${field}`)
+    if (wrap) wrap.classList.toggle('is-error', !!msg)
+    if (errEl) errEl.textContent = msg || ' '
+    if (msg) shakeInput(`cf-wrap-${field}`)
+  }
+
+  function clearErrors() {
+    for (const f of ['name', 'email', 'message']) setFieldError(f, '')
+  }
+
+  function setSubmitting(submitting: boolean) {
+    const btn = document.getElementById('cf-submit') as HTMLButtonElement | null
+    const swap = document.getElementById('cf-icon-swap')
+    const txt = document.getElementById('cf-btn-text')
+    if (btn) btn.disabled = submitting
+    if (swap) swap.dataset.state = submitting ? 'b' : 'a'
+    if (txt) txt.textContent = submitting ? 'Sending…' : 'Send Message'
+  }
+
+  function showError(msg: string) {
+    const banner = document.getElementById('cf-error-banner')
+    const msgEl = document.getElementById('cf-error-msg')
+    if (msgEl) msgEl.textContent = msg
+    if (banner) {
+      banner.classList.remove('hidden')
+      gsap.fromTo(banner, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.2 })
+    }
+  }
+
+  function showSuccess() {
+    const form = document.getElementById('cf-form')
+    const success = document.getElementById('cf-success')
+    const confetti = document.getElementById('cf-confetti')
+    if (form) form.classList.add('hidden')
+    if (success) {
+      success.classList.remove('hidden')
+      gsap.fromTo(success, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.5)' })
+    }
+    if (confetti) launchConfetti(confetti)
+  }
+
+  function resetForm() {
+    const form = document.getElementById('cf-form')
+    const success = document.getElementById('cf-success')
+    const banner = document.getElementById('cf-error-banner')
+    if (success) success.classList.add('hidden')
+    if (banner) banner.classList.add('hidden')
+    if (form) form.classList.remove('hidden')
+    clearErrors()
+    setSubmitting(false)
+    const nameEl = document.getElementById('cf-name') as HTMLInputElement | null
+    const emailEl = document.getElementById('cf-email') as HTMLInputElement | null
+    const messageEl = document.getElementById('cf-message') as HTMLTextAreaElement | null
+    if (nameEl) nameEl.value = ''
+    if (emailEl) emailEl.value = ''
+    if (messageEl) messageEl.value = ''
+  }
+
+  function initContactForm() {
+    const root = document.getElementById('contact-form-root')
+    if (!root || root.dataset.cfInit) return
+    root.dataset.cfInit = '1'
+
+    // Restore draft
+    const draft = loadDraft()
+    const nameEl = document.getElementById('cf-name') as HTMLInputElement | null
+    const emailEl = document.getElementById('cf-email') as HTMLInputElement | null
+    const messageEl = document.getElementById('cf-message') as HTMLTextAreaElement | null
+    if (nameEl && draft.name) nameEl.value = draft.name
+    if (emailEl && draft.email) emailEl.value = draft.email
+    if (messageEl && draft.message) messageEl.value = draft.message
+
+    // Autosave draft
+    let draftTimer = 0
+    function scheduleDraftSave() {
+      clearTimeout(draftTimer)
+      draftTimer = window.setTimeout(() => {
+        saveDraft({
+          name: nameEl?.value ?? '',
+          email: emailEl?.value ?? '',
+          message: messageEl?.value ?? ''
+        })
+      }, DEBOUNCE_MS)
+    }
+    nameEl?.addEventListener('input', scheduleDraftSave)
+    emailEl?.addEventListener('input', scheduleDraftSave)
+    messageEl?.addEventListener('input', scheduleDraftSave)
+
+    // Form submit
+    const form = document.getElementById('cf-form')
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const banner = document.getElementById('cf-error-banner')
+      if (banner) banner.classList.add('hidden')
+
+      const raw = {
+        name: nameEl?.value ?? '',
+        email: emailEl?.value ?? '',
+        message: messageEl?.value ?? ''
+      }
+
+      const parsed = contactSchema.safeParse(raw)
+      if (!parsed.success) {
+        const flat = parsed.error.flatten().fieldErrors
+        setFieldError('name', flat.name?.[0] ?? '')
+        setFieldError('email', flat.email?.[0] ?? '')
+        setFieldError('message', flat.message?.[0] ?? '')
+        return
+      }
+
+      clearErrors()
+      setSubmitting(true)
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ access_key: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '', ...parsed.data })
+        })
+        const json = await res.json()
+        if (json.success) {
+          clearDraft()
+          showSuccess()
+        } else {
+          setSubmitting(false)
+          showError(json.message ?? 'Submission failed — try again.')
+        }
+      } catch {
+        setSubmitting(false)
+        showError('Network error — please check your connection and try again.')
+      }
+    })
+
+    // Reset button
+    document.getElementById('cf-reset')?.addEventListener('click', resetForm)
+  }
+
+  initContactForm()
+  document.addEventListener('astro:page-load', () => {
+    const root = document.getElementById('contact-form-root')
+    if (root) delete root.dataset.cfInit
+    initContactForm()
+  })
+</script>

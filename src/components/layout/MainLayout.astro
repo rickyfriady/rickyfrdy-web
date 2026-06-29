@@ -3,7 +3,7 @@ import { ClientRouter } from 'astro:transitions'
 import AppFooter from './AppFooter.astro'
 import AppHeader from './AppHeader.astro'
 import BaseHead from './BaseHead.astro'
-import MobileBottomNav from './MobileBottomNav'
+import MobileBottomNav from './MobileBottomNav.astro'
 import '@/styles/global.css'
 
 interface Props {
@@ -37,7 +37,7 @@ const { title, description, lang = 'en', ogImage, noReveal = false } = Astro.pro
 
     <AppFooter />
 
-    <MobileBottomNav client:load transition:persist />
+    <MobileBottomNav transition:persist />
 
     <script is:inline>
       (function () {

@@ -1,0 +1,42 @@
+---
+interface Props {
+  label: string
+}
+
+const { label } = Astro.props
+---
+
+<span
+  class="inline-flex items-center justify-center gap-1"
+  role="img"
+  aria-label={`${label} project`}
+>
+  <span
+    class="lottie-fire-badge"
+    aria-hidden="true"
+    style="width: 16px; height: 22px; flex-shrink: 0"
+  />
+  <span class="eyebrow">{label}</span>
+</span>
+
+<script>
+  import lottie from 'lottie-web'
+
+  function initFireBadges() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    document.querySelectorAll<HTMLElement>('.lottie-fire-badge').forEach((el) => {
+      if (el.dataset.lottieInit) return
+      el.dataset.lottieInit = '1'
+      lottie.loadAnimation({
+        container: el,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/lottie/fire.json'
+      })
+    })
+  }
+
+  initFireBadges()
+  document.addEventListener('astro:page-load', initFireBadges)
+</script>

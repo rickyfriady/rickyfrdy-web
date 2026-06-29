@@ -1,5 +1,4 @@
 import mdx from '@astrojs/mdx'
-import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
@@ -13,7 +12,7 @@ export default defineConfig({
     '/works': '/projects',
     '/id/works': '/id/projects'
   },
-  integrations: [mdx(), react(), sitemap(), robotsTxt()],
+  integrations: [mdx(), sitemap(), robotsTxt()],
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'id'],
@@ -26,6 +25,10 @@ export default defineConfig({
       alias: {
         '@': new URL('./src', import.meta.url).pathname
       }
+    },
+    esbuild: {
+      // Needed for ResumePdf.tsx / ResumePdfAts.tsx (server-side PDF generation via @react-pdf/renderer)
+      jsxImportSource: 'react'
     },
     ssr: {
       noExternal: ['@react-pdf/renderer']
