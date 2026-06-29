@@ -29,12 +29,11 @@ const pillStyle = {
 const pillTransition = { type: 'spring' as const, stiffness: 400, damping: 30, mass: 0.8 }
 
 export default function MobileBottomNav() {
-  const [currentPath, setCurrentPath] = useState(() =>
-    typeof window !== 'undefined' ? window.location.pathname : '/'
-  )
+  const [currentPath, setCurrentPath] = useState('/')
   const [moreOpen, setMoreOpen] = useState(false)
 
   useEffect(() => {
+    setCurrentPath(window.location.pathname)
     const handler = () => {
       setCurrentPath(window.location.pathname)
       setMoreOpen(false)

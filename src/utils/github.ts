@@ -93,7 +93,7 @@ const FULL_QUERY = `
     user(login: $username) {
       followers { totalCount }
       following { totalCount }
-      repositories(first: 1, isFork: false) { totalCount }
+      repoCount: repositories(first: 1, isFork: false) { totalCount }
       contributionsCollection {
         contributionCalendar {
           totalContributions
@@ -121,7 +121,7 @@ const FULL_QUERY = `
           }
         }
       }
-      repositories(
+      topRepos: repositories(
         first: 10
         isFork: false
         orderBy: { field: STARGAZERS, direction: DESC }
@@ -221,14 +221,13 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
       })
     })
     if (!res.ok) throw new Error(`GraphQL ${res.status}`)
-
     const json = (await res.json()) as {
       data: {
         user: {
           followers: { totalCount: number }
           following: { totalCount: number }
-          repositories: {
-            totalCount: number
+          repoCount: { totalCount: number }
+          topRepos: {
             nodes: Array<{
               languages: {
                 edges: Array<{ size: number; node: { name: string; color: string } }>
@@ -263,7 +262,6 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
         }
       }
     }
-
     const u = json.data.user
     const cal = u.contributionsCollection.contributionCalendar
     const contributionCalendar: ContributionDay[] = cal.weeks
@@ -284,13 +282,13 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
       topics: r.repositoryTopics.nodes.map((t) => t.topic.name)
     }))
 
-    const languages = aggregateLanguages(u.repositories.nodes)
+    const languages = aggregateLanguages(u.topRepos.nodes)
 
     return {
       totalContributions: cal.totalContributions,
       currentStreak: calculateCurrentStreak(contributionCalendar),
       longestStreak: calculateLongestStreak(contributionCalendar),
-      publicRepos: u.repositories.totalCount,
+      publicRepos: u.repoCount.totalCount,
       followers: u.followers.totalCount,
       following: u.following.totalCount,
       contributionCalendar,
