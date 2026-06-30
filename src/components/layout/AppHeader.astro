@@ -1,19 +1,19 @@
 ---
-import LangSwitcher from './LangSwitcher'
+import LangSwitcher from './LangSwitcher.astro'
 import NavLinks from './NavLinks.astro'
-import WanderingEyes from './WanderingEyes'
+import WanderingEyes from './WanderingEyes.astro'
 ---
 
 <div id="scroll-progress" class="fixed top-0 left-0 z-[51] h-[2px] bg-accent/60" style="width:0%" aria-hidden="true" />
 
 <header class="nav-island z-50">
   <nav class="flex items-center gap-6 px-5 py-2.5">
-    <WanderingEyes client:load />
+    <WanderingEyes />
 
     <NavLinks />
 
     <div class="flex items-center gap-2">
-      <LangSwitcher client:load transition:persist />
+      <LangSwitcher transition:persist />
 
       <button
         id="theme-toggle"

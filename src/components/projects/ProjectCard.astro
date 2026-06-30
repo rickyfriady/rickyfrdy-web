@@ -1,7 +1,7 @@
 ---
 import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
-import AnimatedGradient from '@/components/animated-gradient'
+import AnimatedGradient from '@/components/animated-gradient.astro'
 
 interface Props {
   project: Project
@@ -20,11 +20,10 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
 >
   {project.featured && (
     <AnimatedGradient
-      client:visible
       config={{ preset: 'Plasma', speed: 12 }}
       radius="12px"
       noise={{ opacity: 0.12 }}
-      style={{ zIndex: 0 }}
+      style={{ zIndex: '0' }}
     />
   )}
 <a
