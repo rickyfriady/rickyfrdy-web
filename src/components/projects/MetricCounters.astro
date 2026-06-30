@@ -1,0 +1,98 @@
+---
+interface Metric {
+  value: string
+  label: string
+}
+
+interface Props {
+  metrics: Metric[]
+}
+
+function parseMetricValue(value: string): { prefix: string; num: number; suffix: string } {
+  const normalized = value.replace(/(\d),(\d)/g, '$1$2')
+  const match = normalized.match(/^([^0-9]*)(\d+\.?\d*)(.*)$/)
+  if (!match) return { prefix: '', num: 0, suffix: value }
+  return { prefix: match[1], num: parseFloat(match[2]), suffix: match[3] }
+}
+
+const { metrics } = Astro.props
+---
+
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 opacity-0" data-metric-grid>
+  {metrics.map((metric) => {
+    const { prefix, num, suffix } = parseMetricValue(metric.value)
+    return (
+      <div
+        role="img"
+        class="border-border flex flex-col items-center gap-1.5 rounded-xl border p-5 text-center"
+        aria-label={`${metric.value} ${metric.label}`}
+        data-metric-num={num}
+        data-metric-prefix={prefix}
+        data-metric-suffix={suffix}
+        data-metric-value={metric.value}
+      >
+        <span class="title-display text-accent italic text-[clamp(1.8rem,4vw,2.8rem)]" data-metric-display>
+          {prefix}0{suffix}
+        </span>
+        <span class="text-muted font-mono text-xs uppercase tracking-[0.15em]">{metric.label}</span>
+      </div>
+    )
+  })}
+</div>
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger)
+
+  function initMetricCounters() {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    document.querySelectorAll<HTMLElement>('[data-metric-grid]').forEach((grid) => {
+      ScrollTrigger.create({
+        trigger: grid,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          gsap.to(grid, { opacity: 1, y: 0, duration: reduced ? 0 : 0.6 })
+          if (reduced) {
+            grid.querySelectorAll<HTMLElement>('[data-metric-display]').forEach((el) => {
+              const card = el.closest('[data-metric-value]') as HTMLElement | null
+              if (card) el.textContent = card.dataset.metricValue ?? ''
+            })
+            return
+          }
+          grid.querySelectorAll<HTMLElement>('[data-metric-num]').forEach((card) => {
+            const num = parseFloat(card.dataset.metricNum ?? '0')
+            const prefix = card.dataset.metricPrefix ?? ''
+            const suffix = card.dataset.metricSuffix ?? ''
+            const isFloat = num % 1 !== 0
+            const display = card.querySelector<HTMLElement>('[data-metric-display]')
+            if (!display) return
+            const counter = { val: 0 }
+            gsap.to(counter, {
+              val: num,
+              duration: 1.5,
+              ease: 'power2.out',
+              onUpdate() {
+                const v = counter.val
+                let formatted: string
+                if (isFloat) {
+                  formatted = v.toFixed(2)
+                } else {
+                  const rounded = Math.round(v)
+                  formatted = rounded >= 1000 ? rounded.toLocaleString('en-US') : rounded.toString()
+                }
+                display.textContent = `${prefix}${formatted}${suffix}`
+              }
+            })
+          })
+        }
+      })
+      gsap.set(grid, { y: 20 })
+    })
+  }
+
+  initMetricCounters()
+  document.addEventListener('astro:page-load', initMetricCounters)
+</script>

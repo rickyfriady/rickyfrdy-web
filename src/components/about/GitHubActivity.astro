@@ -1,0 +1,216 @@
+---
+---
+<div id="github-activity-root" class="rounded-xl border border-border bg-secondary/30 p-4 md:p-6">
+  <div class="mb-3 flex items-center justify-between">
+    <p class="text-foreground text-sm font-semibold">Recent Activity</p>
+    <span id="ga-counter" class="text-muted hidden font-mono text-[9px] tracking-wider"></span>
+  </div>
+
+  <!-- Skeleton shown until data loads -->
+  <div id="ga-skeleton" class="divide-border divide-y">
+    {Array.from({ length: 4 }).map(() => (
+      <div class="flex items-start gap-2.5 py-2.5 min-h-[44px]">
+        <div class="mt-0.5 h-5 w-5 flex-shrink-0 animate-pulse rounded-full bg-secondary"></div>
+        <div class="flex-1 space-y-1.5">
+          <div class="h-3 w-3/4 animate-pulse rounded bg-secondary"></div>
+          <div class="h-2.5 w-1/2 animate-pulse rounded bg-secondary"></div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Event list injected by script -->
+  <div id="ga-content" class="hidden">
+    <div id="ga-empty" class="hidden text-muted py-6 text-center text-xs">No recent activity found.</div>
+    <div id="ga-list" class="relative"></div>
+    <button
+      type="button"
+      id="ga-show-more"
+      class="text-accent hover:text-accent mt-1 hidden w-full items-center justify-center gap-1 py-2 font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+    >
+      Show more
+      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+    <button
+      type="button"
+      id="ga-show-less"
+      class="text-muted hover:text-foreground mt-1 hidden w-full items-center justify-center gap-1 py-2 font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+    >
+      Show less
+    </button>
+  </div>
+
+  <div class="mt-3 border-t border-border/40 pt-3">
+    <a
+      href="https://github.com/rickyfriady"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-muted hover:text-accent font-mono text-[10px] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+      aria-label="View all GitHub activity"
+    >
+      View all activity →
+    </a>
+  </div>
+</div>
+
+<script>
+  import { fetchRecentEvents } from '@/utils/github'
+  import type { RecentEvent } from '@/models'
+
+  const PAGE_SIZE = 5
+
+  const EVENT_ICONS: Record<RecentEvent['type'], string> = {
+    push: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
+    create: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
+    pr: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></svg>',
+    star: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    fork: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 9v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9"/><line x1="12" x2="12" y1="12" y2="15"/></svg>',
+    other: '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  }
+
+  function relativeTime(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 60) return `${mins}m ago`
+    if (mins < 1440) return `${Math.floor(mins / 60)}h ago`
+    if (mins < 43200) return `${Math.floor(mins / 1440)}d ago`
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
+  function buildRow(event: RecentEvent): HTMLElement {
+    const row = document.createElement('div')
+    row.className = 'relative flex items-start gap-2.5 py-2 min-h-[44px] ga-row'
+    row.dataset.id = event.id
+    row.innerHTML = `
+      <div class="relative z-10 mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+        style="background:color-mix(in oklch,var(--color-accent) 12%,transparent);color:var(--color-accent)"
+        aria-hidden="true">
+        ${EVENT_ICONS[event.type] ?? EVENT_ICONS.other}
+      </div>
+      <div class="min-w-0 flex-1 pt-[1px]">
+        ${event.message ? `<p class="text-foreground truncate text-xs font-medium leading-snug">${event.message}</p>` : ''}
+        <div class="mt-0.5 flex items-center gap-1.5 flex-wrap">
+          <a href="${event.repoUrl}" target="_blank" rel="noopener noreferrer"
+            class="text-muted hover:text-accent max-w-[140px] truncate font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+            aria-label="View ${event.repo} on GitHub">${event.repo}</a>
+          <span class="text-muted/30 font-mono text-[10px]" aria-hidden="true">·</span>
+          <span class="text-muted/60 flex-shrink-0 font-mono text-[10px]">${relativeTime(event.date)}</span>
+        </div>
+      </div>
+    `
+    return row
+  }
+
+  function initGitHubActivity() {
+    const root = document.getElementById('github-activity-root')
+    if (!root || root.dataset.gaInit) return
+    root.dataset.gaInit = '1'
+
+    const skeleton = document.getElementById('ga-skeleton')
+    const content = document.getElementById('ga-content')
+    const emptyEl = document.getElementById('ga-empty')
+    const listEl = document.getElementById('ga-list')
+    const counterEl = document.getElementById('ga-counter')
+    const showMoreBtn = document.getElementById('ga-show-more') as HTMLButtonElement | null
+    const showLessBtn = document.getElementById('ga-show-less') as HTMLButtonElement | null
+
+    if (!skeleton || !content || !emptyEl || !listEl || !counterEl || !showMoreBtn || !showLessBtn) return
+
+    let allEvents: RecentEvent[] = []
+    let visibleCount = PAGE_SIZE
+
+    function render() {
+      if (!listEl || !counterEl || !showMoreBtn || !showLessBtn || !emptyEl) return
+      const visible = allEvents.slice(0, visibleCount)
+      const hasMore = visibleCount < allEvents.length
+      const showLess = visibleCount > PAGE_SIZE
+
+      // Add new rows
+      const existing = new Set(Array.from(listEl.querySelectorAll<HTMLElement>('.ga-row')).map(r => r.dataset.id))
+      for (const event of visible) {
+        if (!existing.has(event.id)) {
+          const row = buildRow(event)
+          row.style.opacity = '0'
+          row.style.transform = 'translateY(8px)'
+          listEl.appendChild(row)
+          requestAnimationFrame(() => {
+            row.style.transition = 'opacity 0.25s ease, transform 0.25s ease'
+            row.style.opacity = '1'
+            row.style.transform = 'translateY(0)'
+          })
+        }
+      }
+
+      // Remove rows beyond visible
+      for (const row of Array.from(listEl.querySelectorAll<HTMLElement>('.ga-row'))) {
+        if (!visible.find(e => e.id === row.dataset.id)) {
+          row.remove()
+        }
+      }
+
+      // Timeline line
+      let line = listEl.querySelector<HTMLElement>('.ga-timeline')
+      if (visible.length > 0) {
+        if (!line) {
+          line = document.createElement('div')
+          line.className = 'ga-timeline absolute left-[10px] top-2 bottom-2 w-px bg-border/60'
+          line.setAttribute('aria-hidden', 'true')
+          listEl.prepend(line)
+        }
+      }
+
+      // Counter
+      if (allEvents.length > PAGE_SIZE) {
+        counterEl.textContent = `${Math.min(visibleCount, allEvents.length)} / ${allEvents.length}`
+        counterEl.classList.remove('hidden')
+      }
+
+      // Show more / less
+      showMoreBtn.classList.toggle('hidden', !hasMore)
+      showMoreBtn.classList.toggle('flex', hasMore)
+      if (hasMore) {
+        const remaining = allEvents.length - visibleCount
+        showMoreBtn.querySelector('span.ga-label')?.remove()
+        const label = document.createElement('span')
+        label.className = 'ga-label'
+        label.textContent = `Show ${Math.min(PAGE_SIZE, remaining)} more`
+        showMoreBtn.prepend(label)
+      }
+
+      showLessBtn.classList.toggle('hidden', !showLess || hasMore)
+      showLessBtn.classList.toggle('flex', showLess && !hasMore)
+    }
+
+    showMoreBtn.addEventListener('click', () => {
+      visibleCount = Math.min(visibleCount + PAGE_SIZE, allEvents.length)
+      render()
+    })
+
+    showLessBtn.addEventListener('click', () => {
+      visibleCount = PAGE_SIZE
+      render()
+    })
+
+    fetchRecentEvents().then((events) => {
+      allEvents = events
+      skeleton?.classList.add('hidden')
+      content?.classList.remove('hidden')
+
+      if (events.length === 0) {
+        emptyEl.classList.remove('hidden')
+        return
+      }
+
+      render()
+    })
+
+    document.addEventListener('astro:before-swap', () => {
+      delete root.dataset.gaInit
+    }, { once: true })
+  }
+
+  initGitHubActivity()
+  document.addEventListener('astro:page-load', initGitHubActivity)
+</script>

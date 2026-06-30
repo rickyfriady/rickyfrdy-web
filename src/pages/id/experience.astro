@@ -2,7 +2,7 @@
 import { education, experiences, projects, skillCategories } from '@/data/experience.id'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
-import ProjectsAccordion from '@/components/experience/ProjectsAccordion'
+import ProjectsAccordion from '@/components/experience/ProjectsAccordion.astro'
 import { getSkillIconUrl } from '@/utils/skillIcon'
 ---
 
@@ -102,7 +102,7 @@ import { getSkillIconUrl } from '@/utils/skillIcon'
     </div>
 
     <div class="px-4">
-      <ProjectsAccordion client:load projects={projects} />
+      <ProjectsAccordion projects={projects} />
     </div>
   </section>
 

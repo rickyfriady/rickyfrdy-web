@@ -1,0 +1,270 @@
+---
+const MAIN_LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Projects' }
+] as const
+
+const MORE_LINKS = [
+  { href: '/experience', label: 'Experience' },
+  { href: '/resume', label: 'Resume' },
+  { href: '/contact', label: 'Contact' }
+] as const
+---
+
+<div id="mobile-nav" class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 md:hidden" style="opacity: 0">
+
+  <!-- More drawer (above nav bar) -->
+  <div
+    id="mobile-more-drawer"
+    role="menu"
+    aria-label="More navigation"
+    class="absolute bottom-full mb-2 left-1/2 w-48 -translate-x-1/2 overflow-hidden rounded-2xl hidden"
+    style="background: color-mix(in oklch, var(--color-background) 65%, transparent); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid color-mix(in oklch, var(--color-accent) 22%, transparent); box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)"
+  >
+    {MORE_LINKS.map(({ href, label }, i) => (
+      <a
+        href={href}
+        role="menuitem"
+        data-more-link
+        data-nav-href={href}
+        class="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+        style={i > 0 ? 'border-top: 1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent)' : ''}
+      >
+        {label === 'Experience' && (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+            <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            <rect width="20" height="14" x="2" y="6" rx="2"/>
+          </svg>
+        )}
+        {label === 'Resume' && (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+          </svg>
+        )}
+        {label === 'Contact' && (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+            <rect width="20" height="16" x="2" y="4" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+        )}
+        {label}
+      </a>
+    ))}
+  </div>
+
+  <!-- Nav bar -->
+  <div
+    id="mobile-nav-bar"
+    class="relative flex items-center gap-0.5 rounded-[22px] px-1.5 py-1.5"
+    style="background: color-mix(in oklch, var(--color-background) 65%, transparent); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid color-mix(in oklch, var(--color-accent) 22%, transparent); box-shadow: 0 8px 32px oklch(0 0 0 / 0.18), 0 2px 8px oklch(0 0 0 / 0.12), inset 0 1px 0 oklch(1 0 0 / 0.08)"
+  >
+    <!-- Animated pill (positioned via JS) -->
+    <span
+      id="mobile-nav-pill"
+      aria-hidden="true"
+      class="pointer-events-none absolute rounded-[14px]"
+      style="background: color-mix(in oklch, var(--color-accent) 12%, transparent); box-shadow: 0 0 12px color-mix(in oklch, var(--color-accent) 15%, transparent); opacity: 0; width: 0; height: 0; left: 0; top: 0"
+    ></span>
+
+    <!-- Main links -->
+    {MAIN_LINKS.map(({ href, label }) => (
+      <a
+        href={href}
+        data-nav-item
+        data-nav-href={href}
+        class="relative flex flex-col items-center gap-[3px] rounded-[14px] px-3 py-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      >
+        <span class="nav-icon relative z-10" aria-hidden="true">
+          {label === 'Home' && (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          )}
+          {label === 'About' && (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          )}
+          {label === 'Projects' && (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>
+            </svg>
+          )}
+        </span>
+        <span class="nav-label relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase">{label}</span>
+        <span class="nav-dot absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[3px] w-[3px] rounded-full bg-accent" style="box-shadow: 0 0 5px color-mix(in oklch, var(--color-accent) 60%, transparent); display: none" aria-hidden="true"></span>
+      </a>
+    ))}
+
+    <!-- More button -->
+    <button
+      id="more-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-more-drawer"
+      data-nav-item
+      data-nav-href="__more__"
+      class="relative flex flex-col items-center gap-[3px] rounded-[14px] px-3 py-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+    >
+      <span class="nav-icon relative z-10" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+        </svg>
+      </span>
+      <span class="nav-label relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase">More</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import gsap from 'gsap'
+
+  const MAIN_HREFS = ['/', '/about', '/projects']
+  const MORE_HREFS = ['/experience', '/resume', '/contact']
+  const DIM = 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
+
+  let isMoreOpen = false
+
+  function normPath(p: string): string {
+    return p.replace(/^\/id(?=\/|$)/, '') || '/'
+  }
+
+  function isLinkActive(href: string, path: string): boolean {
+    const p = normPath(path)
+    return href === '/' ? p === '/' : p.startsWith(href)
+  }
+
+  function getPillTarget(item: HTMLElement, container: HTMLElement) {
+    const cr = container.getBoundingClientRect()
+    const ir = item.getBoundingClientRect()
+    return { left: ir.left - cr.left, top: ir.top - cr.top, width: ir.width, height: ir.height }
+  }
+
+  function movePill(item: HTMLElement | null, container: HTMLElement, pill: HTMLElement, animate: boolean) {
+    if (!item) { pill.style.opacity = '0'; return }
+    const { left, top, width, height } = getPillTarget(item, container)
+    if (animate) {
+      gsap.to(pill, { left, top, width, height, opacity: 1, duration: 0.35, ease: 'back.out(1.5)' })
+    } else {
+      gsap.set(pill, { left, top, width, height, opacity: 1 })
+    }
+  }
+
+  function updateActive(animate: boolean) {
+    const path = window.location.pathname
+    const pill = document.getElementById('mobile-nav-pill') as HTMLElement
+    const container = document.getElementById('mobile-nav-bar') as HTMLElement
+    const moreBtn = document.getElementById('more-btn') as HTMLElement
+    if (!pill || !container || !moreBtn) return
+
+    const moreActive = MORE_HREFS.some(h => isLinkActive(h, path))
+
+    let pillTarget: HTMLElement | null = null
+
+    // Main nav items
+    MAIN_HREFS.forEach(href => {
+      const item = document.querySelector<HTMLElement>(`[data-nav-href="${href}"]`)
+      if (!item) return
+      const active = isLinkActive(href, path)
+      const icon = item.querySelector<HTMLElement>('.nav-icon')
+      const label = item.querySelector<HTMLElement>('.nav-label')
+      const dot = item.querySelector<HTMLElement>('.nav-dot')
+      if (icon) icon.style.color = active ? 'var(--color-accent)' : DIM
+      if (label) label.style.color = active ? 'var(--color-accent)' : DIM
+      if (dot) dot.style.display = active ? 'block' : 'none'
+      if (active) pillTarget = item
+    })
+
+    // More button
+    const moreColored = moreActive || isMoreOpen
+    const moreIcon = moreBtn.querySelector<HTMLElement>('.nav-icon')
+    const moreLabel = moreBtn.querySelector<HTMLElement>('.nav-label')
+    if (moreIcon) moreIcon.style.color = moreColored ? 'var(--color-accent)' : DIM
+    if (moreLabel) moreLabel.style.color = moreColored ? 'var(--color-accent)' : DIM
+    // Pill on More button only when moreActive && not open
+    if (moreActive && !isMoreOpen && !pillTarget) pillTarget = moreBtn
+
+    movePill(pillTarget, container, pill, animate)
+
+    // Update more drawer link colors
+    MORE_HREFS.forEach(href => {
+      const link = document.querySelector<HTMLElement>(`[data-more-link][data-nav-href="${href}"]`)
+      if (link) link.style.color = isLinkActive(href, path) ? 'var(--color-accent)' : 'color-mix(in oklch, var(--color-foreground) 55%, transparent)'
+    })
+  }
+
+  function openMoreDrawer() {
+    isMoreOpen = true
+    const drawer = document.getElementById('mobile-more-drawer') as HTMLElement
+    const moreBtn = document.getElementById('more-btn') as HTMLElement
+    moreBtn.setAttribute('aria-expanded', 'true')
+    drawer.classList.remove('hidden')
+    gsap.fromTo(drawer,
+      { opacity: 0, y: 10, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: 'back.out(1.5)' }
+    )
+    updateActive(false)
+  }
+
+  function closeMoreDrawer(skipAnim = false) {
+    isMoreOpen = false
+    const drawer = document.getElementById('mobile-more-drawer') as HTMLElement
+    const moreBtn = document.getElementById('more-btn') as HTMLElement
+    moreBtn.setAttribute('aria-expanded', 'false')
+    if (skipAnim) {
+      drawer.classList.add('hidden')
+    } else {
+      gsap.to(drawer, {
+        opacity: 0, y: 6, scale: 0.96, duration: 0.15, ease: 'power2.in',
+        onComplete: () => drawer.classList.add('hidden')
+      })
+    }
+    updateActive(false)
+  }
+
+  function initMobileNav() {
+    const root = document.getElementById('mobile-nav')
+    if (!root) return
+
+    // Entrance animation — only once per page session
+    if (!root.dataset.mnEntered) {
+      root.dataset.mnEntered = '1'
+      gsap.fromTo(root,
+        { opacity: 0, y: 16, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.5)', delay: 0.2 }
+      )
+    } else {
+      root.style.opacity = '1'
+    }
+
+    if (root.dataset.mnInit) return
+    root.dataset.mnInit = '1'
+
+    updateActive(false)
+
+    const moreBtn = document.getElementById('more-btn')!
+    moreBtn.addEventListener('click', () => {
+      isMoreOpen ? closeMoreDrawer() : openMoreDrawer()
+    })
+
+    document.addEventListener('click', (e) => {
+      if (isMoreOpen && root && !root.contains(e.target as Node)) closeMoreDrawer()
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMoreOpen) closeMoreDrawer()
+    })
+
+    document.addEventListener('astro:page-load', () => {
+      if (isMoreOpen) closeMoreDrawer(true)
+      updateActive(true)
+    })
+  }
+
+  initMobileNav()
+</script>

@@ -1,6 +1,6 @@
 ---
-import ContactFormSection from '@/components/contact/ContactFormSection'
-import ContactHero from '@/components/contact/ContactHero'
+import ContactFormSection from '@/components/contact/ContactFormSection.astro'
+import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 ---
 
@@ -8,10 +8,10 @@ import MainLayout from '@/components/layout/MainLayout.astro'
   title="Contact — Ricki Friadi"
   description="Get in touch with Ricki Friadi — open to fullstack roles, freelance projects, and collaboration."
 >
-  <ContactHero client:load />
+  <ContactHero />
 
   <!-- § 01 — Form -->
   <section class="border-border border-b">
-    <ContactFormSection client:visible />
+    <ContactFormSection />
   </section>
 </MainLayout>

@@ -1,7 +1,7 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
-import HeroPhoto from '@/components/ui/HeroPhoto'
+import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
@@ -102,7 +102,7 @@ const capabilities = [
       </div>
 
       <!-- Right: avatar -->
-      <HeroPhoto client:load />
+      <HeroPhoto />
     </div>
   </section>
 

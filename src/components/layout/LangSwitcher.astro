@@ -1,0 +1,196 @@
+---
+const isId = Astro.url.pathname === '/id' || Astro.url.pathname.startsWith('/id/')
+const currentLang = isId ? 'id' : 'en'
+const LANGS = [
+  { code: 'en', flag: '🇺🇸', label: 'English' },
+  { code: 'id', flag: '🇮🇩', label: 'Indonesia' }
+] as const
+const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
+---
+
+<div class="relative hidden md:block" id="lang-switcher">
+  <button
+    id="lang-btn"
+    type="button"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={`Language: ${active.label}`}
+    class="glass-btn flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm"
+    data-current={currentLang}
+  >
+    <span class="text-base leading-none" id="lang-flag">{active.flag}</span>
+    <span class="text-foreground font-mono text-xs uppercase tracking-wide" id="lang-code">{active.code}</span>
+    <svg
+      id="lang-chevron"
+      class="text-muted h-3 w-3 transition-transform duration-150"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2.5"
+      aria-hidden="true"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <ul
+    id="lang-dropdown"
+    role="listbox"
+    aria-label="Select language"
+    data-origin="top-right"
+    class="t-dropdown absolute right-0 top-full mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
+    style="background: color-mix(in oklch, var(--color-background) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-color: color-mix(in oklch, var(--color-border) 60%, transparent)"
+  >
+    {LANGS.map((lang) => {
+      const isActive = lang.code === currentLang
+      return (
+        <li>
+          <button
+            type="button"
+            role="option"
+            aria-selected={isActive}
+            data-lang={lang.code}
+            class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+            style={isActive ? 'background: color-mix(in oklch, var(--color-accent) 12%, transparent); color: var(--color-accent)' : ''}
+          >
+            <span class="text-base leading-none">{lang.flag}</span>
+            <span class="font-medium">{lang.label}</span>
+            {isActive && (
+              <svg class="ml-auto h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </button>
+        </li>
+      )
+    })}
+  </ul>
+</div>
+
+<script>
+  import gsap from 'gsap'
+
+  const CLOSE_MS = 150
+
+  function isIdLocale(pathname: string): boolean {
+    return pathname === '/id' || pathname.startsWith('/id/')
+  }
+
+  function getTargetHref(targetLang: string): string {
+    const pathname = window.location.pathname
+    const isId = isIdLocale(pathname)
+    if (targetLang === 'id') {
+      if (isId) return pathname
+      return pathname === '/' ? '/id' : `/id${pathname}`
+    }
+    if (!isId) return pathname
+    return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
+  }
+
+  function updateDisplay() {
+    const lang = isIdLocale(window.location.pathname) ? 'id' : 'en'
+    const FLAGS: Record<string, string> = { en: '🇺🇸', id: '🇮🇩' }
+    const btn = document.getElementById('lang-btn')
+    const flag = document.getElementById('lang-flag')
+    const code = document.getElementById('lang-code')
+    if (btn) btn.dataset.current = lang
+    if (flag) flag.textContent = FLAGS[lang]
+    if (code) code.textContent = lang
+
+    // Update aria-selected on options
+    document.querySelectorAll<HTMLElement>('[data-lang]').forEach((el) => {
+      const isActive = el.dataset.lang === lang
+      el.setAttribute('aria-selected', String(isActive))
+      el.style.background = isActive
+        ? 'color-mix(in oklch, var(--color-accent) 12%, transparent)'
+        : ''
+      el.style.color = isActive ? 'var(--color-accent)' : ''
+      // Update check icon visibility
+      const check = el.querySelector('svg')
+      if (check) check.style.display = isActive ? '' : 'none'
+    })
+  }
+
+  function initLangSwitcher() {
+    const root = document.getElementById('lang-switcher')
+    if (!root || root.dataset.lsInit) return
+    root.dataset.lsInit = '1'
+
+    const btn = document.getElementById('lang-btn') as HTMLButtonElement
+    const dropdown = document.getElementById('lang-dropdown') as HTMLElement
+    const chevron = document.getElementById('lang-chevron') as HTMLElement
+    if (!btn || !dropdown) return
+
+    let open = false
+    let closeTimer = 0
+
+    function openDropdown() {
+      clearTimeout(closeTimer)
+      open = true
+      btn.setAttribute('aria-expanded', 'true')
+      chevron.style.transform = 'rotate(180deg)'
+      requestAnimationFrame(() => {
+        dropdown.classList.remove('is-closing')
+        dropdown.classList.add('is-open')
+      })
+    }
+
+    function closeDropdown(returnFocus = false) {
+      clearTimeout(closeTimer)
+      open = false
+      btn.setAttribute('aria-expanded', 'false')
+      chevron.style.transform = ''
+      dropdown.classList.remove('is-open')
+      dropdown.classList.add('is-closing')
+      closeTimer = window.setTimeout(() => {
+        dropdown.classList.remove('is-closing')
+        if (returnFocus) btn.focus()
+      }, CLOSE_MS)
+    }
+
+    function handleSelect(lang: string) {
+      closeDropdown()
+      const current = btn.dataset.current ?? 'en'
+      if (lang === current) return
+      const href = getTargetHref(lang)
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (reduced) {
+        window.location.href = href
+        return
+      }
+      gsap
+        .timeline()
+        .to(btn, { scale: 0.88, duration: 0.08, ease: 'power2.in' })
+        .to(btn, {
+          scale: 1,
+          duration: 0.2,
+          ease: 'back.out(3)',
+          clearProps: 'transform',
+          onComplete: () => { window.location.href = href }
+        })
+    }
+
+    btn.addEventListener('click', () => (open ? closeDropdown(true) : openDropdown()))
+
+    document.querySelectorAll<HTMLElement>('[data-lang]').forEach((el) => {
+      el.addEventListener('click', () => handleSelect(el.dataset.lang ?? 'en'))
+    })
+
+    document.addEventListener('mousedown', (e) => {
+      if (open && root && !root.contains(e.target as Node)) closeDropdown()
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (open && e.key === 'Escape') closeDropdown(true)
+    })
+  }
+
+  updateDisplay()
+  initLangSwitcher()
+  document.addEventListener('astro:page-load', () => {
+    updateDisplay()
+    const root = document.getElementById('lang-switcher')
+    if (root) delete root.dataset.lsInit
+    initLangSwitcher()
+  })
+</script>

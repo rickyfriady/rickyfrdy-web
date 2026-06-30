@@ -1,0 +1,40 @@
+---
+---
+
+<div class="flex-shrink-0 self-start md:self-center" data-hero-reveal>
+  <!-- Portrait photo card — static gradient border -->
+  <div
+    class="relative w-[clamp(148px,20vw,196px)] aspect-[3/4] rounded-[20px] p-[2px]"
+    style="background: linear-gradient(145deg, color-mix(in oklch, var(--color-accent) 55%, transparent), color-mix(in oklch, var(--color-accent) 18%, var(--color-border)))"
+    data-parallax-wrap
+  >
+    <div
+      class="relative h-full w-full overflow-hidden rounded-[18px] transition-transform duration-300 ease-out hover:scale-[1.018]"
+      style="background: color-mix(in oklch, var(--color-background) 96%, transparent)"
+      data-parallax-target
+    >
+      <img
+        src="/images/avatar.jpg"
+        alt="Ricki Friadi"
+        width={196}
+        height={261}
+        loading="eager"
+        class="absolute inset-0 h-full w-full object-cover object-top text-transparent"
+      />
+    </div>
+  </div>
+
+  <!-- Availability pill -->
+  <div class="mt-4 flex justify-start" data-hero-reveal>
+    <div
+      class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5"
+      style="border-color: color-mix(in oklch, var(--color-accent) 22%, transparent); background: color-mix(in oklch, var(--color-accent) 7%, transparent)"
+    >
+      <span class="relative flex size-[6px] flex-shrink-0">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+        <span class="relative inline-flex size-[6px] rounded-full bg-accent" />
+      </span>
+      <span class="text-muted font-mono text-[11px] tracking-[0.08em]">Available for work</span>
+    </div>
+  </div>
+</div>

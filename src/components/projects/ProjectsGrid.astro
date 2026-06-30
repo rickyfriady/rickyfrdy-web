@@ -1,0 +1,350 @@
+---
+import AnimatedGradient from '@/components/animated-gradient.astro'
+import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
+import type { Lang } from '@/i18n/ui'
+import type { Project } from '@/models'
+import { getSkillIconUrl } from '@/utils/skillIcon'
+
+interface Props {
+  projects: Project[]
+  lang?: Lang
+}
+
+const { projects, lang = 'en' } = Astro.props
+
+// Default sort: featured first, then by date
+const sorted = [...projects].sort((a, b) => {
+  if (a.featured && !b.featured) return -1
+  if (!a.featured && b.featured) return 1
+  return new Date(b.date).getTime() - new Date(a.date).getTime()
+})
+---
+
+<div class="flex flex-col gap-8 lg:flex-row" id="projects-grid-root" data-lang={lang}>
+
+  <!-- Mobile filter toggle -->
+  <div class="lg:hidden">
+    <button
+      type="button"
+      id="filters-toggle"
+      aria-expanded="false"
+      aria-controls="projects-filters-mobile"
+      class="border-border bg-secondary/40 hover:bg-secondary flex w-full items-center justify-between rounded-xl border px-4 py-3 transition-colors"
+    >
+      <span class="flex items-center gap-2 font-mono text-xs tracking-[0.12em] uppercase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px]" aria-hidden="true">
+          <line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>
+        </svg>
+        Filters
+        <span id="filter-count-badge" class="bg-accent text-background hidden rounded-full px-1.5 py-0.5 font-mono text-[9px]">0</span>
+      </span>
+      <span class="flex items-center gap-2">
+        <span class="text-muted font-mono text-[10px]" id="mobile-item-count">{sorted.length} items</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted h-[14px] w-[14px] transition-transform duration-200" id="filters-chevron" aria-hidden="true">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </span>
+    </button>
+    <div id="projects-filters-mobile" class="overflow-hidden" style="height: 0; opacity: 0">
+      <div class="border-border mt-2 rounded-xl border p-5">
+        <div id="filter-content-mobile" class="space-y-6"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop sidebar -->
+  <aside class="hidden lg:block lg:w-56 lg:flex-shrink-0">
+    <div class="border-border sticky top-24 rounded-2xl border p-5">
+      <div id="filter-content-desktop" class="space-y-6"></div>
+    </div>
+  </aside>
+
+  <!-- Cards grid -->
+  <div class="flex-1">
+    <div id="projects-cards" class="flex flex-col gap-3">
+      {sorted.map((project) => {
+        const cardInner = (
+          <>
+            <div class="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
+            <div class="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-l from-secondary/90 via-secondary/40 to-transparent" />
+              <div class="absolute inset-0 opacity-40" style="background: linear-gradient(135deg, transparent 55%, color-mix(in oklch, var(--color-border) 60%, transparent) 55%)" />
+            </div>
+            <div class="relative z-10 min-w-0 flex-1">
+              <div class="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                {project.company && (
+                  <span class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">{project.company}</span>
+                )}
+                {project.company && <span class="text-border select-none text-[10px]">·</span>}
+                <span class="diff-tag">{project.category.replace('-', ' ')}</span>
+                <span class="diff-tag">{project.year}</span>
+                {project.featured && <FeaturedBadge label="Featured" />}
+              </div>
+              <h3 class="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">{project.title}</h3>
+              {project.role && <p class="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>}
+              <div class="mt-2 flex flex-wrap items-center gap-2">
+                {project.keyMetric && (
+                  <>
+                    <span class="text-accent font-mono text-[10px]">{project.keyMetric}</span>
+                    {project.technologies.length > 0 && <span class="text-border select-none text-[10px]">·</span>}
+                  </>
+                )}
+                {project.technologies.slice(0, 3).map((tech) => {
+                  const url = getSkillIconUrl(tech)
+                  return url ? (
+                    <span class="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2 py-1 font-mono text-xs text-muted">
+                      <img src={url} alt={tech} title={tech} width="16" height="16" class="rounded-sm" loading="lazy" />
+                      {tech}
+                    </span>
+                  ) : (
+                    <span class="bg-secondary text-muted rounded-lg px-2 py-1 font-mono text-xs">{tech}</span>
+                  )
+                })}
+                {project.technologies.length > 3 && (
+                  <span class="text-muted font-mono text-xs">+{project.technologies.length - 3}</span>
+                )}
+              </div>
+            </div>
+            <div class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
+              <span class="text-muted font-mono text-xs uppercase">{(project.company ?? project.title).charAt(0)}</span>
+            </div>
+          </>
+        )
+
+        return (
+          <div
+            data-project-card
+            data-type={project.type}
+            data-category={project.category}
+            data-tech={project.technologies.join(',')}
+            data-featured={project.featured ? 'true' : 'false'}
+            data-date={project.date}
+            data-year={project.year}
+          >
+            {project.featured ? (
+              <div class="relative rounded-xl p-[2px]">
+                <AnimatedGradient config={{ preset: 'Lava', speed: 12 }} radius="12px" noise={{ opacity: 0.12 }} style={{ zIndex: '0' }} />
+                <a href={`/projects/${project.slug}`} class="glass-card group relative z-10 flex items-center gap-4 overflow-hidden rounded-[10px] px-5 py-4 no-underline transition-colors duration-200">
+                  {cardInner}
+                </a>
+              </div>
+            ) : (
+              <a href={`/projects/${project.slug}`} class="glass-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50">
+                {cardInner}
+              </a>
+            )}
+          </div>
+        )
+      })}
+    </div>
+
+    <div id="no-results" class="border-border hidden flex-col items-center rounded-2xl border p-12 text-center">
+      <p class="text-muted mb-4 text-sm">No items match your filters</p>
+      <button type="button" id="reset-btn-empty" class="text-accent text-sm hover:underline">Reset filters</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const TYPE_LABELS: Record<string, Record<string, string>> = { en: { all: 'All', project: 'Projects', work: 'Works' }, id: { all: 'Semua', project: 'Proyek', work: 'Karya' } }
+  const FILTER_LABELS: Record<string, Record<string, string>> = { en: { type: 'Type', category: 'Category', sort: 'Sort', tech: 'Technology', reset: 'Reset filters' }, id: { type: 'Tipe', category: 'Kategori', sort: 'Urut', tech: 'Teknologi', reset: 'Reset filter' } }
+  const l = (document.getElementById('projects-grid-root') as HTMLElement)?.dataset.lang ?? 'en'
+  const tl = TYPE_LABELS[l] ?? TYPE_LABELS.en
+  const fl = FILTER_LABELS[l] ?? FILTER_LABELS.en
+
+  // Collect all unique techs from card data attributes
+  const allTechs = [...new Set(
+    Array.from(document.querySelectorAll<HTMLElement>('[data-project-card]'))
+      .flatMap(c => (c.dataset.tech ?? '').split(',').filter(Boolean))
+  )].sort()
+
+  function getState() {
+    const p = new URLSearchParams(window.location.search)
+    return {
+      type: p.get('type') ?? 'all',
+      category: p.get('category') ?? 'all',
+      tech: p.get('tech') ?? 'all',
+      sort: p.get('sort') ?? 'featured'
+    }
+  }
+
+  function setState(patch: Record<string, string>) {
+    const p = new URLSearchParams(window.location.search)
+    for (const [k, v] of Object.entries(patch)) {
+      if (v === 'all' || v === 'featured') p.delete(k)
+      else p.set(k, v as string)
+    }
+    const qs = p.toString()
+    history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }
+
+  function buildFilterHTML(state: ReturnType<typeof getState>) {
+    const btn = (filter: string, value: string, label: string) => {
+      const active = (state as Record<string, string>)[filter] === value
+      return `<button type="button" class="w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${active ? 'bg-secondary text-foreground' : 'text-muted hover:text-foreground hover:bg-secondary/60'}" data-filter="${filter}" data-value="${value}">${label}</button>`
+    }
+    const techOptions = allTechs.map((t: string) => `<option value="${t}"${state.tech === t ? ' selected' : ''}>${t}</option>`).join('')
+    return `
+      <div>
+        <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">${fl.type}</p>
+        <div class="space-y-1">${['all', 'project', 'work'].map(v => btn('type', v, tl[v] ?? v)).join('')}</div>
+      </div>
+      <div>
+        <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">${fl.category}</p>
+        <div class="space-y-1">${['all', 'web-app', 'api', 'tool', 'open-source'].map(v => btn('category', v, v === 'all' ? 'All' : v.replace('-', ' '))).join('')}</div>
+      </div>
+      <div>
+        <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">${fl.sort}</p>
+        <div class="space-y-1">${['featured', 'recent', 'year'].map(v => btn('sort', v, v.charAt(0).toUpperCase() + v.slice(1))).join('')}</div>
+      </div>
+      <div>
+        <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">${fl.tech}</p>
+        <select data-filter="tech" class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent">
+          <option value="all"${state.tech === 'all' ? ' selected' : ''}>All technologies</option>
+          ${techOptions}
+        </select>
+      </div>
+      <div class="flex items-center justify-between">
+        <button type="button" data-reset class="text-muted hover:text-foreground font-mono text-xs transition-colors">${fl.reset}</button>
+        <p class="text-muted font-mono text-[10px]" data-filter-count></p>
+      </div>
+    `
+  }
+
+  function applyFilters() {
+    const state = getState()
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-project-card]'))
+    let visible = 0
+
+    for (const card of cards) {
+      const type = card.dataset.type ?? ''
+      const category = card.dataset.category ?? ''
+      const tech = (card.dataset.tech ?? '').split(',')
+      const matches =
+        (state.type === 'all' || type === state.type) &&
+        (state.category === 'all' || category === state.category) &&
+        (state.tech === 'all' || tech.some(t => t.toLowerCase().includes(state.tech.toLowerCase())))
+
+      card.style.display = matches ? '' : 'none'
+      if (matches) visible++
+    }
+
+    // Sort visible cards
+    const container = document.getElementById('projects-cards')
+    const visibleCards = cards.filter(c => c.style.display !== 'none')
+    visibleCards.sort((a, b) => {
+      if (state.sort === 'featured') {
+        const fa = a.dataset.featured === 'true' ? 0 : 1
+        const fb = b.dataset.featured === 'true' ? 0 : 1
+        if (fa !== fb) return fa - fb
+        return new Date(b.dataset.date ?? '').getTime() - new Date(a.dataset.date ?? '').getTime()
+      }
+      if (state.sort === 'recent') {
+        return new Date(b.dataset.date ?? '').getTime() - new Date(a.dataset.date ?? '').getTime()
+      }
+      return parseInt(b.dataset.year ?? '0', 10) - parseInt(a.dataset.year ?? '0', 10)
+    })
+    visibleCards.forEach(c => container?.appendChild(c))
+
+    // Update counts and no-results
+    const noResults = document.getElementById('no-results')
+    const gridEl = document.getElementById('projects-cards')
+    if (noResults && gridEl) {
+      if (visible === 0) { noResults.classList.remove('hidden'); noResults.classList.add('flex'); gridEl.classList.add('hidden') }
+      else { noResults.classList.add('hidden'); noResults.classList.remove('flex'); gridEl.classList.remove('hidden') }
+    }
+    const mobileCount = document.getElementById('mobile-item-count')
+    if (mobileCount) mobileCount.textContent = `${visible} items`
+    document.querySelectorAll('[data-filter-count]').forEach(el => { el.textContent = `${visible} items` })
+
+    // Active filter count badge
+    const activeCount = [state.type !== 'all', state.category !== 'all', state.tech !== 'all', state.sort !== 'featured'].filter(Boolean).length
+    const badge = document.getElementById('filter-count-badge')
+    if (badge) { badge.textContent = String(activeCount); badge.classList.toggle('hidden', activeCount === 0) }
+  }
+
+  function renderFilters() {
+    const state = getState()
+    const html = buildFilterHTML(state)
+    const d = document.getElementById('filter-content-desktop')
+    const m = document.getElementById('filter-content-mobile')
+    if (d) d.innerHTML = html
+    if (m) m.innerHTML = html
+  }
+
+  function attachFilterListeners() {
+    document.querySelectorAll<HTMLElement>('[data-filter]').forEach(el => {
+      el.addEventListener('change', (e) => {
+        const t = e.currentTarget as HTMLInputElement | HTMLSelectElement
+        if (!t) return
+        setState({ [(t as HTMLElement).dataset.filter!]: t.value })
+        renderFilters()
+        attachFilterListeners()
+        applyFilters()
+      })
+      el.addEventListener('click', (e) => {
+        const t = e.currentTarget as HTMLElement
+        if (!t?.dataset.value) return
+        setState({ [t.dataset.filter!]: t.dataset.value })
+        renderFilters()
+        attachFilterListeners()
+        applyFilters()
+      })
+    })
+    document.querySelectorAll('[data-reset]').forEach(el => {
+      el.addEventListener('click', () => {
+        history.replaceState(null, '', window.location.pathname)
+        renderFilters()
+        attachFilterListeners()
+        applyFilters()
+      })
+    })
+    const resetEmpty = document.getElementById('reset-btn-empty')
+    resetEmpty?.addEventListener('click', () => {
+      history.replaceState(null, '', window.location.pathname)
+      renderFilters()
+      attachFilterListeners()
+      applyFilters()
+    })
+  }
+
+  function initMobileToggle() {
+    const btn = document.getElementById('filters-toggle')
+    const panel = document.getElementById('projects-filters-mobile')
+    const chevron = document.getElementById('filters-chevron')
+    if (!btn || !panel) return
+
+    let open = false
+    btn.addEventListener('click', () => {
+      open = !open
+      btn.setAttribute('aria-expanded', String(open))
+      if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : ''
+      if (open) {
+        panel.style.display = ''
+        panel.style.height = 'auto'
+        const h = panel.scrollHeight
+        panel.style.height = '0'
+        panel.style.opacity = '0'
+        requestAnimationFrame(() => {
+          panel.style.transition = 'height 0.25s ease, opacity 0.2s ease'
+          panel.style.height = `${h}px`
+          panel.style.opacity = '1'
+        })
+      } else {
+        panel.style.transition = 'height 0.2s ease, opacity 0.15s ease'
+        panel.style.height = '0'
+        panel.style.opacity = '0'
+      }
+    })
+  }
+
+  function init() {
+    renderFilters()
+    attachFilterListeners()
+    applyFilters()
+    initMobileToggle()
+  }
+
+  init()
+  document.addEventListener('astro:page-load', init)
+</script>
