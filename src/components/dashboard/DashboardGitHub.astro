@@ -13,13 +13,13 @@ const { initialStats } = Astro.props
 ---
 
 <div class="grid gap-6">
-  <GitHubHeatmap initialStats={initialStats} />
+  <GitHubHeatmap client:visible initialStats={initialStats} />
 
   <div class="grid gap-6 md:grid-cols-2">
     <div class="space-y-6">
-      <GitHubLanguages languages={initialStats.languages} />
-      <GitHubPinnedRepos repos={initialStats.pinnedRepos} />
+      <GitHubLanguages client:idle languages={initialStats.languages} />
+      <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
     </div>
-    <GitHubActivity />
+    <GitHubActivity client:visible />
   </div>
 </div>
