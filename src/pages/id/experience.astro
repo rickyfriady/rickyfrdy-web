@@ -2,6 +2,7 @@
 import { education, experiences, projects, skillCategories } from '@/data/experience.id'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 import ProjectsAccordion from '@/components/experience/ProjectsAccordion.astro'
 import { getSkillIconUrl } from '@/utils/skillIcon'
 ---
@@ -10,6 +11,11 @@ import { getSkillIconUrl } from '@/utils/skillIcon'
   title="Pengalaman — Ricki Friadi"
   description="Riwayat kerja, proyek, pendidikan, dan keahlian Ricki Friadi — Software Engineer di PT. Pegadaian sejak Mei 2023."
   lang="id"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/experience/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/experience/' },
+  ]}
+  schema={webPageSchema('Pengalaman — Ricki Friadi', 'Riwayat kerja, proyek, pendidikan, dan keahlian Ricki Friadi — Software Engineer di PT. Pegadaian sejak Mei 2023.', 'https://rickyfrdy.my.id/id/experience/')}
 >
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">

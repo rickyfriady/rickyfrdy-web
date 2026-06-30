@@ -2,12 +2,18 @@
 import ContactFormSection from '@/components/contact/ContactFormSection.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 ---
 
 <MainLayout
   title="Kontak — Ricki Friadi"
   description="Hubungi Ricki Friadi — terbuka untuk peran fullstack, proyek freelance, dan kolaborasi."
   lang="id"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/contact/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/contact/' },
+  ]}
+  schema={webPageSchema('Kontak — Ricki Friadi', 'Hubungi Ricki Friadi — terbuka untuk peran fullstack, proyek freelance, dan kolaborasi.', 'https://rickyfrdy.my.id/id/contact/')}
 >
   <ContactHero
     eyebrow="Kontak"

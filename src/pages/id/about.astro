@@ -5,6 +5,7 @@ import GitHubLanguages from '@/components/about/GitHubLanguages.astro'
 import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos.astro'
 import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
@@ -26,6 +27,11 @@ const beyondCode = [
   title="Tentang — Ricki Friadi"
   description="Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun."
   lang="id"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/about/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/about/' },
+  ]}
+  schema={webPageSchema('Tentang — Ricki Friadi', 'Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun.', 'https://rickyfrdy.my.id/id/about/')}
 >
   <PageAnimations />
 
