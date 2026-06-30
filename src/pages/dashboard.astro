@@ -1,0 +1,78 @@
+---
+import DashboardGitHub from '@/components/dashboard/DashboardGitHub.astro'
+import WakaTimeLanguages from '@/components/dashboard/WakaTimeLanguages.astro'
+import WakaTimeOverview from '@/components/dashboard/WakaTimeOverview.astro'
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { fetchBuildTimeStats } from '@/utils/github'
+import { fetchBuildTimeWakaTime } from '@/utils/wakatime'
+
+const [initialStats, wakaStats] = await Promise.all([
+  fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN),
+  fetchBuildTimeWakaTime(import.meta.env.WAKATIME_API_KEY),
+])
+
+const buildDate = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+---
+
+<MainLayout
+  title="Dashboard — Ricki Friadi"
+  description="Live developer activity dashboard — coding stats, GitHub contributions, and language breakdown for Ricki Friadi."
+>
+  <PageAnimations />
+
+  <!-- ─── Hero ──────────────────────────────────────────────────── -->
+  <section class="border-border relative border-b px-4 py-12 md:py-16">
+    <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+    <div class="relative">
+      <p class="eyebrow mb-4" data-hero-reveal>Dashboard</p>
+      <h1
+        class="title-display"
+        style="font-size: clamp(2rem, 6vw, 4rem); line-height: 0.95"
+        data-hero-reveal
+      >
+        Developer<br />
+        <span class="title-accent text-accent">activity.</span>
+      </h1>
+      <p class="text-muted mt-5 max-w-md text-sm leading-relaxed" data-hero-reveal>
+        Coding stats, language breakdown, and GitHub contributions — all baked at deploy time.
+      </p>
+      <p class="mt-3 font-mono text-[10px] text-muted/60 tracking-[0.12em] uppercase" data-hero-reveal>
+        Data as of {buildDate}
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── § 01 — Coding Activity (WakaTime) ────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 01 — Coding Activity</span>
+    </div>
+
+    <div class="space-y-4 px-4 pb-12" data-stagger-item>
+      <div class="flex items-center gap-2 mb-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span class="font-mono text-[11px] text-muted tracking-[0.12em] uppercase">WakaTime · Last 7 days</span>
+      </div>
+      <WakaTimeOverview stats={wakaStats} />
+      <WakaTimeLanguages stats={wakaStats} />
+    </div>
+  </section>
+
+  <!-- ─── § 02 — GitHub ────────────────────────────────────────── -->
+  <section class="border-border border-b" data-stagger-group>
+    <div class="chapter-heading px-4">
+      <span class="chapter-label">§ 02 — GitHub</span>
+    </div>
+
+    <div class="px-4 pb-12" data-stagger-item>
+      <DashboardGitHub initialStats={initialStats} />
+    </div>
+  </section>
+</MainLayout>

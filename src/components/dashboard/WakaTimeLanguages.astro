@@ -1,0 +1,46 @@
+---
+import type { WakaTimeStats } from '@/models'
+import { getSkillIconUrl } from '@/utils/skillIcon'
+
+interface Props {
+  stats: WakaTimeStats | null
+}
+
+const { stats } = Astro.props
+---
+
+{stats && stats.languages.length > 0 ? (
+  <div class="glass-card rounded-xl px-5 py-5">
+    <p class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase mb-4">Languages this week</p>
+    <ul class="space-y-3">
+      {stats.languages.map((lang) => {
+        const iconUrl = getSkillIconUrl(lang.name)
+        return (
+          <li>
+            <div class="flex items-center justify-between mb-1">
+              <span class="flex items-center gap-2 font-mono text-xs text-foreground">
+                {iconUrl && (
+                  <img src={iconUrl} alt={lang.name} width="14" height="14" class="rounded-sm" loading="lazy" />
+                )}
+                {lang.name}
+              </span>
+              <span class="font-mono text-[11px] text-muted">{lang.text}</span>
+            </div>
+            <div class="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+              <div
+                class="h-full rounded-full bg-accent"
+                style={`width: ${Math.min(lang.percent, 100)}%`}
+              />
+            </div>
+          </li>
+        )
+      })}
+    </ul>
+  </div>
+) : stats === null ? (
+  <div class="glass-card rounded-xl px-5 py-6 text-center">
+    <p class="text-muted text-sm">
+      Language breakdown unavailable — set <code class="font-mono text-accent text-xs">WAKATIME_API_KEY</code> in your deploy environment.
+    </p>
+  </div>
+) : null}

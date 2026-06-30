@@ -23,3 +23,9 @@ export type {
   SortOrder
 } from './project.models'
 export type { Skill, SkillGroup } from './skills.models'
+export type {
+  WakaTimeBestDay,
+  WakaTimeEditor,
+  WakaTimeLang,
+  WakaTimeStats
+} from './wakatime.models'
