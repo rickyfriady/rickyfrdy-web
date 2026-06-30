@@ -1,16 +1,39 @@
 ---
+interface HreflangPair {
+  lang: string
+  href: string
+}
+
 interface Props {
   title: string
   description: string
   ogImage?: string | undefined
+  lang?: 'en' | 'id'
+  hreflangPairs?: HreflangPair[]
+  ogType?: string
+  schema?: Record<string, unknown>
 }
 
-const { title, description, ogImage = '/og-default.svg' } = Astro.props
+const {
+  title,
+  description,
+  ogImage = '/og-default.svg',
+  lang = 'en',
+  hreflangPairs,
+  ogType = 'website',
+  schema,
+} = Astro.props
+
 const siteTitle = title.includes('Ricki Friadi') ? title : `${title} — Ricki Friadi`
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const ogImageURL = new URL(ogImage, Astro.site)
 
-const jsonLd = JSON.stringify({
+const ogLocale = lang === 'id' ? 'id_ID' : 'en_US'
+const ogLocaleAlternate = lang === 'id' ? 'en_US' : 'id_ID'
+
+const xDefaultHref = hreflangPairs?.find((p) => p.lang === 'en')?.href
+
+const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Ricki Friadi',
@@ -20,7 +43,11 @@ const jsonLd = JSON.stringify({
     'https://github.com/rickyfriady',
     'https://www.linkedin.com/in/rickifriadi',
   ],
-})
+}
+
+const activeSchema = schema
+  ? { '@context': 'https://schema.org', ...schema }
+  : personSchema
 ---
 
 <!-- Google Fonts preconnect (faster than @import in CSS) -->
@@ -44,6 +71,12 @@ const jsonLd = JSON.stringify({
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 
+<!-- hreflang alternates -->
+{hreflangPairs && hreflangPairs.map((pair) => (
+  <link rel="alternate" hreflang={pair.lang} href={pair.href} />
+))}
+{xDefaultHref && <link rel="alternate" hreflang="x-default" href={xDefaultHref} />}
+
 <!-- Open Graph -->
 <meta property="og:title" content={siteTitle} />
 <meta property="og:description" content={description} />
@@ -51,11 +84,14 @@ const jsonLd = JSON.stringify({
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:site_name" content="Ricki Friadi" />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:locale:alternate" content={ogLocaleAlternate} />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@rickifriady" />
 <meta name="twitter:title" content={siteTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageURL} />
@@ -66,7 +102,7 @@ const jsonLd = JSON.stringify({
 <link rel="alternate" type="application/rss+xml" title="Ricki Friadi RSS" href="/rss.xml" />
 
 <!-- JSON-LD -->
-<script is:inline type="application/ld+json" set:html={jsonLd} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(activeSchema)} />
 
 <!-- Theme init: runs before paint to avoid flash of wrong theme -->
 <script is:inline>

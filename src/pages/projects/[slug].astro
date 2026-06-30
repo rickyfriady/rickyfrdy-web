@@ -10,6 +10,7 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 import { projects } from '@/data/projects'
 import type { Project } from '@/models'
 import { t } from '@/i18n/ui'
+import { creativeWorkSchema } from '@/utils/schema'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return projects.map((project) => ({
@@ -20,6 +21,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const { project } = Astro.props as { project: Project }
 const lang = 'en'
+const canonicalUrl = new URL(`/projects/${project.slug}/`, Astro.site).toString()
+const ogImageUrl = new URL(`/og/projects/${project.slug}.png`, Astro.site).toString()
 
 const projectEntries = (await getCollection('projects')) as CollectionEntry<'projects'>[]
 const mdxEntry = projectEntries.find((e: CollectionEntry<'projects'>) => e.data.slug === project.slug)
@@ -38,6 +41,7 @@ const pairs = project.challenges
   title={`${project.title} — Ricki Friadi`}
   description={project.shortDescription}
   ogImage={`/og/projects/${project.slug}.png`}
+  schema={creativeWorkSchema(project, canonicalUrl, ogImageUrl)}
   noReveal
 >
   <!-- Back link -->

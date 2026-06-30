@@ -1,6 +1,7 @@
 ---
 import ProjectsGrid from '@/components/projects/ProjectsGrid.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 import { projects } from '@/data/projects'
 ---
 
@@ -8,6 +9,11 @@ import { projects } from '@/data/projects'
   title="Proyek — Ricki Friadi"
   description="Jelajahi portofolio aplikasi web dan solusi fullstack yang dibangun oleh Ricki Friadi — Vue 3, TypeScript, NestJS, PostgreSQL."
   lang="id"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/projects/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/projects/' },
+  ]}
+  schema={webPageSchema('Proyek — Ricki Friadi', 'Jelajahi portofolio aplikasi web dan solusi fullstack yang dibangun oleh Ricki Friadi — Vue 3, TypeScript, NestJS, PostgreSQL.', 'https://rickyfrdy.my.id/id/projects/')}
 >
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">
