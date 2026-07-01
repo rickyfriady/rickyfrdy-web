@@ -6,21 +6,29 @@ import BaseHead from './BaseHead.astro'
 import MobileBottomNav from './MobileBottomNav.astro'
 import '@/styles/global.css'
 
+interface HreflangPair {
+  lang: string
+  href: string
+}
+
 interface Props {
   title: string
   description: string
   lang?: 'en' | 'id'
   ogImage?: string | undefined
+  ogType?: string
+  hreflangPairs?: HreflangPair[]
+  schema?: Record<string, unknown>
   noReveal?: boolean
 }
 
-const { title, description, lang = 'en', ogImage, noReveal = false } = Astro.props
+const { title, description, lang = 'en', ogImage, ogType, hreflangPairs, schema, noReveal = false } = Astro.props
 ---
 
 <!doctype html>
 <html lang={lang} class="dark" data-no-reveal={noReveal || undefined}>
   <head>
-    <BaseHead title={title} description={description} ogImage={ogImage} />
+    <BaseHead title={title} description={description} ogImage={ogImage} lang={lang} ogType={ogType} hreflangPairs={hreflangPairs} schema={schema} />
     <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col">
