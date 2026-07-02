@@ -2,6 +2,7 @@
 import ContactFormSection from '@/components/contact/ContactFormSection.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { webPageSchema } from '@/utils/schema'
 ---
 
@@ -15,6 +16,8 @@ import { webPageSchema } from '@/utils/schema'
   ]}
   schema={webPageSchema('Kontak — Ricki Friadi', 'Hubungi Ricki Friadi — terbuka untuk peran fullstack, proyek freelance, dan kolaborasi.', 'https://rickyfrdy.my.id/id/contact/')}
 >
+  <PageAnimations />
+
   <ContactHero
     eyebrow="Kontak"
     headingLine1="Mari Bangun"

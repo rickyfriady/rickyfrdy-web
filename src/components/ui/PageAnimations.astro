@@ -9,8 +9,34 @@
 
   gsap.registerPlugin(ScrollTrigger)
 
+  let visibilitySafetyNet: ReturnType<typeof setTimeout> | undefined
+
+  // Guarantees scroll-revealed content is never left invisible — e.g. if a
+  // ScrollTrigger's cached position goes stale because custom fonts swap in
+  // and reflow the page after the trigger was created.
+  function armVisibilitySafetyNet() {
+    if (visibilitySafetyNet) clearTimeout(visibilitySafetyNet)
+    visibilitySafetyNet = setTimeout(() => {
+      document.querySelectorAll<HTMLElement>('[data-stagger-item], [data-hero-reveal], main > section:not(:first-child)').forEach(el => {
+        if (parseFloat(getComputedStyle(el).opacity) < 1) {
+          gsap.killTweensOf(el)
+          gsap.set(el, { opacity: 1, y: 0, clearProps: 'transform' })
+        }
+      })
+    }, 1500)
+  }
+
   function initAnimations() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    armVisibilitySafetyNet()
+
+    // Recompute ScrollTrigger positions once custom fonts finish loading —
+    // trigger positions calculated before a font swap can go stale and
+    // never fire, leaving content stuck at opacity: 0.
+    if ('fonts' in document) {
+      document.fonts.ready.then(() => ScrollTrigger.refresh())
+    }
 
     // 1. Hero Reveal (Top of page items)
     // Elements with data-hero-reveal (optional data-hero-delay)
@@ -52,7 +78,7 @@
       )
     })
 
-    // 3. Simple fade-in sections (replacing CSS .js-reveal)
+    // 3. Simple fade-in sections
     const sections = document.querySelectorAll('main > section:not(:first-child)')
     sections.forEach(section => {
       // Don't double animate if it's a stagger group
@@ -145,5 +171,6 @@
   // Cleanup on swap
   document.addEventListener('astro:before-swap', () => {
     ScrollTrigger.getAll().forEach(t => t.kill())
+    if (visibilitySafetyNet) clearTimeout(visibilitySafetyNet)
   })
 </script>

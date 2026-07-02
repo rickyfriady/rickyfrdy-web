@@ -2,6 +2,7 @@
 import ContactFormSection from '@/components/contact/ContactFormSection.astro'
 import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { webPageSchema } from '@/utils/schema'
 ---
 
@@ -15,6 +16,8 @@ import { webPageSchema } from '@/utils/schema'
   ]}
   schema={webPageSchema('Contact — Ricki Friadi', 'Get in touch with Ricki Friadi — open to fullstack roles, freelance projects, and collaboration.', 'https://rickyfrdy.my.id/contact/')}
 >
+  <PageAnimations />
+
   <ContactHero />
 
   <!-- § 01 — Form -->
