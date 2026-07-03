@@ -96,6 +96,8 @@ const categories = [...new Set(sorted.map((p) => p.data.category))].sort()
     }
 
     function render() {
+      const query = (searchInput?.value ?? '').trim()
+      const isFiltering = activeCategory !== 'all' || query !== ''
       const matches = getMatches()
       const totalPages = Math.max(1, Math.ceil(matches.length / pageSize))
       currentPage = Math.min(currentPage, totalPages)
@@ -105,10 +107,15 @@ const categories = [...new Set(sorted.map((p) => p.data.category))].sort()
       const start = (currentPage - 1) * pageSize
       matches.slice(start, start + pageSize).forEach((card) => { card.style.display = '' })
 
+      // Only show the "no results" empty state when the visitor is actively
+      // filtering/searching — not simply because there's no grid tier yet
+      // (e.g. a blog with ≤2 posts has nothing beyond the featured cards).
+      const showNoResults = isFiltering && matches.length === 0
+
       if (grid) grid.classList.toggle('hidden', matches.length === 0)
       if (noResults) {
-        noResults.classList.toggle('hidden', matches.length !== 0)
-        noResults.classList.toggle('flex', matches.length === 0)
+        noResults.classList.toggle('hidden', !showNoResults)
+        noResults.classList.toggle('flex', showNoResults)
       }
 
       renderPagination(totalPages)
