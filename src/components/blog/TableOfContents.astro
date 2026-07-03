@@ -8,19 +8,17 @@ const filtered = headings.filter((h) => h.depth === 2 || h.depth === 3)
 ---
 
 {filtered.length > 0 && (
-  <details class="border-border mb-6 rounded-xl border px-4 py-3">
-    <summary class="font-mono cursor-pointer select-none text-xs tracking-[0.15em] uppercase text-muted">
-      Contents
-    </summary>
-    <nav aria-label="Table of contents" class="mt-3">
-      <ol class="space-y-1.5">
+  <div>
+    <p class="font-mono text-muted mb-3 text-xs uppercase tracking-[0.15em]">Contents</p>
+    <nav aria-label="Table of contents">
+      <ol class="space-y-2">
         {filtered.map((heading) => (
           <li>
             <a
               href={`#${heading.slug}`}
               class:list={[
-                'text-foreground hover:text-accent text-sm transition-colors',
-                { 'pl-4 block': heading.depth === 3 },
+                'text-muted hover:text-accent block text-sm leading-snug transition-colors',
+                { 'pl-4': heading.depth === 3 },
               ]}
             >
               {heading.text}
@@ -29,5 +27,5 @@ const filtered = headings.filter((h) => h.depth === 2 || h.depth === 3)
         ))}
       </ol>
     </nav>
-  </details>
+  </div>
 )}
