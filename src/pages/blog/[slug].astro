@@ -1,11 +1,14 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import AnimatedGradient from '@/components/animated-gradient.astro'
 import { blogPostingSchema } from '@/utils/schema'
 import TableOfContents from '@/components/blog/TableOfContents.astro'
 import { getCollection, render } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import { readingTime } from '@/utils/readingTime'
+import { gradientPresetFor } from '@/utils/gradientPreset'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = (await getCollection('blog') as CollectionEntry<'blog'>[]).filter((entry) => !entry.data.draft)
@@ -23,6 +26,8 @@ const { post } = Astro.props
 const { Content, headings } = await render(post)
 const canonicalUrl = new URL(`/blog/${post.id}/`, Astro.site).toString()
 const ogImageUrl = new URL(`/og/blog/${post.id}.png`, Astro.site).toString()
+const preset = gradientPresetFor(post.id)
+const estimatedReadTime = readingTime(post.body ?? '')
 ---
 
 <MainLayout
@@ -32,73 +37,131 @@ const ogImageUrl = new URL(`/og/blog/${post.id}.png`, Astro.site).toString()
   ogType="article"
   schema={blogPostingSchema(post, canonicalUrl, ogImageUrl)}
 >
-  <!-- Back -->
-  <div class="border-border border-b px-4 py-4">
-    <a href="/blog" class="text-muted hover:text-foreground font-mono text-xs transition-colors">
-      ← All Posts
-    </a>
+  <PageAnimations />
+
+  <!-- ─── Hero band — always dark, independent of the site-wide theme ───── -->
+  <div class="dark">
+    <section class="bg-background text-foreground border-border border-b">
+      <div class="mx-auto grid max-w-5xl gap-8 px-4 py-16 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-12">
+        <div>
+          <span class="diff-tag" data-hero-reveal>{post.data.category}</span>
+          <h1
+            class="title-display mt-4"
+            style="font-size: clamp(2rem, 5.5vw, 3.75rem); line-height: 0.95"
+            data-hero-reveal
+          >
+            {post.data.title}
+          </h1>
+          <div class="text-muted mt-6 font-mono text-xs" data-hero-reveal>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            <span> · By Ricki Friadi</span>
+          </div>
+        </div>
+
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/60" data-hero-reveal>
+          {post.data.coverImage ? (
+            <img src={post.data.coverImage} alt="" class="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <AnimatedGradient config={{ preset, speed: 8 }} noise={{ opacity: 0.12 }} style={{ zIndex: '0' }} />
+          )}
+        </div>
+      </div>
+
+      <!-- Utility bar -->
+      <div class="border-border/60 mx-auto flex max-w-5xl items-center justify-between border-t px-4 py-4">
+        <a href="/blog" class="text-muted hover:text-foreground inline-flex items-center gap-1.5 font-mono text-xs transition-colors">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3" aria-hidden="true">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          Back to Blog
+        </a>
+        <div class="text-muted flex items-center gap-4 font-mono text-xs">
+          <span>{estimatedReadTime}</span>
+          <button type="button" id="share-btn" class="hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3" aria-hidden="true">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" />
+            </svg>
+            <span id="share-btn-label">Share</span>
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <!-- Header -->
-  <section class="border-border border-b px-4 py-8">
-    <div class="flex flex-wrap gap-2">
-      {post.data.tags.map((tag: string) => (
-        <a href={`/blog/tag/${tag}`} class="diff-tag hover:border-accent/60 transition-colors">
-          {tag}
-        </a>
-      ))}
-    </div>
-    <h1
-      class="title-display mt-4"
-      style="font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 0.95"
+  <!-- ─── Body: prose + sticky sidebar — follows the site-wide theme ──── -->
+  <div class="mx-auto max-w-5xl gap-12 px-4 py-12 lg:grid lg:grid-cols-[1fr_260px] lg:items-start">
+    <article
+      class="prose prose-sm max-w-none
+      prose-headings:font-display prose-headings:font-normal prose-headings:tracking-tight
+      prose-p:text-muted prose-p:leading-relaxed
+      prose-strong:text-foreground
+      prose-code:text-accent prose-code:bg-secondary prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono
+      prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:rounded-xl
+      prose-a:text-accent prose-a:no-underline hover:prose-a:underline
+      prose-li:text-muted"
     >
-      {post.data.title}
-    </h1>
-    <p class="text-muted mt-3 text-sm">{post.data.description}</p>
-    <div class="text-muted mt-4 font-mono text-xs">
-      <time datetime={post.data.pubDate.toISOString()}>
-        {post.data.pubDate.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </time>
-      <span> · {readingTime(post.body ?? '')}</span>
-      {post.data.updatedDate && (
-        <span>
-          {' '}· Updated{' '}
-          <time datetime={post.data.updatedDate.toISOString()}>
-            {post.data.updatedDate.toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </time>
-        </span>
+      <Content />
+    </article>
+
+    <aside class="border-border mt-10 space-y-8 border-t pt-8 lg:sticky lg:top-24 lg:mt-0 lg:border-t-0 lg:pt-0 lg:self-start">
+      <TableOfContents headings={headings} />
+
+      {post.data.tags.length > 0 && (
+        <div>
+          <p class="font-mono text-muted mb-3 text-xs uppercase tracking-[0.15em]">Tags</p>
+          <div class="flex flex-wrap gap-1.5">
+            {post.data.tags.map((tag: string) => (
+              <a href={`/blog/tag/${tag}`} class="diff-tag hover:border-accent/60 transition-colors">
+                {tag}
+              </a>
+            ))}
+          </div>
+        </div>
       )}
-    </div>
-  </section>
 
-  <!-- Content -->
-  <article class="prose prose-sm max-w-none px-4 py-8
-    prose-headings:font-display prose-headings:font-normal prose-headings:tracking-tight
-    prose-p:text-muted prose-p:leading-relaxed
-    prose-strong:text-foreground
-    prose-code:text-accent prose-code:bg-secondary prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono
-    prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:rounded-xl
-    prose-a:text-accent prose-a:no-underline hover:prose-a:underline
-    prose-li:text-muted">
-    <TableOfContents headings={headings} />
-    <Content />
-  </article>
+      <div>
+        <p class="font-mono text-muted mb-3 text-xs uppercase tracking-[0.15em]">Reading time</p>
+        <p class="text-foreground text-sm">{estimatedReadTime}</p>
+      </div>
 
-  <!-- Back CTA -->
-  <div class="border-border border-t px-4 py-8 text-center">
-    <a
-      href="/blog"
-      class="border-border text-foreground hover:bg-secondary inline-flex h-10 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
-    >
-      ← Back to Blog
-    </a>
+      <div class="border-border flex items-center gap-3 border-t pt-6">
+        <img src="/images/avatar.jpg" alt="Ricki Friadi" width="40" height="40" class="border-border h-10 w-10 rounded-full border object-cover" />
+        <div class="min-w-0">
+          <p class="text-foreground text-sm font-semibold">Ricki Friadi</p>
+          <p class="text-muted truncate text-xs">Fullstack developer, Jakarta</p>
+        </div>
+      </div>
+    </aside>
   </div>
 </MainLayout>
+
+<script>
+  function initShare() {
+    const btn = document.getElementById('share-btn')
+    const label = document.getElementById('share-btn-label')
+    if (!btn) return
+
+    btn.addEventListener('click', async () => {
+      const shareData = { title: document.title, url: location.href }
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData)
+          return
+        }
+        await navigator.clipboard.writeText(location.href)
+        if (label) {
+          const original = label.textContent
+          label.textContent = 'Copied!'
+          setTimeout(() => { if (label) label.textContent = original }, 1500)
+        }
+      } catch {
+        // User cancelled the native share sheet — no action needed.
+      }
+    })
+  }
+
+  initShare()
+  document.addEventListener('astro:page-load', initShare)
+</script>

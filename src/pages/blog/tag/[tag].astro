@@ -1,9 +1,10 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import BlogGrid from '@/components/blog/BlogGrid.astro'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
-import { readingTime } from '@/utils/readingTime'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[]).filter((entry) => !entry.data.draft)
@@ -31,67 +32,25 @@ const { tag, posts } = Astro.props
   title={`#${tag} — Ricki Friadi`}
   description={`Posts tagged with ${tag} on Ricki Friadi's blog.`}
 >
+  <PageAnimations />
+
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">
-    <p class="eyebrow mb-3">Tag</p>
+    <p class="eyebrow mb-3" data-hero-reveal>Tag</p>
     <h1
       class="title-display"
       style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93"
+      data-hero-reveal
     >
       #{tag}
     </h1>
-    <p class="text-muted mt-4 text-sm">
+    <p class="text-muted mt-4 text-sm" data-hero-reveal>
       {posts.length} {posts.length === 1 ? 'post' : 'posts'}
     </p>
   </section>
 
-  <!-- Post list -->
-  <section class="border-border border-b">
-    <div class="divide-border divide-y px-4">
-      {posts.map((post) => (
-        <a href={`/blog/${post.id}`} class="group block py-6 no-underline">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <h2 class="text-foreground group-hover:text-accent text-base font-semibold transition-colors">
-                {post.data.title}
-              </h2>
-              <p class="text-muted mt-1 line-clamp-2 text-sm leading-relaxed">
-                {post.data.description}
-              </p>
-              {post.data.tags.length > 0 && (
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                  {post.data.tags.map((t: string) => (
-                    <a
-                      href={`/blog/tag/${t}`}
-                      class="diff-tag hover:border-accent/60 transition-colors"
-                      data-stop-prop
-                    >
-                      {t}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div class="text-muted flex flex-shrink-0 flex-col items-end gap-1 font-mono text-xs">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {post.data.pubDate.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </time>
-              <span>{readingTime(post.body ?? '')}</span>
-            </div>
-          </div>
-        </a>
-      ))}
-    </div>
+  <!-- Post grid -->
+  <section class="px-4 py-8">
+    <BlogGrid posts={posts} />
   </section>
 </MainLayout>
-
-<script>
-  document.addEventListener('click', (e) => {
-    const target = (e.target as Element)?.closest('[data-stop-prop]')
-    if (target) e.stopPropagation()
-  })
-</script>
