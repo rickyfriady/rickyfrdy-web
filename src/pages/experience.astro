@@ -2,6 +2,7 @@
 import { education, experiences, projects, skillCategories } from '@/data/experience'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { webPageSchema } from '@/utils/schema'
 import ProjectsAccordion from '@/components/experience/ProjectsAccordion.astro'
 import { getSkillIconUrl } from '@/utils/skillIcon'
@@ -17,6 +18,8 @@ import { getSkillIconUrl } from '@/utils/skillIcon'
   ]}
   schema={webPageSchema('Experience — Ricki Friadi', 'Work history, projects, education, and skills of Ricki Friadi — Software Engineer at PT. Pegadaian since May 2023.', 'https://rickyfrdy.my.id/experience/')}
 >
+  <PageAnimations />
+
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">
     <p class="eyebrow mb-3">Experience</p>
