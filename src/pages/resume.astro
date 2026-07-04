@@ -2,12 +2,18 @@
 import { education, experiences, projects, skillCategories, summary } from '@/data/experience'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { webPageSchema } from '@/utils/schema'
 ---
 
 <MainLayout
   title="Resume — Ricki Friadi"
   description="Fullstack Developer resume — Ricki Friadi. 4+ years building production systems in Indonesian fintech."
+  lang="en"
+  schema={webPageSchema('Resume — Ricki Friadi', 'Fullstack Developer resume — Ricki Friadi. 4+ years building production systems in Indonesian fintech.', 'https://rickyfrdy.my.id/resume/')}
 >
+  <PageAnimations />
+
   <div class="mx-auto max-w-2xl px-4 py-12">
 
     <!-- Header -->

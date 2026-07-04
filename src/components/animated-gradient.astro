@@ -1,0 +1,215 @@
+---
+type PresetName = 'Prism' | 'Lava' | 'Plasma' | 'Pulse' | 'Vortex' | 'Mist'
+
+interface Props {
+  config?: { preset: PresetName; speed?: number }
+  noise?: { opacity: number; scale?: number }
+  radius?: string
+  style?: Record<string, string>
+  class?: string
+}
+
+const { config = { preset: 'Prism' }, noise, radius = '0px', style, class: className } = Astro.props
+
+const inlineStyle = [
+  `position:absolute`,
+  `inset:0`,
+  `z-index:${style?.zIndex ?? -1}`,
+  `border-radius:${radius}`,
+  `overflow:hidden`,
+  ...Object.entries(style ?? {}).filter(([k]) => k !== 'zIndex').map(([k, v]) => `${k}:${v}`)
+].join(';')
+---
+
+<div
+  class:list={['ag-root', className]}
+  data-ag={JSON.stringify({ preset: config.preset, speed: (config as { speed?: number }).speed })}
+  style={inlineStyle}
+>
+  <canvas style="display:block;width:100%;height:100%"></canvas>
+  {noise && noise.opacity > 0 && (
+    <div
+      class="ag-noise"
+      style={`position:absolute;inset:0;pointer-events:none;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAAAAAAAAAAAAAAAAAAAAADgKxmiAAAABnRSTlMCCgkGBAVJOAVJAAAASklEQVQ4y2NgGAWjYBSMglEwCgY/YGRgZBQUYmJiZGQEkYwMjIyMgoKCjIyMIJKBgRFIMjIyAklGRkYGRkFBYEcwMDIyMjAOUQAA1I4HwVwZAkYAAAAASUVORK5CYII=");background-size:${(noise.scale ?? 1) * 200}px;background-repeat:repeat;opacity:${noise.opacity / 2}`}
+    ></div>
+  )}
+</div>
+
+<script>
+  type PatternShape = 'Checks' | 'Stripes' | 'Edge'
+
+  const PatternShapes: Record<PatternShape, number> = { Checks: 0, Stripes: 1, Edge: 2 }
+
+  interface PresetColors { color1: string; color2: string; color3: string }
+  interface PresetParams extends PresetColors {
+    rotation: number; proportion: number; scale: number; speed: number
+    distortion: number; swirl: number; swirlIterations: number; softness: number
+    offset: number; shape: PatternShape; shapeSize: number; lightColors?: PresetColors
+  }
+
+  const PRESETS: Record<string, PresetParams> = {
+    Prism: { color1: '#0c1a14', color2: '#3460a8', color3: '#111f18', lightColors: { color1: '#f5f6f9', color2: '#3460a8', color3: '#d4d8e5' }, rotation: -50, proportion: 1, scale: 0.01, speed: 30, distortion: 0, swirl: 50, swirlIterations: 16, softness: 47, offset: -299, shape: 'Checks', shapeSize: 45 },
+    Lava: { color1: '#7bc5a0', color2: '#2a5c3a', color3: '#0c1a14', lightColors: { color1: '#3460a8', color2: '#d4d8e5', color3: '#f5f6f9' }, rotation: 114, proportion: 100, scale: 0.52, speed: 30, distortion: 7, swirl: 18, swirlIterations: 20, softness: 100, offset: 717, shape: 'Edge', shapeSize: 12 },
+    Plasma: { color1: '#7bc5a0', color2: '#0c1a14', color3: '#0c1a14', lightColors: { color1: '#3460a8', color2: '#f5f6f9', color3: '#f5f6f9' }, rotation: 0, proportion: 63, scale: 0.75, speed: 30, distortion: 5, swirl: 61, swirlIterations: 5, softness: 100, offset: -168, shape: 'Checks', shapeSize: 28 },
+    Pulse: { color1: '#7bc5a0', color2: '#0c1a14', color3: '#0c1a14', lightColors: { color1: '#3460a8', color2: '#f5f6f9', color3: '#f5f6f9' }, rotation: -167, proportion: 92, scale: 0, speed: 20, distortion: 54, swirl: 75, swirlIterations: 3, softness: 28, offset: -813, shape: 'Checks', shapeSize: 79 },
+    Vortex: { color1: '#0c1a14', color2: '#f0f2f0', color3: '#0c1a14', lightColors: { color1: '#f5f6f9', color2: '#111827', color3: '#f5f6f9' }, rotation: 50, proportion: 41, scale: 0.4, speed: 20, distortion: 0, swirl: 100, swirlIterations: 3, softness: 5, offset: -744, shape: 'Stripes', shapeSize: 80 },
+    Mist: { color1: '#0c1a14', color2: '#7bc5a0', color3: '#0c1a14', lightColors: { color1: '#f5f6f9', color2: '#3460a8', color3: '#f5f6f9' }, rotation: 0, proportion: 33, scale: 0.48, speed: 39, distortion: 4, swirl: 65, swirlIterations: 5, softness: 100, offset: -235, shape: 'Edge', shapeSize: 48 }
+  }
+
+  const FRAG = `#version 300 es
+precision highp float;
+uniform float u_time; uniform float u_pixelRatio; uniform vec2 u_resolution;
+uniform float u_scale; uniform float u_rotation;
+uniform vec4 u_color1; uniform vec4 u_color2; uniform vec4 u_color3;
+uniform float u_proportion; uniform float u_softness;
+uniform float u_shape; uniform float u_shapeScale;
+uniform float u_distortion; uniform float u_swirl; uniform float u_swirlIterations;
+out vec4 fragColor;
+#define TWO_PI 6.28318530718
+#define PI 3.14159265358979323846
+vec2 rot(vec2 uv,float th){return mat2(cos(th),sin(th),-sin(th),cos(th))*uv;}
+float rng(vec2 st){return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}
+float ns(vec2 st){vec2 i=floor(st);vec2 f=fract(st);float a=rng(i);float b=rng(i+vec2(1,0));float c=rng(i+vec2(0,1));float d=rng(i+vec2(1,1));vec2 u=f*f*(3.-2.*f);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}
+vec4 blend(vec4 c1,vec4 c2,vec4 c3,float m,float ew,float eb){vec3 a=c1.rgb*c1.a,b=c2.rgb*c2.a,c=c3.rgb*c3.a;float r1=smoothstep(.0+.35*ew,.7-.35*ew+.5*eb,m);float r2=smoothstep(.3+.35*ew,1.-.35*ew+eb,m);vec3 bc=mix(mix(a,b,r1),c,r2);float bo=mix(mix(c1.a,c2.a,r1),c3.a,r2);return vec4(bc,bo);}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  float t=.5*u_time;
+  float ns_=.0005+.006*u_scale;
+  uv-=.5; uv*=(ns_*u_resolution); uv=rot(uv,u_rotation*.5*PI); uv/=u_pixelRatio; uv+=.5;
+  float n1=ns(uv*1.+t); float n2=ns(uv*2.-t); float angle=n1*TWO_PI;
+  uv.x+=4.*u_distortion*n2*cos(angle); uv.y+=4.*u_distortion*n2*sin(angle);
+  float it=ceil(clamp(u_swirlIterations,1.,30.));
+  for(float i=1.;i<=it;i++){uv.x+=clamp(u_swirl,0.,2.)/i*cos(t+i*1.5*uv.y);uv.y+=clamp(u_swirl,0.,2.)/i*cos(t+i*1.*uv.x);}
+  float pr=clamp(u_proportion,0.,1.); float mixer=0.;
+  if(u_shape<.5){vec2 sh=uv*(.5+3.5*u_shapeScale);mixer=.5+.5*sin(sh.x)*cos(sh.y)+.48*sign(pr-.5)*pow(abs(pr-.5),.5);}
+  else if(u_shape<1.5){vec2 sh=uv*(.25+3.*u_shapeScale);float f=fract(sh.y);mixer=smoothstep(.0,.55,f)*smoothstep(1.,.45,f)+.48*sign(pr-.5)*pow(abs(pr-.5),.5);}
+  else{float sh=1.-uv.y;sh-=.5;sh/=(ns_*u_resolution.y);sh+=.5;mixer=smoothstep(.45-.2*(1.-u_shapeScale),.55+.2*(1.-u_shapeScale),sh+.3*(pr-.5));}
+  vec4 cm=blend(u_color1,u_color2,u_color3,mixer,1.-clamp(u_softness,0.,1.),.01+.01*u_scale);
+  fragColor=vec4(cm.rgb,cm.a);
+}`
+
+  function hexToRgba(hex: string): [number, number, number, number] {
+    let r = 0, g = 0, b = 0, a = 1
+    if (hex.startsWith('#')) {
+      const c = hex.slice(1)
+      if (c.length === 3) { r = parseInt(c[0]+c[0],16)/255; g = parseInt(c[1]+c[1],16)/255; b = parseInt(c[2]+c[2],16)/255 }
+      else { r = parseInt(c.slice(0,2),16)/255; g = parseInt(c.slice(2,4),16)/255; b = parseInt(c.slice(4,6),16)/255; if (c.length === 8) a = parseInt(c.slice(6,8),16)/255 }
+    }
+    return [r, g, b, a]
+  }
+
+  function initInstance(root: HTMLElement) {
+    if (root.dataset.agInit) return
+    root.dataset.agInit = '1'
+
+    const canvas = root.querySelector<HTMLCanvasElement>('canvas')
+    if (!canvas) return
+
+    const cfg = JSON.parse(root.dataset.ag ?? '{}') as { preset?: string; speed?: number }
+    const preset = (PRESETS[cfg.preset ?? 'Prism'] ?? PRESETS.Prism) as PresetParams
+    const speedOverride = cfg.speed
+
+    const gl = canvas.getContext('webgl2', { premultipliedAlpha: true, alpha: true, antialias: true })
+    if (!gl) return
+
+    const vert = gl.createShader(gl.VERTEX_SHADER)!
+    gl.shaderSource(vert, `#version 300 es\nin vec4 a_position;\nvoid main(){gl_Position=a_position;}`)
+    gl.compileShader(vert)
+    const frag = gl.createShader(gl.FRAGMENT_SHADER)!
+    gl.shaderSource(frag, FRAG)
+    gl.compileShader(frag)
+    const prog = gl.createProgram()!
+    gl.attachShader(prog, vert); gl.attachShader(prog, frag); gl.linkProgram(prog); gl.useProgram(prog)
+
+    const buf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW)
+    const pos = gl.getAttribLocation(prog, 'a_position')
+    gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0)
+
+    const u = {
+      time: gl.getUniformLocation(prog, 'u_time'),
+      res: gl.getUniformLocation(prog, 'u_resolution'),
+      pr: gl.getUniformLocation(prog, 'u_pixelRatio'),
+      scale: gl.getUniformLocation(prog, 'u_scale'),
+      rot: gl.getUniformLocation(prog, 'u_rotation'),
+      c1: gl.getUniformLocation(prog, 'u_color1'),
+      c2: gl.getUniformLocation(prog, 'u_color2'),
+      c3: gl.getUniformLocation(prog, 'u_color3'),
+      prop: gl.getUniformLocation(prog, 'u_proportion'),
+      soft: gl.getUniformLocation(prog, 'u_softness'),
+      shape: gl.getUniformLocation(prog, 'u_shape'),
+      shSc: gl.getUniformLocation(prog, 'u_shapeScale'),
+      dist: gl.getUniformLocation(prog, 'u_distortion'),
+      swirl: gl.getUniformLocation(prog, 'u_swirl'),
+      swirlIt: gl.getUniformLocation(prog, 'u_swirlIterations'),
+    }
+
+    const resize = () => {
+      const w = root.clientWidth, h = root.clientHeight, dpr = devicePixelRatio || 1
+      canvas.width = w * dpr; canvas.height = h * dpr
+      canvas.style.width = `${w}px`; canvas.style.height = `${h}px`
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    }
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(root)
+
+    let frameId = 0
+    const t0 = performance.now()
+
+    // Theme observer for light/dark color swap
+    const themeObs = new MutationObserver(() => draw())
+    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
+    function draw(ts?: number) {
+      if (!gl || !canvas) return
+      const elapsed = ((ts ?? performance.now()) - t0) / 1000
+      const isDark = document.documentElement.classList.contains('dark')
+      const useLight = !isDark && preset.lightColors
+      const p = useLight ? { ...preset, ...preset.lightColors! } : preset
+      const speed = ((speedOverride ?? p.speed) / 100) * 5
+
+      gl.uniform1f(u.time, elapsed * speed + p.offset * 0.01)
+      gl.uniform2f(u.res, canvas.width, canvas.height)
+      gl.uniform1f(u.pr, devicePixelRatio || 1)
+      gl.uniform1f(u.scale, p.scale)
+      gl.uniform1f(u.rot, (p.rotation * Math.PI) / 180)
+      const [r1,g1,b1,a1] = hexToRgba(p.color1); gl.uniform4f(u.c1, r1, g1, b1, a1)
+      const [r2,g2,b2,a2] = hexToRgba(p.color2); gl.uniform4f(u.c2, r2, g2, b2, a2)
+      const [r3,g3,b3,a3] = hexToRgba(p.color3); gl.uniform4f(u.c3, r3, g3, b3, a3)
+      gl.uniform1f(u.prop, p.proportion / 100)
+      gl.uniform1f(u.soft, p.softness / 100)
+      gl.uniform1f(u.shape, PatternShapes[p.shape])
+      gl.uniform1f(u.shSc, p.shapeSize / 100)
+      gl.uniform1f(u.dist, p.distortion / 50)
+      gl.uniform1f(u.swirl, p.swirl / 100)
+      gl.uniform1f(u.swirlIt, p.swirl === 0 ? 0 : p.swirlIterations)
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
+      frameId = requestAnimationFrame(draw)
+    }
+
+    draw()
+    root.dataset.agCleanup = 'pending'
+
+    const cleanup = () => {
+      cancelAnimationFrame(frameId)
+      themeObs.disconnect()
+      ro.disconnect()
+      gl.deleteProgram(prog)
+      gl.deleteShader(vert)
+      gl.deleteShader(frag)
+      gl.deleteBuffer(buf)
+      delete root.dataset.agInit
+    }
+
+    document.addEventListener('astro:before-swap', cleanup, { once: true })
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-ag]').forEach(initInstance)
+  }
+
+  initAll()
+  document.addEventListener('astro:page-load', initAll)
+</script>

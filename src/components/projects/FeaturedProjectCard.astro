@@ -1,8 +1,8 @@
 ---
-import type { Project } from '@/data/projects'
+import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
-import FeaturedBadge from '@/components/ui/FeaturedBadge'
-import AnimatedGradient from '@/components/animated-gradient'
+import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
+import AnimatedGradient from '@/components/animated-gradient.astro'
 
 interface Props {
   project: Project
@@ -22,11 +22,10 @@ const stat2 = project.metrics?.[1]
 <div class:list={["relative rounded-xl", project.featured ? "p-[2px]" : ""]}>
   {project.featured && (
     <AnimatedGradient
-      client:visible
       config={{ preset: 'Plasma', speed: 12 }}
       radius="12px"
       noise={{ opacity: 0.12 }}
-      style={{ zIndex: 0 }}
+      style={{ zIndex: '0' }}
     />
   )}
 <a
@@ -79,7 +78,7 @@ const stat2 = project.metrics?.[1]
     <!-- Top row: badges (left) + date pill + logo (right) -->
     <div class="mb-3 flex items-start justify-between gap-2">
       <div class="flex flex-wrap items-center gap-1.5">
-        {project.featured && <FeaturedBadge client:visible label={featuredLabel} />}
+        {project.featured && <FeaturedBadge label={featuredLabel} />}
         <span class="diff-tag">{catLabel}</span>
         <span class="diff-tag">{project.year}</span>
       </div>

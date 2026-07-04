@@ -1,10 +1,11 @@
 ---
-import GitHubActivity from '@/components/about/GitHubActivity'
-import GitHubHeatmap from '@/components/about/GitHubHeatmap'
-import GitHubLanguages from '@/components/about/GitHubLanguages'
-import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos'
-import SkillsMatrix from '@/components/about/SkillsMatrix'
+import GitHubActivity from '@/components/about/GitHubActivity.astro'
+import GitHubHeatmap from '@/components/about/GitHubHeatmap.astro'
+import GitHubLanguages from '@/components/about/GitHubLanguages.astro'
+import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos.astro'
+import SkillsMatrix from '@/components/about/SkillsMatrix.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 import CollaboratorsSection from '@/components/people/CollaboratorsSection.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { fetchBuildTimeStats } from '@/utils/github'
@@ -25,6 +26,12 @@ const beyondCode = [
 <MainLayout
   title="About — Ricki Friadi"
   description="Ricki Friadi — a fullstack developer in Jakarta. Story, current work, and the experience behind the systems."
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/about/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/about/' },
+  ]}
+  schema={webPageSchema('About — Ricki Friadi', 'Ricki Friadi — a fullstack developer in Jakarta. Story, current work, and the experience behind the systems.', 'https://rickyfrdy.my.id/about/')}
 >
   <PageAnimations />
 
@@ -38,7 +45,7 @@ const beyondCode = [
         <p class="eyebrow mb-4" data-hero-reveal>About</p>
         <h1
           class="title-display"
-          style="font-size: clamp(2.4rem, 7vw, 5rem); line-height: 0.93"
+          style="font-size: clamp(3rem, 8.5vw, 6.5rem); line-height: 0.90"
           data-hero-reveal
         >
           A story of<br />
@@ -222,7 +229,7 @@ const beyondCode = [
     </div>
 
     <div class="px-4 pb-12" data-stagger-item>
-      <SkillsMatrix client:load />
+      <SkillsMatrix />
     </div>
   </section>
 
@@ -237,15 +244,15 @@ const beyondCode = [
 
     <div class="grid gap-6 px-4 pb-12">
       <!-- Heatmap — full width -->
-      <GitHubHeatmap client:visible initialStats={initialStats} />
+      <GitHubHeatmap initialStats={initialStats} />
 
       <!-- 2-col: Languages+PinnedRepos (left) | Activity (right) -->
       <div class="grid gap-6 md:grid-cols-2">
         <div class="space-y-6">
-          <GitHubLanguages client:idle languages={initialStats.languages} />
-          <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+          <GitHubLanguages languages={initialStats.languages} />
+          <GitHubPinnedRepos repos={initialStats.pinnedRepos} />
         </div>
-        <GitHubActivity client:visible />
+        <GitHubActivity />
       </div>
     </div>
   </section>

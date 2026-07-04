@@ -1,14 +1,6 @@
-export interface Skill {
-  name: string
-  icon: string
-}
+import type { SkillGroup } from '@/models'
 
-export interface SkillGroup {
-  label: string
-  skills: Skill[]
-}
-
-export const skillGroups: SkillGroup[] = [
+export const skillGroups = [
   {
     label: 'Frameworks',
     skills: [
@@ -55,4 +47,4 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Vitest', icon: 'vitest' }
     ]
   }
-]
+] satisfies SkillGroup[]

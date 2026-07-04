@@ -4,6 +4,7 @@ export const ui = {
     'nav.home': 'Home',
     'nav.about': 'About',
     'nav.experience': 'Experience',
+    'nav.dashboard': 'Dashboard',
     'nav.resume': 'Resume',
     'nav.projects': 'Projects',
     'nav.contact': 'Contact',
@@ -45,6 +46,7 @@ export const ui = {
     'nav.home': 'Beranda',
     'nav.about': 'Tentang',
     'nav.experience': 'Pengalaman',
+    'nav.dashboard': 'Dashboard',
     'nav.resume': 'CV',
     'nav.projects': 'Proyek',
     'nav.contact': 'Kontak',
@@ -84,7 +86,8 @@ export const ui = {
 } as const
 
 export type Lang = keyof typeof ui
+export type UIKey = keyof (typeof ui)['en']
 
-export function t(lang: Lang, key: keyof (typeof ui)['en']): string {
+export function t(lang: Lang, key: UIKey): string {
   return ui[lang][key]
 }

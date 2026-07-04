@@ -1,17 +1,27 @@
 ---
-import ContactFormSection from '@/components/contact/ContactFormSection'
-import ContactHero from '@/components/contact/ContactHero'
+import ContactFormSection from '@/components/contact/ContactFormSection.astro'
+import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { webPageSchema } from '@/utils/schema'
 ---
 
 <MainLayout
   title="Contact — Ricki Friadi"
   description="Get in touch with Ricki Friadi — open to fullstack roles, freelance projects, and collaboration."
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/contact/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/contact/' },
+  ]}
+  schema={webPageSchema('Contact — Ricki Friadi', 'Get in touch with Ricki Friadi — open to fullstack roles, freelance projects, and collaboration.', 'https://rickyfrdy.my.id/contact/')}
 >
-  <ContactHero client:load />
+  <PageAnimations />
+
+  <ContactHero />
 
   <!-- § 01 — Form -->
   <section class="border-border border-b">
-    <ContactFormSection client:visible />
+    <ContactFormSection />
   </section>
 </MainLayout>

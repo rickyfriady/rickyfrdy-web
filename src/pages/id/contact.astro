@@ -1,16 +1,24 @@
 ---
-import ContactFormSection from '@/components/contact/ContactFormSection'
-import ContactHero from '@/components/contact/ContactHero'
+import ContactFormSection from '@/components/contact/ContactFormSection.astro'
+import ContactHero from '@/components/contact/ContactHero.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { webPageSchema } from '@/utils/schema'
 ---
 
 <MainLayout
   title="Kontak — Ricki Friadi"
   description="Hubungi Ricki Friadi — terbuka untuk peran fullstack, proyek freelance, dan kolaborasi."
   lang="id"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/contact/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/contact/' },
+  ]}
+  schema={webPageSchema('Kontak — Ricki Friadi', 'Hubungi Ricki Friadi — terbuka untuk peran fullstack, proyek freelance, dan kolaborasi.', 'https://rickyfrdy.my.id/id/contact/')}
 >
+  <PageAnimations />
+
   <ContactHero
-    client:load
     eyebrow="Kontak"
     headingLine1="Mari Bangun"
     headingLine2="Sesuatu Bersama."
@@ -19,6 +27,6 @@ import MainLayout from '@/components/layout/MainLayout.astro'
 
   <!-- § 01 — Form -->
   <section class="border-border border-b">
-    <ContactFormSection client:visible sectionLabel="§ 01 — Kirim Pesan" />
+    <ContactFormSection sectionLabel="§ 01 — Kirim Pesan" />
   </section>
 </MainLayout>

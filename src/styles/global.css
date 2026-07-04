@@ -201,6 +201,35 @@
     0 8px 32px oklch(0 0 0 / 0.08);
 }
 
+@utility nav-island {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: color-mix(in oklch, var(--color-background) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid color-mix(in oklch, var(--color-border) 55%, transparent);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.12), 0 1px 0 oklch(1 0 0 / 0.08) inset;
+}
+
+@utility nav-island-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in oklch, var(--color-accent) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-accent) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(nav-active-pill),
+  ::view-transition-old(nav-active-pill),
+  ::view-transition-new(nav-active-pill) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
 @utility glass-panel {
   background: color-mix(in oklch, var(--color-background) 70%, transparent);
   backdrop-filter: blur(24px);
@@ -342,20 +371,6 @@
   }
 }
 
-/* ━━━━ Scroll-reveal ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.js-reveal main > section:not(:first-child):not([data-stagger-group]) {
-  opacity: 0;
-  transform: translateY(1.5rem);
-  transition:
-    opacity 0.6s var(--ease-out-expo),
-    transform 0.6s var(--ease-out-expo);
-}
-
-.js-reveal main > section:not(:first-child):not([data-stagger-group]).is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ━━━━ Nav hover underline ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .nav-link-item::after {
   content: '';
@@ -378,21 +393,6 @@
 .nav-link-item[data-active]::after {
   transform: scaleX(1);
   opacity: 0.5;
-}
-
-/* ━━━━ Page accent line ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-#page-accent-line {
-  position: fixed;
-  top: calc(var(--nav-height) + 1px);
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--color-accent);
-  box-shadow: 0 0 8px color-mix(in oklch, var(--color-accent) 50%, transparent);
-  transform: scaleX(0);
-  transform-origin: left center;
-  z-index: 9999;
-  pointer-events: none;
 }
 
 /* ━━━━ Print ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */

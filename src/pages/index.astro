@@ -1,7 +1,8 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { webPageSchema } from '@/utils/schema'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
-import HeroPhoto from '@/components/ui/HeroPhoto'
+import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { projects } from '@/data/projects'
 import { getCollection } from 'astro:content'
@@ -58,6 +59,12 @@ const capabilities = [
 <MainLayout
   title="Ricki Friadi — Fullstack Developer"
   description="Fullstack Developer specializing in Vue 3, NestJS microservices, and Micro-Frontend Architecture. Based in Jakarta, Indonesia."
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/' },
+  ]}
+  schema={webPageSchema('Ricki Friadi — Fullstack Developer', 'Fullstack Developer specializing in Vue 3, NestJS microservices, and Micro-Frontend Architecture. Based in Jakarta, Indonesia.', 'https://rickyfrdy.my.id/')}
 >
   <PageAnimations />
 
@@ -101,7 +108,7 @@ const capabilities = [
       </div>
 
       <!-- Right: avatar -->
-      <HeroPhoto client:load />
+      <HeroPhoto />
     </div>
   </section>
 

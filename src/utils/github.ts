@@ -1,45 +1,6 @@
-export interface GitHubStats {
-  totalContributions: number
-  currentStreak: number
-  longestStreak: number
-  publicRepos: number
-  followers: number
-  following: number
-  contributionCalendar: ContributionDay[]
-  pinnedRepos: PinnedRepo[]
-  languages: LanguageStat[]
-}
+import type { ContributionDay, GitHubStats, LanguageStat, PinnedRepo, RecentEvent } from '@/models'
 
-export interface ContributionDay {
-  date: string
-  count: number
-  level: 0 | 1 | 2 | 3 | 4
-}
-
-export interface PinnedRepo {
-  name: string
-  description: string | null
-  url: string
-  stars: number
-  forks: number
-  primaryLanguage: { name: string; color: string } | null
-  topics: string[]
-}
-
-export interface LanguageStat {
-  name: string
-  color: string
-  percentage: number
-}
-
-export interface RecentEvent {
-  id: string
-  type: 'push' | 'create' | 'pr' | 'star' | 'fork' | 'other'
-  repo: string
-  repoUrl: string
-  message: string
-  date: string
-}
+export type { ContributionDay, GitHubStats, LanguageStat, PinnedRepo, RecentEvent }
 
 export function getContributionLevel(count: number): 0 | 1 | 2 | 3 | 4 {
   if (count === 0) return 0
@@ -132,7 +93,7 @@ const FULL_QUERY = `
     user(login: $username) {
       followers { totalCount }
       following { totalCount }
-      repositories(first: 1, isFork: false) { totalCount }
+      repoCount: repositories(first: 1, isFork: false) { totalCount }
       contributionsCollection {
         contributionCalendar {
           totalContributions
@@ -160,7 +121,7 @@ const FULL_QUERY = `
           }
         }
       }
-      repositories(
+      topRepos: repositories(
         first: 10
         isFork: false
         orderBy: { field: STARGAZERS, direction: DESC }
@@ -260,14 +221,13 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
       })
     })
     if (!res.ok) throw new Error(`GraphQL ${res.status}`)
-
     const json = (await res.json()) as {
       data: {
         user: {
           followers: { totalCount: number }
           following: { totalCount: number }
-          repositories: {
-            totalCount: number
+          repoCount: { totalCount: number }
+          topRepos: {
             nodes: Array<{
               languages: {
                 edges: Array<{ size: number; node: { name: string; color: string } }>
@@ -302,7 +262,6 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
         }
       }
     }
-
     const u = json.data.user
     const cal = u.contributionsCollection.contributionCalendar
     const contributionCalendar: ContributionDay[] = cal.weeks
@@ -323,13 +282,13 @@ export async function fetchBuildTimeStats(token: string | undefined): Promise<Gi
       topics: r.repositoryTopics.nodes.map((t) => t.topic.name)
     }))
 
-    const languages = aggregateLanguages(u.repositories.nodes)
+    const languages = aggregateLanguages(u.topRepos.nodes)
 
     return {
       totalContributions: cal.totalContributions,
       currentStreak: calculateCurrentStreak(contributionCalendar),
       longestStreak: calculateLongestStreak(contributionCalendar),
-      publicRepos: u.repositories.totalCount,
+      publicRepos: u.repoCount.totalCount,
       followers: u.followers.totalCount,
       following: u.following.totalCount,
       contributionCalendar,

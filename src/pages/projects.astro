@@ -1,13 +1,23 @@
 ---
-import ProjectsGrid from '@/components/projects/ProjectsGrid'
+import ProjectsGrid from '@/components/projects/ProjectsGrid.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { webPageSchema } from '@/utils/schema'
 import { projects } from '@/data/projects'
 ---
 
 <MainLayout
   title="Projects — Ricki Friadi"
   description="Explore the portfolio of web applications and fullstack solutions built by Ricki Friadi — Vue 3, TypeScript, NestJS, PostgreSQL."
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/projects/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/projects/' },
+  ]}
+  schema={webPageSchema('Projects — Ricki Friadi', 'Explore the portfolio of web applications and fullstack solutions built by Ricki Friadi — Vue 3, TypeScript, NestJS, PostgreSQL.', 'https://rickyfrdy.my.id/projects/')}
 >
+  <PageAnimations />
+
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">
     <p class="eyebrow mb-3">Portfolio</p>
@@ -25,6 +35,6 @@ import { projects } from '@/data/projects'
 
   <!-- Projects grid with filters -->
   <section class="px-4 py-8">
-    <ProjectsGrid projects={projects} lang="en" client:load />
+    <ProjectsGrid projects={projects} lang="en" />
   </section>
 </MainLayout>

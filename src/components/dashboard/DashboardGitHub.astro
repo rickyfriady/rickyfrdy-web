@@ -1,0 +1,25 @@
+---
+import GitHubActivity from '@/components/about/GitHubActivity.astro'
+import GitHubHeatmap from '@/components/about/GitHubHeatmap.astro'
+import GitHubLanguages from '@/components/about/GitHubLanguages.astro'
+import GitHubPinnedRepos from '@/components/about/GitHubPinnedRepos.astro'
+import type { GitHubStats } from '@/models'
+
+interface Props {
+  initialStats: GitHubStats
+}
+
+const { initialStats } = Astro.props
+---
+
+<div class="grid gap-6">
+  <GitHubHeatmap client:visible initialStats={initialStats} />
+
+  <div class="grid gap-6 md:grid-cols-2">
+    <div class="space-y-6">
+      <GitHubLanguages client:idle languages={initialStats.languages} />
+      <GitHubPinnedRepos client:visible repos={initialStats.pinnedRepos} />
+    </div>
+    <GitHubActivity client:visible />
+  </div>
+</div>

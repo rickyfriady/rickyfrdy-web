@@ -1,9 +1,9 @@
-import type { Education, Project, SkillCategory, WorkExperience } from './experience'
+import type { Education, ExperienceProject, SkillCategory, WorkExperience } from '@/models'
 
 export const summary =
   'Fullstack developer dengan 4+ tahun pengalaman membangun sistem produksi di fintech Indonesia. Di PT. Pegadaian, saya membangun platform micro-frontend dan backend microservice NestJS yang mendukung platform pengajuan pinjaman dengan konversi 80% memfasilitasi Rp 3 miliar+ dalam originasi pinjaman, serta super-app karyawan yang melayani 1,5 juta pengguna aktif.'
 
-export const experiences: WorkExperience[] = [
+export const experiences = [
   {
     role: 'Software Engineer',
     company: 'PT. Pegadaian',
@@ -58,9 +58,9 @@ export const experiences: WorkExperience[] = [
     ],
     stack: ['PHP', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Codeigniter', 'Bootstrap']
   }
-]
+] satisfies WorkExperience[]
 
-export const projects: Project[] = [
+export const projects = [
   {
     title: 'Singel APP (Pegadaian Kita)',
     company: 'PT. Pegadaian',
@@ -142,7 +142,7 @@ export const projects: Project[] = [
     ],
     stack: ['Python', 'JavaScript', 'jQuery', 'HTML', 'CSS', 'Flask', 'Bootstrap']
   }
-]
+] satisfies ExperienceProject[]
 
 export const education: Education = {
   institution: 'Universitas Riau',
@@ -152,7 +152,7 @@ export const education: Education = {
   gpa: '3,69 / 4,00'
 }
 
-export const skillCategories: SkillCategory[] = [
+export const skillCategories = [
   {
     label: 'Framework',
     icon: 'code-2',
@@ -173,4 +173,4 @@ export const skillCategories: SkillCategory[] = [
     icon: 'wrench',
     items: ['Git', 'Postman', 'Jenkins', 'Vitest', 'Jest', 'Vite', 'ESLint', 'Biome']
   }
-]
+] satisfies SkillCategory[]

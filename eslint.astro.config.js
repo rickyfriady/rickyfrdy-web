@@ -12,7 +12,9 @@ export default [
       'astro/no-unused-define-vars-in-style': 'error',
       'astro/no-conflict-set-directives': 'error',
       'jsx-a11y/anchor-is-valid': 'error',
-      'jsx-a11y/alt-text': 'error'
+      'jsx-a11y/alt-text': 'error',
+      // Astro uses HTML `for` (not JSX `htmlFor`); plugin doesn't recognize it, causing false positives
+      'jsx-a11y/label-has-associated-control': 'off'
     }
   }
 ]
