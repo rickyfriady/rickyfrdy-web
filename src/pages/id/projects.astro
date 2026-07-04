@@ -1,6 +1,7 @@
 ---
 import ProjectsGrid from '@/components/projects/ProjectsGrid.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { webPageSchema } from '@/utils/schema'
 import { projects } from '@/data/projects'
 ---
@@ -15,6 +16,8 @@ import { projects } from '@/data/projects'
   ]}
   schema={webPageSchema('Proyek — Ricki Friadi', 'Jelajahi portofolio aplikasi web dan solusi fullstack yang dibangun oleh Ricki Friadi — Vue 3, TypeScript, NestJS, PostgreSQL.', 'https://rickyfrdy.my.id/id/projects/')}
 >
+  <PageAnimations />
+
   <!-- Hero -->
   <section class="border-border border-b px-4 py-8">
     <p class="eyebrow mb-3">Portofolio</p>

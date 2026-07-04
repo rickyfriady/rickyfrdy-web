@@ -1,0 +1,178 @@
+---
+import PostCard from './PostCard.astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  posts: CollectionEntry<'blog'>[]
+  pageSize?: number
+}
+
+const { posts, pageSize = 9 } = Astro.props
+
+const sorted = [...posts].sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+const featured = sorted.slice(0, 2)
+const rest = sorted.slice(2)
+
+const categories = [...new Set(sorted.map((p) => p.data.category))].sort()
+---
+
+<div id="blog-grid-root" data-page-size={pageSize}>
+  {categories.length > 0 && (
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+        <button type="button" class="diff-tag hover:border-accent/60 transition-colors" data-category-filter="all" aria-pressed="true">
+          All
+        </button>
+        {categories.map((category) => (
+          <button type="button" class="diff-tag hover:border-accent/60 transition-colors" data-category-filter={category} aria-pressed="false">
+            {category}
+          </button>
+        ))}
+      </div>
+
+      <div class="relative w-full sm:w-64">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          id="blog-search"
+          placeholder="Find an article..."
+          class="border-border bg-secondary/40 text-foreground placeholder:text-muted focus:ring-accent w-full rounded-lg border py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1"
+        />
+      </div>
+    </div>
+  )}
+
+  {featured.length > 0 && (
+    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2" data-stagger-group>
+      {featured.map((post) => (
+        <PostCard post={post} featured />
+      ))}
+    </div>
+  )}
+
+  {rest.length > 0 ? (
+    <div id="blog-post-grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger-group>
+      {rest.map((post) => (
+        <div data-grid-card data-category={post.data.category} data-search-text={`${post.data.title} ${post.data.description} ${post.data.category}`.toLowerCase()}>
+          <PostCard post={post} />
+        </div>
+      ))}
+    </div>
+  ) : null}
+
+  <div id="blog-no-results" class="border-border hidden flex-col items-center rounded-2xl border p-12 text-center">
+    <p class="text-muted text-sm">No articles match your filters.</p>
+  </div>
+
+  <nav id="blog-pagination" class="mt-8 hidden items-center justify-center gap-1.5" aria-label="Blog pagination"></nav>
+</div>
+
+<script>
+  function initBlogGrid() {
+    const root = document.getElementById('blog-grid-root')
+    if (!root) return
+
+    const pageSize = parseInt(root.dataset.pageSize ?? '9', 10)
+    const grid = document.getElementById('blog-post-grid')
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-grid-card]'))
+    const noResults = document.getElementById('blog-no-results')
+    const pagination = document.getElementById('blog-pagination')
+    const searchInput = document.getElementById('blog-search') as HTMLInputElement | null
+    const filterBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-category-filter]'))
+
+    let activeCategory = 'all'
+    let currentPage = 1
+
+    function getMatches(): HTMLElement[] {
+      const query = (searchInput?.value ?? '').trim().toLowerCase()
+      return cards.filter((card) => {
+        const matchesCategory = activeCategory === 'all' || card.dataset.category === activeCategory
+        const matchesSearch = query === '' || (card.dataset.searchText ?? '').includes(query)
+        return matchesCategory && matchesSearch
+      })
+    }
+
+    function render() {
+      const query = (searchInput?.value ?? '').trim()
+      const isFiltering = activeCategory !== 'all' || query !== ''
+      const matches = getMatches()
+      const totalPages = Math.max(1, Math.ceil(matches.length / pageSize))
+      currentPage = Math.min(currentPage, totalPages)
+
+      cards.forEach((card) => { card.style.display = 'none' })
+
+      const start = (currentPage - 1) * pageSize
+      matches.slice(start, start + pageSize).forEach((card) => { card.style.display = '' })
+
+      // Only show the "no results" empty state when the visitor is actively
+      // filtering/searching — not simply because there's no grid tier yet
+      // (e.g. a blog with ≤2 posts has nothing beyond the featured cards).
+      const showNoResults = isFiltering && matches.length === 0
+
+      if (grid) grid.classList.toggle('hidden', matches.length === 0)
+      if (noResults) {
+        noResults.classList.toggle('hidden', !showNoResults)
+        noResults.classList.toggle('flex', showNoResults)
+      }
+
+      renderPagination(totalPages)
+    }
+
+    function renderPagination(totalPages: number) {
+      if (!pagination) return
+      if (totalPages <= 1) {
+        pagination.classList.add('hidden')
+        pagination.classList.remove('flex')
+        pagination.innerHTML = ''
+        return
+      }
+
+      pagination.classList.remove('hidden')
+      pagination.classList.add('flex')
+
+      const pageBtn = (page: number) => {
+        const active = page === currentPage
+        return `<button type="button" data-page="${page}" class="font-mono text-xs min-w-[32px] h-8 rounded-md border transition-colors ${
+          active ? 'border-accent bg-accent text-background' : 'border-border text-muted hover:text-foreground hover:border-accent/60'
+        }">${page}</button>`
+      }
+
+      pagination.innerHTML = Array.from({ length: totalPages }, (_, i) => pageBtn(i + 1)).join('')
+
+      pagination.querySelectorAll<HTMLButtonElement>('[data-page]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page ?? '1', 10)
+          render()
+          window.scrollTo({ top: (grid?.getBoundingClientRect().top ?? 0) + window.scrollY - 96, behavior: 'smooth' })
+        })
+      })
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.categoryFilter ?? 'all'
+        currentPage = 1
+        filterBtns.forEach((b) => {
+          const isActive = b === btn
+          b.setAttribute('aria-pressed', String(isActive))
+          b.classList.toggle('border-accent/60', isActive)
+          b.classList.toggle('text-accent', isActive)
+        })
+        render()
+      })
+    })
+
+    searchInput?.addEventListener('input', () => {
+      currentPage = 1
+      render()
+    })
+
+    render()
+  }
+
+  initBlogGrid()
+  document.addEventListener('astro:page-load', initBlogGrid)
+</script>

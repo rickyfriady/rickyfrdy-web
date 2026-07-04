@@ -4,48 +4,52 @@ export const collaborators = [
   // ── Featured (6) ─────────────────────────────────────────────────
   {
     name: 'Laura Elisabeth Sinaga',
-    role: 'Quality Assurance Engineer · PT. Pegadaian',
+    role: 'Quality Assurance Engineer',
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     photo: '/collaborators/loraa-profile.jpeg',
     linkedin: 'https://www.linkedin.com/in/laura-elisabeth-sinaga',
     website: 'https://loracanss-web.vercel.app/en',
-    featured: true,
-    quote:
-      "The only person I know who can find a bug in a piece of code that hasn't even been written yet."
+    featured: true
   },
   {
     name: 'Rivaldy Firmansyah',
-    role: 'Engineering Lead · PT. Pegadaian',
+    role: 'Engineering Lead',
+    company: 'PT. Pegadaian',
+    companyLogo: 'pegadaian',
     photo: '/collaborators/rivaldy-firmansyah-profile.jpeg',
     linkedin: 'https://www.linkedin.com/in/rivaldyfirmansyah',
     website: 'https://mayawijaya.dev',
-    featured: true,
-    quote: 'One of the few engineers who treats observability as a first-class concern.'
+    featured: true
   }
   // {
   //   name: 'Budi Santoso',
-  //   role: 'Backend Engineer · PT. Pegadaian',
+  //   role: 'Backend Engineer',
+  //   company: 'PT. Pegadaian',
   //   photo: '/collaborators/budi-santoso.jpg',
   //   linkedin: 'https://www.linkedin.com/in/example-budi-santoso',
-  //   featured: true,
-  //   quote: 'Pushed our service contracts to be strict in a codebase that fought us at every turn.'
+  //   featured: true
   // },
   // {
   //   name: 'Siti Nurhaliza',
-  //   role: 'UX Designer · Freelance',
+  //   role: 'UX Designer',
+  //   company: 'Freelance',
   //   photo: '/collaborators/siti-nurhaliza.jpg',
   //   website: 'https://sitidesigns.id',
   //   featured: true
   // },
   // {
   //   name: 'Dewi Kusuma',
-  //   role: 'QA Lead · PT. Pegadaian',
+  //   role: 'QA Lead',
+  //   company: 'PT. Pegadaian',
   //   photo: '/collaborators/dewi-kusuma.jpg',
   //   linkedin: 'https://www.linkedin.com/in/example-dewi-kusuma',
   //   featured: true
   // },
   // {
   //   name: 'Rahmat Hidayat',
-  //   role: 'DevOps Engineer · PT. Pegadaian',
+  //   role: 'DevOps Engineer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-rahmat-hidayat',
   //   featured: true
   // },
@@ -53,72 +57,86 @@ export const collaborators = [
   // ── Rest (14) ────────────────────────────────────────────────────
   // {
   //   name: 'Aditya Saputra',
-  //   role: 'Frontend Engineer · PT. Pegadaian',
+  //   role: 'Frontend Engineer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-aditya'
   // },
   // {
   //   name: 'Putri Lestari',
-  //   role: 'Product Designer · PT. Pegadaian',
+  //   role: 'Product Designer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-putri'
   // },
   // {
   //   name: 'Hendra Wijaya',
-  //   role: 'Mobile Engineer · PT. Pegadaian',
+  //   role: 'Mobile Engineer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-hendra'
   // },
   // {
   //   name: 'Indah Permata',
-  //   role: 'Scrum Master · PT. Pegadaian',
+  //   role: 'Scrum Master',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-indah'
   // },
   // {
   //   name: 'Bayu Setiawan',
-  //   role: 'Data Engineer · PT. Pegadaian',
+  //   role: 'Data Engineer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-bayu'
   // },
   // {
   //   name: 'Citra Anggraini',
-  //   role: 'Marketing Lead · PT. Pegadaian',
+  //   role: 'Marketing Lead',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-citra'
   // },
   // {
   //   name: 'Dimas Wirawan',
-  //   role: 'Backend Engineer · PT. Pegadaian',
+  //   role: 'Backend Engineer',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-dimas'
   // },
   // {
   //   name: 'Erika Putri',
-  //   role: 'Business Analyst · PT. Pegadaian',
+  //   role: 'Business Analyst',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-erika'
   // },
   // {
   //   name: 'Fajar Nugroho',
-  //   role: 'Solution Architect · Freelance',
+  //   role: 'Solution Architect',
+  //   company: 'Freelance',
   //   website: 'https://fajarnugroho.dev'
   // },
   // {
   //   name: 'Gita Maharani',
-  //   role: 'Product Owner · PT. Pegadaian',
+  //   role: 'Product Owner',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-gita'
   // },
   // {
   //   name: 'Hari Setiawan',
-  //   role: 'Backend Engineer · Freelance',
+  //   role: 'Backend Engineer',
+  //   company: 'Freelance',
   //   linkedin: 'https://www.linkedin.com/in/example-hari'
   // },
   // {
   //   name: 'Intan Prameswari',
-  //   role: 'Frontend Engineer · Freelance',
+  //   role: 'Frontend Engineer',
+  //   company: 'Freelance',
   //   linkedin: 'https://www.linkedin.com/in/example-intan'
   // },
   // {
   //   name: 'Joko Susilo',
-  //   role: 'Tech Lead · PT. Pegadaian',
+  //   role: 'Tech Lead',
+  //   company: 'PT. Pegadaian',
   //   linkedin: 'https://www.linkedin.com/in/example-joko'
   // },
   // {
   //   name: 'Kartika Sari',
-  //   role: 'Engineering Manager · Freelance',
+  //   role: 'Engineering Manager',
+  //   company: 'Freelance',
   //   linkedin: 'https://www.linkedin.com/in/example-kartika'
   // }
 ] satisfies Collaborator[]
