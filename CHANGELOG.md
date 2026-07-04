@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.2.8] — 2026-07-03
+
+### Added
+- **Blog editorial redesign** — `/blog` rebuilt as a card-grid listing (featured cards + uniform grid), category filter pills, client-side search, and pagination (fixed page size, hidden when everything fits on one page); `/blog/tag/[tag]` gets the same treatment
+- **`category`/`coverImage` blog schema fields** — `category` (required) drives the filter pills and card badges; optional `coverImage` falls back to a deterministic `AnimatedGradient` keyed by slug when a post has no cover art yet
+- **Article hero band** — `/blog/[slug]` opens on a hero band (category pill, title, cover art, date/author) that's always rendered in the dark theme regardless of the visitor's site-wide light/dark selection, followed by a utility bar (back link, reading time, share via Web Share API + clipboard fallback)
+- **Sticky article sidebar** — table of contents (promoted from an inline collapsible `<details>`), tags, reading time, and a short author blurb, sticky alongside the prose on wide viewports and collapsing to a single column on mobile
+
+### Changed
+- **Collaborators section** ("People I've worked with") redesigned from a quote/bento layout to square (1:1) photo cards; company name now appears as a text tag that slides in on hover instead of a static logo panel; hover and scroll-reveal animation is GSAP-driven
+- **`Collaborator` content model** — `role`/`company` split into separate fields, `quote` removed
+
+### Fixed
+- **Scroll-reveal content could get stuck invisible** on `/projects` and other pages — root-caused to two independent reveal systems (a legacy CSS + `IntersectionObserver` system that predated `PageAnimations.astro` and was never fully retired, plus GSAP `ScrollTrigger` positions going stale if custom fonts swap in after they're calculated) both hiding content with no fallback; `PageAnimations.astro` now refreshes `ScrollTrigger` once fonts load and force-reveals any content still hidden after a short grace period, and every page now uses the one hardened system
+- **Removed the `#page-accent-line` page-transition glow** — the glowing accent bar that swept across the top of the page on every navigation is gone, with no replacement indicator
+
 ## [v1.2.7] — 2026-06-27
 
 ### Added

@@ -1,6 +1,6 @@
 # Ricki Friadi — Portfolio
 
-Personal portfolio and resume site built with Astro, React islands, GSAP, and Tailwind CSS v4.
+Personal portfolio and resume site built with Astro, GSAP, and Tailwind CSS v4 — fully static with zero client-side JS framework islands.
 
 **Live:** https://rickyfrdy.my.id
 
@@ -10,8 +10,8 @@ Personal portfolio and resume site built with Astro, React islands, GSAP, and Ta
 
 ```bash
 cp .env.example .env   # optional — GITHUB_TOKEN for /about stats
-bun install
-bun dev                # or: bun build
+npm install
+npm run dev             # or: npm run build
 ```
 
 ---
@@ -20,16 +20,15 @@ bun dev                # or: bun build
 
 | Layer | Tech |
 |-------|------|
-| Framework | Astro 6 (SSG, `output: static`) |
-| UI components | React 19 islands via `@astrojs/react` |
-| Animation | Framer Motion 12 (React islands) · GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) · Astro View Transitions (nav pill) |
+| Framework | Astro 6 (SSG, `output: static`) — no client-side JS framework islands, zero `client:*` hydration directives |
+| Animation | GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) · Astro View Transitions (nav pill, theme toggle) |
 | Styling | Tailwind CSS v4 · custom CSS utilities (glassmorphism) |
-| PDF | `@react-pdf/renderer` — designed + ATS variants |
+| PDF | `@react-pdf/renderer` (React 19, **build-time only** — scoped to `ResumePdf.tsx`/`ResumePdfAts.tsx`, not part of the client runtime) — designed + ATS variants |
 | i18n | Astro native i18n routing — EN (`/`) · ID (`/id/`) |
 | Content | Astro MDX + Content Collections (blog) |
 | OG Images | Satori + Sharp |
 | State | Nanostores (theme) |
-| Package manager | Bun |
+| Package manager | npm (`package-lock.json` is the lockfile in use — `package.json`'s `packageManager: bun@1.3.11` field is stale, no `bun.lockb` exists) |
 
 ---
 
@@ -38,18 +37,23 @@ bun dev                # or: bun build
 ```
 src/
 ├── components/
-│   ├── layout/         AppHeader (floating island pill), AppFooter, MainLayout,
+│   ├── layout/         AppHeader (floating island pill, theme toggle), AppFooter, MainLayout,
 │   │                   LangSwitcher, MobileBottomNav, NavLinks.astro, WanderingEyes
 │   ├── about/          GitHub sections: Heatmap, Activity, Languages,
 │   │                   PinnedRepos, SkillsMatrix
-│   ├── experience/     ProjectsAccordion (animated React island)
+│   ├── blog/           BlogGrid (card grid, filter, search, pagination), PostCard, TableOfContents
+│   ├── dashboard/      WakaTime + GitHub stats page sections
+│   ├── people/         CollaboratorsSection ("People I've worked with")
+│   ├── experience/     ProjectsAccordion
 │   ├── contact/        ContactForm
-│   ├── projects/       ProjectsGrid
-│   ├── resume/         ResumePdf (designed), ResumePdfAts (ATS-friendly)
-│   └── ui/             FinLogo (idn-finlogos CDN), finlogos.ts (types + slugs)
+│   ├── projects/       ProjectsGrid, FeaturedProjectCard
+│   ├── resume/         ResumePdf (designed), ResumePdfAts (ATS-friendly) — the only React (.tsx) components in the app
+│   ├── ui/             FinLogo (idn-finlogos CDN), finlogos.ts, FeaturedBadge, HeroPhoto, PageAnimations
+│   └── animated-gradient.astro   Canvas gradient used for featured cards + blog cover-art fallback
 ├── content/
-│   └── blog/           MDX blog posts
+│   └── blog/           MDX blog posts (category, coverImage, tags frontmatter)
 ├── data/
+│   ├── collaborators.ts    People I've worked with entries
 │   ├── experience.ts       Work history, projects, skills (English)
 │   ├── experience.id.ts    Work history, projects, skills (Indonesian)
 │   ├── projects.ts         Portfolio project entries
@@ -61,24 +65,18 @@ src/
 │   ├── about.astro
 │   ├── experience.astro
 │   ├── projects.astro
-│   ├── works.astro
+│   ├── blog/                   Listing (index), article ([slug]), tag archive (tag/[tag]) — EN only
+│   ├── dashboard.astro         WakaTime + GitHub stats
 │   ├── resume.astro
 │   ├── contact.astro
 │   ├── resume.pdf.ts           Designed PDF (EN)
 │   ├── resume-ats.pdf.ts       ATS PDF (EN)
-│   └── id/                     Indonesian locale
-│       ├── index.astro
-│       ├── about.astro
-│       ├── experience.astro
-│       ├── projects.astro
-│       ├── works.astro
-│       ├── resume.astro
-│       ├── contact.astro
-│       ├── resume.pdf.ts       Designed PDF (ID)
-│       └── resume-ats.pdf.ts   ATS PDF (ID)
-├── stores/             theme.ts (Nanostores)
+│   ├── rss.xml.ts              Blog RSS feed
+│   └── id/                     Indonesian locale (about, experience, projects, dashboard, resume, contact, PDFs — no blog)
+├── stores/             theme.ts (Nanostores — light/dark toggle, persisted to localStorage)
 ├── styles/             global.css (Tailwind + custom utilities)
-└── utils/              github.ts · skillIcon.ts · finlogo.ts · cn helper
+└── utils/              github.ts · wakatime.ts · skillIcon.ts · finlogo.ts · readingTime.ts ·
+                        gradientPreset.ts · ogCard.ts · schema.ts · contactSchema.ts · cn helper
 ```
 
 ---
@@ -91,7 +89,10 @@ src/
 | `/about` | `/id/about` | About + GitHub contribution heatmap, pinned repos, languages, activity |
 | `/experience` | `/id/experience` | Work history, projects, education, skills |
 | `/projects` | `/id/projects` | Project portfolio (filterable grid) |
-| `/works` | `/id/works` | Works grid with category filter |
+| `/blog` | — (EN only) | Blog listing — card grid, category filter, search, pagination |
+| `/blog/[slug]` | — (EN only) | Article page — dark hero band, sticky sidebar (TOC, tags, share) |
+| `/blog/tag/[tag]` | — (EN only) | Tag archive, same card-grid treatment as the listing |
+| `/dashboard` | `/id/dashboard` | WakaTime + GitHub build-time stats |
 | `/resume` | `/id/resume` | CV page |
 | `/contact` | `/id/contact` | Contact form |
 | `/resume.pdf` | `/id/resume.pdf` | Designed PDF download |
@@ -101,13 +102,13 @@ src/
 
 ## Key Features
 
-**Language switcher** (`LangSwitcher.tsx`) — glassmorphism dropdown in the header showing the active locale flag and code, with a spring-animated Framer Motion panel and GSAP tap feedback. Detects the current locale from the URL and switches to the equivalent page in the target language.
+**Language switcher** (`LangSwitcher.astro`) — glassmorphism dropdown in the header showing the active locale flag and code, using the `menu-dropdown` transitions.dev kit (scaled origin-aware open/close) and GSAP tap feedback. Detects the current locale from the URL and switches to the equivalent page in the target language.
 
 **ATS PDF** (`ResumePdfAts.tsx`) — parallel resume template using only Helvetica, black on white, comma-separated skills, and no decorative elements — optimised for applicant tracking systems.
 
 **FinLogo component** (`components/ui/FinLogo.astro`) — renders logos from the [`idn-finlogos`](https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons/) CDN. Supports 24 categories (banks, e-wallets, logistics, insurance, etc.). See [Usage](#finlogo-usage) below.
 
-**GitHub integration** (`/about` page) — four React island components powered by two data sources:
+**GitHub integration** (`/about` page) — four build-time Astro components powered by two data sources:
 
 | Source | Auth | Used by | Timing |
 |--------|------|---------|--------|
@@ -130,7 +131,6 @@ The project uses CSS transition kits from [transitions.dev](https://transitions.
 | **success-check** | `ContactForm` success state | SVG stroke-draw + rotate + blur + Y-bob on submit |
 | **error-shake** | `ContactForm` fields | Per-segment cubic-bezier shake + border color tween + auto-revert |
 | **tabs-sliding** | `SkillsMatrix` category filters | Sliding pill that follows the active tab (offsetLeft/offsetWidth JS + CSS transition) |
-| **avatar-hover** | `CollaboratorsSection` | Distance-falloff lift + scale on avatar rows, bouncy spring on return |
 | **notification-badge** · **card-resize** · **skeleton-loader** | (CSS available, unused) | Ready for future components |
 
 All transitions respect `prefers-reduced-motion` at the OS level.
@@ -172,14 +172,14 @@ Slug lists per category are exported from `src/components/ui/finlogos.ts` (`LOGO
 ## Scripts
 
 ```bash
-bun dev              # start dev server
-bun build            # type-check + production build
-bun preview          # preview production build
-bun lint             # run ESLint (Astro files)
-bun lint:fix         # ESLint with autofix
-bun test             # Vitest watch
-bun test:run         # Vitest once
-bun test:coverage    # Vitest with coverage
+npm run dev            # start dev server
+npm run build          # type-check + production build
+npm run preview        # preview production build
+npm run lint           # Biome (TS/TSX/JS) + ESLint (Astro files)
+npm run lint:fix       # Biome + ESLint with autofix
+npm test               # Vitest watch
+npm run test:run       # Vitest once
+npm run test:coverage  # Vitest with coverage
 ```
 
 ---
