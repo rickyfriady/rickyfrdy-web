@@ -15,7 +15,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     aria-haspopup="listbox"
     aria-expanded="false"
     aria-label={`Language: ${active.label}`}
-    class="glass-btn flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm"
+    class="glass-btn flex items-center gap-1.5 px-2.5 py-2 text-sm"
     data-current={currentLang}
   >
     <span class="text-base leading-none" id="lang-flag">{active.flag}</span>

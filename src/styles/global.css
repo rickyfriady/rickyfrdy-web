@@ -31,6 +31,9 @@
 
   /* Spacing scale */
   --nav-height: 3.5rem;
+
+  /* Shared corner radius for all interactive chrome (nav shell, buttons, toggle) */
+  --radius-interactive: 1rem;
 }
 
 /* ━━━━ Dark mode overrides ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -182,12 +185,11 @@
 
 @utility glass-btn {
   border: 1px solid transparent;
+  border-radius: var(--radius-interactive);
   transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1);
   &:hover {
-    background: color-mix(in oklch, var(--color-background) 60%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-color: color-mix(in oklch, var(--color-border) 50%, transparent);
+    background: var(--color-secondary);
+    border-color: var(--color-border);
     box-shadow: 0 2px 12px oklch(0 0 0 / 0.07), inset 0 1px 0 oklch(1 0 0 / 0.08);
   }
 }
@@ -206,11 +208,9 @@
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  border-radius: 9999px;
-  background: color-mix(in oklch, var(--color-background) 72%, transparent);
-  backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border: 1px solid color-mix(in oklch, var(--color-border) 55%, transparent);
+  border-radius: var(--radius-interactive);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
   box-shadow: 0 4px 24px oklch(0 0 0 / 0.12), 0 1px 0 oklch(1 0 0 / 0.08) inset;
 }
 
