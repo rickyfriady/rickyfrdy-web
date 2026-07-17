@@ -1,0 +1,73 @@
+---
+import { getBlurhash } from '@/utils/blurhash'
+
+interface Props {
+  src: string
+  alt: string
+  class?: string
+}
+
+const { src, alt, class: className = '' } = Astro.props
+
+const hash = await getBlurhash(src)
+---
+
+<div class="relative h-full w-full overflow-hidden">
+  {hash && (
+    <img
+      data-blurhash-placeholder
+      data-blurhash={hash}
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full object-cover"
+      style="transition: opacity 200ms ease"
+    />
+  )}
+  <img data-blurhash-real src={src} alt={alt} loading="lazy" class={className} />
+</div>
+
+<script>
+  import { decode } from 'blurhash'
+
+  function initBlurhashImages() {
+    document.querySelectorAll<HTMLImageElement>('[data-blurhash-placeholder]').forEach((placeholder) => {
+      if (placeholder.dataset.blurhashInitialized === 'true') return
+      placeholder.dataset.blurhashInitialized = 'true'
+
+      const hash = placeholder.dataset.blurhash
+      const real = placeholder.nextElementSibling as HTMLImageElement | null
+      if (!hash || !real) return
+
+      const size = 32
+      try {
+        const pixels = decode(hash, size, size)
+        const canvas = document.createElement('canvas')
+        canvas.width = size
+        canvas.height = size
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+        const imageData = ctx.createImageData(size, size)
+        imageData.data.set(pixels)
+        ctx.putImageData(imageData, 0, 0)
+        placeholder.src = canvas.toDataURL()
+      } catch {
+        placeholder.remove()
+        return
+      }
+
+      const fadeOutPlaceholder = () => {
+        placeholder.style.opacity = '0'
+        setTimeout(() => placeholder.remove(), 200)
+      }
+
+      if (real.complete) {
+        fadeOutPlaceholder()
+      } else {
+        real.addEventListener('load', fadeOutPlaceholder, { once: true })
+      }
+    })
+  }
+
+  initBlurhashImages()
+  document.addEventListener('astro:page-load', initBlurhashImages)
+</script>
