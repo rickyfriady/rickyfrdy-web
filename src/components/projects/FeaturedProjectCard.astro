@@ -3,6 +3,7 @@ import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
 import AnimatedGradient from '@/components/animated-gradient.astro'
+import BlurhashImage from '@/components/ui/BlurhashImage.astro'
 
 interface Props {
   project: Project
@@ -44,10 +45,9 @@ const stat2 = project.metrics?.[1]
       class="pointer-events-none absolute right-0 bottom-0 w-[52%] h-[75%] overflow-hidden"
       style="-webkit-mask-image: linear-gradient(118deg, transparent 10%, rgba(0,0,0,0.6) 38%, black 58%); mask-image: linear-gradient(118deg, transparent 10%, rgba(0,0,0,0.6) 38%, black 58%)"
     >
-      <img
+      <BlurhashImage
         src={project.heroImage}
         alt=""
-        aria-hidden="true"
         class="h-full w-full object-cover object-left-top
                grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
                group-hover:scale-[1.07] group-hover:grayscale-0"

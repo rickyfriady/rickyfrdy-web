@@ -3,6 +3,7 @@ import { education, experiences, projects, skillCategories, summary } from '@/da
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
+import ResumeSkeleton from '@/components/resume/ResumeSkeleton.astro'
 import { webPageSchema } from '@/utils/schema'
 ---
 
@@ -14,7 +15,9 @@ import { webPageSchema } from '@/utils/schema'
 >
   <PageAnimations />
 
-  <div class="mx-auto max-w-2xl px-4 py-12">
+  <ResumeSkeleton />
+
+  <div id="resume-content" class="mx-auto max-w-2xl px-4 py-12">
 
     <!-- Header -->
     <div class="mb-8">
@@ -180,4 +183,41 @@ import { webPageSchema } from '@/utils/schema'
     </div>
 
   </div>
+
+  <script>
+    function swapInSkeleton(contentId: string, templateId: string) {
+      const content = document.getElementById(contentId)
+      const template = document.getElementById(templateId)
+      if (!content || !template || content.dataset.skeletonActive === 'true') return
+      content.dataset.skeletonActive = 'true'
+      content.style.display = 'none'
+      const clone = template.cloneNode(true) as HTMLElement
+      clone.removeAttribute('hidden')
+      clone.id = `${templateId}-clone`
+      content.insertAdjacentElement('afterend', clone)
+    }
+
+    function restoreContent(contentId: string, templateId: string) {
+      const content = document.getElementById(contentId)
+      const clone = document.getElementById(`${templateId}-clone`)
+      if (!content) return
+      content.style.display = ''
+      delete content.dataset.skeletonActive
+      if (clone) {
+        clone.style.transition = 'opacity 200ms ease'
+        clone.style.opacity = '0'
+        setTimeout(() => clone.remove(), 200)
+      }
+    }
+
+    document.addEventListener('astro:after-swap', () => {
+      if (location.pathname.replace(/\/$/, '') === '/resume') {
+        swapInSkeleton('resume-content', 'resume-skeleton-template')
+      }
+    })
+
+    document.addEventListener('astro:page-load', () => {
+      requestAnimationFrame(() => restoreContent('resume-content', 'resume-skeleton-template'))
+    })
+  </script>
 </MainLayout>
