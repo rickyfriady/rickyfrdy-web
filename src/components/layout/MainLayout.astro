@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions'
 import AppFooter from './AppFooter.astro'
 import AppHeader from './AppHeader.astro'
 import BaseHead from './BaseHead.astro'
+import CommandPalette from './CommandPalette.astro'
 import MobileBottomNav from './MobileBottomNav.astro'
 import '@/styles/global.css'
 
@@ -43,5 +44,7 @@ const { title, description, lang = 'en', ogImage, ogType, hreflangPairs, schema 
     <AppFooter />
 
     <MobileBottomNav transition:persist />
+
+    <CommandPalette />
   </body>
 </html>

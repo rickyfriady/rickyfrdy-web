@@ -6,7 +6,6 @@ export type {
   SkillCategory,
   WorkExperience
 } from './experience.models'
-
 export type {
   ContributionDay,
   GitHubStats,
@@ -14,6 +13,7 @@ export type {
   PinnedRepo,
   RecentEvent
 } from './github.models'
+export type { GuestbookCreateInput, GuestbookEntry } from './guestbook.models'
 export type {
   CodeSnippet,
   Metric,

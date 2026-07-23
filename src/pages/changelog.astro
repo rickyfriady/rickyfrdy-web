@@ -1,0 +1,62 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { groupEntries, readChangelogEntries } from '@/utils/changelog'
+import { t } from '@/i18n/ui'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+const groups = groupEntries(readChangelogEntries())
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+---
+
+<MainLayout
+  title={t(lang, 'changelog.title')}
+  description={t(lang, 'changelog.description')}
+  lang="en"
+  schema={webPageSchema(t(lang, 'changelog.title'), t(lang, 'changelog.description'), 'https://rickyfrdy.my.id/changelog/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'changelog.eyebrow')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      Site<br /><span class="title-accent text-accent">changelog.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">{t(lang, 'changelog.intro')}</p>
+  </section>
+
+  <section class="px-4 py-8">
+    {groups.length === 0 ? (
+      <p class="text-muted text-sm">{t(lang, 'changelog.empty')}</p>
+    ) : (
+      <div class="space-y-10">
+        {groups.map((group) => (
+          <div>
+            <div class="chapter-heading">
+              <span class="chapter-label">{group.label}</span>
+            </div>
+            <ul class="mt-4 space-y-3">
+              {group.entries.map((entry) => (
+                <li id={entry.hash} class="grid gap-2 md:grid-cols-[120px_1fr] md:gap-6 scroll-mt-24">
+                  <span class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] leading-snug md:pt-0.5">
+                    {formatDate(entry.date)}
+                  </span>
+                  <span class="text-foreground/85 text-sm leading-relaxed">
+                    {entry.scope && (
+                      <span class="text-accent font-mono text-xs">{entry.scope}: </span>
+                    )}
+                    {entry.subject}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+</MainLayout>

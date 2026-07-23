@@ -1,0 +1,83 @@
+// GitHub OAuth + signed-cookie session. Server-only — never import from client code.
+// Activate: create a GitHub OAuth App, set GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET /
+// SESSION_SECRET / OWNER_ID, and rename to `auth.ts`.
+import { createHmac, timingSafeEqual } from 'node:crypto'
+import type { AstroCookies } from 'astro'
+
+const SESSION_COOKIE = 'gb_session'
+const SESSION_SECRET = () => import.meta.env.SESSION_SECRET as string
+
+export interface Session {
+  userId: string // e.g. "github:12345"
+  name: string
+}
+
+// --- signed cookie (HMAC) ---
+function sign(payload: string): string {
+  const mac = createHmac('sha256', SESSION_SECRET()).update(payload).digest('base64url')
+  return `${Buffer.from(payload).toString('base64url')}.${mac}`
+}
+
+function verify(token: string): Session | null {
+  const [body, mac] = token.split('.')
+  if (!body || !mac) return null
+  const payload = Buffer.from(body, 'base64url').toString('utf8')
+  const expected = createHmac('sha256', SESSION_SECRET()).update(payload).digest('base64url')
+  if (mac.length !== expected.length || !timingSafeEqual(Buffer.from(mac), Buffer.from(expected))) return null
+  try {
+    return JSON.parse(payload) as Session
+  } catch {
+    return null
+  }
+}
+
+export function setSession(cookies: AstroCookies, session: Session): void {
+  cookies.set(SESSION_COOKIE, sign(JSON.stringify(session)), {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30
+  })
+}
+
+export function clearSession(cookies: AstroCookies): void {
+  cookies.delete(SESSION_COOKIE, { path: '/' })
+}
+
+export function getSession(cookies: AstroCookies): Session | null {
+  const token = cookies.get(SESSION_COOKIE)?.value
+  return token ? verify(token) : null
+}
+
+export function isOwner(session: Session | null): boolean {
+  return session?.userId === (import.meta.env.OWNER_ID as string)
+}
+
+// --- OAuth flow ---
+export function githubAuthUrl(state: string): string {
+  const params = new URLSearchParams({
+    client_id: import.meta.env.GITHUB_CLIENT_ID as string,
+    scope: 'read:user',
+    state
+  })
+  return `https://github.com/login/oauth/authorize?${params}`
+}
+
+export async function exchangeCodeForUser(code: string): Promise<Session> {
+  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: { accept: 'application/json', 'content-type': 'application/json' },
+    body: JSON.stringify({
+      client_id: import.meta.env.GITHUB_CLIENT_ID,
+      client_secret: import.meta.env.GITHUB_CLIENT_SECRET,
+      code
+    })
+  })
+  const { access_token } = await tokenRes.json()
+  const userRes = await fetch('https://api.github.com/user', {
+    headers: { authorization: `Bearer ${access_token}`, 'user-agent': 'ricki-portfolio' }
+  })
+  const user = await userRes.json()
+  return { userId: `github:${user.id}`, name: user.name || user.login }
+}

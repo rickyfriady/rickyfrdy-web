@@ -6,7 +6,15 @@ import robotsTxt from 'astro-robots-txt'
 
 const SITE = 'https://rickyfrdy.my.id'
 
-const EN_ID_PAIRS = new Set(['/', '/about/', '/experience/', '/projects/', '/contact/'])
+const EN_ID_PAIRS = new Set([
+  '/',
+  '/about/',
+  '/experience/',
+  '/projects/',
+  '/contact/',
+  '/now/',
+  '/ask/'
+])
 
 const EXCLUDE_EXACT = new Set([
   '/dashboard',
