@@ -1,0 +1,12 @@
+// GET /api/auth/github → redirect to GitHub, with a CSRF state cookie.
+import type { APIRoute } from 'astro'
+import { randomUUID } from 'node:crypto'
+import { githubAuthUrl } from '@/server/auth'
+
+export const prerender = false
+
+export const GET: APIRoute = async ({ cookies, redirect }) => {
+  const state = randomUUID()
+  cookies.set('gb_oauth_state', state, { httpOnly: true, secure: true, sameSite: 'lax', path: '/', maxAge: 600 })
+  return redirect(githubAuthUrl(state), 302)
+}

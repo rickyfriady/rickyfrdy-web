@@ -1,0 +1,53 @@
+// GET  /api/guestbook  → list visible entries
+// POST /api/guestbook  → create entry (auth + validation + sanitize + rate limit)
+// Activate with the adapter + DB + auth modules; rename to `index.ts`.
+import type { APIRoute } from 'astro'
+import { validateEntry, isRateLimited } from '@/utils/guestbook'
+import { createEntry, listEntries } from '@/server/guestbook-db'
+import { getSession } from '@/server/auth'
+
+export const prerender = false
+
+const rlStore = new Map<string, number[]>()
+
+export const GET: APIRoute = async () => {
+  const entries = await listEntries()
+  return new Response(JSON.stringify({ entries }), {
+    headers: { 'content-type': 'application/json' }
+  })
+}
+
+export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
+  const session = getSession(cookies)
+  if (!session) return json({ error: 'unauthorized' }, 401)
+
+  // CSRF: require same-origin submission.
+  const origin = request.headers.get('origin')
+  const host = request.headers.get('host')
+  if (origin && host && new URL(origin).host !== host) return json({ error: 'bad_origin' }, 403)
+
+  if (isRateLimited(session.userId || clientAddress, rlStore, { windowMs: 60_000, max: 5 })) {
+    return json({ error: 'rate_limited' }, 429)
+  }
+
+  let payload: unknown
+  try {
+    payload = await request.json()
+  } catch {
+    return json({ error: 'bad_request' }, 400)
+  }
+
+  const result = validateEntry(payload)
+  if (!result.ok) return json({ error: result.error }, 422)
+
+  const entry = await createEntry({
+    authorId: session.userId,
+    authorName: session.name,
+    message: result.cleanMessage
+  })
+  return json({ entry }, 201)
+}
+
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
+}

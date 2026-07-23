@@ -1,0 +1,18 @@
+// GET /api/auth/callback → verify state, exchange code, set session, redirect back.
+import type { APIRoute } from 'astro'
+import { exchangeCodeForUser, setSession } from '@/server/auth'
+
+export const prerender = false
+
+export const GET: APIRoute = async ({ url, cookies, redirect }) => {
+  const code = url.searchParams.get('code')
+  const state = url.searchParams.get('state')
+  const expected = cookies.get('gb_oauth_state')?.value
+  cookies.delete('gb_oauth_state', { path: '/' })
+
+  if (!code || !state || state !== expected) return redirect('/guestbook?error=auth', 302)
+
+  const session = await exchangeCodeForUser(code)
+  setSession(cookies, session)
+  return redirect('/guestbook', 302)
+}
