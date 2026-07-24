@@ -47,6 +47,8 @@ const lang = 'id'
 
     <p id="ask-status" class="text-muted mt-4 text-sm" role="status" aria-live="polite"></p>
 
+    <div id="ask-answer" class="mt-6" aria-live="polite"></div>
+
     <div id="ask-results" class="mt-6 space-y-4"></div>
 
     <p class="text-muted mt-8 font-mono text-[10px] uppercase tracking-[0.1em]">{t(lang, 'ask.disclaimer')}</p>
@@ -107,6 +109,39 @@ const lang = 'id'
         .join('')
   }
 
+  async function requestAnswer(query: string, results: ReturnType<typeof rankChunks>, lang: Lang) {
+    const box = document.getElementById('ask-answer') as HTMLElement | null
+    if (!box) return
+    if (results.length === 0) {
+      box.innerHTML = ''
+      return
+    }
+    box.innerHTML = `<p class="text-muted text-sm">${escapeHtml(tr(lang, 'ask.answering'))}</p>`
+    try {
+      // Strip vectors — the endpoint only needs title/url/text/score.
+      const payload = results.map(({ vector, ...r }) => r)
+      const res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query, results: payload })
+      })
+      if (!res.ok) {
+        box.innerHTML = '' // RAG unavailable (e.g. no API key) → semantic results still shown
+        return
+      }
+      const data = await res.json()
+      if (!data.answer) {
+        box.innerHTML = ''
+        return
+      }
+      box.innerHTML =
+        `<p class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] mb-1">${escapeHtml(tr(lang, 'ask.answer'))}</p>` +
+        `<div class="border-accent/40 bg-accent/5 text-foreground/90 rounded-xl border p-4 text-sm leading-relaxed">${escapeHtml(data.answer)}</div>`
+    } catch {
+      box.innerHTML = ''
+    }
+  }
+
   function bindForm() {
     const form = document.getElementById('ask-form') as HTMLFormElement | null
     if (!form || form.dataset.bound) return
@@ -128,6 +163,7 @@ const lang = 'id'
         const results = rankChunks(vec, index, { topK: 5, minScore: 0.25 })
         status.textContent = ''
         renderResults(results, lang)
+        await requestAnswer(q, results, lang)
       } catch (err) {
         console.error('[ask] search failed', err)
         status.textContent = tr(lang, 'ask.empty')
