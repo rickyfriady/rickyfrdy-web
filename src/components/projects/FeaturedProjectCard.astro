@@ -52,8 +52,8 @@ const stat2 = project.metrics?.[1]
                grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
                group-hover:scale-[1.07] group-hover:grayscale-0"
       />
-      <!-- Bottom fade so stats row stays readable -->
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background/80 to-transparent" />
+      <!-- Bottom fade so the stats footer blends over the image -->
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </div>
   )}
 
@@ -95,25 +95,26 @@ const stat2 = project.metrics?.[1]
       </div>
     </div>
 
-    <!-- Title -->
-    <h2
-      class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors duration-300 max-w-[58%]
-             group-hover:[text-shadow:0_0_20px_color-mix(in_oklch,var(--color-accent)_40%,transparent)]"
-      transition:name={`project-title-${project.slug}`}
-    >
-      {project.title}
-    </h2>
+    <!-- Title + description share one width lane, kept clear of the corner image -->
+    <div class="max-w-[56%]">
+      <h2
+        class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors duration-300
+               group-hover:[text-shadow:0_0_20px_color-mix(in_oklch,var(--color-accent)_40%,transparent)]"
+        transition:name={`project-title-${project.slug}`}
+      >
+        {project.title}
+      </h2>
 
-    <!-- Description -->
-    <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed max-w-[60%]">
-      {project.shortDescription}
-    </p>
+      <p class="text-muted mt-2 line-clamp-2 text-sm leading-relaxed">
+        {project.shortDescription}
+      </p>
+    </div>
 
     <!-- Spacer pushes stats to bottom -->
     <div class="flex-1" />
 
-    <!-- Divider + stats row -->
-    <div class="border-border mt-4 border-t pt-3">
+    <!-- Divider + stats row — full-bleed opaque footer keeps metrics legible over the image -->
+    <div class="border-border relative -mx-5 -mb-5 mt-4 rounded-b-[10px] border-t bg-background px-5 pt-3 pb-5">
       <div class="text-muted flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
         {stat1 && (
           <span class="flex items-center gap-1.5">
