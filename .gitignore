@@ -47,3 +47,6 @@ thoughts/ledgers/
 
 # Superpowers brainstorm artifacts
 .superpowers/
+
+# Vercel adapter build output
+.vercel

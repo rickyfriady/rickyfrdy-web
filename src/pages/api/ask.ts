@@ -1,18 +1,14 @@
 // -----------------------------------------------------------------------------
-// Generative RAG endpoint (OPTIONAL — not active until you enable it).
+// Generative RAG endpoint (on-demand). Runs as a Vercel serverless function via
+// the @astrojs/vercel adapter; `prerender = false` opts it out of the static build.
 //
-// To activate:
-//   1. Add an Astro adapter for your deploy target and switch to hybrid output:
-//        npm i @astrojs/vercel        (or @astrojs/cloudflare)
-//        astro.config.ts:  output: 'server', adapter: vercel()
-//      Keep every existing page prerendered by adding `export const prerender = true`
-//      to shared layout usage, or set `output: 'hybrid'` semantics per your Astro version.
-//   2. Provide a server-side secret:  ANTHROPIC_API_KEY  (never expose to the client)
-//   3. Rename this file to `ask.ts` (drop the `.example`).
+// Requires the server-side secret ANTHROPIC_API_KEY (set in the Vercel dashboard,
+// never exposed to the client). If it is unset the endpoint returns 502 and the
+// /ask UI falls back to showing semantic results only.
 //
-// The client (src/pages/ask.astro) already embeds the query and ranks chunks
-// locally, so this endpoint only performs generation over PUBLIC retrieved
-// content — no secret ever reaches the browser.
+// The client (src/pages/ask.astro) embeds the query and ranks chunks locally, so
+// this endpoint only generates over PUBLIC retrieved content — no secret ever
+// reaches the browser.
 // -----------------------------------------------------------------------------
 import type { APIRoute } from 'astro'
 import { buildRagPrompt, hasSufficientContext, RAG_REFUSAL } from '@/utils/ragAnswer'
