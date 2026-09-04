@@ -10,7 +10,7 @@ const { stats } = Astro.props
 ---
 
 {stats && stats.languages.length > 0 ? (
-  <div class="glass-card rounded-xl px-5 py-5">
+  <div class="evidence-card rounded-xl px-5 py-5">
     <p class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase mb-4">Languages this week</p>
     <ul class="space-y-3">
       {stats.languages.map((lang) => {
@@ -26,7 +26,7 @@ const { stats } = Astro.props
               </span>
               <span class="font-mono text-[11px] text-muted">{lang.text}</span>
             </div>
-            <div class="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+            <div class="h-2 w-full rounded-full bg-secondary overflow-hidden">
               <div
                 class="h-full rounded-full bg-accent"
                 style={`width: ${Math.min(lang.percent, 100)}%`}
@@ -38,7 +38,7 @@ const { stats } = Astro.props
     </ul>
   </div>
 ) : stats === null ? (
-  <div class="glass-card rounded-xl px-5 py-6 text-center">
+  <div class="evidence-card rounded-xl px-5 py-6 text-center">
     <p class="text-muted text-sm">
       Language breakdown unavailable — set <code class="font-mono text-accent text-xs">WAKATIME_API_KEY</code> in your deploy environment.
     </p>

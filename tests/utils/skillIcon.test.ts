@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getSkillIconUrl, SKILL_ICON } from '@/utils/skillIcon'
+import { DRAWN_TECH_SPRITES, getSkillIconUrl, SKILL_ICON } from '@/utils/skillIcon'
 
 describe('SKILL_ICON map', () => {
   it('maps TypeScript to ts', () => {
@@ -34,8 +34,23 @@ describe('SKILL_ICON map', () => {
 })
 
 describe('getSkillIconUrl()', () => {
-  it('returns full URL for known tech', () => {
-    expect(getSkillIconUrl('TypeScript')).toBe('https://skillicons.dev/icons?i=ts')
+  it('resolves a known tech to its drawn sprite, or nothing if not drawn yet', () => {
+    // Icons are now local sprites drawn one at a time, not a remote service.
+    // A mapped tech resolves to a sprite URL only once that sprite exists;
+    // until then call sites fall back to a text tag, so undefined is correct.
+    const url = getSkillIconUrl('TypeScript')
+    if (DRAWN_TECH_SPRITES.includes('ts')) {
+      expect(url).toBeTruthy()
+      expect(url).not.toContain('skillicons.dev')
+    } else {
+      expect(url).toBeUndefined()
+    }
+  })
+
+  it('never points at the removed external icon service', () => {
+    for (const tech of Object.keys(SKILL_ICON)) {
+      expect(getSkillIconUrl(tech) ?? '').not.toContain('skillicons.dev')
+    }
   })
 
   it('returns undefined for unknown tech', () => {

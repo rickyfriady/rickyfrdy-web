@@ -107,7 +107,7 @@ const statItems = [
             <th
               scope="col"
               colspan={m.span}
-              class="text-left font-mono text-[9px] font-medium uppercase tracking-wider text-muted pb-1.5"
+              class="text-left font-mono text-[9px] font-medium uppercase tracking-wider text-muted pb-2"
               style={`width: ${m.span * 14}px`}
             >
               {m.label}
@@ -133,7 +133,7 @@ const statItems = [
                 return (
                   <td
                     aria-hidden="true"
-                    class="h-[10px] w-[10px] md:h-[10px] md:w-[10px]"
+                    class="h-[8px] w-[8px] md:h-[8px] md:w-[8px]"
                   />
                 )
               }
@@ -144,7 +144,7 @@ const statItems = [
                   tabindex={weekIdx === 0 && dayIdx === 0 ? 0 : -1}
                   aria-label={`${d.count} contribution${d.count !== 1 ? 's' : ''} on ${formatDate(d.date)}`}
                   title={`${d.count} contributions on ${formatDate(d.date)}`}
-                  class={`${getColorClass(d.level)} h-[12px] w-[12px] md:h-[10px] md:w-[10px] cursor-default rounded-[2px] transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:scale-125 hover:scale-125 hover:ring-2 hover:ring-accent`}
+                  class={`${getColorClass(d.level)} h-[12px] w-[12px] md:h-[8px] md:w-[8px] cursor-default transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:scale-125 hover:scale-125 hover:ring-2 hover:ring-accent`}
                   style={`background-image: ${getLevelPattern(d.level)}`}
                 />
               )
@@ -157,9 +157,9 @@ const statItems = [
     <!-- Legend -->
     <div class="mt-3 flex items-center gap-2 text-[9px] text-muted/60" aria-hidden="true">
       <span>Less</span>
-      <div class="flex gap-[2px]">
+      <div class="flex gap-[4px]">
         {[0, 1, 2, 3, 4].map((level) => (
-          <div class={`${getColorClass(level)} h-[10px] w-[10px] rounded-[2px]`} />
+          <div class={`${getColorClass(level)} h-[8px] w-[8px]`} />
         ))}
       </div>
       <span>More</span>

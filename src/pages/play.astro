@@ -1,0 +1,162 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import CharacterShowcase from '@/components/game/CharacterShowcase.astro'
+import ArtCredits from '@/components/game/ArtCredits.astro'
+import PlayScene from '@/components/game/PlayScene'
+import { collaborators } from '@/data/collaborators'
+import { experiences } from '@/data/experience'
+import { projects } from '@/data/projects'
+import { quests } from '@/data/quests'
+import { rooms } from '@/data/rooms'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import { t } from '@/i18n/ui'
+import { buildScene, sceneDestinations } from '@/utils/game/scene'
+import { deriveStats } from '@/utils/game/stats'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+
+const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
+  .filter((entry) => !entry.data.draft)
+  .map((entry) => ({
+    slug: entry.id,
+    title: entry.data.title,
+    description: entry.data.description
+  }))
+
+const scene = buildScene(rooms, { projects, posts, experiences, people: collaborators }, lang)
+const destinations = sceneDestinations(scene)
+
+const sceneQuests = quests.map((quest) => ({
+  id: quest.id,
+  npcId: quest.npcId,
+  requires: quest.requires,
+  title: quest.title[lang],
+  passages: quest.passages.map((p) => p[lang]),
+  completedBy: quest.completedBy,
+  destination: quest.destination
+}))
+
+// The clock is passed in rather than read inside the derivation, so a test can
+// pin the year. `'Present'` otherwise makes every level build-date dependent.
+const stats = deriveStats(projects, experiences, new Date().getFullYear())
+
+const labels = {
+  sceneName: t(lang, 'game.sceneName'),
+  controls: t(lang, 'game.controls'),
+  journal: t(lang, 'game.journal'),
+  sheet: t(lang, 'game.sheet'),
+  encounter: t(lang, 'game.encounter'),
+  interact: t(lang, 'game.interact'),
+  open: t(lang, 'game.open'),
+  next: t(lang, 'game.next'),
+  close: t(lang, 'game.close'),
+  reset: t(lang, 'game.reset'),
+  resetConfirm: t(lang, 'game.resetConfirm'),
+  skip: t(lang, 'game.skip'),
+  turn: t(lang, 'game.turn'),
+  won: t(lang, 'game.won'),
+  timeout: t(lang, 'game.timeout'),
+  statBasis: t(lang, 'game.statBasis'),
+  state_locked: t(lang, 'game.state.locked'),
+  state_available: t(lang, 'game.state.available'),
+  state_active: t(lang, 'game.state.active'),
+  state_complete: t(lang, 'game.state.complete'),
+  dir_up: t(lang, 'game.dir.up'),
+  dir_down: t(lang, 'game.dir.down'),
+  dir_left: t(lang, 'game.dir.left'),
+  dir_right: t(lang, 'game.dir.right'),
+  'move_type-check': t(lang, 'game.move.type-check'),
+  'move_write-test': t(lang, 'game.move.write-test'),
+  'move_read-log': t(lang, 'game.move.read-log')
+}
+
+const player = {
+  name: 'Ricki Friadi',
+  role: `${experiences[0].role} · ${experiences[0].company}`,
+  stats
+}
+---
+
+<MainLayout
+  title={t(lang, 'game.title')}
+  description={t(lang, 'game.description')}
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/play/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/play/' }
+  ]}
+  schema={webPageSchema(t(lang, 'game.title'), t(lang, 'game.description'), 'https://rickyfrdy.my.id/play/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'case.play')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      {t(lang, 'game.heading')}<span class="title-accent text-accent">.</span>
+    </h1>
+    <p class="text-muted mt-4 max-w-2xl text-sm leading-relaxed">{t(lang, 'game.intro')}</p>
+    <a href="/board" class="menu-cursor text-accent mt-4 inline-block font-mono text-xs">
+      {t(lang, 'case.board')} →
+    </a>
+  </section>
+
+  <!--
+    The world band. `.world` is scoped here and nowhere else, so this section is
+    the threshold: the header, footer, hero, and destination list all stay in
+    the site's paper palette. Moving this one class onto <html> takes the whole
+    site dark — that promotion is deliberately the owner's call, made after
+    seeing the two side by side rather than before.
+
+    The scene inside it is desktop-only: a walkable room does not work on a
+    375px viewport. The list below is not a fallback bolted on afterwards — it
+    is always in the DOM at every breakpoint, so every destination stays
+    crawlable, survives the island failing to load, and IS the page on a small
+    screen.
+  -->
+  <section class="world world-bleed scene-backdrop border-border border-y-4 px-4 py-8">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-6 md:flex-row md:items-start md:justify-center">
+      <div class="hidden md:block">
+        <PlayScene client:only="react" rooms={scene} quests={sceneQuests} player={player} labels={labels} lang={lang} />
+      </div>
+
+      <CharacterShowcase
+        name={player.name}
+        role={player.role}
+        stats={player.stats}
+        labels={{
+          heading: t(lang, 'game.showcase'),
+          basis: t(lang, 'game.statBasis'),
+          level: 'Lv.'
+        }}
+      />
+    </div>
+
+    <p class="text-muted mx-auto mt-6 max-w-md text-center text-sm md:hidden">
+      {t(lang, 'game.smallScreen')}
+    </p>
+  </section>
+
+  <section class="px-4 py-8">
+    <span class="chapter-label">{t(lang, 'game.destinations')}</span>
+    <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+      {destinations.map((object) => (
+        <li>
+          <a href={object.href} class="menu-cursor portal-card no-underline">
+            <span class="text-muted block font-mono text-[9px] tracking-[0.12em] uppercase">
+              {object.kind}
+            </span>
+            <span class="text-foreground mt-1 block text-sm font-semibold leading-tight">
+              {object.title}
+            </span>
+            <span class="text-muted mt-1 block text-xs leading-snug">{object.summary}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <ArtCredits label={t(lang, 'game.artCredits')} />
+</MainLayout>

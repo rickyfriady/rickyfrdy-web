@@ -42,7 +42,7 @@ function formatDate(iso: string): string {
             <ul class="mt-4 space-y-3">
               {group.entries.map((entry) => (
                 <li id={entry.hash} class="grid gap-2 md:grid-cols-[120px_1fr] md:gap-6 scroll-mt-24">
-                  <span class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] leading-snug md:pt-0.5">
+                  <span class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] leading-snug md:pt-1">
                     {formatDate(entry.date)}
                   </span>
                   <span class="text-foreground/85 text-sm leading-relaxed">

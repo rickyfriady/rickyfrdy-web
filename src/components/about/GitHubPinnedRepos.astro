@@ -11,7 +11,7 @@ const { repos } = Astro.props
 {repos.length > 0 && (
   <div class="rounded-xl border border-border bg-secondary/30 p-4 md:p-6">
     <p class="text-foreground mb-3 text-sm font-semibold">Pinned Repositories</p>
-    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {repos.map((repo) => (
         <a
           href={repo.url}
@@ -26,7 +26,7 @@ const { repos } = Astro.props
               {repo.name}
             </span>
             <svg
-              class="text-muted mt-0.5 h-3.5 w-3.5 flex-shrink-0 opacity-30 transition-opacity group-hover:opacity-70"
+              class="text-muted mt-1 h-4 w-4 flex-shrink-0 opacity-30 transition-opacity group-hover:opacity-70"
               fill="currentColor"
               viewBox="0 0 24 24"
               aria-label={`Open ${repo.name} on GitHub`}
@@ -43,7 +43,7 @@ const { repos } = Astro.props
           <!-- Bottom row: language + stars + forks -->
           <div class="mt-auto flex items-center gap-2 flex-wrap">
             {repo.primaryLanguage && (
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-2">
                 <span
                   class="block h-2 w-2 flex-shrink-0 rounded-full"
                   style={`background: ${repo.primaryLanguage.color}`}
@@ -51,7 +51,7 @@ const { repos } = Astro.props
                 <span class="text-muted font-mono text-[9px]">{repo.primaryLanguage.name}</span>
               </div>
             )}
-            <div class="ml-auto flex items-center gap-1.5 flex-wrap">
+            <div class="ml-auto flex items-center gap-2 flex-wrap">
               {repo.stars > 0 && (
                 <span class="text-muted flex items-center gap-1 font-mono text-[10px]">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3" aria-hidden="true">
@@ -76,7 +76,7 @@ const { repos } = Astro.props
             <div class="flex flex-wrap gap-1">
               {repo.topics.map((topic) => (
                 <span
-                  class="rounded-full border border-accent/20 bg-accent/8 px-1.5 py-0.5 font-mono text-[8px] tracking-wide"
+                  class="rounded-full border border-accent/20 bg-accent/8 px-2 py-1 font-mono text-[8px] tracking-wide"
                   style="color: color-mix(in oklch, var(--color-accent) 80%, var(--color-foreground))"
                 >
                   {topic}

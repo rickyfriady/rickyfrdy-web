@@ -13,7 +13,7 @@ const { languages } = Astro.props
     <p class="text-foreground mb-3 text-sm font-semibold">Most Used Languages</p>
 
     <!-- Stacked bar: bars start at 0 width, script animates them in -->
-    <div class="flex h-[4px] md:h-3.5 w-full overflow-hidden rounded-full bg-secondary" aria-hidden="true">
+    <div class="flex h-[4px] md:h-4 w-full overflow-hidden rounded-full bg-secondary" aria-hidden="true">
       {languages.map((lang) => (
         <div
           class="relative h-full first:rounded-l-full last:rounded-r-full"
@@ -27,9 +27,9 @@ const { languages } = Astro.props
     </div>
 
     <!-- Legend: starts hidden, fades in -->
-    <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-1.5" aria-label="Language breakdown">
+    <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2" aria-label="Language breakdown">
       {languages.map((lang) => (
-        <li class="flex items-center gap-1.5 flex-shrink-0 opacity-0" data-lang-legend>
+        <li class="flex items-center gap-2 flex-shrink-0 opacity-0" data-lang-legend>
           <span
             class="block h-2 w-2 flex-shrink-0 rounded-full"
             style={`background: ${lang.color}`}

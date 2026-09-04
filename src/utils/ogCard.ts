@@ -4,6 +4,11 @@ import type { ReactNode } from 'react'
 import satori from 'satori'
 import sharp from 'sharp'
 
+// CASE FILE palette resolved to sRGB. Satori cannot read CSS custom
+// properties, so these literals must be kept in step with `global.css`:
+//   #110C08 bg-dark   #ECE7DD bg-light   #201914 ink
+//   #989189 muted-dark  #5F564C muted-light
+//   #6D6059 border-dark  #C53829 thread (theme-constant)
 const WIDTH = 1200
 const HEIGHT = 630
 
@@ -27,12 +32,17 @@ let fontCache: FontData | undefined
 
 async function fonts(): Promise<FontData> {
   if (!fontCache) {
-    const [serif, mono] = await Promise.all([
-      readFile(resolve('./public/fonts/Lora-Italic.ttf')),
+    // Pixelify Sans must be a STATIC instance: satori's opentype.js parser
+    // crashes on the variable `PixelifySans[wght].ttf` shipped by Google Fonts.
+    // Regenerate with:
+    //   fonttools varLib.instancer 'PixelifySans[wght].ttf' wght=400 \
+    //     -o public/fonts/PixelifySans-Regular.ttf
+    const [display, mono] = await Promise.all([
+      readFile(resolve('./public/fonts/PixelifySans-Regular.ttf')),
       readFile(resolve('./public/fonts/JetBrainsMono-Regular.ttf'))
     ])
     fontCache = [
-      { name: 'Lora', data: serif, style: 'italic' },
+      { name: 'Pixelify Sans', data: display, style: 'normal' },
       { name: 'JetBrains Mono', data: mono, style: 'normal' }
     ]
   }
@@ -46,8 +56,8 @@ function pill(text: string) {
       style: {
         fontSize: 11,
         fontFamily: 'JetBrains Mono',
-        color: '#8ca89c',
-        border: '1px solid rgba(140,168,156,0.55)',
+        color: '#989189',
+        border: '2px solid #6D6059',
         borderRadius: 4,
         padding: '2px 8px',
         lineHeight: 1.4
@@ -81,12 +91,12 @@ function buildCard(
             style: {
               width: 432,
               height: HEIGHT,
-              backgroundColor: '#0e1a16',
+              backgroundColor: '#110C08',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '44px 36px',
-              borderRight: '2px solid #8ca89c'
+              borderRight: '4px solid #C53829'
             },
             children: [
               {
@@ -95,7 +105,7 @@ function buildCard(
                   style: {
                     fontSize: 13,
                     fontFamily: 'JetBrains Mono',
-                    color: '#8ca89c',
+                    color: '#989189',
                     letterSpacing: '0.15em',
                     textTransform: 'uppercase'
                   },
@@ -113,7 +123,7 @@ function buildCard(
                         style: {
                           fontSize: 11,
                           fontFamily: 'JetBrains Mono',
-                          color: 'rgba(242,240,232,0.35)',
+                          color: '#989189',
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em'
                         },
@@ -126,7 +136,7 @@ function buildCard(
                         style: {
                           fontSize: 13,
                           fontFamily: 'JetBrains Mono',
-                          color: '#8ca89c'
+                          color: '#989189'
                         },
                         children: meta1
                       }
@@ -139,7 +149,7 @@ function buildCard(
                               style: {
                                 fontSize: 12,
                                 fontFamily: 'JetBrains Mono',
-                                color: 'rgba(242,240,232,0.3)'
+                                color: '#989189'
                               },
                               children: meta2
                             }
@@ -158,7 +168,7 @@ function buildCard(
             style: {
               flex: 1,
               height: HEIGHT,
-              backgroundColor: '#f8f7f4',
+              backgroundColor: '#ECE7DD',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -170,9 +180,8 @@ function buildCard(
                 props: {
                   style: {
                     fontSize: 42,
-                    fontFamily: 'Lora',
-                    fontStyle: 'italic',
-                    color: '#0e1a16',
+                    fontFamily: 'Pixelify Sans',
+                    color: '#201914',
                     lineHeight: 1.15
                   },
                   children: truncate(title, 60)
@@ -189,7 +198,7 @@ function buildCard(
                         style: {
                           fontSize: 13,
                           fontFamily: 'JetBrains Mono',
-                          color: 'rgba(14,26,22,0.5)',
+                          color: '#5F564C',
                           lineHeight: 1.5
                         },
                         children: truncate(description, 100)

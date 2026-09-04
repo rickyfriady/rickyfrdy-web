@@ -1,10 +1,18 @@
 import mdx from '@astrojs/mdx'
+import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 import robotsTxt from 'astro-robots-txt'
+import { mediapipeVersion, syncMediapipeWasm } from './scripts/mediapipe-assets.mjs'
 
 const SITE = 'https://rickyfrdy.my.id'
+
+// Copied once per dev-server start and per build, into `public/` so it is
+// served identically in both. Detective Mode only ever fetches it after an
+// explicit click, so this never touches any page's initial load.
+await syncMediapipeWasm()
+const MEDIAPIPE_VERSION = await mediapipeVersion()
 
 const EN_ID_PAIRS = new Set([
   '/',
@@ -13,7 +21,9 @@ const EN_ID_PAIRS = new Set([
   '/projects/',
   '/contact/',
   '/now/',
-  '/ask/'
+  '/ask/',
+  '/board/',
+  '/arcade/'
 ])
 
 const EXCLUDE_EXACT = new Set([
@@ -37,6 +47,9 @@ export default defineConfig({
   },
   integrations: [
     mdx(),
+    // Needed only by the investigation board island (`client:only="react"`).
+    // Every other route stays zero-JS.
+    react(),
     sitemap({
       filter: (page) => {
         const path = new URL(page).pathname
@@ -105,6 +118,11 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false }
   },
   vite: {
+    define: {
+      // The CDN fallback must never hardcode a version — it is read from the
+      // installed package so it always matches the self-hosted WASM.
+      __MEDIAPIPE_VERSION__: JSON.stringify(MEDIAPIPE_VERSION)
+    },
     // biome-ignore lint/suspicious/noExplicitAny: tailwindcss vite plugin type is incompatible with Vite's PluginOption
     plugins: [tailwindcss() as any],
     resolve: {

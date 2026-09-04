@@ -1,5 +1,6 @@
 ---
 import { skillGroups } from '@/data/skills'
+import { getSpriteBySlug } from '@/utils/skillIcon'
 
 const allSkillCount = skillGroups.reduce((n, g) => n + g.skills.length, 0)
 const groups = skillGroups.map((g) => g.label)
@@ -53,20 +54,26 @@ const groups = skillGroups.map((g) => g.label)
         <div class="flex flex-wrap gap-2">
           {group.skills.map((skill) => (
             <div
-              class="group flex flex-col items-center gap-1.5"
+              class="group flex flex-col items-center gap-2"
               data-skill-name={skill.name.toLowerCase()}
               data-skill-group-name={group.label.toLowerCase()}
             >
-              <div class="glass-card flex h-12 w-12 items-center justify-center p-1.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:shadow-sm">
-                <img
-                  src={`https://skillicons.dev/icons?i=${skill.icon}`}
-                  alt={skill.name}
-                  title={skill.name}
-                  class="h-full w-full object-contain"
-                  loading="lazy"
-                  width="40"
-                  height="40"
-                />
+              <div class="pixel-frame flex h-12 w-12 items-center justify-center p-2 transition-transform duration-200 group-hover:-translate-y-1">
+                {getSpriteBySlug(skill.icon) ? (
+                  <img
+                    src={getSpriteBySlug(skill.icon)}
+                    alt={skill.name}
+                    title={skill.name}
+                    class="pixel-sprite h-8 w-8"
+                    loading="lazy"
+                    width="32"
+                    height="32"
+                  />
+                ) : (
+                  <span class="text-muted font-mono text-[9px] leading-none" title={skill.name}>
+                    {skill.name.slice(0, 3).toUpperCase()}
+                  </span>
+                )}
               </div>
               <span class="text-muted font-mono text-[9px] tracking-[0.06em]">{skill.name}</span>
             </div>

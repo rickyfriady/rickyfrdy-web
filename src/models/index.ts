@@ -1,3 +1,5 @@
+export type { AssetLicence } from './asset-licence.models'
+export type { BoardCard, BoardThread } from './board.models'
 export type { Collaborator } from './collaborator.models'
 export type { ContactFormData } from './contact.models'
 export type {
@@ -6,6 +8,26 @@ export type {
   SkillCategory,
   WorkExperience
 } from './experience.models'
+export type {
+  Door,
+  Encounter,
+  EncounterResult,
+  EncounterTurn,
+  GameSave,
+  LocalizedText,
+  Npc,
+  ObjectBinding,
+  Quest,
+  QuestState,
+  Room,
+  RoomId,
+  RoomObject,
+  Sprite,
+  SpriteSheet,
+  Stat,
+  Tile,
+  Vec2
+} from './game.models'
 export type {
   ContributionDay,
   GitHubStats,

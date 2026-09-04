@@ -52,16 +52,16 @@ import PageAnimations from '@/components/ui/PageAnimations.astro'
               <span class="text-foreground font-semibold text-sm">{exp.role}</span>
               <span class="diff-tag">{exp.company}</span>
             </div>
-            <p class="text-muted mt-0.5 text-xs">{exp.location} · {exp.period}</p>
+            <p class="text-muted mt-1 text-xs">{exp.location} · {exp.period}</p>
             <ul class="mt-3 space-y-2">
               {exp.bullets.map((bullet) => (
                 <li class="flex gap-2 text-sm">
-                  <span class="text-accent mt-0.5 flex-shrink-0 text-xs">›</span>
+                  <span class="text-accent mt-1 flex-shrink-0 text-xs">›</span>
                   <span class="text-muted">{bullet}</span>
                 </li>
               ))}
             </ul>
-            <div class="mt-3 flex flex-wrap gap-1.5">
+            <div class="mt-3 flex flex-wrap gap-2">
               {exp.stack.map((tech) => (
                 <span class="diff-tag">{tech}</span>
               ))}
@@ -84,16 +84,16 @@ import PageAnimations from '@/components/ui/PageAnimations.astro'
               <span class="text-foreground font-semibold text-sm">{proj.title}</span>
               <span class="diff-tag">{proj.company}</span>
             </div>
-            <p class="text-muted mt-0.5 text-xs">{proj.period}</p>
+            <p class="text-muted mt-1 text-xs">{proj.period}</p>
             <ul class="mt-3 space-y-2">
               {proj.bullets.map((bullet) => (
                 <li class="flex gap-2 text-sm">
-                  <span class="text-accent mt-0.5 flex-shrink-0 text-xs">›</span>
+                  <span class="text-accent mt-1 flex-shrink-0 text-xs">›</span>
                   <span class="text-muted">{bullet}</span>
                 </li>
               ))}
             </ul>
-            <div class="mt-3 flex flex-wrap gap-1.5">
+            <div class="mt-3 flex flex-wrap gap-2">
               {proj.stack.map((tech) => (
                 <span class="diff-tag">{tech}</span>
               ))}
@@ -113,7 +113,7 @@ import PageAnimations from '@/components/ui/PageAnimations.astro'
           <span class="text-foreground font-semibold text-sm">{education.degree}</span>
           <span class="diff-tag">{education.institution}</span>
         </div>
-        <p class="text-muted mt-0.5 text-xs">{education.location} · {education.period}</p>
+        <p class="text-muted mt-1 text-xs">{education.location} · {education.period}</p>
         <p class="text-muted mt-2 text-sm">IPK: <span class="text-foreground font-semibold">{education.gpa}</span></p>
       </div>
     </section>
@@ -127,7 +127,7 @@ import PageAnimations from '@/components/ui/PageAnimations.astro'
         {skillCategories.map((cat) => (
           <div>
             <h3 class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">{cat.label}</h3>
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap gap-2">
               {cat.items.map((item) => (
                 <span class="diff-tag">{item}</span>
               ))}
@@ -164,7 +164,7 @@ import PageAnimations from '@/components/ui/PageAnimations.astro'
         class="text-muted border-border hover:bg-secondary inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-xs transition-colors"
       >
         <svg
-          class="h-3.5 w-3.5"
+          class="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

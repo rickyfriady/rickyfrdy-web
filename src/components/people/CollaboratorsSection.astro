@@ -43,7 +43,7 @@ function primaryHref(c: Collaborator): string {
               href={primaryHref(c)}
               target="_blank"
               rel="noopener noreferrer"
-              class="glass-card group relative flex flex-col overflow-hidden no-underline transition-[box-shadow,border-color] duration-500 hover:border-accent/40 hover:shadow-[0_16px_36px_color-mix(in_oklch,var(--color-accent)_14%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              class="evidence-card group relative flex flex-col overflow-hidden no-underline transition-[box-shadow,border-color] duration-500 hover:border-accent/40 hover:shadow-[0_16px_36px_color-mix(in_oklch,var(--color-accent)_14%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               data-collab-card
             >
               <!-- Photo -->
@@ -65,7 +65,7 @@ function primaryHref(c: Collaborator): string {
 
                 <!-- Company tag: slides in from the right edge on hover (GSAP-driven) -->
                 <span
-                  class="border-border/60 bg-background/90 text-foreground absolute top-4 right-0 translate-x-full whitespace-nowrap rounded-l-full border border-r-0 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] opacity-0 shadow-lg backdrop-blur"
+                  class="border-border bg-background text-foreground absolute top-4 right-0 translate-x-full whitespace-nowrap border-2 border-r-0 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.1em] opacity-0"
                   aria-hidden="true"
                   data-collab-tag
                 >
@@ -139,7 +139,7 @@ function primaryHref(c: Collaborator): string {
                         <p class="text-foreground text-sm font-medium truncate leading-tight group-hover:text-accent transition-colors">
                           {p.name}
                         </p>
-                        <p class="text-muted truncate font-mono text-[10px] uppercase tracking-[0.08em] mt-0.5">
+                        <p class="text-muted truncate font-mono text-[10px] uppercase tracking-[0.08em] mt-1">
                           {p.role} · {p.company}
                         </p>
                       </div>

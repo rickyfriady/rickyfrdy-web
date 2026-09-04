@@ -1,0 +1,85 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import WrapShader from '@/components/arcade/WrapShader.astro'
+import WanderingEyes from '@/components/layout/WanderingEyes.astro'
+import AnimatedGradient from '@/components/arcade/AnimatedGradient.astro'
+import BlurhashDemo from '@/components/arcade/BlurhashDemo.astro'
+import { t } from '@/i18n/ui'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+---
+
+<MainLayout
+  title={t(lang, 'arcade.title')}
+  description={t(lang, 'arcade.description')}
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/arcade/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/arcade/' }
+  ]}
+  schema={webPageSchema(t(lang, 'arcade.title'), t(lang, 'arcade.description'), 'https://rickyfrdy.my.id/arcade/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b-4 px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'case.arcade')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      {t(lang, 'arcade.heading')}<span class="title-accent text-accent">.</span>
+    </h1>
+    <p class="text-muted mt-4 max-w-2xl text-sm leading-relaxed">{t(lang, 'arcade.intro')}</p>
+  </section>
+
+  <section class="px-4 py-8">
+    <span class="chapter-label">{t(lang, 'arcade.shader')}</span>
+    <div class="evidence-panel relative mt-4 h-56 overflow-hidden">
+      <WrapShader pauseLabel={t(lang, 'arcade.shaderPause')} playLabel={t(lang, 'arcade.shaderPlay')} />
+    </div>
+    <p class="text-muted mt-3 max-w-2xl text-sm leading-relaxed">{t(lang, 'arcade.shaderNote')}</p>
+  </section>
+
+  <section class="border-border border-t px-4 py-8">
+    <span class="chapter-label">{t(lang, 'arcade.eyes')}</span>
+    <div class="evidence-panel mt-4 flex flex-col items-center justify-center gap-4 p-12">
+      <div class="scale-[3]">
+        <WanderingEyes asLink={false} round />
+      </div>
+      <p class="text-muted font-mono text-[10px] tracking-[0.1em] uppercase">
+        {t(lang, 'arcade.eyesHint')}
+      </p>
+    </div>
+    <p class="text-muted mt-3 max-w-2xl text-sm leading-relaxed">{t(lang, 'arcade.eyesNote')}</p>
+  </section>
+
+  <section class="border-border border-t px-4 py-8">
+    <span class="chapter-label">{t(lang, 'arcade.blurhash')}</span>
+    <div class="mt-4">
+      <BlurhashDemo
+        src="/works/works-1.webp"
+        alt="Project screenshot loading from its blurhash placeholder"
+        hashLabel={t(lang, 'arcade.bhHash')}
+        realLabel={t(lang, 'arcade.bhReal')}
+        replayLabel={t(lang, 'arcade.bhReplay')}
+      />
+    </div>
+    <p class="text-muted mt-3 max-w-2xl text-sm leading-relaxed">{t(lang, 'arcade.blurhashNote')}</p>
+  </section>
+
+  <section class="border-border border-t px-4 py-8">
+    <span class="chapter-label">{t(lang, 'arcade.gradient')}</span>
+    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {(['Prism', 'Lava', 'Plasma'] as const).map((preset) => (
+        <figure class="m-0">
+          <div class="evidence-card relative h-32 overflow-hidden">
+            <AnimatedGradient config={{ preset, speed: 14 }} noise={{ opacity: 0.12 }} style={{ zIndex: '0' }} />
+          </div>
+          <figcaption class="text-muted mt-2 font-mono text-[10px] tracking-[0.1em] uppercase">
+            {preset}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+    <p class="text-muted mt-3 max-w-2xl text-sm leading-relaxed">{t(lang, 'arcade.gradientNote')}</p>
+  </section>
+</MainLayout>

@@ -1,0 +1,103 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import InvestigationBoard from '@/components/board/InvestigationBoard'
+import { projects } from '@/data/projects'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import { t } from '@/i18n/ui'
+import { buildBoardCards, computeThreads, connectionCounts } from '@/utils/board'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+
+const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[]).map((entry) => ({
+  slug: entry.id,
+  title: entry.data.title,
+  tags: entry.data.tags,
+  draft: entry.data.draft
+}))
+
+const cards = buildBoardCards(projects, posts, lang)
+const threads = computeThreads(cards)
+const counts = connectionCounts(threads)
+---
+
+<MainLayout
+  title={t(lang, 'board.title')}
+  description={t(lang, 'board.description')}
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/board/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/board/' }
+  ]}
+  schema={webPageSchema(t(lang, 'board.title'), t(lang, 'board.description'), 'https://rickyfrdy.my.id/board/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'case.board')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      {t(lang, 'board.heading')}<span class="title-accent text-accent">.</span>
+    </h1>
+    <p class="text-muted mt-4 max-w-2xl text-sm leading-relaxed">{t(lang, 'board.intro')}</p>
+    <a href="/play" class="menu-cursor text-accent mt-4 inline-block font-mono text-xs">
+      {t(lang, 'case.play')} →
+    </a>
+  </section>
+
+  <!--
+    The canvas is desktop-only: a pan/zoom board cannot work on a 375px
+    viewport. The list below is not a fallback bolted on afterwards — it is
+    always in the DOM, so every destination stays crawlable and reachable
+    without JavaScript, and on small screens it IS the board.
+  -->
+  <section class="hidden px-4 py-6 md:block">
+    <InvestigationBoard
+      client:only="react"
+      cards={cards}
+      threads={threads}
+      labels={{
+        connected: t(lang, 'board.connected'),
+        dragHint: t(lang, 'board.dragHint'),
+        lamp: t(lang, 'board.lamp'),
+        board: t(lang, 'board.surface')
+      }}
+      detectiveLabels={{
+        enable: t(lang, 'detective.enable'),
+        disable: t(lang, 'detective.disable'),
+        loading: t(lang, 'detective.loading'),
+        privacy: t(lang, 'detective.privacy'),
+        start: t(lang, 'detective.start'),
+        cancel: t(lang, 'detective.cancel'),
+        live: t(lang, 'detective.live'),
+        denied: t(lang, 'detective.denied'),
+        unavailable: t(lang, 'detective.unavailable'),
+        hint: t(lang, 'detective.hint')
+      }}
+    />
+  </section>
+
+  <section class="px-4 py-6 md:hidden">
+    <span class="chapter-label">{t(lang, 'board.allCards')}</span>
+    <ul class="mt-4 flex flex-col gap-3">
+      {cards.map((card) => (
+        <li>
+          <a href={card.url} class="menu-cursor evidence-card block p-3 no-underline">
+            <span class="text-muted block font-mono text-[9px] tracking-[0.12em] uppercase">
+              {card.category}
+            </span>
+            <span class="text-foreground mt-1 block text-sm font-semibold leading-tight">
+              {card.title}
+            </span>
+            {counts[card.id] ? (
+              <span class="text-muted mt-2 block font-mono text-[9px]">
+                {t(lang, 'board.connected').replace('{n}', String(counts[card.id]))}
+              </span>
+            ) : null}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</MainLayout>

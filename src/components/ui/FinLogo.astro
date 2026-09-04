@@ -59,7 +59,7 @@ if (loader) {
 {svgContent ? (
   bg ? (
     <span
-      class:list={['inline-flex items-center justify-center rounded-lg bg-white p-1.5', className]}
+      class:list={['inline-flex items-center justify-center border-2 border-border bg-surface p-2', className]}
       title={label}
     >
       <span
@@ -83,6 +83,6 @@ if (loader) {
     aria-label={label}
     title={label}
     style={`display:inline-block;width:${size}px;height:${size}px;flex-shrink:0;`}
-    class:list={['rounded bg-gray-200 dark:bg-gray-700', bg && 'rounded-lg bg-white p-1.5', className]}
+    class:list={['bg-secondary', bg && 'border-2 border-border bg-surface p-2', className]}
   />
 )}

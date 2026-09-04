@@ -1,0 +1,33 @@
+---
+import { attributions } from '@/data/asset-licences'
+
+/**
+ * Licence attribution for illustrated art, rendered where a visitor can reach
+ * it rather than only in a repository file — which is what the licences that
+ * demand credit actually require.
+ *
+ * Renders nothing while no third-party art is in use, so it costs an empty
+ * array check today and needs no edit when the first credited asset lands.
+ */
+interface Props {
+  label: string
+}
+
+const { label } = Astro.props
+const credits = attributions()
+---
+
+{credits.length > 0 && (
+  <section class="border-border border-t px-4 py-8">
+    <h2 class="chapter-label">{label}</h2>
+    <ul class="text-muted mt-3 space-y-1 font-mono text-xs">
+      {credits.map((credit) => (
+        <li>
+          {'attribution' in credit && credit.attribution}
+          {' — '}
+          {'licence' in credit && credit.licence}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

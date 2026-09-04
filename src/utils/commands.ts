@@ -1,7 +1,13 @@
 import { type Lang, t } from '@/i18n/ui'
 
 export type CommandGroup = 'navigation' | 'actions' | 'content'
-export type CommandKind = 'navigate' | 'toggle-theme' | 'switch-lang' | 'copy'
+export type CommandKind =
+  | 'navigate'
+  | 'toggle-theme'
+  | 'switch-lang'
+  | 'copy'
+  | 'toggle-companion'
+  | 'reset-game'
 
 export interface Command {
   /** Stable unique id */
@@ -34,6 +40,11 @@ function localizeHref(path: string, lang: Lang): string {
   return path === '/' ? '/id' : `/id${path}`
 }
 
+/**
+ * `alias` exists for the two in-fiction page names. Their labels are evocative
+ * but tell you nothing about what the page is, so the plain words someone would
+ * actually type are added as searchable terms instead of renaming the page.
+ */
 const NAV_ITEMS = [
   { key: 'nav.home', path: '/' },
   { key: 'nav.about', path: '/about' },
@@ -41,17 +52,28 @@ const NAV_ITEMS = [
   { key: 'nav.dashboard', path: '/dashboard' },
   { key: 'nav.resume', path: '/resume' },
   { key: 'nav.projects', path: '/projects' },
+  { key: 'case.board', path: '/board', alias: 'board map connections graph papan peta' },
+  {
+    key: 'case.play',
+    path: '/play',
+    alias: 'play game rpg character walk main permainan karakter'
+  },
+  {
+    key: 'case.arcade',
+    path: '/arcade',
+    alias: 'experiments lab playground shader demo eksperimen'
+  },
   { key: 'nav.contact', path: '/contact' }
 ] as const
 
 function navCommands(lang: Lang): Command[] {
-  return NAV_ITEMS.map(({ key, path }) => ({
-    id: `nav:${path}`,
-    label: t(lang, key),
-    keywords: path,
+  return NAV_ITEMS.map((item) => ({
+    id: `nav:${item.path}`,
+    label: t(lang, item.key),
+    keywords: 'alias' in item ? `${item.path} ${item.alias}` : item.path,
     group: 'navigation',
     kind: 'navigate',
-    href: localizeHref(path, lang)
+    href: localizeHref(item.path, lang)
   }))
 }
 
@@ -78,6 +100,28 @@ function actionCommands(lang: Lang): Command[] {
       keywords: 'language locale english indonesia bahasa',
       group: 'actions',
       kind: 'switch-lang'
+    },
+    {
+      id: 'action:play',
+      label: t(lang, 'cmdk.action.play'),
+      keywords: 'play game rpg walk explore main permainan',
+      group: 'actions',
+      kind: 'navigate',
+      href: localizeHref('/play', lang)
+    },
+    {
+      id: 'action:companion',
+      label: t(lang, 'cmdk.action.companion'),
+      keywords: 'companion character mascot hide show karakter sembunyikan',
+      group: 'actions',
+      kind: 'toggle-companion'
+    },
+    {
+      id: 'action:reset-game',
+      label: t(lang, 'cmdk.action.reset'),
+      keywords: 'reset game progress clear atur ulang progres hapus',
+      group: 'actions',
+      kind: 'reset-game'
     },
     {
       id: 'action:resume',
