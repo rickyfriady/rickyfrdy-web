@@ -208,6 +208,7 @@ export const ui = {
     'ask.empty': "I couldn't find anything about that on this site.",
     'ask.sources': 'Sources',
     'ask.answer': 'Answer',
+    'ask.answering': 'Generating an answer…',
     'ask.disclaimer': 'Results are ranked from this site’s content. No external data is used.'
   },
   id: {
@@ -418,6 +419,7 @@ export const ui = {
     'ask.empty': 'Saya tidak menemukan apa pun tentang itu di situs ini.',
     'ask.sources': 'Sumber',
     'ask.answer': 'Jawaban',
+    'ask.answering': 'Membuat jawaban…',
     'ask.disclaimer':
       'Hasil diperingkat dari konten situs ini. Tidak ada data eksternal yang digunakan.'
   }
