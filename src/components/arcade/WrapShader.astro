@@ -1,7 +1,25 @@
 ---
+interface Props {
+  /** Label for the play/pause control, so the exhibit can be handled. */
+  pauseLabel?: string
+  playLabel?: string
+}
+const { pauseLabel = 'Pause', playLabel = 'Play' } = Astro.props
 ---
 
 <div id="wrap-shader-root" class="absolute inset-0" aria-hidden="true"></div>
+
+<button
+  type="button"
+  id="wrap-shader-toggle"
+  data-playing="true"
+  data-pause-label={pauseLabel}
+  data-play-label={playLabel}
+  class="border-border text-foreground bg-background/90 absolute right-2 bottom-2 z-10 inline-flex min-h-[44px] items-center gap-2 border-2 px-3 py-2 font-mono text-[10px] tracking-[0.1em] uppercase focus-visible:ring-accent focus-visible:ring-2 focus-visible:outline-none"
+>
+  <span class="detective-live-dot" aria-hidden="true"></span>
+  <span data-label>{pauseLabel}</span>
+</button>
 
 <script>
   import {
@@ -46,9 +64,22 @@
 
     const isDark = document.documentElement.classList.contains('dark')
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const speed = reducedMotion ? 0 : 0.4
+    const speed = reducedMotion ? 0 : 1.1
 
     const mount = new ShaderMount(root, warpFragmentShader, buildUniforms(isDark), undefined, speed)
+
+    // Without a control the exhibit just sits there and reads as broken; with
+    // one, it is visibly a live thing you can stop and start.
+    const toggle = document.getElementById('wrap-shader-toggle')
+    const label = toggle?.querySelector('[data-label]')
+    const dot = toggle?.querySelector('.detective-live-dot') as HTMLElement | null
+    toggle?.addEventListener('click', () => {
+      const playing = toggle.dataset.playing !== 'true'
+      toggle.dataset.playing = String(playing)
+      mount.setSpeed(playing ? speed : 0)
+      if (label) label.textContent = playing ? toggle.dataset.pauseLabel! : toggle.dataset.playLabel!
+      if (dot) dot.style.animationPlayState = playing ? 'running' : 'paused'
+    })
 
     const observer = new MutationObserver(() => {
       const nowDark = document.documentElement.classList.contains('dark')

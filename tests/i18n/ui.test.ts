@@ -11,9 +11,17 @@ describe('t()', () => {
 
   it('returns all 11 keys without error', () => {
     const keys = [
-      'case.back', 'case.role', 'case.overview', 'case.impact',
-      'case.problem', 'case.solution', 'case.highlights',
-      'case.live', 'case.github', 'case.prev', 'case.next',
+      'case.back',
+      'case.role',
+      'case.overview',
+      'case.impact',
+      'case.problem',
+      'case.solution',
+      'case.highlights',
+      'case.live',
+      'case.github',
+      'case.prev',
+      'case.next'
     ] as const
     keys.forEach((key) => {
       expect(typeof t('en', key)).toBe('string')

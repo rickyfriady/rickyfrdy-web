@@ -1,0 +1,102 @@
+---
+import { resolveById } from '@/utils/game/assets'
+import { fallbackKind } from '@/utils/game/sprites'
+
+/**
+ * One asset slot, rendered on whichever path has art for it.
+ *
+ * The caller passes an id and nothing else: precedence, density set, and the
+ * drawn floor are all decided here from where the files live. That is what
+ * keeps "components do not choose" true — this is the single component that
+ * knows there are paths at all.
+ */
+interface Props {
+  id: string
+  alt?: string
+  /** Above the fold; anything else defers. Defaults to deferring. */
+  eager?: boolean
+  size?: number
+  class?: string
+  /**
+   * A slot with its own bespoke drawn stand-in supplies it here; slots without
+   * one get the generic sprite fallback. Either way the floor is CSS, so the
+   * scene is complete before any file lands.
+   */
+  fallbackClass?: string
+}
+
+const { id, alt = '', eager = false, size, class: className, fallbackClass } = Astro.props
+
+const asset = resolveById(id)
+
+const dims = size ? { width: size, height: size } : {}
+---
+
+{asset.path === 'illustrated' && (
+  <img
+    src={asset.url}
+    srcset={asset.srcset}
+    alt={alt}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    class:list={['illustrated-art', className]}
+    data-asset-fallback={fallbackClass ?? fallbackKind(id)}
+    data-asset-floor={fallbackClass ? 'custom' : 'sprite'}
+    {...dims}
+  />
+)}
+
+{asset.path === 'pixel' && (
+  <img
+    src={asset.url}
+    alt={alt}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    class:list={['pixel-sprite', className]}
+    data-asset-fallback={fallbackClass ?? fallbackKind(id)}
+    data-asset-floor={fallbackClass ? 'custom' : 'sprite'}
+    {...dims}
+  />
+)}
+
+{asset.path === 'fallback' && (
+  fallbackClass ? (
+    <div class:list={[fallbackClass, className]} aria-hidden="true" />
+  ) : (
+    <div
+      class:list={['sprite-fb pixel-sprite', className]}
+      data-kind={fallbackKind(id)}
+      aria-hidden="true"
+      style={size ? `--sprite-size: ${size}px` : undefined}
+    />
+  )
+)}
+
+<script>
+  /* A file that 404s or decodes badly must not leave a broken-image glyph in a
+     scene whose whole promise is that it works with no art at all. Swapping the
+     element for its drawn stand-in is the same floor the no-art case already
+     lands on. `error` does not bubble, so this listens in the capture phase
+     rather than attaching a handler per image. */
+  document.addEventListener(
+    'error',
+    (event) => {
+      const el = event.target
+      if (!(el instanceof HTMLImageElement)) return
+      const kind = el.dataset.assetFallback
+      if (!kind) return
+      const rest = el.className.replace(/illustrated-art|pixel-sprite/g, '').trim()
+      const stand = document.createElement('div')
+      if (el.dataset.assetFloor === 'custom') {
+        stand.className = `${kind} ${rest}`.trim()
+      } else {
+        stand.className = `sprite-fb pixel-sprite ${rest}`.trim()
+        stand.dataset.kind = kind
+        if (el.width) stand.style.setProperty('--sprite-size', `${el.width}px`)
+      }
+      stand.setAttribute('aria-hidden', 'true')
+      el.replaceWith(stand)
+    },
+    true
+  )
+</script>

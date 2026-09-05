@@ -35,7 +35,7 @@ const lang = 'en'
         autocomplete="off"
         placeholder={t(lang, 'ask.placeholder')}
         aria-label={t(lang, 'ask.placeholder')}
-        class="text-foreground placeholder:text-muted border-border focus-visible:ring-accent w-full rounded-xl border bg-secondary/30 px-4 py-3 text-sm outline-none focus-visible:ring-2"
+        class="text-foreground placeholder:text-muted border-border focus-visible:ring-accent w-full border-2 bg-secondary px-4 py-3 text-sm outline-none focus-visible:ring-2"
       />
       <button
         type="submit"
@@ -100,10 +100,10 @@ const lang = 'en'
     box.innerHTML = `<p class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] mb-1">${escapeHtml(tr(lang, 'ask.sources'))}</p>` +
       results
         .map(
-          (r) => `<a href="${r.url}" class="block rounded-xl border border-border bg-secondary/20 p-4 transition-colors hover:border-accent/50">
+          (r) => `<a href="${r.url}" class="menu-cursor evidence-card block p-4 transition-colors">
             <span class="text-foreground text-sm font-semibold">${escapeHtml(r.title)}</span>
             <span class="text-muted ml-2 font-mono text-[10px]">${(r.score * 100).toFixed(0)}%</span>
-            <p class="text-muted mt-1.5 text-sm leading-relaxed">${escapeHtml(excerpt(r.text))}</p>
+            <p class="text-muted mt-2 text-sm leading-relaxed">${escapeHtml(excerpt(r.text))}</p>
           </a>`
         )
         .join('')

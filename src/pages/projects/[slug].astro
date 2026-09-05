@@ -69,7 +69,7 @@ const pairs = project.challenges
         </div>
       )}
 
-      <div class="mb-8 flex flex-wrap gap-1.5">
+      <div class="mb-8 flex flex-wrap gap-2">
         {project.technologies.map((tech) => (
           <span class="diff-tag" data-tech-chip>{tech}</span>
         ))}
@@ -167,7 +167,7 @@ const pairs = project.challenges
       <ul class="space-y-4 max-w-2xl">
         {project.results.map((result, i) => (
           <li class="flex gap-4 text-sm leading-relaxed" data-result>
-            <span class="text-accent font-mono text-xs mt-0.5 flex-shrink-0 select-none">
+            <span class="text-accent font-mono text-xs mt-1 flex-shrink-0 select-none">
               0{i + 1}
             </span>
             <span class="text-foreground">{result}</span>

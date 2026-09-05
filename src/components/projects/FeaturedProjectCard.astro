@@ -2,7 +2,6 @@
 import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
 import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
-import AnimatedGradient from '@/components/animated-gradient.astro'
 import BlurhashImage from '@/components/ui/BlurhashImage.astro'
 
 interface Props {
@@ -20,24 +19,16 @@ const stat1 = project.metrics?.[0]
 const stat2 = project.metrics?.[1]
 ---
 
-<div class:list={["relative rounded-xl", project.featured ? "p-[2px]" : ""]}>
-  {project.featured && (
-    <AnimatedGradient
-      config={{ preset: 'Plasma', speed: 12 }}
-      radius="12px"
-      noise={{ opacity: 0.12 }}
-      style={{ zIndex: '0' }}
-    />
-  )}
+<div class:list={["relative", project.featured ? "pixel-frame pixel-frame-thread" : ""]}>
 <a
   href={`/projects/${project.slug}`}
   class:list={[
     "group relative flex flex-col overflow-hidden no-underline min-h-[220px] transition-all duration-300 hover:shadow-[0_0_28px_color-mix(in_oklch,var(--color-accent)_12%,transparent)]",
     project.featured
-      ? "z-10 rounded-[10px]"
+      ? "z-10"
       : "rounded-xl border border-border hover:border-accent/60"
   ]}
-  style="background: color-mix(in oklch, var(--color-background) 72%, transparent); backdrop-filter: blur(14px);"
+  style="background: var(--color-surface);"
 >
   <!-- ── Bottom-right corner image ─────────────────────────────── -->
   {project.heroImage && (
@@ -50,7 +41,7 @@ const stat2 = project.metrics?.[1]
         alt=""
         class="h-full w-full object-cover object-left-top
                grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
-               group-hover:scale-[1.07] group-hover:grayscale-0"
+               group-hover:grayscale-0"
       />
       <!-- Bottom fade so the stats footer blends over the image -->
       <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
@@ -77,14 +68,14 @@ const stat2 = project.metrics?.[1]
   <div class="relative z-10 flex flex-1 flex-col p-5">
     <!-- Top row: badges (left) + date pill + logo (right) -->
     <div class="mb-3 flex items-start justify-between gap-2">
-      <div class="flex flex-wrap items-center gap-1.5">
+      <div class="flex flex-wrap items-center gap-2">
         {project.featured && <FeaturedBadge label={featuredLabel} />}
         <span class="diff-tag">{catLabel}</span>
         <span class="diff-tag">{project.year}</span>
       </div>
       <div class="flex flex-shrink-0 flex-col items-end gap-2">
         <span
-          class="rounded-full border px-2 py-0.5 font-mono text-[10px] leading-tight
+          class="rounded-full border px-2 py-1 font-mono text-[10px] leading-tight
                  border-accent/50 text-accent"
         >
           {dateStr}
@@ -117,7 +108,7 @@ const stat2 = project.metrics?.[1]
     <div class="border-border relative -mx-5 -mb-5 mt-4 rounded-b-[10px] border-t bg-background px-5 pt-3 pb-5">
       <div class="text-muted flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
         {stat1 && (
-          <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-2">
             <svg class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
@@ -127,7 +118,7 @@ const stat2 = project.metrics?.[1]
         )}
         {stat1 && stat2 && <span class="text-border select-none">·</span>}
         {stat2 && (
-          <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-2">
             <svg class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>

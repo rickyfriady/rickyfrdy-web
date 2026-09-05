@@ -1,0 +1,106 @@
+---
+import { getBlurhash } from '@/utils/blurhash'
+
+interface Props {
+  src: string
+  alt: string
+  hashLabel: string
+  realLabel: string
+  replayLabel: string
+}
+
+const { src, alt, hashLabel, realLabel, replayLabel } = Astro.props
+const hash = await getBlurhash(src)
+---
+
+{
+  hash && (
+    <div class="bh-demo" data-bh-demo data-hash={hash} data-src={src}>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <figure class="m-0">
+          <div class="evidence-card h-40 overflow-hidden">
+            {/* The placeholder, held on screen instead of vanishing — this is
+                the "before" the exhibit is supposed to show. */}
+            <canvas data-bh-canvas width="32" height="32" class="pixel-sprite h-full w-full" />
+          </div>
+          <figcaption class="text-muted mt-2 font-mono text-[10px] tracking-[0.1em] uppercase">
+            {hashLabel}
+          </figcaption>
+          <code class="text-muted mt-1 block font-mono text-[10px] break-all">{hash}</code>
+        </figure>
+
+        <figure class="m-0">
+          <div class="evidence-card relative h-40 overflow-hidden">
+            <img
+              data-bh-real
+              src={src}
+              alt={alt}
+              loading="lazy"
+              class="h-full w-full object-cover"
+            />
+            <canvas
+              data-bh-overlay
+              width="32"
+              height="32"
+              class="pixel-sprite pointer-events-none absolute inset-0 h-full w-full opacity-0"
+            />
+          </div>
+          <figcaption class="text-muted mt-2 font-mono text-[10px] tracking-[0.1em] uppercase">
+            {realLabel}
+          </figcaption>
+        </figure>
+      </div>
+
+      <button
+        type="button"
+        data-bh-replay
+        class="menu-cursor border-border text-foreground hover:bg-secondary mt-4 inline-flex min-h-[44px] items-center border-2 px-4 py-2 font-mono text-xs tracking-[0.1em] uppercase transition-colors focus-visible:ring-accent focus-visible:ring-2 focus-visible:outline-none"
+      >
+        {replayLabel}
+      </button>
+    </div>
+  )
+}
+
+<script>
+  import { decode } from 'blurhash'
+
+  function paint(canvas: HTMLCanvasElement, hash: string) {
+    const size = 32
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const data = ctx.createImageData(size, size)
+    data.data.set(decode(hash, size, size))
+    ctx.putImageData(data, 0, 0)
+  }
+
+  function initBlurhashDemos() {
+    document.querySelectorAll<HTMLElement>('[data-bh-demo]').forEach((root) => {
+      if (root.dataset.bhInit) return
+      root.dataset.bhInit = '1'
+
+      const hash = root.dataset.hash
+      const still = root.querySelector<HTMLCanvasElement>('[data-bh-canvas]')
+      const overlay = root.querySelector<HTMLCanvasElement>('[data-bh-overlay]')
+      const replay = root.querySelector<HTMLButtonElement>('[data-bh-replay]')
+      if (!hash || !still || !overlay || !replay) return
+
+      paint(still, hash)
+      paint(overlay, hash)
+
+      replay.addEventListener('click', () => {
+        // Re-run the real transition so it can actually be watched, rather
+        // than happening once in a few milliseconds on page load.
+        overlay.style.transition = 'none'
+        overlay.style.opacity = '1'
+        // Force a reflow so the transition below is not collapsed into this.
+        void overlay.offsetWidth
+        overlay.style.transition = 'opacity 900ms steps(6, end)'
+        overlay.style.opacity = '0'
+      })
+    })
+  }
+
+  initBlurhashDemos()
+  document.addEventListener('astro:page-load', initBlurhashDemos)
+</script>

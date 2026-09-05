@@ -20,7 +20,7 @@ npm run dev             # or: npm run build
 
 | Layer | Tech |
 |-------|------|
-| Framework | Astro 6 (SSG, `output: static`) — no client-side JS framework islands, zero `client:*` hydration directives |
+| Framework | Astro 6 (SSG, `output: static`) — vanilla `<script>` everywhere except four routes: `/board`, `/id/board`, `/play`, and `/id/play` each mount one React island, the documented exemption for components whose core behaviour is a continuous render or simulation loop. The shared layout carries no `client:*` directive, so no other route ships a framework runtime. |
 | Animation | GSAP 3 · [transitions.dev](https://transitions.dev) (10 CSS transition kits) · Astro View Transitions (nav pill, theme toggle) |
 | Styling | Tailwind CSS v4 · custom CSS utilities (glassmorphism) |
 | PDF | `@react-pdf/renderer` (React 19, **build-time only** — scoped to `ResumePdf.tsx`/`ResumePdfAts.tsx`, not part of the client runtime) — designed + ATS variants |
@@ -28,7 +28,7 @@ npm run dev             # or: npm run build
 | Content | Astro MDX + Content Collections (blog) |
 | OG Images | Satori + Sharp |
 | State | Nanostores (theme) |
-| Package manager | npm (`package-lock.json` is the lockfile in use — `package.json`'s `packageManager: bun@1.3.11` field is stale, no `bun.lockb` exists) |
+| Package manager | bun (`bun.lock` is the only lockfile; `package.json` declares `packageManager: bun@1.4.0`). Use `bun run <script>` — the scripts are the contract, `biome check .` unscoped included. |
 
 ---
 
@@ -97,6 +97,9 @@ src/
 | `/contact` | `/id/contact` | Contact form |
 | `/resume.pdf` | `/id/resume.pdf` | Designed PDF download |
 | `/resume-ats.pdf` | `/id/resume-ats.pdf` | ATS-friendly PDF download |
+| `/board` | `/id/board` | Investigation board — pannable evidence cards joined by red threads (React island above `md`; the card list is always in the HTML) |
+| `/play` | `/id/play` | Play mode — a walkable top-down scene whose objects open real projects, articles, and roles (React island above `md`; the destination list is always in the HTML) |
+| `/arcade` | `/id/arcade` | Evidence locker — experiments kept because they work, not because they fit |
 
 ---
 

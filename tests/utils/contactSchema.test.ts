@@ -6,7 +6,7 @@ describe('contactSchema', () => {
     const result = contactSchema.safeParse({
       name: 'Ricki Friadi',
       email: 'ricki@example.com',
-      message: 'Hello, I would like to get in touch.',
+      message: 'Hello, I would like to get in touch.'
     })
     expect(result.success).toBe(true)
   })
@@ -15,7 +15,7 @@ describe('contactSchema', () => {
     const result = contactSchema.safeParse({
       name: '',
       email: 'ricki@example.com',
-      message: 'Hello, I would like to get in touch.',
+      message: 'Hello, I would like to get in touch.'
     })
     expect(result.success).toBe(false)
     if (!result.success) {
@@ -27,7 +27,7 @@ describe('contactSchema', () => {
     const result = contactSchema.safeParse({
       name: 'R',
       email: 'ricki@example.com',
-      message: 'Hello, I would like to get in touch.',
+      message: 'Hello, I would like to get in touch.'
     })
     expect(result.success).toBe(false)
   })
@@ -36,7 +36,7 @@ describe('contactSchema', () => {
     const result = contactSchema.safeParse({
       name: 'Ricki',
       email: 'not-an-email',
-      message: 'Hello, I would like to get in touch.',
+      message: 'Hello, I would like to get in touch.'
     })
     expect(result.success).toBe(false)
     if (!result.success) {
@@ -48,7 +48,7 @@ describe('contactSchema', () => {
     const result = contactSchema.safeParse({
       name: 'Ricki',
       email: 'ricki@example.com',
-      message: 'Hi',
+      message: 'Hi'
     })
     expect(result.success).toBe(false)
     if (!result.success) {

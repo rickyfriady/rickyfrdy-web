@@ -48,5 +48,15 @@ thoughts/ledgers/
 # Superpowers brainstorm artifacts
 .superpowers/
 
-# Vercel adapter build output
-.vercel
+# MediaPipe WASM — copied out of node_modules at build (~32 MB).
+# Reproducible on any machine, so it has no business in the repo.
+public/vendor/mediapipe/
+
+# Vercel build output (~54 MB) and graphify's generated knowledge graph (~20 MB).
+# Both are regenerated on demand, so neither belongs in the repo.
+.vercel/
+graphify-out/
+
+# Assistant/editor scratch directories
+.codex/
+.continue/
