@@ -1,6 +1,6 @@
 ---
-import { getIllustrated, resolveAsset } from '@/utils/game/assets'
-import { fallbackKind, getSprite } from '@/utils/game/sprites'
+import { resolveById } from '@/utils/game/assets'
+import { fallbackKind } from '@/utils/game/sprites'
 
 /**
  * One asset slot, rendered on whichever path has art for it.
@@ -27,9 +27,7 @@ interface Props {
 
 const { id, alt = '', eager = false, size, class: className, fallbackClass } = Astro.props
 
-const sprite = getSprite(id)
-const pixelMap = sprite.url ? { [id]: { url: sprite.url } } : {}
-const asset = resolveAsset(id, getIllustrated(id) ? { [id]: getIllustrated(id)! } : {}, pixelMap)
+const asset = resolveById(id)
 
 const dims = size ? { width: size, height: size } : {}
 ---

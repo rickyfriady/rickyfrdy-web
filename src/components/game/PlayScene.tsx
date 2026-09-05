@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { QuestState, Stat } from '@/models'
 import { gameEvents, initGame, recordEvent, resetGame } from '@/stores/game'
+import { resolveById } from '@/utils/game/assets'
 import { cameraOffset } from '@/utils/game/camera'
 import { doorAt, TILE } from '@/utils/game/collision'
 import { damageFor, moves, opponents } from '@/utils/game/encounter'
@@ -63,6 +64,50 @@ interface Dialogue {
  * straight to the node. `setState` at 120 Hz is the standard way this becomes
  * janky, and it is avoidable in about ten lines.
  */
+/**
+ * One object's art: illustrated if a file exists for its slug, the pixel sprite
+ * if one does, the drawn stand-in otherwise.
+ *
+ * The precedence itself lives in `resolveById`, shared with `AssetImage` — this
+ * only renders the answer. A failed load is handled here with React's own
+ * `onError` rather than the document-level listener the Astro component ships,
+ * because that listener is not guaranteed to be present on a route that mounts
+ * only this island.
+ *
+ * The image is decorative: the object's name is already rendered as text
+ * directly beneath it, so a screen reader loses nothing when art replaces the
+ * stand-in.
+ */
+function ObjectArt({ sprite, tilePx }: { sprite: string; tilePx: number }) {
+  const [failed, setFailed] = useState(false)
+  const asset = useMemo(() => resolveById(sprite), [sprite])
+  const floor = (
+    <div
+      className="sprite-fb pixel-sprite"
+      aria-hidden="true"
+      data-kind={fallbackKind(sprite)}
+      style={{ ['--sprite-size' as string]: `${tilePx}px` }}
+    />
+  )
+
+  if (failed || asset.path === 'fallback' || !asset.url) return floor
+
+  return (
+    <img
+      src={asset.url}
+      srcSet={asset.srcset}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      width={tilePx}
+      height={tilePx}
+      className={asset.path === 'illustrated' ? 'illustrated-art' : 'pixel-sprite'}
+      style={{ width: tilePx, height: tilePx }}
+      onError={() => setFailed(true)}
+    />
+  )
+}
+
 export default function PlayScene({ rooms, quests, player, labels, lang }: Props) {
   /* Read once: a visitor who asked for less motion gets a still scene, and the
      destination list below the stage is the interaction path. */
@@ -424,25 +469,22 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
               className="absolute flex flex-col items-center"
               style={{ left: object.x * tilePx, top: object.y * tilePx, width: tilePx }}
             >
-              <div
-                className="sprite-fb pixel-sprite"
-                aria-hidden="true"
-                data-kind={fallbackKind(object.sprite)}
-                style={{ ['--sprite-size' as string]: `${tilePx}px` }}
-              />
+              <ObjectArt sprite={object.sprite} tilePx={tilePx} />
               <span className="text-muted mt-1 max-w-[7rem] truncate font-mono text-[0.5rem] uppercase">
                 {object.title}
               </span>
             </div>
           ))}
 
+          {/* The ref stays on the positioned wrapper so the loop keeps mutating one
+              element's transform; the art inside resolves like every other slot. */}
           <div
             ref={actorRef}
-            className="sprite-fb pixel-sprite absolute top-0 left-0 will-change-transform"
+            className="absolute top-0 left-0 will-change-transform"
             aria-hidden="true"
-            data-kind="actor"
-            style={{ ['--sprite-size' as string]: `${Math.round(BODY * tilePx)}px` }}
-          />
+          >
+            <ObjectArt sprite="hero" tilePx={Math.round(BODY * tilePx)} />
+          </div>
         </div>
       </div>
 

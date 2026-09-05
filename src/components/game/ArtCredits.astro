@@ -14,7 +14,15 @@ interface Props {
 }
 
 const { label } = Astro.props
-const credits = attributions()
+// One line per distinct credit, not per file: four assets from one CC0 pack is
+// one thing to say, and repeating it four times reads as a bug.
+const credits = [
+  ...new Map(
+    attributions()
+      .filter((c) => 'attribution' in c)
+      .map((c) => [`${c.attribution}|${c.licence}`, c])
+  ).values()
+]
 ---
 
 {credits.length > 0 && (

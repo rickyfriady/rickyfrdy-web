@@ -9,7 +9,22 @@ import type { AssetLicence } from '@/models'
  * without an entry fails by name, before it can reach a page. Writing the rule
  * while the directory is empty is what makes it cheap to obey later.
  */
-export const assetLicences: AssetLicence[] = []
+const KENNEY = {
+  author: 'Kenney',
+  source: 'Kenney — Mini Characters 1.0 (kenney.nl)',
+  licence: 'CC0-1.0',
+  // CC0 waives the attribution requirement; the pack asks for credit as a
+  // favour rather than a condition. Recorded as required anyway, because the
+  // cost of naming the person who gave the art away is nothing.
+  attribution: 'Character art by Kenney (kenney.nl) — CC0'
+} as const
+
+export const assetLicences: AssetLicence[] = [
+  { file: 'character/npc-laura.png', ...KENNEY },
+  { file: 'character/npc-rivaldy.png', ...KENNEY },
+  { file: 'character/hero.png', ...KENNEY },
+  { file: 'character/investigator-portrait.png', ...KENNEY }
+]
 
 /**
  * Default transferred-size ceiling per illustrated asset.

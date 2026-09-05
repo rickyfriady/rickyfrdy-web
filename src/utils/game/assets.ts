@@ -1,4 +1,4 @@
-import { buildSpriteMap, type SpriteArt, spriteKey } from '@/utils/game/sprites'
+import { buildSpriteMap, getSprite, type SpriteArt, spriteKey } from '@/utils/game/sprites'
 
 /**
  * Which rendering path an asset takes, and how to render it.
@@ -139,4 +139,18 @@ export const ILLUSTRATED_IDS: readonly string[] = Object.keys(ILLUSTRATED_ART).s
 
 export function getIllustrated(id: string): IllustratedArt | undefined {
   return ILLUSTRATED_ART[id]
+}
+
+/**
+ * Resolve a slot against the real directories.
+ *
+ * The map-taking `resolveAsset` above stays pure so it can be tested with
+ * fixtures; this is the one place that binds it to what is actually on disk.
+ * Every caller goes through here, which is what keeps the precedence rule in a
+ * single location rather than re-derived per component.
+ */
+export function resolveById(id: string): ResolvedAsset {
+  const art = ILLUSTRATED_ART[id]
+  const sprite = getSprite(id)
+  return resolveAsset(id, art ? { [id]: art } : {}, sprite.url ? { [id]: { url: sprite.url } } : {})
 }

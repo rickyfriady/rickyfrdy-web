@@ -114,3 +114,41 @@ describe('resolveAsset precedence', () => {
     expect(resolveAsset('hero', {}, {}).path).toBe('fallback')
   })
 })
+
+describe('NPC slots resolve like any other', () => {
+  /**
+   * An NPC is not a special case in the resolver — it is a slug like any other.
+   * These pin that down, because the scene previously hard-coded the drawn
+   * stand-in for NPCs and could not have shown art whatever was on disk.
+   */
+  const npc = 'npc-laura'
+
+  it('renders illustrated art for an NPC slug when a file exists', () => {
+    const a = resolveAsset(npc, { [npc]: { byDensity: { 1: '/laura.png' } } }, {})
+    expect(a.path).toBe('illustrated')
+    expect(a.url).toBe('/laura.png')
+  })
+
+  it('renders a pixel sprite for an NPC slug when only a sprite exists', () => {
+    const a = resolveAsset(npc, {}, { [npc]: { url: '/laura-pixel.png' } })
+    expect(a.path).toBe('pixel')
+  })
+
+  it('keeps the drawn stand-in for an NPC with no art on either path', () => {
+    expect(resolveAsset(npc, {}, {}).path).toBe('fallback')
+  })
+
+  it('prefers illustrated over pixel for an NPC, same as every other slot', () => {
+    const a = resolveAsset(
+      npc,
+      { [npc]: { byDensity: { 1: '/i.png' } } },
+      { [npc]: { url: '/p.png' } }
+    )
+    expect(a.path).toBe('illustrated')
+  })
+
+  it('emits a single-density srcset when a pack ships one resolution', () => {
+    const a = resolveAsset(npc, { [npc]: { byDensity: { 1: '/laura.png' } } }, {})
+    expect(a.srcset).toBe('/laura.png 1x')
+  })
+})
