@@ -1,0 +1,10 @@
+// POST /api/auth/signout → clear session.
+import type { APIRoute } from 'astro'
+import { clearSession } from '@/server/auth'
+
+export const prerender = false
+
+export const POST: APIRoute = async ({ cookies, redirect }) => {
+  clearSession(cookies)
+  return redirect('/guestbook', 302)
+}

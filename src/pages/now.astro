@@ -1,0 +1,79 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import GitHubActivity from '@/components/about/GitHubActivity.astro'
+import WakaTimeLanguages from '@/components/dashboard/WakaTimeLanguages.astro'
+import { now } from '@/data/now'
+import { t } from '@/i18n/ui'
+import { fetchBuildTimeWakaTime } from '@/utils/wakatime'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+const content = now[lang]
+const wakaStats = await fetchBuildTimeWakaTime(import.meta.env.WAKATIME_API_KEY)
+
+const updated = new Date(content.updated).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+})
+---
+
+<MainLayout
+  title={t(lang, 'now.title')}
+  description={t(lang, 'now.description')}
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/now/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/now/' }
+  ]}
+  schema={webPageSchema(t(lang, 'now.title'), t(lang, 'now.description'), 'https://rickyfrdy.my.id/now/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'now.eyebrow')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      {t(lang, 'now.heading')}<span class="title-accent text-accent">.</span>
+    </h1>
+    <p class="text-muted mt-4 text-sm leading-relaxed">{content.intro}</p>
+    <p class="text-muted mt-3 font-mono text-[10px] uppercase tracking-[0.12em]">
+      {t(lang, 'now.updated')}: {updated}
+    </p>
+  </section>
+
+  <section class="border-border border-b px-4 py-8">
+    <div class="chapter-heading">
+      <span class="chapter-label">{t(lang, 'now.focus')}</span>
+    </div>
+    <ul class="mt-4 space-y-4">
+      {content.focus.map((item) => (
+        <li class="grid gap-1 md:grid-cols-[160px_1fr] md:gap-6">
+          <span class="text-accent font-mono text-xs uppercase tracking-[0.1em] md:pt-1">{item.label}</span>
+          <span class="text-foreground/85 text-sm leading-relaxed">{item.detail}</span>
+        </li>
+      ))}
+    </ul>
+    <a href="/changelog" class="text-accent hover:underline mt-6 inline-block font-mono text-xs">
+      {t(lang, 'now.changelogLink')}
+    </a>
+  </section>
+
+  <section class="border-border border-b px-4 py-8">
+    <div class="chapter-heading">
+      <span class="chapter-label">{t(lang, 'now.activity')}</span>
+    </div>
+    <div class="mt-4">
+      <GitHubActivity />
+    </div>
+  </section>
+
+  <section class="px-4 py-8">
+    <div class="chapter-heading">
+      <span class="chapter-label">{t(lang, 'now.coding')}</span>
+    </div>
+    <div class="mt-4">
+      <WakaTimeLanguages stats={wakaStats} />
+    </div>
+  </section>
+</MainLayout>

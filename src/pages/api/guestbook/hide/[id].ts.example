@@ -1,0 +1,17 @@
+// POST /api/guestbook/hide/:id → owner-only soft-delete.
+import type { APIRoute } from 'astro'
+import { getSession, isOwner } from '@/server/auth'
+import { hideEntry } from '@/server/guestbook-db'
+
+export const prerender = false
+
+export const POST: APIRoute = async ({ params, cookies }) => {
+  const session = getSession(cookies)
+  if (!isOwner(session)) {
+    return new Response(JSON.stringify({ error: 'forbidden' }), { status: 403 })
+  }
+  const id = params.id
+  if (!id) return new Response(JSON.stringify({ error: 'bad_request' }), { status: 400 })
+  await hideEntry(id)
+  return new Response(JSON.stringify({ ok: true }), { headers: { 'content-type': 'application/json' } })
+}

@@ -1,5 +1,4 @@
 ---
-import AnimatedGradient from '@/components/animated-gradient.astro'
 import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
 import type { Lang } from '@/i18n/ui'
 import type { Project } from '@/models'
@@ -32,15 +31,15 @@ const sorted = [...projects].sort((a, b) => {
       class="border-border bg-secondary/40 hover:bg-secondary flex w-full items-center justify-between rounded-xl border px-4 py-3 transition-colors"
     >
       <span class="flex items-center gap-2 font-mono text-xs tracking-[0.12em] uppercase">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px]" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[12px] w-[12px]" aria-hidden="true">
           <line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>
         </svg>
         Filters
-        <span id="filter-count-badge" class="bg-accent text-background hidden rounded-full px-1.5 py-0.5 font-mono text-[9px]">0</span>
+        <span id="filter-count-badge" class="bg-accent text-background hidden rounded-full px-2 py-1 font-mono text-[9px]">0</span>
       </span>
       <span class="flex items-center gap-2">
         <span class="text-muted font-mono text-[10px]" id="mobile-item-count">{sorted.length} items</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted h-[14px] w-[14px] transition-transform duration-200" id="filters-chevron" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted h-[16px] w-[16px] transition-transform duration-200" id="filters-chevron" aria-hidden="true">
           <path d="m6 9 6 6 6-6"/>
         </svg>
       </span>
@@ -65,13 +64,13 @@ const sorted = [...projects].sort((a, b) => {
       {sorted.map((project) => {
         const cardInner = (
           <>
-            <div class="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
+            <div class="absolute inset-y-0 left-0 w-1 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
             <div class="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-l from-secondary/90 via-secondary/40 to-transparent" />
               <div class="absolute inset-0 opacity-40" style="background: linear-gradient(135deg, transparent 55%, color-mix(in oklch, var(--color-border) 60%, transparent) 55%)" />
             </div>
             <div class="relative z-10 min-w-0 flex-1">
-              <div class="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <div class="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
                 {project.company && (
                   <span class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">{project.company}</span>
                 )}
@@ -81,7 +80,7 @@ const sorted = [...projects].sort((a, b) => {
                 {project.featured && <FeaturedBadge label="Featured" />}
               </div>
               <h3 class="text-foreground group-hover:text-accent truncate text-base font-semibold leading-snug transition-colors duration-200">{project.title}</h3>
-              {project.role && <p class="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>}
+              {project.role && <p class="text-muted mt-1 truncate font-mono text-xs">{project.role}</p>}
               <div class="mt-2 flex flex-wrap items-center gap-2">
                 {project.keyMetric && (
                   <>
@@ -92,7 +91,7 @@ const sorted = [...projects].sort((a, b) => {
                 {project.technologies.slice(0, 3).map((tech) => {
                   const url = getSkillIconUrl(tech)
                   return url ? (
-                    <span class="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-secondary/30 px-2 py-1 font-mono text-xs text-muted">
+                    <span class="inline-flex items-center gap-2 rounded-lg border border-border/40 bg-secondary/30 px-2 py-1 font-mono text-xs text-muted">
                       <img src={url} alt={tech} title={tech} width="16" height="16" class="rounded-sm" loading="lazy" />
                       {tech}
                     </span>
@@ -122,14 +121,13 @@ const sorted = [...projects].sort((a, b) => {
             data-year={project.year}
           >
             {project.featured ? (
-              <div class="relative rounded-xl p-[2px]">
-                <AnimatedGradient config={{ preset: 'Lava', speed: 12 }} radius="12px" noise={{ opacity: 0.12 }} style={{ zIndex: '0' }} />
-                <a href={`/projects/${project.slug}`} class="glass-card group relative z-10 flex items-center gap-4 overflow-hidden rounded-[10px] px-5 py-4 no-underline transition-colors duration-200">
+              <div class="pixel-frame pixel-frame-thread relative">
+                <a href={`/projects/${project.slug}`} class="group relative z-10 flex items-center gap-4 overflow-hidden px-5 py-4 no-underline transition-colors duration-200">
                   {cardInner}
                 </a>
               </div>
             ) : (
-              <a href={`/projects/${project.slug}`} class="glass-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50">
+              <a href={`/projects/${project.slug}`} class="evidence-card group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 no-underline transition-colors duration-200 hover:border-accent/50">
                 {cardInner}
               </a>
             )}
@@ -181,7 +179,7 @@ const sorted = [...projects].sort((a, b) => {
   function buildFilterHTML(state: ReturnType<typeof getState>) {
     const btn = (filter: string, value: string, label: string) => {
       const active = (state as Record<string, string>)[filter] === value
-      return `<button type="button" class="w-full rounded px-3 py-1.5 text-left font-mono text-xs transition-colors ${active ? 'bg-secondary text-foreground' : 'text-muted hover:text-foreground hover:bg-secondary/60'}" data-filter="${filter}" data-value="${value}">${label}</button>`
+      return `<button type="button" class="w-full rounded px-3 py-2 text-left font-mono text-xs transition-colors ${active ? 'bg-secondary text-foreground' : 'text-muted hover:text-foreground hover:bg-secondary/60'}" data-filter="${filter}" data-value="${value}">${label}</button>`
     }
     const techOptions = allTechs.map((t: string) => `<option value="${t}"${state.tech === t ? ' selected' : ''}>${t}</option>`).join('')
     return `

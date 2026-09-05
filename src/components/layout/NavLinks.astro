@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/resume', label: 'Resume' },
   { href: '/projects', label: 'Projects' },
+  { href: '/board', label: 'Board' },
   { href: '/contact', label: 'Contact' },
 ] as const
 
@@ -21,7 +22,7 @@ function setBackgroundColor(active: boolean): string {
 
 ---
 
-<ul class="hidden items-center gap-0.5 md:flex">
+<ul class="hidden items-center gap-1 md:flex">
   {navLinks.map(({ href, label }) => {
     const active = isActive(href)
     return (
@@ -29,7 +30,7 @@ function setBackgroundColor(active: boolean): string {
         <a
           href={href}
           class:list={[
-            'relative inline-flex items-center rounded-full px-3 py-1.5 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            'menu-cursor relative inline-flex items-center px-3 py-2 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
             setBackgroundColor(active),
           ]}
         >

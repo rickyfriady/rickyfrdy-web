@@ -15,7 +15,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     aria-haspopup="listbox"
     aria-expanded="false"
     aria-label={`Language: ${active.label}`}
-    class="glass-btn flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm"
+    class="glass-btn flex items-center gap-2 px-3 py-2 text-sm"
     data-current={currentLang}
   >
     <span class="text-base leading-none" id="lang-flag">{active.flag}</span>
@@ -38,8 +38,8 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     role="listbox"
     aria-label="Select language"
     data-origin="top-right"
-    class="t-dropdown absolute right-0 top-full mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
-    style="background: color-mix(in oklch, var(--color-background) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-color: color-mix(in oklch, var(--color-border) 60%, transparent)"
+    class="t-dropdown absolute right-0 top-full mt-2 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
+    style="background: var(--color-background); border-color: var(--color-border)"
   >
     {LANGS.map((lang) => {
       const isActive = lang.code === currentLang
@@ -50,13 +50,13 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
             role="option"
             aria-selected={isActive}
             data-lang={lang.code}
-            class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
             style={isActive ? 'background: color-mix(in oklch, var(--color-accent) 12%, transparent); color: var(--color-accent)' : ''}
           >
             <span class="text-base leading-none">{lang.flag}</span>
             <span class="font-medium">{lang.label}</span>
             {isActive && (
-              <svg class="ml-auto h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <svg class="ml-auto h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             )}
@@ -97,8 +97,12 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     if (flag) flag.textContent = FLAGS[lang]
     if (code) code.textContent = lang
 
-    // Update aria-selected on options
-    document.querySelectorAll<HTMLElement>('[data-lang]').forEach((el) => {
+    // Scoped to the switcher's own options. A bare document-wide
+    // `[data-lang]` query also matched unrelated elements that carry a
+    // data-lang attribute — the projects grid root among them — and painted
+    // them with the active-language highlight.
+    const options = document.querySelectorAll<HTMLElement>('#lang-switcher [data-lang]')
+    options.forEach((el) => {
       const isActive = el.dataset.lang === lang
       el.setAttribute('aria-selected', String(isActive))
       el.style.background = isActive
@@ -172,7 +176,9 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 
     btn.addEventListener('click', () => (open ? closeDropdown(true) : openDropdown()))
 
-    document.querySelectorAll<HTMLElement>('[data-lang]').forEach((el) => {
+    // Same scoping fix, and this one mattered more: unscoped, it attached a
+    // language-select click handler to every element carrying data-lang.
+    root.querySelectorAll<HTMLElement>('[data-lang]').forEach((el) => {
       el.addEventListener('click', () => handleSelect(el.dataset.lang ?? 'en'))
     })
 

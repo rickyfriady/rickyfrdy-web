@@ -1,0 +1,176 @@
+---
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { t } from '@/i18n/ui'
+import { webPageSchema } from '@/utils/schema'
+
+const lang = 'en'
+---
+
+<MainLayout
+  title={t(lang, 'ask.title')}
+  description={t(lang, 'ask.description')}
+  lang="en"
+  hreflangPairs={[
+    { lang: 'en', href: 'https://rickyfrdy.my.id/ask/' },
+    { lang: 'id', href: 'https://rickyfrdy.my.id/id/ask/' }
+  ]}
+  schema={webPageSchema(t(lang, 'ask.title'), t(lang, 'ask.description'), 'https://rickyfrdy.my.id/ask/')}
+>
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">{t(lang, 'ask.eyebrow')}</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      {t(lang, 'ask.heading')}<span class="title-accent text-accent">.</span>
+    </h1>
+    <p class="text-muted mt-4 max-w-2xl text-sm leading-relaxed">{t(lang, 'ask.intro')}</p>
+  </section>
+
+  <section class="px-4 py-8">
+    <form id="ask-form" class="flex flex-col gap-3 sm:flex-row" data-lang={lang}>
+      <input
+        id="ask-input"
+        type="text"
+        autocomplete="off"
+        placeholder={t(lang, 'ask.placeholder')}
+        aria-label={t(lang, 'ask.placeholder')}
+        class="text-foreground placeholder:text-muted border-border focus-visible:ring-accent w-full border-2 bg-secondary px-4 py-3 text-sm outline-none focus-visible:ring-2"
+      />
+      <button
+        type="submit"
+        class="glass-btn text-foreground hover:text-accent shrink-0 px-5 py-3 text-sm font-medium"
+      >
+        {t(lang, 'ask.submit')}
+      </button>
+    </form>
+
+    <p id="ask-status" class="text-muted mt-4 text-sm" role="status" aria-live="polite"></p>
+
+    <div id="ask-answer" class="mt-6" aria-live="polite"></div>
+
+    <div id="ask-results" class="mt-6 space-y-4"></div>
+
+    <p class="text-muted mt-8 font-mono text-[10px] uppercase tracking-[0.1em]">{t(lang, 'ask.disclaimer')}</p>
+  </section>
+</MainLayout>
+
+<script>
+  import { rankChunks } from '@/utils/ragSearch'
+  import type { EmbeddingIndex } from '@/utils/ragSearch'
+  import indexData from '@/data/embeddings.json'
+  import { ui, type Lang } from '@/i18n/ui'
+
+  const index = indexData as EmbeddingIndex
+
+  // biome-ignore lint/suspicious/noExplicitAny: transformers.js pipeline type is loaded lazily
+  let extractor: any = null
+
+  function tr(lang: Lang, key: keyof (typeof ui)['en']): string {
+    return ui[lang][key]
+  }
+
+  async function ensureModel(onProgress: () => void): Promise<void> {
+    if (extractor) return
+    onProgress()
+    const { pipeline } = await import('@huggingface/transformers')
+    extractor = await pipeline('feature-extraction', index.model, { dtype: 'q8' })
+  }
+
+  async function embedQuery(text: string): Promise<number[]> {
+    const out = await extractor(text, { pooling: 'mean', normalize: true })
+    return Array.from(out.data as Float32Array).slice(0, index.dim)
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string)
+  }
+
+  function excerpt(text: string, max = 220): string {
+    const t = text.replace(/\s+/g, ' ').trim()
+    return t.length > max ? `${t.slice(0, max)}…` : t
+  }
+
+  function renderResults(results: ReturnType<typeof rankChunks>, lang: Lang) {
+    const box = document.getElementById('ask-results') as HTMLElement
+    if (results.length === 0) {
+      box.innerHTML = `<p class="text-muted text-sm">${escapeHtml(tr(lang, 'ask.empty'))}</p>`
+      return
+    }
+    box.innerHTML = `<p class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] mb-1">${escapeHtml(tr(lang, 'ask.sources'))}</p>` +
+      results
+        .map(
+          (r) => `<a href="${r.url}" class="menu-cursor evidence-card block p-4 transition-colors">
+            <span class="text-foreground text-sm font-semibold">${escapeHtml(r.title)}</span>
+            <span class="text-muted ml-2 font-mono text-[10px]">${(r.score * 100).toFixed(0)}%</span>
+            <p class="text-muted mt-2 text-sm leading-relaxed">${escapeHtml(excerpt(r.text))}</p>
+          </a>`
+        )
+        .join('')
+  }
+
+  async function requestAnswer(query: string, results: ReturnType<typeof rankChunks>, lang: Lang) {
+    const box = document.getElementById('ask-answer') as HTMLElement | null
+    if (!box) return
+    if (results.length === 0) {
+      box.innerHTML = ''
+      return
+    }
+    box.innerHTML = `<p class="text-muted text-sm">${escapeHtml(tr(lang, 'ask.answering'))}</p>`
+    try {
+      // Strip vectors — the endpoint only needs title/url/text/score.
+      const payload = results.map(({ vector, ...r }) => r)
+      const res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query, results: payload })
+      })
+      if (!res.ok) {
+        box.innerHTML = '' // RAG unavailable (e.g. no API key) → semantic results still shown
+        return
+      }
+      const data = await res.json()
+      if (!data.answer) {
+        box.innerHTML = ''
+        return
+      }
+      box.innerHTML =
+        `<p class="text-muted font-mono text-[10px] uppercase tracking-[0.12em] mb-1">${escapeHtml(tr(lang, 'ask.answer'))}</p>` +
+        `<div class="border-accent/40 bg-accent/5 text-foreground/90 rounded-xl border p-4 text-sm leading-relaxed">${escapeHtml(data.answer)}</div>`
+    } catch {
+      box.innerHTML = ''
+    }
+  }
+
+  function bindForm() {
+    const form = document.getElementById('ask-form') as HTMLFormElement | null
+    if (!form || form.dataset.bound) return
+    form.dataset.bound = '1'
+    const lang = (form.dataset.lang as Lang) ?? 'en'
+    const input = document.getElementById('ask-input') as HTMLInputElement
+    const status = document.getElementById('ask-status') as HTMLElement
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const q = input.value.trim()
+      if (!q) return
+      try {
+        await ensureModel(() => {
+          status.textContent = tr(lang, extractor ? 'ask.loading' : 'ask.loadingModel')
+        })
+        status.textContent = tr(lang, 'ask.loading')
+        const vec = await embedQuery(q)
+        const results = rankChunks(vec, index, { topK: 5, minScore: 0.25 })
+        status.textContent = ''
+        renderResults(results, lang)
+        await requestAnswer(q, results, lang)
+      } catch (err) {
+        console.error('[ask] search failed', err)
+        status.textContent = tr(lang, 'ask.empty')
+      }
+    })
+  }
+
+  bindForm()
+  document.addEventListener('astro:page-load', bindForm)
+</script>

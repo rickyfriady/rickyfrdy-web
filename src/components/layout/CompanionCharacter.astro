@@ -1,0 +1,191 @@
+---
+import { companionReactions } from '@/data/companion'
+import { getSprite } from '@/utils/game/sprites'
+
+/**
+ * A pixel character that walks the bottom of every page.
+ *
+ * Deliberately not an island. This mounts on all 37 routes, and hydrating a
+ * framework everywhere to walk a sprite would be an unforced cost on exactly
+ * the pages a recruiter reads. `transition:persist` keeps this node alive
+ * across navigations, so the character carries its position over instead of
+ * being born and killed on every click.
+ *
+ * The directive sits on the element, not on the `<CompanionCharacter />` tag in
+ * the layout: on a component it compiles to nothing, and the persistence
+ * silently does not happen. Verified in the served HTML — with the directive on
+ * the component there is no `data-astro-transition-persist` attribute at all.
+ */
+const sprite = getSprite('hero-walk')
+---
+
+<div
+  id="companion"
+  transition:persist
+  transition:name="companion"
+  aria-hidden="true"
+  class="pointer-events-none fixed bottom-0 left-0 z-40 hidden h-16 w-full md:block"
+  data-art={sprite.url ?? ''}
+  data-frame-w={sprite.sheet?.frameWidth ?? 32}
+  data-frame-h={sprite.sheet?.frameHeight ?? 32}
+>
+  <div data-actor class="absolute bottom-3 left-0 will-change-transform">
+    <div
+      data-bubble
+      class="evidence-card absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap px-2 py-1 font-mono text-[0.6rem]"
+    >
+    </div>
+    <div data-body class="sprite-fb pixel-sprite" data-kind="actor"></div>
+  </div>
+
+  <button
+    type="button"
+    data-dismiss
+    tabindex="-1"
+    class="pointer-events-auto absolute right-3 bottom-3 font-mono text-[0.65rem] text-muted hover:text-accent"
+  >[×]</button>
+</div>
+
+<script
+  is:inline
+  type="application/json"
+  id="companion-data"
+  set:html={JSON.stringify(companionReactions)}
+></script>
+
+<script>
+  import { companionDismissed, initGame, setCompanionDismissed } from '@/stores/game'
+
+  const SPEED = 26 // px per second — a stroll, not a sprint
+  const BOB_MS = 180
+
+  let raf = 0
+  let root: HTMLElement | null = null
+  let actor: HTMLElement | null = null
+  let body: HTMLElement | null = null
+  let bubble: HTMLElement | null = null
+  let x = 96
+  let dir = 1
+  let last = 0
+  let elapsed = 0
+  let art = ''
+  let frameW = 32
+
+  const reduced = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  const wideEnough = () =>
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
+
+  function paint() {
+    if (!actor || !body) return
+    actor.style.transform = `translate3d(${Math.round(x)}px, 0, 0)`
+    body.style.transform = dir > 0 ? '' : 'scaleX(-1)'
+    if (art) {
+      // Four frames per direction; row 0 is walk-down, mirrored for left/right.
+      const frame = Math.floor(elapsed / 140) % 4
+      const row = dir > 0 ? 2 : 1
+      body.style.backgroundPosition = `${-frame * frameW}px ${-row * frameW}px`
+    } else {
+      // No art: a one-pixel bob reads as a walk cycle without any drawing.
+      body.style.marginBottom = Math.floor(elapsed / BOB_MS) % 2 === 0 ? '0px' : '2px'
+    }
+  }
+
+  function step(now: number) {
+    if (!root) return
+    const dt = last ? Math.min(now - last, 100) : 0
+    last = now
+    elapsed += dt
+    x += (dir * SPEED * dt) / 1000
+    const limit = root.clientWidth - 64
+    if (x > limit) {
+      x = limit
+      dir = -1
+    } else if (x < 96) {
+      x = 96
+      dir = 1
+    }
+    paint()
+    raf = requestAnimationFrame(step)
+  }
+
+  function stop() {
+    if (raf) cancelAnimationFrame(raf)
+    raf = 0
+    last = 0
+  }
+
+  function start() {
+    stop()
+    if (!root || reduced() || !wideEnough()) {
+      paint()
+      return
+    }
+    raf = requestAnimationFrame(step)
+  }
+
+  function showReaction() {
+    if (!bubble) return
+    const path = window.location.pathname.replace(/^\/id(?=\/|$)/, '') || '/'
+    const key = path.length > 1 ? path.replace(/\/$/, '') : path
+    const lang = window.location.pathname.startsWith('/id') ? 'id' : 'en'
+    let map: Record<string, { en: string; id: string }> = {}
+    try {
+      map = JSON.parse(document.getElementById('companion-data')?.textContent ?? '{}')
+    } catch {
+      /* Unmapped route and a broken map look the same to the visitor: silence. */
+    }
+    const line = map[key]?.[lang]
+    bubble.textContent = line ?? ''
+    bubble.classList.toggle('hidden', !line)
+  }
+
+  function applyVisibility() {
+    if (!root) return
+    const hidden = companionDismissed.get()
+    root.style.display = hidden ? 'none' : ''
+    if (hidden) stop()
+    else start()
+  }
+
+  function init() {
+    root = document.getElementById('companion')
+    if (!root) return
+    // Every lookup below is scoped to the companion's own root. The previous
+    // change lost an afternoon to a document-wide query that painted an
+    // unrelated component; that mistake is not repeated here.
+    actor = root.querySelector<HTMLElement>('[data-actor]')
+    body = root.querySelector<HTMLElement>('[data-body]')
+    bubble = root.querySelector<HTMLElement>('[data-bubble]')
+    art = root.dataset.art ?? ''
+    frameW = Number(root.dataset.frameW ?? 32)
+
+    if (art && body) {
+      body.classList.remove('sprite-fb')
+      body.style.width = `${frameW}px`
+      body.style.height = `${root.dataset.frameH ?? frameW}px`
+      body.style.backgroundImage = `url(${art})`
+    }
+
+    if (!root.dataset.bound) {
+      root.dataset.bound = '1'
+      root.querySelector('[data-dismiss]')?.addEventListener('click', () => {
+        setCompanionDismissed(true)
+      })
+      companionDismissed.subscribe(applyVisibility)
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') stop()
+        else applyVisibility()
+      })
+    }
+
+    initGame()
+    showReaction()
+    applyVisibility()
+  }
+
+  init()
+  document.addEventListener('astro:page-load', init)
+</script>

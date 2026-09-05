@@ -9,11 +9,11 @@
   <!-- Skeleton shown until data loads -->
   <div id="ga-skeleton" class="divide-border divide-y">
     {Array.from({ length: 4 }).map(() => (
-      <div class="flex items-start gap-2.5 py-2.5 min-h-[44px]">
-        <div class="mt-0.5 h-5 w-5 flex-shrink-0 animate-pulse rounded-full bg-secondary"></div>
-        <div class="flex-1 space-y-1.5">
+      <div class="flex items-start gap-3 py-3 min-h-[44px]">
+        <div class="mt-1 h-5 w-5 flex-shrink-0 animate-pulse rounded-full bg-secondary"></div>
+        <div class="flex-1 space-y-2">
           <div class="h-3 w-3/4 animate-pulse rounded bg-secondary"></div>
-          <div class="h-2.5 w-1/2 animate-pulse rounded bg-secondary"></div>
+          <div class="h-3 w-1/2 animate-pulse rounded bg-secondary"></div>
         </div>
       </div>
     ))}
@@ -81,17 +81,17 @@
 
   function buildRow(event: RecentEvent): HTMLElement {
     const row = document.createElement('div')
-    row.className = 'relative flex items-start gap-2.5 py-2 min-h-[44px] ga-row'
+    row.className = 'relative flex items-start gap-3 py-2 min-h-[44px] ga-row'
     row.dataset.id = event.id
     row.innerHTML = `
-      <div class="relative z-10 mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+      <div class="relative z-10 mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
         style="background:color-mix(in oklch,var(--color-accent) 12%,transparent);color:var(--color-accent)"
         aria-hidden="true">
         ${EVENT_ICONS[event.type] ?? EVENT_ICONS.other}
       </div>
-      <div class="min-w-0 flex-1 pt-[1px]">
+      <div class="min-w-0 flex-1 pt-[4px]">
         ${event.message ? `<p class="text-foreground truncate text-xs font-medium leading-snug">${event.message}</p>` : ''}
-        <div class="mt-0.5 flex items-center gap-1.5 flex-wrap">
+        <div class="mt-1 flex items-center gap-2 flex-wrap">
           <a href="${event.repoUrl}" target="_blank" rel="noopener noreferrer"
             class="text-muted hover:text-accent max-w-[140px] truncate font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
             aria-label="View ${event.repo} on GitHub">${event.repo}</a>
@@ -155,7 +155,7 @@
       if (visible.length > 0) {
         if (!line) {
           line = document.createElement('div')
-          line.className = 'ga-timeline absolute left-[10px] top-2 bottom-2 w-px bg-border/60'
+          line.className = 'ga-timeline absolute left-[8px] top-2 bottom-2 w-px bg-border/60'
           line.setAttribute('aria-hidden', 'true')
           listEl.prepend(line)
         }

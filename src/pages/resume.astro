@@ -3,6 +3,7 @@ import { education, experiences, projects, skillCategories, summary } from '@/da
 import FinLogo from '@/components/ui/FinLogo.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
+import ResumeSkeleton from '@/components/resume/ResumeSkeleton.astro'
 import { webPageSchema } from '@/utils/schema'
 ---
 
@@ -14,7 +15,9 @@ import { webPageSchema } from '@/utils/schema'
 >
   <PageAnimations />
 
-  <div class="mx-auto max-w-2xl px-4 py-12">
+  <ResumeSkeleton />
+
+  <div id="resume-content" class="mx-auto max-w-2xl px-4 py-12">
 
     <!-- Header -->
     <div class="mb-8">
@@ -54,16 +57,16 @@ import { webPageSchema } from '@/utils/schema'
               <span class="text-foreground font-semibold text-sm">{exp.role}</span>
               <span class="diff-tag">{exp.company}</span>
             </div>
-            <p class="text-muted mt-0.5 text-xs">{exp.location} · {exp.period}</p>
+            <p class="text-muted mt-1 text-xs">{exp.location} · {exp.period}</p>
             <ul class="mt-3 space-y-2">
               {exp.bullets.map((bullet) => (
                 <li class="flex gap-2 text-sm">
-                  <span class="text-accent mt-0.5 flex-shrink-0 text-xs">›</span>
+                  <span class="text-accent mt-1 flex-shrink-0 text-xs">›</span>
                   <span class="text-muted">{bullet}</span>
                 </li>
               ))}
             </ul>
-            <div class="mt-3 flex flex-wrap gap-1.5">
+            <div class="mt-3 flex flex-wrap gap-2">
               {exp.stack.map((tech) => (
                 <span class="diff-tag">{tech}</span>
               ))}
@@ -86,16 +89,16 @@ import { webPageSchema } from '@/utils/schema'
               <span class="text-foreground font-semibold text-sm">{proj.title}</span>
               <span class="diff-tag">{proj.company}</span>
             </div>
-            <p class="text-muted mt-0.5 text-xs">{proj.period}</p>
+            <p class="text-muted mt-1 text-xs">{proj.period}</p>
             <ul class="mt-3 space-y-2">
               {proj.bullets.map((bullet) => (
                 <li class="flex gap-2 text-sm">
-                  <span class="text-accent mt-0.5 flex-shrink-0 text-xs">›</span>
+                  <span class="text-accent mt-1 flex-shrink-0 text-xs">›</span>
                   <span class="text-muted">{bullet}</span>
                 </li>
               ))}
             </ul>
-            <div class="mt-3 flex flex-wrap gap-1.5">
+            <div class="mt-3 flex flex-wrap gap-2">
               {proj.stack.map((tech) => (
                 <span class="diff-tag">{tech}</span>
               ))}
@@ -115,7 +118,7 @@ import { webPageSchema } from '@/utils/schema'
           <span class="text-foreground font-semibold text-sm">{education.degree}</span>
           <span class="diff-tag">{education.institution}</span>
         </div>
-        <p class="text-muted mt-0.5 text-xs">{education.location} · {education.period}</p>
+        <p class="text-muted mt-1 text-xs">{education.location} · {education.period}</p>
         <p class="text-muted mt-2 text-sm">GPA: <span class="text-foreground font-semibold">{education.gpa}</span></p>
       </div>
     </section>
@@ -129,7 +132,7 @@ import { webPageSchema } from '@/utils/schema'
         {skillCategories.map((cat) => (
           <div>
             <h3 class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">{cat.label}</h3>
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap gap-2">
               {cat.items.map((item) => (
                 <span class="diff-tag">{item}</span>
               ))}
@@ -166,7 +169,7 @@ import { webPageSchema } from '@/utils/schema'
         class="text-muted border-border hover:bg-secondary inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-xs transition-colors"
       >
         <svg
-          class="h-3.5 w-3.5"
+          class="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -180,4 +183,41 @@ import { webPageSchema } from '@/utils/schema'
     </div>
 
   </div>
+
+  <script>
+    function swapInSkeleton(contentId: string, templateId: string) {
+      const content = document.getElementById(contentId)
+      const template = document.getElementById(templateId)
+      if (!content || !template || content.dataset.skeletonActive === 'true') return
+      content.dataset.skeletonActive = 'true'
+      content.style.display = 'none'
+      const clone = template.cloneNode(true) as HTMLElement
+      clone.removeAttribute('hidden')
+      clone.id = `${templateId}-clone`
+      content.insertAdjacentElement('afterend', clone)
+    }
+
+    function restoreContent(contentId: string, templateId: string) {
+      const content = document.getElementById(contentId)
+      const clone = document.getElementById(`${templateId}-clone`)
+      if (!content) return
+      content.style.display = ''
+      delete content.dataset.skeletonActive
+      if (clone) {
+        clone.style.transition = 'opacity 200ms ease'
+        clone.style.opacity = '0'
+        setTimeout(() => clone.remove(), 200)
+      }
+    }
+
+    document.addEventListener('astro:after-swap', () => {
+      if (location.pathname.replace(/\/$/, '') === '/resume') {
+        swapInSkeleton('resume-content', 'resume-skeleton-template')
+      }
+    })
+
+    document.addEventListener('astro:page-load', () => {
+      requestAnimationFrame(() => restoreContent('resume-content', 'resume-skeleton-template'))
+    })
+  </script>
 </MainLayout>

@@ -1,0 +1,394 @@
+---
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import { projects as projectData } from '@/data/projects'
+import { type ContentItem, buildCommands } from '@/utils/commands'
+import { t } from '@/i18n/ui'
+
+const isId = Astro.url.pathname === '/id' || Astro.url.pathname.startsWith('/id/')
+const lang = isId ? 'id' : 'en'
+
+const posts: ContentItem[] = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
+  .filter((entry) => !entry.data.draft)
+  .map((entry) => ({ slug: entry.id, title: entry.data.title, tags: entry.data.tags }))
+
+const projectItems: ContentItem[] = projectData.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  tags: p.technologies
+}))
+
+const commands = buildCommands(lang, posts, projectItems)
+
+const groupLabels = {
+  navigation: t(lang, 'cmdk.group.navigation'),
+  actions: t(lang, 'cmdk.group.actions'),
+  content: t(lang, 'cmdk.group.content')
+}
+---
+
+<div
+  id="cmdk-root"
+  class="fixed inset-0 z-[100] hidden items-start justify-center"
+  aria-hidden="true"
+>
+  <!-- Backdrop -->
+  <div
+    id="cmdk-backdrop"
+    class="absolute inset-0"
+    style="background: color-mix(in oklch, var(--color-background) 80%, transparent); opacity: 0"
+  ></div>
+
+  <!-- Panel -->
+  <div
+    id="cmdk-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label={t(lang, 'cmdk.aria')}
+    class="relative mt-[12vh] w-[min(92vw,40rem)] overflow-hidden rounded-2xl border"
+    style="background: var(--color-background); border: 4px solid var(--color-border); opacity: 0"
+  >
+    <!-- Search input -->
+    <div class="flex items-center gap-3 border-b px-4 py-3" style="border-color: color-mix(in oklch, var(--color-border) 45%, transparent)">
+      <svg class="text-muted h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input
+        id="cmdk-input"
+        type="text"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        placeholder={t(lang, 'cmdk.placeholder')}
+        aria-label={t(lang, 'cmdk.placeholder')}
+        aria-controls="cmdk-list"
+        aria-expanded="true"
+        role="combobox"
+        class="text-foreground placeholder:text-muted w-full bg-transparent text-sm outline-none"
+      />
+      <kbd class="text-muted hidden font-mono text-[0.6rem] uppercase tracking-wide sm:block">Esc</kbd>
+    </div>
+
+    <!-- Results -->
+    <ul id="cmdk-list" role="listbox" aria-label={t(lang, 'cmdk.aria')} class="max-h-[min(60vh,26rem)] overflow-y-auto p-2"></ul>
+
+    <!-- Empty state -->
+    <div id="cmdk-empty" class="text-muted hidden px-4 py-10 text-center text-sm">{t(lang, 'cmdk.empty')}</div>
+  </div>
+</div>
+
+<script
+  is:inline
+  type="application/json"
+  id="cmdk-data"
+  set:html={JSON.stringify({
+    commands,
+    groupLabels,
+    copied: t(lang, 'cmdk.copied'),
+    unavailable: t(lang, 'cmdk.action.unavailable'),
+    resetConfirm: t(lang, 'game.resetConfirm'),
+    lang
+  })}
+></script>
+
+<script>
+  import { playSound } from '@/utils/sound'
+  import gsap from 'gsap'
+  import { resetGame, toggleCompanion } from '@/stores/game'
+  import { toggleTheme } from '@/stores/theme'
+
+  interface Command {
+    id: string
+    label: string
+    keywords: string
+    group: 'navigation' | 'actions' | 'content'
+    kind: 'navigate' | 'toggle-theme' | 'switch-lang' | 'copy' | 'toggle-companion' | 'reset-game'
+    href?: string
+    value?: string
+  }
+  interface CmdkData {
+    commands: Command[]
+    groupLabels: Record<Command['group'], string>
+    copied: string
+    unavailable: string
+    resetConfirm: string
+    lang: 'en' | 'id'
+  }
+
+  const GROUP_ORDER: Command['group'][] = ['navigation', 'actions', 'content']
+
+  let data: CmdkData | null = null
+  let visible: Command[] = []
+  let activeIndex = 0
+  let isOpen = false
+  let previouslyFocused: HTMLElement | null = null
+
+  function readData(): CmdkData | null {
+    const el = document.getElementById('cmdk-data')
+    if (!el?.textContent) return null
+    try {
+      return JSON.parse(el.textContent) as CmdkData
+    } catch {
+      return null
+    }
+  }
+
+  function matches(cmd: Command, q: string): boolean {
+    const query = q.trim().toLowerCase()
+    if (!query) return true
+    return `${cmd.label} ${cmd.keywords}`.toLowerCase().includes(query)
+  }
+
+  function targetLangHref(): string {
+    // Mirrors LangSwitcher.getTargetHref: toggle EN <-> ID for current path
+    const pathname = window.location.pathname
+    const isId = pathname === '/id' || pathname.startsWith('/id/')
+    if (isId) return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
+    return pathname === '/' ? '/id' : `/id${pathname}`
+  }
+
+  function render(query: string) {
+    if (!data) return
+    const list = document.getElementById('cmdk-list') as HTMLElement
+    const empty = document.getElementById('cmdk-empty') as HTMLElement
+    visible = data.commands.filter((c) => matches(c, query))
+    activeIndex = 0
+
+    if (visible.length === 0) {
+      list.innerHTML = ''
+      empty.classList.remove('hidden')
+      return
+    }
+    empty.classList.add('hidden')
+
+    let html = ''
+    for (const group of GROUP_ORDER) {
+      const items = visible.filter((c) => c.group === group)
+      if (items.length === 0) continue
+      html += `<li role="presentation" class="text-muted px-3 pb-1 pt-3 font-mono text-[0.6rem] uppercase tracking-widest">${data.groupLabels[group]}</li>`
+      for (const cmd of items) {
+        const idx = visible.indexOf(cmd)
+        html += `<li role="option" data-idx="${idx}" data-id="${cmd.id}" class="cmdk-item flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm text-foreground/85" aria-selected="false"><span class="truncate">${escapeHtml(cmd.label)}</span></li>`
+      }
+    }
+    list.innerHTML = html
+    highlight(0)
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string)
+  }
+
+  function highlight(idx: number) {
+    const items = Array.from(document.querySelectorAll<HTMLElement>('.cmdk-item'))
+    if (items.length === 0) return
+    activeIndex = (idx + items.length) % items.length
+    items.forEach((el) => {
+      const isActive = Number(el.dataset.idx) === activeIndex
+      el.setAttribute('aria-selected', String(isActive))
+      el.style.background = isActive ? 'color-mix(in oklch, var(--color-accent) 14%, transparent)' : ''
+      el.style.color = isActive ? 'var(--color-accent)' : ''
+      if (isActive) el.scrollIntoView({ block: 'nearest' })
+    })
+  }
+
+  async function runCommand(cmd: Command) {
+    close()
+    switch (cmd.kind) {
+      case 'navigate':
+        if (cmd.href) window.location.href = cmd.href
+        break
+      case 'toggle-theme':
+        toggleTheme()
+        break
+      case 'switch-lang':
+        window.location.href = targetLangHref()
+        break
+      case 'copy':
+        if (cmd.value) {
+          try {
+            await navigator.clipboard.writeText(cmd.value)
+            toast(data?.copied ?? 'Copied')
+          } catch {
+            /* clipboard unavailable */
+          }
+        }
+        break
+      case 'toggle-companion':
+        // The companion is not rendered on small viewports. Saying so plainly
+        // is the correct outcome; throwing at the visitor is not.
+        if (!document.getElementById('companion')) {
+          toast(data?.unavailable ?? '')
+          break
+        }
+        toggleCompanion()
+        break
+      case 'reset-game':
+        if (window.confirm(data?.resetConfirm ?? 'Reset game progress?')) resetGame()
+        break
+    }
+  }
+
+  function toast(msg: string) {
+    const el = document.createElement('div')
+    el.textContent = msg
+    el.className = 'fixed bottom-6 left-1/2 z-[110] -translate-x-1/2 rounded-full px-4 py-2 text-xs font-mono'
+    el.style.cssText += ';background:var(--color-accent);color:var(--color-background)'
+    document.body.appendChild(el)
+    gsap.fromTo(el, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.2 })
+    gsap.to(el, { opacity: 0, y: 10, duration: 0.25, delay: 1.4, onComplete: () => el.remove() })
+  }
+
+  function getFocusable(panel: HTMLElement): HTMLElement[] {
+    return Array.from(
+      panel.querySelectorAll<HTMLElement>('input, button, [href], [tabindex]:not([tabindex="-1"])')
+    ).filter((el) => !el.hasAttribute('disabled'))
+  }
+
+  function open() {
+    playSound('drawer')
+    if (isOpen || !data) return
+    isOpen = true
+    previouslyFocused = document.activeElement as HTMLElement
+    const root = document.getElementById('cmdk-root') as HTMLElement
+    const backdrop = document.getElementById('cmdk-backdrop') as HTMLElement
+    const panel = document.getElementById('cmdk-panel') as HTMLElement
+    const input = document.getElementById('cmdk-input') as HTMLInputElement
+    root.classList.remove('hidden')
+    root.classList.add('flex')
+    root.setAttribute('aria-hidden', 'false')
+    document.body.style.overflow = 'hidden'
+    input.value = ''
+    render('')
+    gsap.to(backdrop, { opacity: 1, duration: 0.15 })
+    gsap.fromTo(panel, { opacity: 0, y: -8, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: 'back.out(1.4)' })
+    requestAnimationFrame(() => input.focus())
+  }
+
+  function close() {
+    if (!isOpen) return
+    isOpen = false
+    const root = document.getElementById('cmdk-root') as HTMLElement
+    const backdrop = document.getElementById('cmdk-backdrop') as HTMLElement
+    const panel = document.getElementById('cmdk-panel') as HTMLElement
+    document.body.style.overflow = ''
+    gsap.to(backdrop, { opacity: 0, duration: 0.15 })
+    gsap.to(panel, {
+      opacity: 0,
+      y: -8,
+      scale: 0.98,
+      duration: 0.15,
+      onComplete: () => {
+        root.classList.add('hidden')
+        root.classList.remove('flex')
+        root.setAttribute('aria-hidden', 'true')
+      }
+    })
+    if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus()
+  }
+
+  function onKeydown(e: KeyboardEvent) {
+    // Global open shortcut
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault()
+      isOpen ? close() : open()
+      return
+    }
+    if (!isOpen) return
+
+    const panel = document.getElementById('cmdk-panel') as HTMLElement
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault()
+        close()
+        break
+      case 'ArrowDown':
+        e.preventDefault()
+        highlight(activeIndex + 1)
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        highlight(activeIndex - 1)
+        break
+      case 'Enter': {
+        e.preventDefault()
+        const cmd = visible[activeIndex]
+        if (cmd) runCommand(cmd)
+        break
+      }
+      case 'Tab': {
+        // Focus trap
+        const focusable = getFocusable(panel)
+        if (focusable.length === 0) break
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+        break
+      }
+    }
+  }
+
+  function bindOnce() {
+    if (document.documentElement.dataset.cmdkBound) return
+    document.documentElement.dataset.cmdkBound = '1'
+
+    document.addEventListener('keydown', onKeydown)
+    document.addEventListener('cmdk:open', () => open())
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement
+      // Open triggers (desktop ⌘K pill, mobile search entry)
+      if (target.closest('[data-cmdk-open]')) {
+        e.preventDefault()
+        open()
+        return
+      }
+      if (!isOpen) return
+      // Backdrop click closes
+      if (target.id === 'cmdk-backdrop') {
+        close()
+        return
+      }
+      // Item click runs command
+      const item = target.closest<HTMLElement>('.cmdk-item')
+      if (item) {
+        const cmd = visible[Number(item.dataset.idx)]
+        if (cmd) runCommand(cmd)
+      }
+    })
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isOpen) return
+      const item = (e.target as HTMLElement).closest<HTMLElement>('.cmdk-item')
+      if (item) highlight(Number(item.dataset.idx))
+    })
+  }
+
+  function init() {
+    data = readData()
+    const input = document.getElementById('cmdk-input') as HTMLInputElement | null
+    if (input && !input.dataset.cmdkInputBound) {
+      input.dataset.cmdkInputBound = '1'
+      input.addEventListener('input', () => render(input.value))
+    }
+    bindOnce()
+  }
+
+  init()
+  // Refresh the command index (locale/content) after each client navigation.
+  document.addEventListener('astro:page-load', () => {
+    if (isOpen) close()
+    data = readData()
+    const input = document.getElementById('cmdk-input') as HTMLInputElement | null
+    if (input && !input.dataset.cmdkInputBound) {
+      input.dataset.cmdkInputBound = '1'
+      input.addEventListener('input', () => render(input.value))
+    }
+  })
+</script>

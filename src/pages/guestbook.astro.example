@@ -1,0 +1,70 @@
+---
+// Server-rendered guestbook page. Activate with the adapter + DB + auth modules;
+// rename to `guestbook.astro`. Messages are already sanitized at write time.
+export const prerender = false
+
+import MainLayout from '@/components/layout/MainLayout.astro'
+import PageAnimations from '@/components/ui/PageAnimations.astro'
+import { listEntries } from '@/server/guestbook-db'
+import { getSession, isOwner } from '@/server/auth'
+import { MESSAGE_MAX } from '@/utils/guestbookSchema'
+
+const session = getSession(Astro.cookies)
+const owner = isOwner(session)
+const entries = await listEntries()
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+---
+
+<MainLayout title="Guestbook — Ricki Friadi" description="Sign the guestbook — leave a short message.">
+  <PageAnimations />
+
+  <section class="border-border border-b px-4 py-8">
+    <p class="eyebrow mb-3">Guestbook</p>
+    <h1 class="title-display" style="font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 0.93">
+      Sign the<br /><span class="title-accent text-accent">guestbook.</span>
+    </h1>
+  </section>
+
+  <section class="px-4 py-8">
+    {session ? (
+      <form method="POST" action="/api/guestbook" class="mb-8 flex flex-col gap-3">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <textarea
+          name="message"
+          maxlength={MESSAGE_MAX}
+          required
+          placeholder="Leave a message…"
+          class="text-foreground border-border w-full rounded-xl border bg-secondary/30 px-4 py-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        ></textarea>
+        <div class="flex items-center justify-between">
+          <span class="text-muted text-xs">Signed in as {session.name}</span>
+          <button type="submit" class="glass-btn text-foreground hover:text-accent px-5 py-2.5 text-sm font-medium">Sign</button>
+        </div>
+      </form>
+    ) : (
+      <a href="/api/auth/github" class="glass-btn text-foreground hover:text-accent mb-8 inline-block px-5 py-2.5 text-sm font-medium">
+        Sign in with GitHub to post
+      </a>
+    )}
+
+    <ul class="space-y-4">
+      {entries.map((entry) => (
+        <li class="rounded-xl border border-border bg-secondary/20 p-4">
+          <div class="flex items-baseline justify-between gap-3">
+            <span class="text-foreground text-sm font-semibold">{entry.authorName}</span>
+            <span class="text-muted font-mono text-[10px]">{formatDate(entry.createdAt)}</span>
+          </div>
+          <p class="text-muted mt-1.5 text-sm leading-relaxed">{entry.message}</p>
+          {owner && (
+            <form method="POST" action={`/api/guestbook/hide/${entry.id}`} class="mt-2">
+              <button type="submit" class="text-muted hover:text-accent font-mono text-[10px] uppercase">Hide</button>
+            </form>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+</MainLayout>

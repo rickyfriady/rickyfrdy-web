@@ -5,6 +5,7 @@ import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro
 import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import { projects } from '@/data/projects'
+import { getSkillIconUrl } from '@/utils/skillIcon'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 
@@ -20,21 +21,6 @@ const categoryLabel: Record<string, string> = {
   api: 'API',
   tool: 'Tool',
   'open-source': 'Open Source',
-}
-
-const skillIcon: Record<string, string> = {
-  'Vue 3': 'vue',
-  'React': 'react',
-  'Astro': 'astro',
-  'TypeScript': 'ts',
-  'Tailwind': 'tailwind',
-  'NestJS': 'nestjs',
-  'Node.js': 'nodejs',
-  'PostgreSQL': 'postgres',
-  'Redis': 'redis',
-  'Express': 'express',
-  'Docker': 'docker',
-  'GitLab CI': 'gitlab',
 }
 
 const capabilities = [
@@ -92,14 +78,14 @@ const capabilities = [
         <div class="mt-8 flex flex-wrap gap-3" data-hero-reveal>
           <a
             href="/id/projects"
-            class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+            class="menu-cursor bg-accent text-background hover:bg-accent-hover inline-flex min-h-11 py-2 items-center px-6 text-sm font-medium transition-colors"
             data-btn-hover
           >
             Lihat Karya Saya
           </a>
           <a
             href="/id/contact"
-            class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+            class="menu-cursor border-border text-foreground hover:bg-secondary inline-flex min-h-11 py-2 items-center border-2 px-6 text-sm font-medium transition-colors"
             data-btn-hover
           >
             Hubungi Saya
@@ -112,10 +98,10 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── § 01 — Karya Pilihan ─────────────────────────────────── -->
+  <!-- ─── CASE 01 · Karya Pilihan ─────────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 01 — Karya Pilihan</span>
+      <span class="chapter-label">CASE 01 · Karya Pilihan</span>
     </div>
 
     <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -141,10 +127,10 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── § 02 — Yang Saya Bangun ──────────────────────────────── -->
+  <!-- ─── CASE 02 · Yang Saya Bangun ──────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">§ 02 — Yang Saya Bangun</span>
+      <span class="chapter-label">CASE 02 · Yang Saya Bangun</span>
     </div>
 
     <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -157,17 +143,17 @@ const capabilities = [
           <p class="text-muted mt-2 text-sm leading-relaxed">{cap.description}</p>
           <div class="mt-4 flex flex-wrap gap-2">
             {cap.stack.map((s) => {
-              const slug = skillIcon[s]
-              return slug ? (
+              const url = getSkillIconUrl(s)
+              return url ? (
                 <div class="flex flex-col items-center gap-1">
                   <img
-                    src={`https://skillicons.dev/icons?i=${slug}`}
+                    src={url}
                     alt={s}
                     title={s}
-                    width="36"
-                    height="36"
+                    width="32"
+                    height="32"
                     loading="lazy"
-                    class="rounded-lg"
+                    class="pixel-sprite"
                   />
                   <span class="text-muted font-mono text-[9px] leading-none">{s}</span>
                 </div>
@@ -181,11 +167,11 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── § 03 — Tulisan Terbaru ───────────────────────────────── -->
+  <!-- ─── CASE 03 · Tulisan Terbaru ───────────────────────────────── -->
   {recentPosts.length > 0 && (
     <section class="border-border border-b" data-stagger-group>
       <div class="chapter-heading px-4">
-        <span class="chapter-label">§ 03 — Tulisan Terbaru</span>
+        <span class="chapter-label">CASE 03 · Tulisan Terbaru</span>
       </div>
 
       <div class="divide-border divide-y px-4">
@@ -229,7 +215,7 @@ const capabilities = [
     </section>
   )}
 
-  <!-- ─── § 04 — Terbuka untuk Kerja ──────────────────────────── -->
+  <!-- ─── CASE 04 · Terbuka untuk Kerja ──────────────────────────── -->
   <section class="border-border border-b px-4 py-12">
     <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
       <div>
@@ -249,14 +235,14 @@ const capabilities = [
       <div class="flex flex-wrap gap-3">
         <a
           href="/id/contact"
-          class="bg-accent text-background hover:bg-accent-hover inline-flex h-11 items-center rounded-lg px-6 text-sm font-medium transition-colors"
+          class="menu-cursor bg-accent text-background hover:bg-accent-hover inline-flex min-h-11 py-2 items-center px-6 text-sm font-medium transition-colors"
           data-btn-hover
         >
           Mulai Percakapan
         </a>
         <a
           href="/id/experience"
-          class="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center rounded-lg border px-6 text-sm font-medium transition-colors"
+          class="menu-cursor border-border text-foreground hover:bg-secondary inline-flex min-h-11 py-2 items-center border-2 px-6 text-sm font-medium transition-colors"
           data-btn-hover
         >
           Lihat Pengalaman

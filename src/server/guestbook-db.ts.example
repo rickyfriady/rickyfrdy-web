@@ -1,0 +1,56 @@
+// Guestbook data access — the ONLY module that touches the database.
+// Activate: npm i @libsql/client  and set TURSO_DATABASE_URL / TURSO_AUTH_TOKEN.
+// Rename this file to `guestbook-db.ts`.
+import { createClient } from '@libsql/client'
+import { randomUUID } from 'node:crypto'
+import type { GuestbookEntry } from '@/utils/guestbookSchema'
+
+const db = createClient({
+  url: import.meta.env.TURSO_DATABASE_URL as string,
+  authToken: import.meta.env.TURSO_AUTH_TOKEN as string
+})
+
+// biome-ignore lint/suspicious/noExplicitAny: libSQL row shape
+function toEntry(row: any): GuestbookEntry {
+  return {
+    id: row.id,
+    authorId: row.author_id,
+    authorName: row.author_name,
+    message: row.message,
+    createdAt: row.created_at,
+    hidden: Boolean(row.hidden)
+  }
+}
+
+export async function listEntries(limit = 100): Promise<GuestbookEntry[]> {
+  const res = await db.execute({
+    sql: 'SELECT * FROM entries WHERE hidden = 0 ORDER BY created_at DESC LIMIT ?',
+    args: [limit]
+  })
+  return res.rows.map(toEntry)
+}
+
+export async function createEntry(input: {
+  authorId: string
+  authorName: string
+  message: string
+}): Promise<GuestbookEntry> {
+  const entry: GuestbookEntry = {
+    id: randomUUID(),
+    authorId: input.authorId,
+    authorName: input.authorName,
+    message: input.message,
+    createdAt: new Date().toISOString(),
+    hidden: false
+  }
+  await db.execute({
+    sql: 'INSERT INTO entries (id, author_id, author_name, message, created_at, hidden) VALUES (?, ?, ?, ?, ?, 0)',
+    args: [entry.id, entry.authorId, entry.authorName, entry.message, entry.createdAt]
+  })
+  return entry
+}
+
+/** Soft-delete (owner-only). */
+export async function hideEntry(id: string): Promise<void> {
+  await db.execute({ sql: 'UPDATE entries SET hidden = 1 WHERE id = ?', args: [id] })
+}

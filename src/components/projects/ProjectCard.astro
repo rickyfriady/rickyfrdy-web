@@ -1,7 +1,6 @@
 ---
 import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
-import AnimatedGradient from '@/components/animated-gradient.astro'
 
 interface Props {
   project: Project
@@ -16,25 +15,17 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
 <div
   data-card
   data-category={project.category}
-  class:list={["relative rounded-xl", project.featured ? "p-[2px]" : ""]}
+  class:list={["relative", project.featured ? "pixel-frame pixel-frame-thread" : ""]}
 >
-  {project.featured && (
-    <AnimatedGradient
-      config={{ preset: 'Plasma', speed: 12 }}
-      radius="12px"
-      noise={{ opacity: 0.12 }}
-      style={{ zIndex: '0' }}
-    />
-  )}
 <a
   href={`/projects/${project.slug}`}
   class:list={[
-    "group relative flex items-center gap-4 overflow-hidden no-underline transition-colors duration-200 glass-card px-5 py-4",
-    project.featured ? "rounded-[10px] z-10" : "rounded-xl hover:border-accent/50"
+    "group relative flex items-center gap-4 overflow-hidden no-underline transition-colors duration-200 evidence-card px-5 py-4",
+    project.featured ? " z-10" : "rounded-xl hover:border-accent/50"
   ]}
 >
   <!-- Left accent bar: reveals on hover -->
-  <div class="absolute inset-y-0 left-0 w-0.5 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
+  <div class="absolute inset-y-0 left-0 w-1 bg-accent origin-bottom scale-y-0 transition-transform duration-300 group-hover:scale-y-100" />
 
   <!-- Right geometric decoration -->
   <div class="pointer-events-none absolute inset-y-0 right-0 w-44 overflow-hidden">
@@ -48,7 +39,7 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
   <!-- Content -->
   <div class="relative z-10 min-w-0 flex-1">
     <!-- Badge row -->
-    <div class="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+    <div class="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
       {project.company && (
         <span class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">{project.company}</span>
       )}
@@ -65,7 +56,7 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
 
     <!-- Role subtitle -->
     {project.role && (
-      <p class="text-muted mt-0.5 truncate font-mono text-xs">{project.role}</p>
+      <p class="text-muted mt-1 truncate font-mono text-xs">{project.role}</p>
     )}
 
     <!-- Bottom: key metric + tech chips -->
@@ -77,7 +68,7 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
         </>
       )}
       {project.technologies.slice(0, 3).map((tech) => (
-        <span class="bg-secondary text-muted rounded px-1.5 py-0.5 font-mono text-[10px]">{tech}</span>
+        <span class="bg-secondary text-muted rounded px-2 py-1 font-mono text-[10px]">{tech}</span>
       ))}
       {project.technologies.length > 3 && (
         <span class="text-muted font-mono text-[10px]">+{project.technologies.length - 3}</span>

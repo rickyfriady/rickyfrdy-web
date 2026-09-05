@@ -91,7 +91,7 @@
   <div id="cf-success" class="relative hidden overflow-hidden rounded-xl border border-accent/20 bg-accent/5 p-8 text-center">
     <div id="cf-confetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
     <span class="t-success-check" data-state="in" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-accent mx-auto h-[42px] w-[42px]" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-accent mx-auto h-[40px] w-[40px]" aria-hidden="true">
         <path d="M14 24l7 7L34 17"/>
       </svg>
     </span>
@@ -110,6 +110,7 @@
 <script>
   import { contactSchema } from '@/utils/contactSchema'
   import gsap from 'gsap'
+  import { playSound } from '@/utils/sound'
 
   const DRAFT_KEY = 'contact-draft'
   const DEBOUNCE_MS = 800
@@ -180,6 +181,7 @@
   }
 
   function showSuccess() {
+    playSound('confirm')
     const form = document.getElementById('cf-form')
     const success = document.getElementById('cf-success')
     const confetti = document.getElementById('cf-confetti')

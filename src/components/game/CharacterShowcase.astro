@@ -1,0 +1,55 @@
+---
+import AssetImage from '@/components/game/AssetImage.astro'
+import type { Stat } from '@/models'
+
+/**
+ * The portrait card beside the scene.
+ *
+ * Deliberately an Astro component, not an island: nothing here changes after
+ * render, so hydrating it would buy nothing and would put a second framework
+ * mount on the route. It also means every stat value is in the server-rendered
+ * HTML, where a crawler and a screen reader both find it.
+ *
+ * The numbers come from the same `deriveStats` call as the character sheet.
+ * A showcase with its own numbers would be a second claim about the owner's
+ * skills on a page recruiters read, and the two would drift.
+ */
+interface Props {
+  name: string
+  role: string
+  stats: Stat[]
+  labels: {
+    heading: string
+    basis: string
+    level: string
+  }
+}
+
+const { name, role, stats, labels } = Astro.props
+---
+
+<aside class="evidence-panel flex w-full flex-col gap-3 p-4 md:w-64" aria-label={labels.heading}>
+  <!-- Illustrated art supersedes the drawn portrait the moment a file lands on
+       the illustrated path; until then this renders exactly as before. -->
+  <AssetImage id="investigator-portrait" fallbackClass="showcase-portrait" eager />
+
+  <div>
+    <p class="chapter-label">{labels.heading}</p>
+    <h2 class="title-display mt-1 text-xl leading-tight">{name}</h2>
+    <p class="text-muted mt-1 text-xs leading-snug">{role}</p>
+  </div>
+
+  <ul class="flex flex-col gap-1.5">
+    {stats.map((stat) => (
+      <li class="flex items-center justify-between gap-2 text-xs">
+        <span class="text-foreground truncate">{stat.name}</span>
+        <span class="flex items-center gap-2">
+          <span class="text-muted font-mono text-[0.65rem]">{labels.level}{stat.level}</span>
+          <span class="stat-bar" aria-hidden="true" style={`--stat-fill: ${stat.level}`}></span>
+        </span>
+      </li>
+    ))}
+  </ul>
+
+  <p class="text-muted text-[0.65rem] leading-relaxed">{labels.basis}</p>
+</aside>

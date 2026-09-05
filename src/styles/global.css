@@ -10,47 +10,123 @@
   --font-sans:
     'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-display: 'Patrick Hand', cursive;
+  --font-display: 'Pixelify Sans', 'Courier New', monospace;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Light mode — Cool Slate Gray + Sky Blue */
-  --color-background: oklch(0.975 0.005 240);
-  --color-foreground: oklch(0.12 0.01 240);
-  --color-muted: oklch(0.40 0.01 240);      /* was 0.52 — now 4.8:1 vs bg (AA) */
-  --color-border: oklch(0.87 0.006 240);
-  --color-secondary: oklch(0.94 0.004 240);
-  --color-accent: oklch(0.42 0.15 220);     /* was 0.53 — now 5.1:1 vs bg (AA) */
-  --color-accent-hover: oklch(0.35 0.15 220);
-  --color-surface: oklch(0.935 0.004 240);
-  --color-highlight: oklch(0.7 0.09 220);
+  /* Light mode — CASE FILE "Meja Siang" (daytime desk: paper, cork, ink) */
+  --color-background: oklch(0.93 0.015 85);
+  --color-foreground: oklch(0.22 0.015 60);  /* 14.1:1 vs bg (AAA) */
+  --color-muted: oklch(0.46 0.020 70);       /* 5.8:1 vs bg, 4.7:1 vs surface (AA) */
+  --color-border: oklch(0.55 0.030 75);      /* 4.0:1 vs bg, 3.2:1 vs surface */
+  --color-secondary: oklch(0.89 0.018 82);
+  --color-accent: oklch(0.48 0.160 30);      /* 5.8:1 vs bg, 4.6:1 vs surface (AA) */
+  --color-accent-hover: oklch(0.40 0.160 30);
+  --color-surface: oklch(0.86 0.022 80);
 
-  /* Easing tokens */
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Red string — graphic only, NEVER text. Theme-constant, so it is declared
+     once here and deliberately not overridden in .dark: it is the single
+     saturated colour on the site and therefore the attention marker. */
+  --color-thread: oklch(0.55 0.180 30);      /* 4.3:1 vs light bg, 3.7:1 vs dark bg */
 
-  /* Spacing scale */
+  /* Motion — stepped, never eased.
+
+     Tailwind's own `ease-*` utilities are redirected here too, so any
+     `ease-out` / `ease-in-out` left in markup snaps like everything else
+     instead of quietly reintroducing a smooth curve. */
+  --ease-linear: steps(5, end);
+  --ease-in: steps(5, end);
+  --ease-out: steps(5, end);
+  --ease-in-out: steps(5, end);
+
+  /* Easing tokens — stepped, never eased.
+     Pixel-art motion snaps between whole frames. Smooth cubic-bezier easing on
+     top of a pixel skin is exactly what makes a site read as "a normal website
+     using a pixel font" rather than as pixel art. Step counts are tuned to the
+     durations these tokens drive (150-300ms). */
+  --ease-out-quart: steps(5, end);
+  --ease-out-expo: steps(6, end);
+  --ease-spring: steps(4, end);
+
+  /* Spacing scale — pinned to a 4px grid.
+     Tailwind 4 derives every spacing utility from `calc(var(--spacing) * N)`,
+     so pinning this keeps integer utilities (p-1 = 4px, p-2 = 8px, …) on the
+     grid by construction. Fractional utilities (p-1.5 = 6px) and arbitrary
+     px values still break it and are swept per-component in Phase 3. */
+  --spacing: 0.25rem;
   --nav-height: 3.5rem;
+
+  /* Shared corner radius for all interactive chrome (nav shell, buttons, toggle).
+     Hard corners are a defining property of the CASE FILE pixel identity. */
+  --radius-interactive: 0;
+
+  /* Zero out Tailwind's radius scale so every `rounded-*` utility already in
+     markup resolves to 0 — one override instead of editing ~40 files. */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
 }
 
 /* ━━━━ Dark mode overrides ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .dark {
-  --color-background: oklch(0.14 0.015 160);
-  --color-foreground: oklch(0.95 0.005 80);
-  --color-muted: oklch(0.65 0.01 140);      /* was 0.58 — now 4.5:1 vs bg (AA) */
-  --color-border: oklch(0.26 0.02 160);
-  --color-secondary: oklch(0.18 0.015 160);
-  --color-accent: oklch(0.76 0.09 160);     /* was 0.70 — now 4.6:1 vs bg (AA) */
-  --color-accent-hover: oklch(0.82 0.09 160);
-  --color-surface: oklch(0.17 0.012 160);
-  --color-highlight: oklch(0.60 0.07 160);
+  /* Dark mode — CASE FILE "Arsip Malam" (night archive: dark wood, cork, paper) */
+  --color-background: oklch(0.16 0.012 60);
+  --color-foreground: oklch(0.92 0.015 85);  /* 15.3:1 vs bg (AAA) */
+  --color-muted: oklch(0.66 0.015 70);       /* 6.2:1 vs bg, 5.3:1 vs surface (AA) */
+  --color-border: oklch(0.55 0.020 55);      /* 4.0:1 vs bg, 3.4:1 vs surface */
+  --color-secondary: oklch(0.20 0.015 58);
+  --color-accent: oklch(0.68 0.150 30);      /* 6.3:1 vs bg, 5.4:1 vs surface (AA) */
+  --color-accent-hover: oklch(0.76 0.150 30);
+  --color-surface: oklch(0.24 0.018 55);
+  /* --color-thread is intentionally NOT overridden here — see @theme. */
+}
+
+/* ━━━━ World theme — the scope you enter ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* A third palette for the playable scene: near-black ground, gold accent.
+   It redefines only roles that already exist, so no component needs to know
+   which palette is active — that is what makes the scope class the entire
+   mechanism.
+
+   Scoped to the play wrapper today. To take it site-wide, move `.world` onto
+   the <html> element: one line, no component edits, and putting it back
+   restores the paper palette exactly. Declared after `.dark` on purpose, so it
+   still wins when both classes land on the same element after that promotion.
+
+   Dark-first by intent: this resolves to the same values whichever theme the
+   visitor has chosen, so a light-theme visitor still crosses a threshold
+   rather than meeting a half-lit hybrid. A light world palette, if it is ever
+   wanted, is additive. */
+.world,
+.dark .world,
+.world.dark {
+  --color-background: oklch(0.14 0.014 70);
+  --color-foreground: oklch(0.95 0.012 85);
+  --color-muted: oklch(0.74 0.028 82);
+  --color-border: oklch(0.58 0.055 80);
+  --color-secondary: oklch(0.18 0.016 70);
+  --color-surface: oklch(0.22 0.020 72);
+  --color-accent: oklch(0.82 0.140 88);
+  --color-accent-hover: oklch(0.90 0.110 90);
+  /* --color-thread is NOT overridden. It stays red against a gold accent —
+     a 58-degree hue gap — so the attention marker cannot be mistaken for
+     ordinary chrome. */
+}
+
+/* Tailwind 4 hardcodes `rounded-full` to calc(infinity * 1px) rather than
+   reading a theme token, so the scale override above cannot reach it. */
+.rounded-full {
+  border-radius: 0;
 }
 
 /* ━━━━ Transitions.dev — semantic tokens ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :root {
   /* Card resize */
   --resize-dur: 300ms;
-  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --resize-ease: steps(6, end);
   /* Notification badge */
   --badge-slide-dur: 260ms;
   --badge-pop-dur: 500ms;
@@ -60,20 +136,20 @@
   --badge-blur: 2px;
   --badge-offset-x: -8.2px;
   --badge-offset-y: 12.4px;
-  --badge-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --badge-pop-ease: cubic-bezier(0.34, 1.36, 0.64, 1);
-  --badge-close-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --badge-slide-ease: steps(5, end);
+  --badge-pop-ease: steps(4, end);
+  --badge-close-ease: steps(3, end);
   /* Menu dropdown */
   --dropdown-open-dur: 250ms;
   --dropdown-close-dur: 150ms;
   --dropdown-pre-scale: 0.97;
   --dropdown-closing-scale: 0.99;
-  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dropdown-ease: steps(5, end);
   /* Icon swap */
   --icon-swap-dur: 250ms;
   --icon-swap-blur: 2px;
   --icon-swap-start-scale: 0.25;
-  --icon-swap-ease: ease-in-out;
+  --icon-swap-ease: steps(3, end);
   /* Success check */
   --check-opacity-dur: 500ms;
   --check-rotate-dur: 500ms;
@@ -84,24 +160,24 @@
   --check-blur-from: 10px;
   --check-path-dur: 500ms;
   --check-path-delay: 80ms;
-  --check-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-opacity: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-rotate: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-bob: cubic-bezier(0.34, 1.35, 0.64, 1);
-  --check-ease-path: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-out: steps(6, end);
+  --check-ease-opacity: steps(4, end);
+  --check-ease-rotate: steps(6, end);
+  --check-ease-bob: steps(4, end);
+  --check-ease-path: steps(8, end);
   /* Avatar group hover */
   --avatar-lift: -4px;
   --avatar-dur: 320ms;
   --avatar-scale: 1.05;
   --avatar-falloff: 0.45;
-  --avatar-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
-  --avatar-ease-out: cubic-bezier(0.34, 3.85, 0.64, 1);
+  --avatar-ease-in: steps(4, end);
+  --avatar-ease-out: steps(4, end);
   /* Error state shake */
   --shake-distance: 6px;
   --shake-overshoot: 4px;
   --shake-dur-a: 80ms;
   --shake-dur-b: 60ms;
-  --shake-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --shake-ease: steps(4, end);
   --revert-hold: 3000ms;
   --revert-dur: 280ms;
   /* Skeleton loader */
@@ -110,7 +186,7 @@
   --pulse-min: 0.5;
   --reveal-dur: 400ms;
   --reveal-blur: 2px;
-  --reveal-ease: ease-in-out;
+  --reveal-ease: steps(6, end);
   /* Shimmer text */
   --shimmer-dur: 2000ms;
   --shimmer-base: #7c7c7c;
@@ -119,7 +195,7 @@
   --shimmer-ease: linear;
   /* Tabs sliding */
   --tabs-dur: 250ms;
-  --tabs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tabs-ease: steps(5, end);
   --tabs-text-muted: rgba(15, 15, 15, 0.8);
   --tabs-text-active: #0f0f0f;
   --tabs-bar-bg: #f1f1f1;
@@ -177,28 +253,21 @@
 }
 
 @utility soft-panel {
-  @apply border-border bg-surface rounded-2xl border;
+  @apply border-border bg-surface border-2;
 }
 
 @utility glass-btn {
   border: 1px solid transparent;
-  transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: var(--radius-interactive);
+  transition: all 200ms var(--ease-out-quart);
   &:hover {
-    background: color-mix(in oklch, var(--color-background) 60%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-color: color-mix(in oklch, var(--color-border) 50%, transparent);
-    box-shadow: 0 2px 12px oklch(0 0 0 / 0.07), inset 0 1px 0 oklch(1 0 0 / 0.08);
+    background: var(--color-secondary);
+    border-color: var(--color-border);
   }
-}
-
-@utility header-glass {
-  background: color-mix(in oklch, var(--color-background) 60%, transparent);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border-bottom: 1px solid color-mix(in oklch, var(--color-border) 45%, transparent);
-  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-accent) 7%, transparent),
-    0 8px 32px oklch(0 0 0 / 0.08);
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 @utility nav-island {
@@ -206,20 +275,32 @@
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  border-radius: 9999px;
-  background: color-mix(in oklch, var(--color-background) 72%, transparent);
-  backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border: 1px solid color-mix(in oklch, var(--color-border) 55%, transparent);
+  border-radius: var(--radius-interactive);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
   box-shadow: 0 4px 24px oklch(0 0 0 / 0.12), 0 1px 0 oklch(1 0 0 / 0.08) inset;
 }
 
 @utility nav-island-pill {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background: color-mix(in oklch, var(--color-accent) 12%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-accent) 28%, transparent);
+  background: color-mix(in oklch, var(--color-accent) 18%, transparent);
+  border: 2px solid var(--color-accent);
+}
+
+@utility mobile-nav-shell {
+  background: var(--color-background);
+  border: 4px solid var(--color-border);
+}
+
+@utility mobile-nav-drawer {
+  background: var(--color-background);
+  border: 4px solid var(--color-border);
+}
+
+@utility mobile-nav-pill {
+  background: color-mix(in oklch, var(--color-accent) 18%, transparent);
+  border: 2px solid var(--color-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -230,26 +311,240 @@
   }
 }
 
-@utility glass-panel {
-  background: color-mix(in oklch, var(--color-background) 70%, transparent);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
-  box-shadow: 0 8px 32px oklch(0 0 0 / 0.07), inset 0 1px 0 oklch(1 0 0 / 0.12);
-  border-radius: 1rem;
+/* ━━━━ Pixel sprites ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Sprites are drawn at 16x16 and displayed at integer multiples (32px = 2x,
+   48px = 3x). Any non-integer scale, or the browser's default smoothing,
+   turns crisp pixels into mush. */
+.pixel-sprite {
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
 }
 
-@utility glass-card {
-  background: color-mix(in oklch, var(--color-background) 65%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
-  box-shadow: 0 4px 24px oklch(0 0 0 / 0.06), inset 0 1px 0 oklch(1 0 0 / 0.1);
-  border-radius: 0.75rem;
+/* ━━━━ Pixel frame ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* The one shared panel treatment: evidence cards, dialog boxes, blockquotes,
+   the command palette, nav chrome.
+
+   Deliberately CSS rather than the 9-slice PNG the design originally called
+   for. A PNG frame carries its own baked-in colours, so it cannot follow the
+   light/dark theme — this reads its colours from tokens and flips for free.
+   It also costs no asset, scales to any size, and is auto-height by
+   construction, which is what keeps longer Indonesian copy from overflowing.
+
+   The four offset shadows are the element's own silhouette painted in the
+   border colour and pushed 4px in each direction, so only a 4px strip of each
+   shows. The corners stay uncovered, giving the notched edge that reads as
+   pixel art. The frame sits OUTSIDE the box, so leave 4px of margin. */
+/* ━━━━ Investigation board ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Cork, grain, and the pin are all CSS. Only icons and characters earn a
+   sprite — a texture drawn as a PNG could not follow the theme and would cost
+   an asset for something two gradients already do. */
+.board-surface {
+  background-color: var(--color-surface);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in oklch, var(--color-border) 12%, transparent) 0 2px,
+      transparent 2px 6px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in oklch, var(--color-border) 8%, transparent) 0 2px,
+      transparent 2px 7px
+    );
+  border: 4px solid var(--color-border);
+  cursor: grab;
+}
+.board-surface:active {
+  cursor: grabbing;
 }
 
-@utility nav-shell {
-  @apply border-border bg-background/95 rounded-2xl border backdrop-blur-sm;
+/* Pushpin holding each card to the board. */
+.board-pin {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  background: var(--color-thread);
+  box-shadow: 0 2px 0 0 color-mix(in oklch, var(--color-thread) 55%, black);
+}
+
+/* Desk lamp. The cone is a clipped triangle, not an image, so it tints with
+   the theme and stays crisp at any zoom. */
+.board-lamp {
+  position: absolute;
+  z-index: 20;
+  width: 48px;
+  cursor: grab;
+  touch-action: none;
+}
+.board-lamp:active {
+  cursor: grabbing;
+}
+.board-lamp-head {
+  width: 48px;
+  height: 16px;
+  background: var(--color-border);
+  box-shadow: inset 0 -4px 0 0 color-mix(in oklch, var(--color-border) 60%, black);
+}
+.board-lamp-cone {
+  width: 0;
+  height: 0;
+  margin-left: -76px;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-top: 320px solid color-mix(in oklch, var(--color-accent) 12%, transparent);
+  pointer-events: none;
+}
+
+/* ━━━━ Detective Mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Camera-live indicator. Unmissable by design — a page using someone's webcam
+   must never be ambiguous about it. */
+.detective-live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-thread);
+  animation: detective-blink 1s steps(2, end) infinite;
+}
+@keyframes detective-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.2; }
+}
+
+/* The gesture cursor: a magnifying glass, because in this fiction you are
+   examining evidence rather than pointing at it. Drawn in CSS — pure geometry,
+   so it stays crisp at any size and follows the theme. */
+.detective-cursor {
+  position: fixed;
+  z-index: 9999;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.detective-cursor-lens {
+  position: absolute;
+  inset: 0;
+  width: 24px;
+  height: 24px;
+  border: 4px solid var(--color-thread);
+  background: color-mix(in oklch, var(--color-foreground) 8%, transparent);
+}
+.detective-cursor-handle {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: 4px;
+  height: 12px;
+  background: var(--color-thread);
+  transform: rotate(-45deg);
+  transform-origin: top left;
+}
+.detective-cursor[data-pinching='true'] .detective-cursor-lens {
+  background: color-mix(in oklch, var(--color-thread) 35%, transparent);
+  border-color: var(--color-accent);
+}
+
+/* Webcam feed, styled as grainy surveillance footage rather than hidden —
+   it doubles as proof to the visitor that the camera really is on. */
+.detective-feed {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  width: 160px;
+  border: 4px solid var(--color-border);
+  filter: grayscale(1) contrast(1.4) brightness(0.8);
+  transform: scaleX(-1);
+  pointer-events: none;
+}
+.detective-feed-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    color-mix(in oklch, var(--color-background) 45%, transparent) 2px 4px
+  );
+}
+
+/* ━━━━ Menu cursor ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* The JRPG selection marker: a solid triangle that snaps to the hovered or
+   focused item. Drawn as a CSS triangle rather than a sprite — it is pure
+   geometry, so it stays crisp at any size and follows the theme.
+
+   This sits alongside the existing focus-visible ring; it never replaces it,
+   because a decorative marker is not an accessible focus indicator. */
+@utility menu-cursor {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    margin-top: -4px;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid var(--color-thread);
+    opacity: 0;
+    transition: opacity 120ms steps(2, end);
+  }
+  &:hover::before,
+  &:focus-visible::before,
+  &[data-active]::before {
+    opacity: 1;
+  }
+}
+
+@utility pixel-frame {
+  --pf-unit: 4px;
+  --pf-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
+}
+
+/* Highlighted / active panel — the red string is the site's single saturated
+   colour, so it doubles as the attention marker. */
+@utility pixel-frame-thread {
+  --pf-color: var(--color-thread);
+}
+
+/* Recessed variant for panels sitting on top of another panel. */
+@utility pixel-frame-inset {
+  background: var(--color-secondary);
+}
+
+/* Was `glass-panel`. Blur and soft drop shadows are the exact opposite of a
+   pixel surface, so the treatment is now the shared frame. */
+@utility evidence-panel {
+  --pf-unit: 4px;
+  --pf-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
+}
+
+/* Was `glass-card`. Same frame, drawn 1 pixel unit thinner so nested cards
+   read as lighter than the panel they sit on. */
+@utility evidence-card {
+  --pf-unit: 2px;
+  --pf-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
 }
 
 @utility chapter-heading {
@@ -296,6 +591,227 @@
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* ━━━━ Game surfaces ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Everything here is drawn from the existing tokens, so a sprite-less game
+   still follows light/dark. A PNG carries its own colours and cannot. */
+
+@utility pixel-sprite {
+  image-rendering: pixelated;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The illustrated path's counterpart to `pixel-sprite`.
+
+   Deliberately the inverse in the one respect that matters: painted art is
+   resampled smoothly and scales to fit its container, where pixel art is
+   forced to an integer factor and rendered hard. `auto` is the initial value
+   for `image-rendering`, but it is set explicitly so the rule reads as a
+   decision rather than an omission — and so a future default cannot quietly
+   change it. */
+@utility illustrated-art {
+  image-rendering: auto;
+  max-width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The scene viewport. Actors are transformed inside it; it never scrolls. */
+@utility game-stage {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-secondary);
+  --pf-unit: 4px;
+  --pf-color: var(--color-border);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
+}
+
+/* Status strip above the stage: room name and the two panel keys. */
+@utility game-hud {
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border-bottom: 4px solid var(--color-border);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Dialogue box — the JRPG bar that rises from the bottom of the stage. */
+@utility game-dialogue {
+  background: var(--color-surface);
+  color: var(--color-foreground);
+  padding: 12px 16px;
+  --pf-unit: 4px;
+  --pf-color: var(--color-thread);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
+}
+
+/* Ten segments, `--stat-fill` of them lit. Decorative: the number is always
+   rendered as text beside it, never carried by the bar alone. */
+@utility stat-bar {
+  --stat-fill: 0;
+  display: block;
+  width: 80px;
+  height: 8px;
+  background:
+    repeating-linear-gradient(to right, var(--color-thread) 0 6px, transparent 6px 8px) left / calc(var(--stat-fill) * 8px) 100% no-repeat,
+    repeating-linear-gradient(to right, var(--color-border) 0 6px, transparent 6px 8px);
+}
+
+/* Touch controls. 44px is the floor, not the target — anything smaller is a
+   control only a mouse can hit. */
+/* Drawn stand-ins for sprites with no art yet.
+   Built from tokens, so unlike a PNG they follow light/dark for free — which
+   is the whole reason the game is playable before a single pixel is drawn. */
+@utility sprite-fb {
+  --sprite-size: 32px;
+  --u: calc(var(--sprite-size) / 8);
+  width: var(--sprite-size);
+  height: var(--sprite-size);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 var(--u) var(--color-border);
+
+  /* The player: solid body, accent head. */
+  &[data-kind='actor'] {
+    background: var(--color-foreground);
+    box-shadow:
+      inset 0 calc(var(--u) * 3) 0 0 var(--color-accent),
+      inset 0 0 0 var(--u) var(--color-border);
+  }
+
+  /* A person who is not you: same silhouette, thread head, lighter body. */
+  &[data-kind='npc'] {
+    background: var(--color-muted);
+    box-shadow:
+      inset 0 calc(var(--u) * 3) 0 0 var(--color-thread),
+      inset 0 0 0 var(--u) var(--color-border);
+  }
+
+  /* Shelves, cabinets, desks: a framed surface with a shelf line. */
+  &[data-kind='object'] {
+    background: var(--color-surface);
+    box-shadow:
+      inset 0 0 0 var(--u) var(--color-border),
+      inset 0 calc(var(--u) * 4) 0 calc(var(--u) * -3) var(--color-border);
+  }
+
+  /* Doors are the one thing you must never fail to notice, so they carry the
+     site's single saturated colour. */
+  &[data-kind='door'] {
+    background: var(--color-background);
+    box-shadow: inset 0 0 0 var(--u) var(--color-thread);
+  }
+}
+
+/* ━━━━ World chrome ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* The scene band breaks out of the content column. `margin-inline` with a
+   50vw pull rather than `width: 100vw`, and the section clips its own
+   overflow, so a platform with visible scrollbars cannot gain a horizontal
+   one. Verified by measuring scrollWidth against clientWidth in a browser,
+   not by assuming. */
+@utility world-bleed {
+  margin-inline: calc(50% - 50vw);
+  overflow-x: clip;
+}
+
+/* Depth without an asset: a floor wash, a vignette, and a faint horizon.
+   Three gradients on existing tokens, so it follows the palette it sits in. */
+@utility scene-backdrop {
+  background:
+    radial-gradient(120% 70% at 50% 118%, color-mix(in oklch, var(--color-accent) 12%, transparent) 0%, transparent 62%),
+    radial-gradient(90% 60% at 50% -10%, color-mix(in oklch, var(--color-surface) 85%, transparent) 0%, transparent 70%),
+    linear-gradient(180deg, var(--color-background) 0%, var(--color-secondary) 100%);
+}
+
+/* A character-shaped stand-in, drawn rather than drawn-on. Replaced by real
+   art the moment a file lands on the illustrated path; until then this is what
+   makes the showcase read as a person instead of an empty card. */
+@utility showcase-portrait {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 50% at 50% 92%, color-mix(in oklch, var(--color-accent) 20%, transparent) 0%, transparent 72%),
+    linear-gradient(180deg, var(--color-secondary) 0%, var(--color-background) 100%);
+
+  /* Head */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 18%;
+    width: 26%;
+    aspect-ratio: 1;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: var(--color-foreground);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-accent) 55%, transparent);
+  }
+
+  /* Shoulders and torso */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 62%;
+    height: 54%;
+    translate: -50% 0;
+    background: var(--color-foreground);
+    clip-path: polygon(28% 0%, 72% 0%, 100% 26%, 100% 100%, 0% 100%, 0% 26%);
+  }
+}
+
+/* Portal-style entry in the destination stack. */
+@utility portal-card {
+  display: block;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-border);
+  transition: border-color 140ms steps(3, end);
+  &:hover,
+  &:focus-visible {
+    border-left-color: var(--color-thread);
+  }
+}
+
+@utility dpad-key {
+  font-family: var(--font-mono);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  background: var(--color-surface);
+  color: var(--color-foreground);
+  --pf-unit: 2px;
+  --pf-color: var(--color-border);
+  box-shadow:
+    0 calc(-1 * var(--pf-unit)) 0 0 var(--pf-color),
+    0 var(--pf-unit) 0 0 var(--pf-color),
+    calc(-1 * var(--pf-unit)) 0 0 0 var(--pf-color),
+    var(--pf-unit) 0 0 0 var(--pf-color);
+  &:active {
+    --pf-color: var(--color-thread);
   }
 }
 
@@ -382,8 +898,8 @@
   background: var(--color-accent);
   transform: scaleX(0);
   transform-origin: center;
-  transition: transform 220ms cubic-bezier(0.25, 1, 0.5, 1);
-  border-radius: 1px;
+  transition: transform 220ms var(--ease-out-quart);
+  border-radius: 0;
 }
 
 .nav-link-item:hover::after {
@@ -575,7 +1091,7 @@
   transition: none !important;
 }
 .t-skel-skeleton.is-pulsing > * {
-  animation: t-skel-pulse var(--pulse-dur) ease-in-out var(--pulse-count);
+  animation: t-skel-pulse var(--pulse-dur) steps(4, end) var(--pulse-count);
 }
 @keyframes t-skel-pulse {
   0%, 100% { opacity: 1; }
@@ -621,7 +1137,7 @@
   align-items: center;
   gap: 3px;
   padding: 3px;
-  border-radius: 48px;
+  border-radius: 0;
   background: var(--tabs-bar-bg);
 }
 .t-tab {
@@ -633,7 +1149,7 @@
   padding: 4px 12px;
   color: var(--tabs-text-muted);
   cursor: pointer;
-  border-radius: 48px;
+  border-radius: 0;
   z-index: 1;
   transition: color var(--tabs-dur) var(--tabs-ease);
 }
@@ -648,7 +1164,7 @@
   height: 30px;
   width: 0;
   background: var(--tabs-pill-bg);
-  border-radius: 48px;
+  border-radius: 0;
   transform: translateX(0);
   transition:
     transform var(--tabs-dur) var(--tabs-ease),
