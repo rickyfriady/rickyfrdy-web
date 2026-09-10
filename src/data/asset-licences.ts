@@ -16,7 +16,7 @@ const KENNEY = {
   // CC0 waives the attribution requirement; the pack asks for credit as a
   // favour rather than a condition. Recorded as required anyway, because the
   // cost of naming the person who gave the art away is nothing.
-  attribution: 'Character art by Kenney (kenney.nl) — CC0'
+  attribution: 'Character art by Kenney (kenney.nl)'
 } as const
 
 export const assetLicences: AssetLicence[] = [

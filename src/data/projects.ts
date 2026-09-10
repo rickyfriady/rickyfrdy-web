@@ -69,7 +69,7 @@ export const projects = [
       'Maintaining compatibility with the App Mitra Pegadaian partner integration'
     ],
     solutions: [
-      'Used strangler-fig pattern — routed traffic gradually from old to new services',
+      'Used strangler-fig pattern, routed traffic gradually from old to new services',
       'Implemented Factory pattern so each loan type is a pluggable strategy class',
       'Wrote comprehensive integration tests against the partner API contract'
     ],
@@ -82,7 +82,7 @@ export const projects = [
   {
     slug: 'kamila',
     heroImage: '/works/works-3.webp',
-    title: 'KAMILA — Marketing & KPI Tracker',
+    title: 'KAMILA, Marketing & KPI Tracker',
     shortDescription:
       'Internal Pegadaian app for marketing progress tracking, KPI measurement, and loan lead submission from external partners.',
     fullDescription:
@@ -129,7 +129,7 @@ export const projects = [
   {
     slug: 'aira-reconciliation',
     heroImage: '/works/works-4.webp',
-    title: 'AIRA — Reconciliation System',
+    title: 'AIRA, Reconciliation System',
     shortDescription:
       'Reconciliation transaction module for integration with partner banks, producing journal entries compliant with accounting standards.',
     fullDescription:
@@ -167,7 +167,7 @@ export const projects = [
   {
     slug: 'chatbot-kukerta',
     heroImage: '/works/works-5.webp',
-    title: 'Thesis — Chatbot Kukerta',
+    title: 'Thesis, Chatbot Kukerta',
     shortDescription:
       'Conversational chatbot using fuzzy string matching to answer student queries about the Kukerta internship program, achieving 80% match rate.',
     fullDescription:

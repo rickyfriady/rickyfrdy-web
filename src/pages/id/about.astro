@@ -16,22 +16,22 @@ const initialStats = await fetchBuildTimeStats(import.meta.env.GITHUB_TOKEN)
 const stack = ['TypeScript', 'Vue 3', 'React', 'NestJS', 'Node.js', 'PostgreSQL', 'Redis', 'Docker']
 
 const beyondCode = [
-  { label: 'Perjalanan solo', detail: 'Jalan-jalan pelan ke Sumatera & Jawa — 4 provinsi tahun 2025' },
+  { label: 'Perjalanan solo', detail: 'Jalan-jalan pelan ke Sumatera & Jawa, 4 provinsi tahun 2025' },
   { label: 'Open source', detail: 'Kontribusi ke tooling kecil Vue + Astro di akhir pekan' },
-  { label: 'Fotografi', detail: 'Pemakai lensa manual — Fujifilm X-T2 + 35mm prime' },
+  { label: 'Fotografi', detail: 'Pemakai lensa manual, Fujifilm X-T2 + 35mm prime' },
   { label: 'Membaca', detail: 'Sedang baca ulang Designing Data-Intensive Applications (pelan-pelan)' },
 ]
 ---
 
 <MainLayout
-  title="Tentang — Ricki Friadi"
-  description="Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun."
+  title="Tentang · Ricki Friadi"
+  description="Ricki Friadi, fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun."
   lang="id"
   hreflangPairs={[
     { lang: 'en', href: 'https://rickyfrdy.my.id/about/' },
     { lang: 'id', href: 'https://rickyfrdy.my.id/id/about/' },
   ]}
-  schema={webPageSchema('Tentang — Ricki Friadi', 'Ricki Friadi — fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun.', 'https://rickyfrdy.my.id/id/about/')}
+  schema={webPageSchema('Tentang · Ricki Friadi', 'Ricki Friadi, fullstack developer di Jakarta. Cerita, pekerjaan saat ini, dan pengalaman di balik sistem yang saya bangun.', 'https://rickyfrdy.my.id/id/about/')}
 >
   <PageAnimations />
 
@@ -54,7 +54,7 @@ const beyondCode = [
         </h1>
         <p class="text-muted mt-6 max-w-md text-sm leading-relaxed" data-hero-reveal>
           Fullstack developer berbasis di Jakarta. Saya membangun sistem di balik fintech
-          Indonesia — micro-frontends, microservices NestJS, dan arsitektur yang membuatnya
+          Indonesia, micro-frontends, microservices NestJS, dan arsitektur yang membuatnya
           tetap mudah dipelihara di skala besar.
         </p>
 
@@ -140,7 +140,7 @@ const beyondCode = [
 
     <div class="max-w-2xl space-y-5 px-4 pb-12 text-sm leading-relaxed">
       <p data-stagger-item>
-        Saya mulai menulis kode tahun 2020 lewat proyek skripsi — chatbot Python yang menjawab
+        Saya mulai menulis kode tahun 2020 lewat proyek skripsi, chatbot Python yang menjawab
         pertanyaan mahasiswa Universitas Riau tentang program Kukerta. Akurasinya mencapai
         80% pada dataset 3.000 pasangan yang saya kurasi manual, dan dirilis ke kantor administrasi.
         Saya pikir saya sudah selesai.
@@ -148,19 +148,19 @@ const beyondCode = [
       <p data-stagger-item>
         Lalu di April 2021, magang pertama di PT. Sumatera Kalimantan Jaya memberi saya 14 hari
         untuk merilis website profil perusahaan. CodeIgniter, PHP, tekanan deadline. Kami rilis
-        tepat waktu. Kebiasaan itu —
-        <span class="text-foreground font-semibold">rilis cepat, iterasi dengan jujur</span> —
+        tepat waktu. Kebiasaan itu , 
+        <span class="text-foreground font-semibold">rilis cepat, iterasi dengan jujur</span> , 
         masih melekat sampai sekarang.
       </p>
       <p data-stagger-item>
         Dua tahun freelancing menyusul: React, Node.js, Express, integrasi MongoDB, MySQL, dan
         PostgreSQL untuk klien UKM di Pekanbaru. Kerjanya tidak glamor tapi memaksa saya jadi
-        generalis — sesuatu yang sulit didapat kalau cuma di satu stack di satu perusahaan.
+        generalis, sesuatu yang sulit didapat kalau cuma di satu stack di satu perusahaan.
       </p>
       <p data-stagger-item>
         Saya bergabung dengan <span class="text-foreground font-semibold">PT. Pegadaian</span>
         bulan Mei 2023 sebagai Software Engineer. Sejak 2024 saya fokus di micro-frontends dan
-        microservices — migrasi monolith CodeIgniter ke 9 microservices NestJS dengan Factory
+        microservices, migrasi monolith CodeIgniter ke 9 microservices NestJS dengan Factory
         pattern, ikut bangun platform Module Federation yang melayani 1,5 juta pengguna, dan
         menjaga coverage Vitest ≥80% di semua modul.
       </p>

@@ -179,7 +179,7 @@ const sorted = [...projects].sort((a, b) => {
   function buildFilterHTML(state: ReturnType<typeof getState>) {
     const btn = (filter: string, value: string, label: string) => {
       const active = (state as Record<string, string>)[filter] === value
-      return `<button type="button" class="w-full rounded px-3 py-2 text-left font-mono text-xs transition-colors ${active ? 'bg-secondary text-foreground' : 'text-muted hover:text-foreground hover:bg-secondary/60'}" data-filter="${filter}" data-value="${value}">${label}</button>`
+      return `<button type="button" class="filter-option w-full rounded px-3 py-2 text-left font-mono text-xs transition-colors ${active ? 'bg-secondary text-foreground' : 'text-muted hover:text-foreground hover:bg-secondary/60'}" data-filter="${filter}" data-value="${value}">${label}</button>`
     }
     const techOptions = allTechs.map((t: string) => `<option value="${t}"${state.tech === t ? ' selected' : ''}>${t}</option>`).join('')
     return `

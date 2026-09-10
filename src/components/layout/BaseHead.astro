@@ -24,7 +24,7 @@ const {
   schema,
 } = Astro.props
 
-const siteTitle = title.includes('Ricki Friadi') ? title : `${title} — Ricki Friadi`
+const siteTitle = title.includes('Ricki Friadi') ? title : `${title} · Ricki Friadi`
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const ogImageURL = new URL(ogImage, Astro.site)
 

@@ -47,7 +47,7 @@ export default function ResumePdfAts({
   summary
 }: Props) {
   return (
-    <Document title="Ricki Friadi — Resume (ATS)">
+    <Document title="Ricki Friadi, Resume (ATS)">
       <Page size="A4" style={s.page}>
         <Text style={s.name}>Ricki Friadi</Text>
         <Text style={s.subtitle}>Fullstack Developer</Text>

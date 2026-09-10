@@ -1,6 +1,6 @@
 ---
 title: 'Building Microservices with NestJS and the Factory Pattern'
-description: 'How I replaced a legacy CodeIgniter monolith with 9 NestJS microservices at PT. Pegadaian — and why the Factory pattern made each new loan product a 1-hour addition.'
+description: 'How I replaced a legacy CodeIgniter monolith with 9 NestJS microservices at PT. Pegadaian, and why the Factory pattern made each new loan product a 1-hour addition.'
 category: 'Architecture'
 pubDate: 2025-03-15
 tags: ['nestjs', 'microservices', 'typescript', 'architecture']
@@ -8,7 +8,7 @@ draft: false
 ---
 
 When I joined the Microsite Pinjaman project at PT. Pegadaian, the backend was a single
-CodeIgniter 3 monolith serving three different loan products — and adding a fourth meant
+CodeIgniter 3 monolith serving three different loan products, and adding a fourth meant
 touching code in a dozen places. Here's how we changed that.
 
 ## The Problem
@@ -73,4 +73,4 @@ No other files changed. The migration from "new requirement" to "deployed" took 
 - **Type-safe discriminated unions beat string checks.** Using `LoanType` as a union type
   catches missing cases at compile time, not at 3am in production.
 - **Write the tests for the interface, not the implementation.** Our integration tests target
-  `LoanProcessor` — so swapping implementations is safe.
+  `LoanProcessor`, so swapping implementations is safe.

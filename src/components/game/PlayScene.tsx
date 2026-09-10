@@ -116,8 +116,8 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
   /* Below `md` the scene does not mount: the destination list is the experience
-     there. A `hidden md:block` wrapper cannot enforce that on its own — a
-     `client:only` island hydrates regardless of a display:none ancestor — so the
+     there. A `hidden md:block` wrapper cannot enforce that on its own, a
+     `client:only` island hydrates regardless of a display:none ancestor, so the
      gate has to live here. Subscribed rather than read once, because a rotation
      crosses this breakpoint far more often than a motion preference changes.
      ponytail: the island's JS still downloads below `md`; moving to
@@ -280,7 +280,7 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       recordEvent(`talk:${target.slug}`)
       const quest = quests.find((q) => q.npcId === target.slug)
       openDialogue({
-        title: `${target.title} — ${target.summary}`,
+        title: `${target.title}, ${target.summary}`,
         passages: quest ? quest.passages : [target.summary],
         href: quest?.destination,
         linkLabel: labels.open
@@ -394,7 +394,7 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
         hp,
         log: [
           ...current.log,
-          `${labels[`move_${moves[moveIndex].id}`] ?? moves[moveIndex].id} — ${damage}`
+          `${labels[`move_${moves[moveIndex].id}`] ?? moves[moveIndex].id}, ${damage}`
         ]
       }
     })
@@ -545,7 +545,7 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
               <li key={quest.id} className="text-sm">
                 <span className="text-foreground">{quest.title}</span>{' '}
                 <span className="text-muted font-mono text-[0.65rem]">
-                  — {labels[`state_${states[quest.id] as QuestState}`]}
+                  , {labels[`state_${states[quest.id] as QuestState}`]}
                 </span>
               </li>
             ))}

@@ -1231,3 +1231,49 @@
   0%,10%,12%,20%,22%,40%,42%,60%,62%,70%,72%,90%,92%,98%,100% { height: 16px; }
   11%,21%,41%,61%,71%,91%,99% { height: 6px; }
 }
+
+/* Touch sizing.
+
+   A cursor has pixel accuracy and a thumb does not, so the 34px header
+   toggles and the 30px tab strip are comfortable with a mouse and fiddly on a
+   phone. Rather than inflate the desktop chrome to suit touch, raise the hit
+   box only where the pointer is coarse: the visual stays as designed, and the
+   tappable area clears 44px. */
+@media (pointer: coarse) {
+  .glass-btn,
+  .t-tab,
+  .filter-option {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* The tab strip lays its own pill track out around the buttons, so it has to
+     grow with them or the pill sits proud of the track. */
+  .t-tabs {
+    min-height: 50px;
+  }
+
+  /* The footer row is 16px of text. Padding gives the thumb something to land
+     on without changing how the row reads, and the gap between links stays
+     wide enough that neighbouring targets do not overlap. */
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* The wordmark is a link home on every page, so it gets the same floor. */
+  .brand-link {
+    min-height: 44px;
+  }
+
+  /* An icon link is only as tappable as its box; padding is what makes the
+     44px real without moving the glyph. */
+  .touch-target {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

@@ -12,7 +12,7 @@ const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
 ---
 
 <MainLayout
-  title="Blog — Ricki Friadi"
+  title="Blog · Ricki Friadi"
   description="Technical articles about TypeScript, NestJS, microservices, and web architecture by Ricki Friadi."
 >
   <PageAnimations />
@@ -39,7 +39,7 @@ const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
     <!-- Post grid -->
     <section class="px-4 py-8">
       {posts.length === 0 ? (
-        <p class="text-muted text-sm">No posts yet — writing in progress.</p>
+        <p class="text-muted text-sm">No posts yet, writing in progress.</p>
       ) : (
         <BlogGrid posts={posts} />
       )}
