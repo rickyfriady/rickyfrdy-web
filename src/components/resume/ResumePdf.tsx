@@ -85,7 +85,7 @@ export default function ResumePdf({
   summary
 }: Props) {
   return (
-    <Document title="Ricki Friadi — Resume">
+    <Document title="Ricki Friadi, Resume">
       <Page size="A4" style={s.page}>
         {/* Header */}
         <Text style={s.name}>Ricki Friadi</Text>

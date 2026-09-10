@@ -106,7 +106,7 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
       kind,
       slug,
       title: `${entry.role} · ${entry.company}`,
-      summary: `${entry.period} — ${entry.bullets[0] ?? ''}`,
+      summary: `${entry.period}: ${entry.bullets[0] ?? ''}`,
       href: localize('/experience', lang)
     }
   }

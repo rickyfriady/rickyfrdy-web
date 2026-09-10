@@ -134,7 +134,7 @@ export const projects = [
     companyLogo: 'pegadaian'
   },
   {
-    title: 'Thesis — Chatbot Kukerta Information System',
+    title: 'Thesis, Chatbot Kukerta Information System',
     company: 'Universitas Riau',
     period: '2020',
     bullets: [

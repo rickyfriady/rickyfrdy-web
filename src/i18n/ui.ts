@@ -26,22 +26,22 @@ export const ui = {
     'case.arcade': 'Evidence Locker',
     'case.play': 'Play',
 
-    'board.title': 'The Board — Ricki Friadi',
+    'board.title': 'The Board · Ricki Friadi',
     'board.description':
       'Every page of this site as a pinned evidence card, with red threads joining the work that shares a technology.',
     'board.heading': 'The Board',
     'board.intro':
-      'Every page here is an evidence card. A red thread joins any two cards that share a technology — hover one to see what it connects to.',
+      'Every page here is an evidence card. A red thread joins any two cards that share a technology, hover one to see what it connects to.',
     'board.connected': 'connected to {n}',
     'board.dragHint': 'drag to pan · scroll to zoom · tab between cards',
-    'board.lamp': 'Desk lamp — drag to move the spotlight',
-    'board.surface': 'Investigation board — drag to pan, arrow keys to move',
+    'board.lamp': 'Desk lamp: drag to move the spotlight',
+    'board.surface': 'Investigation board: drag to pan, arrow keys to move',
     'board.allCards': 'All evidence',
     'detective.enable': 'Detective Mode',
     'detective.disable': 'Detective Mode: on',
     'detective.loading': 'Starting camera…',
     'detective.privacy':
-      'Uses your camera to control the board with hand gestures. Video is processed entirely on your device — nothing is uploaded, nothing is recorded.',
+      'Uses your camera to control the board with hand gestures. Video is processed entirely on your device, nothing is uploaded, nothing is recorded.',
     'detective.start': 'Enable camera',
     'detective.cancel': 'Not now',
     'detective.live': 'Camera on',
@@ -53,13 +53,13 @@ export const ui = {
 
     // Play mode. Short chrome only — NPC dialogue and quest text live in
     // src/data/quests.ts, next to the quest they belong to.
-    'game.title': 'Play — Ricki Friadi',
+    'game.title': 'Play · Ricki Friadi',
     'game.description':
       'A small top-down scene where every object opens a real project, article, or role from this site.',
     'game.heading': 'Play',
     'game.intro':
-      'Walk around and open what you find. Everything in here is a door to a real page — nothing on this site is locked behind it.',
-    'game.sceneName': 'Play scene — arrow keys or WASD to walk, E to inspect',
+      'Walk around and open what you find. Everything in here is a door to a real page, nothing on this site is locked behind it.',
+    'game.sceneName': 'Play scene: arrow keys or WASD to walk, E to inspect',
     'game.controls': 'WASD / arrows to walk · E to inspect · J journal · C file · Esc to close',
     'game.destinations': 'Everything in the scene',
     'game.artCredits': 'Art credits',
@@ -78,9 +78,9 @@ export const ui = {
     'game.skip': 'Skip this',
     'game.turn': 'turn',
     'game.won': 'Resolved.',
-    'game.timeout': 'Out of turns — it stays on the backlog. Nothing is lost.',
+    'game.timeout': 'Out of turns: it stays on the backlog. Nothing is lost.',
     'game.statBasis':
-      'Levels count how many projects and roles list a technology, plus the years it spans on the CV. A playful rendering of real data — not a certification.',
+      'Levels count how many projects and roles list a technology, plus the years it spans on the CV. A playful rendering of real data, not a certification.',
     'game.state.locked': 'locked',
     'game.state.available': 'available',
     'game.state.active': 'in progress',
@@ -92,28 +92,28 @@ export const ui = {
     'game.dir.down': 'Walk down',
     'game.dir.left': 'Walk left',
     'game.dir.right': 'Walk right',
-    'arcade.title': 'Evidence Locker — Ricki Friadi',
+    'arcade.title': 'Evidence Locker · Ricki Friadi',
     'arcade.description':
       'Odd exhibits that did not fit the case file: a WebGL warp shader, cursor-tracking eyes, and the blurhash placeholder pipeline.',
     'arcade.heading': 'Evidence Locker',
     'arcade.intro':
-      'Things that do not belong on the board. Each of these clashes with the pixel identity on purpose — they are kept because they work, not because they fit.',
-    'arcade.shader': 'Exhibit A — Warp shader',
+      'Things that do not belong on the board. Each of these clashes with the pixel identity on purpose, they are kept because they work, not because they fit.',
+    'arcade.shader': 'Exhibit A: Warp shader',
     'arcade.shaderNote':
       'A WebGL warp pattern that used to sit behind the contact hero. Moved here so that page stays fast and on-theme.',
-    'arcade.eyes': 'Exhibit B — Wandering eyes',
+    'arcade.eyes': 'Exhibit B: Wandering eyes',
     'arcade.eyesNote':
       'Eyes that follow the pointer. The header runs a squared-off variant; this is the original.',
-    'arcade.blurhash': 'Exhibit C — Blurhash placeholders',
+    'arcade.blurhash': 'Exhibit C: Blurhash placeholders',
     'arcade.blurhashNote':
-      'Photographs decode from a tiny hash before the real file lands. Still used for real photography across the site — pixel art needs no placeholder.',
+      'Photographs decode from a tiny hash before the real file lands. Still used for real photography across the site, pixel art needs no placeholder.',
     'arcade.shaderPause': 'Pause',
     'arcade.shaderPlay': 'Play',
-    'arcade.eyesHint': 'Move your cursor across this panel — the eyes track it.',
+    'arcade.eyesHint': 'Move your cursor across this panel, the eyes track it.',
     'arcade.bhHash': 'From the hash (28 characters)',
     'arcade.bhReal': 'The real photograph',
     'arcade.bhReplay': 'Replay the transition',
-    'arcade.gradient': 'Exhibit D — Animated gradients',
+    'arcade.gradient': 'Exhibit D: Animated gradients',
     'arcade.gradientNote':
       'Six WebGL gradient presets that used to sit behind featured project cards and blog covers. Retired from those pages: they were still painted in the pre-redesign blue and green, and a smooth animated gradient is the opposite of a flat pixel surface.',
 
@@ -124,9 +124,9 @@ export const ui = {
     'filter.works': 'Works',
 
     // Resume page
-    'resume.title': 'Resume — Ricki Friadi',
+    'resume.title': 'Resume · Ricki Friadi',
     'resume.description':
-      'Fullstack Developer resume — Ricki Friadi. 4+ years building production systems in Indonesian fintech.',
+      'Fullstack Developer resume · Ricki Friadi. 4+ years building production systems in Indonesian fintech.',
     'resume.summary': 'Summary',
     'resume.experience': 'Work Experience',
     'resume.projects': 'Project Experience',
@@ -171,9 +171,9 @@ export const ui = {
     'cmdk.copied': 'Copied to clipboard',
 
     // Now page
-    'now.title': 'Now — Ricki Friadi',
+    'now.title': 'Now · Ricki Friadi',
     'now.description':
-      'What Ricki Friadi is focused on right now — work, learning, and side projects, with live GitHub and coding activity.',
+      'What Ricki Friadi is focused on right now, work, learning, and side projects, with live GitHub and coding activity.',
     'now.eyebrow': 'Now',
     'now.heading': 'What I’m doing',
     'now.updated': 'Last updated',
@@ -183,7 +183,7 @@ export const ui = {
     'now.changelogLink': 'See what changed on this site →',
 
     // Changelog page
-    'changelog.title': 'Changelog — Ricki Friadi',
+    'changelog.title': 'Changelog · Ricki Friadi',
     'changelog.description':
       'A running log of changes shipped to this site, generated from commit history.',
     'changelog.eyebrow': 'Changelog',
@@ -194,9 +194,9 @@ export const ui = {
     'nav.changelog': 'Changelog',
 
     // Ask (AI site search)
-    'ask.title': 'Ask my site — Ricki Friadi',
+    'ask.title': 'Ask my site · Ricki Friadi',
     'ask.description':
-      "Ask a question about Ricki Friadi's work and writing — answered from the site's own content.",
+      "Ask a question about Ricki Friadi's work and writing, answered from the site's own content.",
     'ask.eyebrow': 'Ask my site',
     'ask.heading': 'Ask about my work',
     'ask.intro':
@@ -237,22 +237,22 @@ export const ui = {
     'case.arcade': 'Gudang Bukti',
     'case.play': 'Main',
 
-    'board.title': 'Papan Kasus — Ricki Friadi',
+    'board.title': 'Papan Kasus · Ricki Friadi',
     'board.description':
       'Setiap halaman situs ini sebagai kartu bukti yang dipin, dengan benang merah yang menghubungkan pekerjaan dengan teknologi yang sama.',
     'board.heading': 'Papan Kasus',
     'board.intro':
-      'Setiap halaman di sini adalah kartu bukti. Benang merah menghubungkan dua kartu yang memakai teknologi sama — arahkan kursor ke satu kartu untuk melihat kaitannya.',
+      'Setiap halaman di sini adalah kartu bukti. Benang merah menghubungkan dua kartu yang memakai teknologi sama, arahkan kursor ke satu kartu untuk melihat kaitannya.',
     'board.connected': 'terhubung ke {n}',
     'board.dragHint': 'seret untuk menggeser · scroll untuk zoom · tab antar kartu',
-    'board.lamp': 'Lampu meja — seret untuk memindahkan sorotan',
-    'board.surface': 'Papan investigasi — seret untuk menggeser, panah untuk berpindah',
+    'board.lamp': 'Lampu meja: seret untuk memindahkan sorotan',
+    'board.surface': 'Papan investigasi: seret untuk menggeser, panah untuk berpindah',
     'board.allCards': 'Semua bukti',
     'detective.enable': 'Mode Detektif',
     'detective.disable': 'Mode Detektif: aktif',
     'detective.loading': 'Menyalakan kamera…',
     'detective.privacy':
-      'Menggunakan kamera untuk mengendalikan papan dengan gerakan tangan. Video diproses sepenuhnya di perangkatmu — tidak diunggah, tidak direkam.',
+      'Menggunakan kamera untuk mengendalikan papan dengan gerakan tangan. Video diproses sepenuhnya di perangkatmu, tidak diunggah, tidak direkam.',
     'detective.start': 'Aktifkan kamera',
     'detective.cancel': 'Nanti saja',
     'detective.live': 'Kamera aktif',
@@ -264,13 +264,13 @@ export const ui = {
 
     // Mode main. Hanya label pendek — dialog NPC dan teks quest ada di
     // src/data/quests.ts, bersebelahan dengan quest-nya.
-    'game.title': 'Main — Ricki Friadi',
+    'game.title': 'Main · Ricki Friadi',
     'game.description':
       'Ruang kecil tampak-atas; tiap objek di dalamnya membuka proyek, artikel, atau peran asli dari situs ini.',
     'game.heading': 'Main',
     'game.intro':
-      'Jalan-jalan dan buka apa yang kamu temukan. Semua di sini adalah pintu ke halaman asli — tidak ada isi situs yang dikunci di baliknya.',
-    'game.sceneName': 'Ruang permainan — panah atau WASD untuk jalan, E untuk memeriksa',
+      'Jalan-jalan dan buka apa yang kamu temukan. Semua di sini adalah pintu ke halaman asli, tidak ada isi situs yang dikunci di baliknya.',
+    'game.sceneName': 'Ruang permainan: panah atau WASD untuk jalan, E untuk memeriksa',
     'game.controls': 'WASD / panah untuk jalan · E memeriksa · J jurnal · C berkas · Esc menutup',
     'game.destinations': 'Semua isi ruangan',
     'game.artCredits': 'Kredit ilustrasi',
@@ -289,9 +289,9 @@ export const ui = {
     'game.skip': 'Lewati ini',
     'game.turn': 'giliran',
     'game.won': 'Beres.',
-    'game.timeout': 'Giliran habis — masuk backlog. Tidak ada yang hilang.',
+    'game.timeout': 'Giliran habis: masuk backlog. Tidak ada yang hilang.',
     'game.statBasis':
-      'Level menghitung berapa proyek dan peran yang memakai teknologi itu, ditambah rentang tahunnya di CV. Cara bermain-main menampilkan data asli — bukan sertifikasi.',
+      'Level menghitung berapa proyek dan peran yang memakai teknologi itu, ditambah rentang tahunnya di CV. Cara bermain-main menampilkan data asli, bukan sertifikasi.',
     'game.state.locked': 'terkunci',
     'game.state.available': 'tersedia',
     'game.state.active': 'berjalan',
@@ -303,28 +303,28 @@ export const ui = {
     'game.dir.down': 'Jalan ke bawah',
     'game.dir.left': 'Jalan ke kiri',
     'game.dir.right': 'Jalan ke kanan',
-    'arcade.title': 'Gudang Bukti — Ricki Friadi',
+    'arcade.title': 'Gudang Bukti · Ricki Friadi',
     'arcade.description':
       'Barang bukti aneh yang tidak masuk berkas kasus: shader warp WebGL, mata pengikut kursor, dan pipeline placeholder blurhash.',
     'arcade.heading': 'Gudang Bukti',
     'arcade.intro':
-      'Hal-hal yang tidak cocok di papan. Semuanya sengaja bertabrakan dengan identitas pixel — disimpan karena berfungsi, bukan karena cocok.',
-    'arcade.shader': 'Bukti A — Shader warp',
+      'Hal-hal yang tidak cocok di papan. Semuanya sengaja bertabrakan dengan identitas pixel, disimpan karena berfungsi, bukan karena cocok.',
+    'arcade.shader': 'Bukti A: Shader warp',
     'arcade.shaderNote':
       'Pola warp WebGL yang dulu ada di balik hero halaman kontak. Dipindah ke sini supaya halaman itu tetap cepat dan sesuai tema.',
-    'arcade.eyes': 'Bukti B — Mata pengembara',
+    'arcade.eyes': 'Bukti B: Mata pengembara',
     'arcade.eyesNote':
       'Mata yang mengikuti kursor. Header memakai varian bersudut tegas; ini versi aslinya.',
-    'arcade.blurhash': 'Bukti C — Placeholder blurhash',
+    'arcade.blurhash': 'Bukti C: Placeholder blurhash',
     'arcade.blurhashNote':
-      'Foto didekode dari hash kecil sebelum file aslinya sampai. Masih dipakai untuk foto asli di seluruh situs — pixel art tidak butuh placeholder.',
+      'Foto didekode dari hash kecil sebelum file aslinya sampai. Masih dipakai untuk foto asli di seluruh situs, pixel art tidak butuh placeholder.',
     'arcade.shaderPause': 'Jeda',
     'arcade.shaderPlay': 'Putar',
-    'arcade.eyesHint': 'Gerakkan kursor di panel ini — matanya mengikuti.',
+    'arcade.eyesHint': 'Gerakkan kursor di panel ini: matanya mengikuti.',
     'arcade.bhHash': 'Dari hash (28 karakter)',
     'arcade.bhReal': 'Foto aslinya',
     'arcade.bhReplay': 'Putar ulang transisinya',
-    'arcade.gradient': 'Bukti D — Gradien animasi',
+    'arcade.gradient': 'Bukti D: Gradien animasi',
     'arcade.gradientNote':
       'Enam preset gradien WebGL yang dulu ada di balik kartu proyek unggulan dan sampul blog. Ditarik dari halaman-halaman itu: warnanya masih biru dan hijau sebelum redesign, dan gradien animasi yang halus itu kebalikan dari permukaan pixel yang datar.',
 
@@ -335,9 +335,9 @@ export const ui = {
     'filter.works': 'Karya',
 
     // Resume page
-    'resume.title': 'CV — Ricki Friadi',
+    'resume.title': 'CV · Ricki Friadi',
     'resume.description':
-      'CV Fullstack Developer — Ricki Friadi. 4+ tahun membangun sistem produksi di fintech Indonesia.',
+      'CV Fullstack Developer · Ricki Friadi. 4+ tahun membangun sistem produksi di fintech Indonesia.',
     'resume.summary': 'Ringkasan',
     'resume.experience': 'Pengalaman Kerja',
     'resume.projects': 'Pengalaman Proyek',
@@ -382,9 +382,9 @@ export const ui = {
     'cmdk.copied': 'Disalin ke clipboard',
 
     // Now page
-    'now.title': 'Now — Ricki Friadi',
+    'now.title': 'Now · Ricki Friadi',
     'now.description':
-      'Apa yang sedang difokuskan Ricki Friadi saat ini — pekerjaan, pembelajaran, dan proyek sampingan, dengan aktivitas GitHub dan coding terkini.',
+      'Apa yang sedang difokuskan Ricki Friadi saat ini, pekerjaan, pembelajaran, dan proyek sampingan, dengan aktivitas GitHub dan coding terkini.',
     'now.eyebrow': 'Now',
     'now.heading': 'Yang sedang saya kerjakan',
     'now.updated': 'Terakhir diperbarui',
@@ -394,7 +394,7 @@ export const ui = {
     'now.changelogLink': 'Lihat perubahan pada situs ini →',
 
     // Changelog page
-    'changelog.title': 'Changelog — Ricki Friadi',
+    'changelog.title': 'Changelog · Ricki Friadi',
     'changelog.description':
       'Catatan berjalan perubahan yang dirilis ke situs ini, dihasilkan dari riwayat commit.',
     'changelog.eyebrow': 'Changelog',
@@ -405,9 +405,9 @@ export const ui = {
     'nav.changelog': 'Changelog',
 
     // Ask (AI site search)
-    'ask.title': 'Tanya situs ini — Ricki Friadi',
+    'ask.title': 'Tanya situs ini · Ricki Friadi',
     'ask.description':
-      'Tanyakan tentang pekerjaan dan tulisan Ricki Friadi — dijawab dari konten situs ini sendiri.',
+      'Tanyakan tentang pekerjaan dan tulisan Ricki Friadi, dijawab dari konten situs ini sendiri.',
     'ask.eyebrow': 'Tanya situs ini',
     'ask.heading': 'Tanya tentang pekerjaan saya',
     'ask.intro':

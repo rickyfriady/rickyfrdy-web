@@ -27,7 +27,7 @@ export const now: Record<'en' | 'id', NowContent> = {
       },
       {
         label: 'Learning',
-        detail: 'Going deeper on AI engineering — retrieval, embeddings, and agent workflows.'
+        detail: 'Going deeper on AI engineering: retrieval, embeddings, and agent workflows.'
       },
       {
         label: 'Building',

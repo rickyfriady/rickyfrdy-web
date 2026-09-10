@@ -107,11 +107,11 @@ const player = {
     The world band. `.world` is scoped here and nowhere else, so this section is
     the threshold: the header, footer, hero, and destination list all stay in
     the site's paper palette. Moving this one class onto <html> takes the whole
-    site dark — that promotion is deliberately the owner's call, made after
+    site dark, that promotion is deliberately the owner's call, made after
     seeing the two side by side rather than before.
 
     The scene inside it is desktop-only: a walkable room does not work on a
-    375px viewport. The list below is not a fallback bolted on afterwards — it
+    375px viewport. The list below is not a fallback bolted on afterwards, it
     is always in the DOM at every breakpoint, so every destination stays
     crawlable, survives the island failing to load, and IS the page on a small
     screen.

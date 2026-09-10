@@ -277,11 +277,11 @@
           showSuccess()
         } else {
           setSubmitting(false)
-          showError(json.message ?? 'Submission failed — try again.')
+          showError(json.message ?? 'Submission failed, try again.')
         }
       } catch {
         setSubmitting(false)
-        showError('Network error — please check your connection and try again.')
+        showError('Network error, please check your connection and try again.')
       }
     })
 

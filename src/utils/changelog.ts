@@ -37,7 +37,13 @@ export function parseCommitLine(line: string): ChangelogEntry | null {
   if (!match) return null
   const [, type, scope, subject] = match
   if (!TYPE_SET.has(type)) return null
-  return { hash: hash.slice(0, 7), date, type, scope: scope || undefined, subject }
+  return {
+    hash: hash.slice(0, 7),
+    date,
+    type,
+    scope: scope || undefined,
+    subject: subject.replace(/\s+—\s+/g, ': ').replace(/—/g, ',')
+  }
 }
 
 /** Parse many lines, dropping any that don't conform. */
