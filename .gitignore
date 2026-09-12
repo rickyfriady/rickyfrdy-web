@@ -60,3 +60,6 @@ graphify-out/
 # Assistant/editor scratch directories
 .codex/
 .continue/
+
+# impeccable live session state
+.impeccable/
