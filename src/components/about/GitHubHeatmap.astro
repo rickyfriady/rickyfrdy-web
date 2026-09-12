@@ -121,7 +121,7 @@ const statItems = [
           <tr>
             <th
               scope="row"
-              class={`pr-2 font-mono text-[8px] font-medium uppercase tracking-wider text-muted/60 text-right${dayIdx % 2 === 0 ? ' invisible' : ''}`}
+              class={`pr-2 font-mono text-[8px] font-medium uppercase tracking-wider text-muted text-right${dayIdx % 2 === 0 ? ' invisible' : ''}`}
               aria-label={day}
             >
               {day.slice(0, 3)}
@@ -155,7 +155,7 @@ const statItems = [
     </table>
 
     <!-- Legend -->
-    <div class="mt-3 flex items-center gap-2 text-[9px] text-muted/60" aria-hidden="true">
+    <div class="mt-3 flex items-center gap-2 text-[9px] text-muted" aria-hidden="true">
       <span>Less</span>
       <div class="flex gap-[4px]">
         {[0, 1, 2, 3, 4].map((level) => (

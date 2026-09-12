@@ -12,7 +12,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
   <button
     id="lang-btn"
     type="button"
-    aria-haspopup="listbox"
+    aria-haspopup="true"
     aria-expanded="false"
     aria-label={`Language: ${active.label}`}
     class="glass-btn flex items-center gap-2 px-3 py-2 text-sm"
@@ -35,7 +35,6 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 
   <ul
     id="lang-dropdown"
-    role="listbox"
     aria-label="Select language"
     data-origin="top-right"
     class="t-dropdown absolute right-0 top-full mt-2 min-w-[7.5rem] overflow-hidden rounded-xl border p-1"
@@ -47,8 +46,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
         <li>
           <button
             type="button"
-            role="option"
-            aria-selected={isActive}
+            aria-current={isActive ? 'true' : undefined}
             data-lang={lang.code}
             class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
             style={isActive ? 'background: color-mix(in oklch, var(--color-accent) 12%, transparent); color: var(--color-accent)' : ''}
@@ -104,7 +102,10 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     const options = document.querySelectorAll<HTMLElement>('#lang-switcher [data-lang]')
     options.forEach((el) => {
       const isActive = el.dataset.lang === lang
-      el.setAttribute('aria-selected', String(isActive))
+      // aria-current, not aria-selected: these are navigation choices in a
+      // plain list, and aria-selected outside a listbox is meaningless.
+      if (isActive) el.setAttribute('aria-current', 'true')
+      else el.removeAttribute('aria-current')
       el.style.background = isActive
         ? 'color-mix(in oklch, var(--color-accent) 12%, transparent)'
         : ''

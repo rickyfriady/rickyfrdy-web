@@ -43,7 +43,7 @@ const { projects } = Astro.props
               <div class="text-muted mt-1 flex items-center gap-2 truncate font-mono text-xs leading-tight sm:text-[13px]">
                 <span>{proj.company}</span>
                 <span class="text-border/40">·</span>
-                <span class="text-muted/60 truncate">{proj.period}</span>
+                <span class="text-muted truncate">{proj.period}</span>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@ const { projects } = Astro.props
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="h-5 w-5 shrink-0 text-muted/30 transition-transform duration-300 group-open:rotate-180 sm:h-6 sm:w-6"
+            class="h-5 w-5 shrink-0 text-muted transition-transform duration-300 group-open:rotate-180 sm:h-6 sm:w-6"
             aria-hidden="true"
           >
             <path d="m6 9 6 6 6-6"/>
@@ -70,7 +70,7 @@ const { projects } = Astro.props
             <ul class="text-muted space-y-3 text-sm leading-relaxed sm:text-[15px]">
               {proj.bullets.map((bullet) => (
                 <li class="flex gap-3">
-                  <span class="text-muted/40 mt-2 shrink-0 font-mono text-sm leading-none sm:mt-2">▸</span>
+                  <span class="text-muted mt-2 shrink-0 font-mono text-sm leading-none sm:mt-2">▸</span>
                   <span>{bullet}</span>
                 </li>
               ))}

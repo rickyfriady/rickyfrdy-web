@@ -197,7 +197,7 @@ const sorted = [...projects].sort((a, b) => {
       </div>
       <div>
         <p class="text-muted mb-2 font-mono text-[10px] tracking-[0.16em] uppercase">${fl.tech}</p>
-        <select data-filter="tech" class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent">
+        <select data-filter="tech" aria-label="${fl.tech}" class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent">
           <option value="all"${state.tech === 'all' ? ' selected' : ''}>All technologies</option>
           ${techOptions}
         </select>
