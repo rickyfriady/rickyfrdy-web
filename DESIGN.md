@@ -31,7 +31,7 @@ Its companion rule: the game is an additional door, never the only one. Every
 project, article, and PDF stays reachable, crawlable, and fast without touching
 `/play` or `/board`.
 
-## Palette
+## Colors
 
 Low-chroma warm neutrals, two themes, one saturated accent. No literal colour
 values anywhere; everything references tokens in `global.css`.
@@ -76,6 +76,30 @@ because ATS software parses them and a pixel font is a rejection risk.
 - **Stepped motion** (`steps()`), not eased easing.
 - Sprites render pixelated at integer scale; illustrated art renders smooth at
   fractional scale. The path is chosen by which directory the file sits in.
+
+## Components
+
+Transcribed from the `@utility` blocks in `src/styles/global.css`, which are the
+source of truth. Every one of them resolves radius through
+`--radius-interactive` (zero) and easing through a `steps()` token, so a
+component cannot quietly reintroduce a rounded corner or a smooth curve.
+
+| Component | Utility | Shape and treatment |
+|---|---|---|
+| Panel | `evidence-panel` | 4px hard frame drawn with four `box-shadow` offsets, `surface` ground. Was `glass-panel`: blur and drop shadows were removed as the opposite of a pixel surface. |
+| Nested card | `evidence-card` | The same frame at 2px, so a nested card reads lighter than the panel under it. |
+| Raw frame | `pixel-frame` | The shared 9-slice primitive the two above are built from. `pixel-frame-thread` swaps the border to `--color-thread` for the attention state; `pixel-frame-inset` drops the ground to `secondary`. |
+| Flat panel | `soft-panel` | 2px solid border, `surface` ground. The cheap variant where a frame would be noise. |
+| Button | `glass-btn` | 1px transparent border that resolves to `border` on hover with a `secondary` ground. Focus is a 2px `accent` outline at 2px offset, never removed. |
+| Selection marker | `menu-cursor` | A CSS triangle in `--color-thread` that snaps in on hover, focus and `[data-active]`. Decorative: it sits alongside the focus ring and never replaces it. |
+| Nav shell | `nav-island` | Fixed, centred, 1px border on a `background` ground. |
+| Active nav | `nav-island-pill` | Accent at 18 percent with a 2px accent border, carried between pages by `transition:name`. |
+| Mobile nav | `mobile-nav-shell`, `mobile-nav-drawer` | 4px border, `background` ground. Heavier than the desktop shell because it sits directly on content. |
+| Section heading | `chapter-heading`, `chapter-label` | Top rule plus mono uppercase label at 0.12em tracking. |
+| Display title | `title-display` | Pixelify Sans at 0.95 line-height. `title-accent` differentiates by colour only, never italic. |
+
+Interactive chrome is at least 44px on its shortest side. Focus is always
+visible and never traded for a decorative marker.
 
 ## Sound
 
