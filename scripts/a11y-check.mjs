@@ -13,41 +13,58 @@ import { spawn } from 'node:child_process'
 import { AxeBuilder } from '@axe-core/playwright'
 import { chromium } from 'playwright'
 
-const PORT = 4322
-const BASE = `http://localhost:${PORT}`
+// Reuse a dev server when one is already up; 4321 is what `bun run dev` uses.
+// Spawning a second one is slower and leaves something to leak.
+const EXISTING = 'http://localhost:4321'
+const OWN_PORT = 4322
 
 // One route per distinct layout. /play carries the third palette, and /board
 // is the only page whose main content is a canvas.
 const routes = ['/', '/projects', '/blog', '/about', '/contact', '/now', '/board', '/play']
 
-const server = spawn('bunx', ['astro', 'dev', '--port', String(PORT)], {
-  stdio: 'ignore',
-  detached: true,
-})
-const stop = () => {
+const reachable = async (url) => {
   try {
-    process.kill(-server.pid)
+    return (await fetch(url)).ok
+  } catch {
+    return false
+  }
+}
+
+let server = null
+const stop = () => {
+  if (!server) return
+  try {
+    // SIGKILL, not SIGTERM: astro dev does not reliably die on a group TERM,
+    // and a survivor holds both the port and its memory until someone finds
+    // it by hand. Nothing here needs a graceful shutdown.
+    process.kill(-server.pid, 'SIGKILL')
   } catch {
     // already gone
   }
+  server = null
 }
 process.on('exit', stop)
-process.on('SIGINT', () => process.exit(130))
-
-async function waitForServer(timeoutMs = 90_000) {
-  const deadline = Date.now() + timeoutMs
-  while (Date.now() < deadline) {
-    try {
-      if ((await fetch(BASE)).ok) return
-    } catch {
-      // not listening yet
-    }
-    await new Promise((r) => setTimeout(r, 500))
-  }
-  throw new Error(`dev server did not answer on ${BASE}`)
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(signal, () => process.exit(130))
 }
 
-await waitForServer()
+async function resolveBase() {
+  if (await reachable(EXISTING)) return EXISTING
+
+  const base = `http://localhost:${OWN_PORT}`
+  server = spawn('bunx', ['astro', 'dev', '--port', String(OWN_PORT)], {
+    stdio: 'ignore',
+    detached: true,
+  })
+  const deadline = Date.now() + 90_000
+  while (Date.now() < deadline) {
+    if (await reachable(base)) return base
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  throw new Error(`dev server did not answer on ${base}`)
+}
+
+const BASE = await resolveBase()
 const browser = await chromium.launch()
 // axe needs an explicit context; a page off browser.newPage() is rejected.
 // reducedMotion also stops the GSAP hero reveals, which otherwise get sampled
