@@ -96,6 +96,7 @@ function buildCard(
               flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '44px 36px',
+              // impeccable-disable-next-line side-tab -- seam between two panels of a split card, not an accent stripe on one
               borderRight: '4px solid #C53829'
             },
             children: [

@@ -245,11 +245,17 @@
   background-size: 6px 6px;
 }
 
+/* Ruled, not squared. A two-axis hairline grid is the stock generated-UI
+   background and reads as "tech backdrop"; a desk covered in statements and
+   notes is lined paper, which is both more specific to CASE FILE and no
+   longer the signature. One axis also halves the paint cost. */
 @utility paper-grid {
-  background-image:
-    linear-gradient(to right, var(--color-border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
-  background-size: 36px 36px;
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-border) 1px,
+    transparent 1px
+  );
+  background-size: 100% 28px;
 }
 
 @utility soft-panel {
@@ -488,6 +494,7 @@
     margin-top: -4px;
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
+    /* impeccable-disable-next-line side-tab -- CSS triangle, not a card stripe */
     border-left: 6px solid var(--color-thread);
     opacity: 0;
     transition: opacity 120ms steps(2, end);
@@ -786,11 +793,23 @@
   display: block;
   padding: 14px 16px;
   background: var(--color-surface);
-  border-left: 4px solid var(--color-border);
-  transition: border-color 140ms steps(3, end);
+  /* Framed on all four sides rather than striped down one. A single coloured
+     left edge is the most recognisable generated-UI tell, and it was doing
+     work `menu-cursor` already does on these cards: the thread triangle is
+     the selection marker here. */
+  box-shadow:
+    0 -2px 0 0 var(--color-border),
+    0 2px 0 0 var(--color-border),
+    -2px 0 0 0 var(--color-border),
+    2px 0 0 0 var(--color-border);
+  transition: box-shadow 140ms steps(3, end);
   &:hover,
   &:focus-visible {
-    border-left-color: var(--color-thread);
+    box-shadow:
+      0 -2px 0 0 var(--color-thread),
+      0 2px 0 0 var(--color-thread),
+      -2px 0 0 0 var(--color-thread),
+      2px 0 0 0 var(--color-thread);
   }
 }
 
