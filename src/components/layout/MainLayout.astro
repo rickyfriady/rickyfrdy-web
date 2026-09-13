@@ -38,6 +38,7 @@ const { title, description, lang = 'en', ogImage, ogType, hreflangPairs, schema 
     </a>
     <AppHeader />
 
+    <!-- impeccable-disable-next-line layout-transition -- Astro view-transition directive and a --nav-height calc, not a CSS height animation -->
     <main id="main-content" transition:name="page-content" class="flex-1 max-w-6xl mx-auto w-full pt-[calc(var(--nav-height)+1.5rem)]">
       <slot />
     </main>
