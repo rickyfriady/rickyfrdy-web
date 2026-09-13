@@ -16,7 +16,15 @@ import { getSprite } from '@/utils/game/sprites'
  * silently does not happen. Verified in the served HTML — with the directive on
  * the component there is no `data-astro-transition-persist` attribute at all.
  */
-const sprite = getSprite('hero-walk')
+const sprite = getSprite('companion-pet')
+
+/**
+ * How many frames the walk actually has, read from the sheet rather than
+ * hard-coded, so recutting to a longer or shorter cycle is a change to
+ * `scripts/cut-companion-sheet.mjs` and its registration, not to this file.
+ */
+const walk = sprite.sheet?.animations?.walk
+const frameCount = walk ? walk.to - walk.from + 1 : 1
 ---
 
 <div
@@ -28,6 +36,7 @@ const sprite = getSprite('hero-walk')
   data-art={sprite.url ?? ''}
   data-frame-w={sprite.sheet?.frameWidth ?? 32}
   data-frame-h={sprite.sheet?.frameHeight ?? 32}
+  data-frames={frameCount}
 >
   <div data-actor class="absolute bottom-3 left-0 will-change-transform">
     <div
@@ -70,6 +79,8 @@ const sprite = getSprite('hero-walk')
   let elapsed = 0
   let art = ''
   let frameW = 32
+  let frameH = 32
+  let frameCount = 1
 
   const reduced = () =>
     typeof window !== 'undefined' &&
@@ -83,10 +94,12 @@ const sprite = getSprite('hero-walk')
     actor.style.transform = `translate3d(${Math.round(x)}px, 0, 0)`
     body.style.transform = dir > 0 ? '' : 'scaleX(-1)'
     if (art) {
-      // Four frames per direction; row 0 is walk-down, mirrored for left/right.
-      const frame = Math.floor(elapsed / 140) % 4
-      const row = dir > 0 ? 2 : 1
-      body.style.backgroundPosition = `${-frame * frameW}px ${-row * frameW}px`
+      // One row, mirrored for direction: every frame of this sheet faces the
+      // viewer, so there is no direction row to index, and the `scaleX(-1)`
+      // above already carries leftward travel. The previous version offset
+      // vertically by `frameW`, which only held while frames were square.
+      const frame = Math.floor(elapsed / 140) % frameCount
+      body.style.backgroundPosition = `${-frame * frameW}px 0px`
     } else {
       // No art: a one-pixel bob reads as a walk cycle without any drawing.
       body.style.marginBottom = Math.floor(elapsed / BOB_MS) % 2 === 0 ? '0px' : '2px'
@@ -161,12 +174,29 @@ const sprite = getSprite('hero-walk')
     bubble = root.querySelector<HTMLElement>('[data-bubble]')
     art = root.dataset.art ?? ''
     frameW = Number(root.dataset.frameW ?? 32)
+    frameH = Number(root.dataset.frameH ?? frameW)
+    frameCount = Number(root.dataset.frames ?? 1)
 
-    if (art && body) {
-      body.classList.remove('sprite-fb')
-      body.style.width = `${frameW}px`
-      body.style.height = `${root.dataset.frameH ?? frameW}px`
-      body.style.backgroundImage = `url(${art})`
+    // Below the breakpoint the companion is `display: none` and `start()`
+    // already refuses to animate, so fetching the sheet there buys a download
+    // for something no one sees. Gated at init like every other viewport
+    // decision this component makes; it has never watched resize.
+    if (art && body && wideEnough()) {
+      // Verify the sheet actually decodes before dropping the drawn floor.
+      // Removing `sprite-fb` first and loading second leaves a hole on the
+      // page for as long as the request takes, and forever if it fails.
+      const probe = new Image()
+      probe.onload = () => {
+        if (!body) return
+        body.classList.remove('sprite-fb')
+        body.style.width = `${frameW}px`
+        body.style.height = `${frameH}px`
+        body.style.backgroundImage = `url(${art})`
+      }
+      probe.onerror = () => {
+        art = ''
+      }
+      probe.src = art
     }
 
     if (!root.dataset.bound) {

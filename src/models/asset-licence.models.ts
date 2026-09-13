@@ -10,7 +10,7 @@
  */
 export type AssetLicence =
   | {
-      /** Path relative to `src/assets/illustrated/`. */
+      /** Path relative to `src/assets/`, so both art paths share a namespace. */
       file: string
       author: 'owner'
     }

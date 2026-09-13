@@ -4,31 +4,32 @@ import { describe, expect, it } from 'vitest'
 import { assetLicences, attributions } from '@/data/asset-licences'
 import type { AssetLicence } from '@/models'
 
-const ILLUSTRATED = resolve(__dirname, '../../src/assets/illustrated')
+const ASSETS = resolve(__dirname, '../../src/assets')
 
-/** Every art file under the illustrated path, relative to it. READMEs are docs. */
-function illustratedFiles(dir = ILLUSTRATED): string[] {
+/**
+ * Every art file under either art path, relative to `src/assets/`. READMEs are
+ * docs. Both paths are walked because both ship files to visitors, and a
+ * sprite is no less licensed for being small.
+ */
+function artFiles(dir: string = ASSETS): string[] {
   return readdirSync(dir).flatMap((name) => {
     const full = join(dir, name)
-    if (statSync(full).isDirectory()) return illustratedFiles(full)
+    if (statSync(full).isDirectory()) return artFiles(full)
     if (name.toLowerCase().endsWith('.md')) return []
-    return [relative(ILLUSTRATED, full)]
+    return [relative(ASSETS, full)]
   })
 }
 
-describe('illustrated asset licences', () => {
-  it('records every file that sits on the illustrated path', () => {
+describe('art asset licences', () => {
+  it('records every file that sits on an art path', () => {
     const recorded = new Set(assetLicences.map((e) => e.file))
-    const unrecorded = illustratedFiles().filter((f) => !recorded.has(f))
+    const unrecorded = artFiles().filter((f) => !recorded.has(f))
     // Named, not counted: the failure has to say which file to go and license.
-    expect(
-      unrecorded,
-      `illustrated asset(s) with no licence entry: ${unrecorded.join(', ')}`
-    ).toEqual([])
+    expect(unrecorded, `art asset(s) with no licence entry: ${unrecorded.join(', ')}`).toEqual([])
   })
 
   it('does not record files that are not there', () => {
-    const present = new Set(illustratedFiles())
+    const present = new Set(artFiles())
     const orphaned = assetLicences.map((e) => e.file).filter((f) => !present.has(f))
     expect(orphaned, `licence entries with no file: ${orphaned.join(', ')}`).toEqual([])
   })
