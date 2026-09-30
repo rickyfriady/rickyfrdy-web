@@ -13,20 +13,28 @@
   --font-display: 'Pixelify Sans', 'Courier New', monospace;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Light mode — CASE FILE "Meja Siang" (daytime desk: paper, cork, ink) */
-  --color-background: oklch(0.93 0.015 85);
-  --color-foreground: oklch(0.22 0.015 60);  /* 14.1:1 vs bg (AAA) */
-  --color-muted: oklch(0.46 0.020 70);       /* 5.8:1 vs bg, 4.7:1 vs surface (AA) */
-  --color-border: oklch(0.55 0.030 75);      /* 4.0:1 vs bg, 3.2:1 vs surface */
-  --color-secondary: oklch(0.89 0.018 82);
-  --color-accent: oklch(0.48 0.160 30);      /* 5.8:1 vs bg, 4.6:1 vs surface (AA) */
-  --color-accent-hover: oklch(0.40 0.160 30);
-  --color-surface: oklch(0.86 0.022 80);
+  /* Light mode — "Siang" (midday in the valley: cream, straw, soil) */
+  --color-background: oklch(0.95 0.028 88);
+  --color-foreground: oklch(0.25 0.030 55);  /* soil brown, AAA on every ground */
+  --color-muted: oklch(0.45 0.035 60);
+  --color-border: oklch(0.56 0.045 65);
+  --color-secondary: oklch(0.925 0.032 87);
+  --color-accent: oklch(0.34 0.090 150);     /* 9.8:1 vs bg, 8.4:1 vs surface */
+  --color-accent-hover: oklch(0.28 0.080 150);
+  --color-surface: oklch(0.90 0.036 86);
+
+  /* The accent role is split in two. No sunny yellow clears 4.5:1 on cream
+     (measured in the redesign-pastoral-world design), so `accent` is a dark
+     forest green that carries text and focus, and `sun` carries the bright
+     colour of sun, crops and sky at the 3:1 graphic bar. Never put text on
+     `sun`. The accent is this dark in light mode so a protanope can still tell
+     it from the thread: at L 0.44 the two simulate to nearly one colour. */
+  --color-sun: oklch(0.57 0.130 70);         /* 3.4:1 vs surface */
 
   /* Red string — graphic only, NEVER text. Theme-constant, so it is declared
      once here and deliberately not overridden in .dark: it is the single
      saturated colour on the site and therefore the attention marker. */
-  --color-thread: oklch(0.55 0.180 30);      /* 4.3:1 vs light bg, 3.7:1 vs dark bg */
+  --color-thread: oklch(0.55 0.180 30);      /* 3.9:1 vs surface, 3.0:1 vs dark surface */
 
   /* Motion — stepped, never eased.
 
@@ -56,7 +64,7 @@
   --nav-height: 3.5rem;
 
   /* Shared corner radius for all interactive chrome (nav shell, buttons, toggle).
-     Hard corners are a defining property of the CASE FILE pixel identity. */
+     Hard corners are a defining property of the pixel identity. */
   --radius-interactive: 0;
 
   /* Zero out Tailwind's radius scale so every `rounded-*` utility already in
@@ -73,20 +81,22 @@
 
 /* ━━━━ Dark mode overrides ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .dark {
-  /* Dark mode — CASE FILE "Arsip Malam" (night archive: dark wood, cork, paper) */
-  --color-background: oklch(0.16 0.012 60);
-  --color-foreground: oklch(0.92 0.015 85);  /* 15.3:1 vs bg (AAA) */
-  --color-muted: oklch(0.66 0.015 70);       /* 6.2:1 vs bg, 5.3:1 vs surface (AA) */
-  --color-border: oklch(0.55 0.020 55);      /* 4.0:1 vs bg, 3.4:1 vs surface */
-  --color-secondary: oklch(0.20 0.015 58);
-  --color-accent: oklch(0.68 0.150 30);      /* 6.3:1 vs bg, 5.4:1 vs surface (AA) */
-  --color-accent-hover: oklch(0.76 0.150 30);
-  --color-surface: oklch(0.24 0.018 55);
+  /* Dark mode — "Malam" (evening in the same valley: tilled soil, lamplight) */
+  --color-background: oklch(0.18 0.018 60);
+  --color-foreground: oklch(0.93 0.022 88);
+  --color-muted: oklch(0.72 0.030 80);
+  --color-border: oklch(0.56 0.035 65);
+  --color-secondary: oklch(0.21 0.020 60);
+  --color-accent: oklch(0.76 0.130 150);     /* 9.2:1 vs bg, 7.9:1 vs surface */
+  --color-accent-hover: oklch(0.84 0.110 150);
+  --color-surface: oklch(0.25 0.022 62);
+  --color-sun: oklch(0.80 0.140 82);
   /* --color-thread is intentionally NOT overridden here — see @theme. */
 }
 
 /* ━━━━ World theme — the scope you enter ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-/* A third palette for the playable scene: near-black ground, gold accent.
+/* A third palette for the playable scene: the valley at night, a dark meadow
+   ground with the same green accent.
    It redefines only roles that already exist, so no component needs to know
    which palette is active — that is what makes the scope class the entire
    mechanism.
@@ -103,16 +113,20 @@
 .world,
 .dark .world,
 .world.dark {
-  --color-background: oklch(0.14 0.014 70);
-  --color-foreground: oklch(0.95 0.012 85);
-  --color-muted: oklch(0.74 0.028 82);
-  --color-border: oklch(0.58 0.055 80);
-  --color-secondary: oklch(0.18 0.016 70);
-  --color-surface: oklch(0.22 0.020 72);
-  --color-accent: oklch(0.82 0.140 88);
-  --color-accent-hover: oklch(0.90 0.110 90);
-  /* --color-thread is NOT overridden. It stays red against a gold accent —
-     a 58-degree hue gap — so the attention marker cannot be mistaken for
+  --color-background: oklch(0.17 0.022 150);
+  --color-foreground: oklch(0.95 0.020 95);
+  --color-muted: oklch(0.76 0.030 110);
+  --color-border: oklch(0.58 0.050 120);
+  --color-secondary: oklch(0.20 0.025 150);
+  --color-surface: oklch(0.24 0.028 148);
+  --color-accent: oklch(0.80 0.140 150);
+  --color-accent-hover: oklch(0.87 0.110 150);
+  --color-sun: oklch(0.84 0.150 88);
+  /* `body` resolved `color` from the outer palette; inherited text would keep
+     that ink on this ground unless it is re-resolved here. */
+  color: var(--color-foreground);
+  /* --color-thread is NOT overridden. It stays red against a green accent,
+     a 120-degree hue gap, so the attention marker cannot be mistaken for
      ordinary chrome. */
 }
 

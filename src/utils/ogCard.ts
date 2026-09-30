@@ -4,11 +4,11 @@ import type { ReactNode } from 'react'
 import satori from 'satori'
 import sharp from 'sharp'
 
-// CASE FILE palette resolved to sRGB. Satori cannot read CSS custom
+// Valley palette resolved to sRGB. Satori cannot read CSS custom
 // properties, so these literals must be kept in step with `global.css`:
-//   #110C08 bg-dark   #ECE7DD bg-light   #201914 ink
-//   #989189 muted-dark  #5F564C muted-light
-//   #6D6059 border-dark  #C53829 thread (theme-constant)
+//   #181009 bg-dark   #F6EEDA bg-light   #2D1E14 ink
+//   #AFA390 muted-dark  #645142 muted-light
+//   #83715F border-dark  #C53829 thread (theme-constant)
 const WIDTH = 1200
 const HEIGHT = 630
 
@@ -56,8 +56,8 @@ function pill(text: string) {
       style: {
         fontSize: 11,
         fontFamily: 'JetBrains Mono',
-        color: '#989189',
-        border: '2px solid #6D6059',
+        color: '#AFA390',
+        border: '2px solid #83715F',
         borderRadius: 4,
         padding: '2px 8px',
         lineHeight: 1.4
@@ -91,7 +91,7 @@ function buildCard(
             style: {
               width: 432,
               height: HEIGHT,
-              backgroundColor: '#110C08',
+              backgroundColor: '#181009',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -106,7 +106,7 @@ function buildCard(
                   style: {
                     fontSize: 13,
                     fontFamily: 'JetBrains Mono',
-                    color: '#989189',
+                    color: '#AFA390',
                     letterSpacing: '0.15em',
                     textTransform: 'uppercase'
                   },
@@ -124,7 +124,7 @@ function buildCard(
                         style: {
                           fontSize: 11,
                           fontFamily: 'JetBrains Mono',
-                          color: '#989189',
+                          color: '#AFA390',
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em'
                         },
@@ -137,7 +137,7 @@ function buildCard(
                         style: {
                           fontSize: 13,
                           fontFamily: 'JetBrains Mono',
-                          color: '#989189'
+                          color: '#AFA390'
                         },
                         children: meta1
                       }
@@ -150,7 +150,7 @@ function buildCard(
                               style: {
                                 fontSize: 12,
                                 fontFamily: 'JetBrains Mono',
-                                color: '#989189'
+                                color: '#AFA390'
                               },
                               children: meta2
                             }
@@ -169,7 +169,7 @@ function buildCard(
             style: {
               flex: 1,
               height: HEIGHT,
-              backgroundColor: '#ECE7DD',
+              backgroundColor: '#F6EEDA',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -182,7 +182,7 @@ function buildCard(
                   style: {
                     fontSize: 42,
                     fontFamily: 'Pixelify Sans',
-                    color: '#201914',
+                    color: '#2D1E14',
                     lineHeight: 1.15
                   },
                   children: truncate(title, 60)
@@ -199,7 +199,7 @@ function buildCard(
                         style: {
                           fontSize: 13,
                           fontFamily: 'JetBrains Mono',
-                          color: '#5F564C',
+                          color: '#645142',
                           lineHeight: 1.5
                         },
                         children: truncate(description, 100)

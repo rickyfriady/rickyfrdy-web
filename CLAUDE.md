@@ -42,7 +42,9 @@ split.
 Hard constraints no skill may override, each enforced by a test or a token:
 - Radius is 0. Every `--radius-*` token is zeroed in `global.css`.
 - Easing is `steps()`, never a cubic bezier.
-- One accent. The retired blue (hue 220) and green (hue 160) do not come back.
+- One text accent (`--color-accent`, forest green) plus one decorative colour
+  (`--color-sun`, never under text). The retired blue (hue 220), old green
+  (hue 160) and CASE FILE red accent do not come back.
 - Contrast is enforced by `tests/styles/palette-contrast.test.ts`, in all three
   palettes. Run it after any token change.
 

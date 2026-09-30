@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * Guards the CASE FILE palette's WCAG conformance directly against the real
+ * Guards the valley palette's WCAG conformance directly against the real
  * tokens in `global.css`, so changing a colour can never silently break AA.
  *
  * Roles are split deliberately: `accent` is text/interactive (needs 4.5:1),
- * while `thread` is a non-text graphic (needs 3:1). No single red clears 4.5:1
- * as text against both a dark wood ground and a light paper ground.
+ * while `thread` and `sun` are non-text graphics (need 3:1). No sunny colour
+ * clears 4.5:1 as text on cream, which is why `sun` exists at all.
  */
 
 const CSS = readFileSync(resolve(__dirname, '../../src/styles/global.css'), 'utf8')
@@ -54,6 +54,47 @@ function oklchToSrgb([L, C, H]: Oklch): [number, number, number] {
   }) as [number, number, number]
 }
 
+// Machado et al. 2009 dichromacy matrices at full severity, in linear sRGB.
+const CVD = {
+  deuteranopia: [
+    [0.367322, 0.860646, -0.227968],
+    [0.280085, 0.672501, 0.047413],
+    [-0.01182, 0.04294, 0.968881]
+  ],
+  protanopia: [
+    [0.152286, 1.052583, -0.204868],
+    [0.114503, 0.786281, 0.099216],
+    [-0.003882, -0.048116, 1.051998]
+  ],
+  tritanopia: [
+    [1.255528, -0.076749, -0.178779],
+    [-0.078411, 0.930809, 0.147602],
+    [0.004733, 0.691367, 0.3039]
+  ]
+} as const
+
+const toLinear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+
+/** OKLab distance between two colours as a dichromat sees them. */
+function cvdDistance(a: Oklch, b: Oklch, matrix: readonly (readonly number[])[]): number {
+  const lab = (o: Oklch) => {
+    const lin = oklchToSrgb(o).map(toLinear)
+    const [r, g, bl] = matrix.map((row) =>
+      Math.min(1, Math.max(0, row[0] * lin[0] + row[1] * lin[1] + row[2] * lin[2]))
+    )
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * bl)
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * bl)
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * bl)
+    return [
+      0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+      1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+      0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+    ]
+  }
+  const [x, y] = [lab(a), lab(b)]
+  return Math.hypot(x[0] - y[0], x[1] - y[1], x[2] - y[2])
+}
+
 function luminance(rgb: [number, number, number]): number {
   const [r, g, b] = rgb.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
@@ -74,7 +115,7 @@ const dark = { ...light, ...tokens(darkBlock) } // dark inherits anything it doe
 const world = { ...dark, ...tokens(worldBlock) } // world inherits thread, which it never overrides
 
 const TEXT_ROLES = ['foreground', 'muted', 'accent', 'accent-hover'] as const
-const GRAPHIC_ROLES = ['thread', 'border'] as const
+const GRAPHIC_ROLES = ['thread', 'border', 'sun'] as const
 // `secondary` joined the grounds when the play scene started using it as its
 // floor: text now sits on it, so it has to clear the same bar as the others.
 const GROUNDS = ['background', 'surface', 'secondary'] as const
@@ -101,6 +142,27 @@ describe.each([
   )('%s on %s meets non-text contrast (3:1)', (role, ground) => {
     expect(contrast(palette[role], palette[ground])).toBeGreaterThanOrEqual(3)
   })
+
+  // Red thread against a green accent is exactly the pair red-green
+  // colourblindness collapses. 0.08 in OKLab is roughly four just-noticeable
+  // differences; a light accent at L 0.44 scored 0.008 for protanopes.
+  it.each(Object.entries(CVD))('keeps thread and accent apart under %s', (_cvd, matrix) => {
+    expect(cvdDistance(palette.thread, palette.accent, matrix)).toBeGreaterThan(0.08)
+  })
+})
+
+describe('retired palettes', () => {
+  it('drops the CASE FILE and old world accents', () => {
+    for (const value of ['oklch(0.48 0.160 30)', 'oklch(0.68 0.150 30)', 'oklch(0.82 0.140 88)']) {
+      expect(CSS).not.toContain(value)
+    }
+  })
+
+  it('never brings back the blue (hue 220) or the old green (hue 160) accent', () => {
+    for (const palette of [light, dark, world]) {
+      expect([220, 160]).not.toContain(palette.accent[2])
+    }
+  })
 })
 
 describe('world palette', () => {
@@ -117,7 +179,8 @@ describe('world palette', () => {
       'border',
       'secondary',
       'surface',
-      'accent'
+      'accent',
+      'sun'
     ]) {
       expect(overridden[role], `--color-${role} missing from the world block`).toBeDefined()
       expect(overridden[role]).not.toEqual(dark[role])
@@ -129,7 +192,7 @@ describe('world palette', () => {
     expect(world.thread).toEqual(light.thread)
   })
 
-  it('keeps the thread separated from the gold accent by hue', () => {
+  it('keeps the thread separated from the green accent by hue', () => {
     const gap = Math.abs(world.accent[2] - world.thread[2])
     expect(gap).toBeGreaterThan(30)
   })
