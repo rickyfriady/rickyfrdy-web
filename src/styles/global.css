@@ -130,6 +130,64 @@
      ordinary chrome. */
 }
 
+/* ━━━━ World time — seasons by day ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* The `.world` block above is the valley at night, and it is also what a
+   visitor without JavaScript gets. By day an inline script in Valley.astro
+   sets `data-time` and `data-season` from the visitor's own clock before first
+   paint, and one of these four takes over. Nothing is stored: the attributes
+   are read from the clock on every load.
+
+   Every one of them is held to the same bars as the site palettes by
+   tests/styles/palette-contrast.test.ts, including thread against accent under
+   colourblindness. Thread is never overridden. */
+.world[data-time='day'][data-season='spring'] {
+  --color-background: oklch(0.95 0.030 125);
+  --color-surface: oklch(0.90 0.038 125);
+  --color-secondary: oklch(0.925 0.034 125);
+  --color-foreground: oklch(0.25 0.030 70);
+  --color-muted: oklch(0.44 0.035 70);
+  --color-border: oklch(0.54 0.045 70);
+  --color-accent: oklch(0.34 0.090 150);
+  --color-accent-hover: oklch(0.28 0.080 150);
+  --color-sun: oklch(0.57 0.130 70);
+}
+
+.world[data-time='day'][data-season='summer'] {
+  --color-background: oklch(0.95 0.035 95);
+  --color-surface: oklch(0.90 0.043 95);
+  --color-secondary: oklch(0.925 0.039 95);
+  --color-foreground: oklch(0.25 0.030 60);
+  --color-muted: oklch(0.44 0.035 60);
+  --color-border: oklch(0.54 0.045 60);
+  --color-accent: oklch(0.34 0.090 150);
+  --color-accent-hover: oklch(0.28 0.080 150);
+  --color-sun: oklch(0.57 0.130 70);
+}
+
+.world[data-time='day'][data-season='autumn'] {
+  --color-background: oklch(0.95 0.035 70);
+  --color-surface: oklch(0.90 0.043 70);
+  --color-secondary: oklch(0.925 0.039 70);
+  --color-foreground: oklch(0.25 0.030 50);
+  --color-muted: oklch(0.44 0.035 50);
+  --color-border: oklch(0.54 0.045 50);
+  --color-accent: oklch(0.34 0.090 150);
+  --color-accent-hover: oklch(0.28 0.080 150);
+  --color-sun: oklch(0.56 0.130 75);
+}
+
+.world[data-time='day'][data-season='winter'] {
+  --color-background: oklch(0.95 0.012 240);
+  --color-surface: oklch(0.90 0.020 240);
+  --color-secondary: oklch(0.925 0.016 240);
+  --color-foreground: oklch(0.25 0.030 250);
+  --color-muted: oklch(0.44 0.035 250);
+  --color-border: oklch(0.54 0.045 250);
+  --color-accent: oklch(0.34 0.090 150);
+  --color-accent-hover: oklch(0.28 0.080 150);
+  --color-sun: oklch(0.57 0.130 70);
+}
+
 /* Tailwind 4 hardcodes `rounded-full` to calc(infinity * 1px) rather than
    reading a theme token, so the scale override above cannot reach it. */
 .rounded-full {
@@ -656,6 +714,62 @@
 }
 
 /* Status strip above the stage: room name and the two panel keys. */
+/* A veil over the whole stage for night and weather. State, not animation:
+   it is chosen once from the clock and the week's activity and never loops. */
+@utility scene-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 20000;
+  pointer-events: none;
+
+  .world[data-time='night'] & {
+    background: color-mix(in oklch, var(--color-background) 40%, transparent);
+  }
+
+  /* The tile art has one grass; a pale wash is what makes a winter day read
+     as cold rather than as July with bare trees. */
+  .world[data-time='day'][data-season='winter'] & {
+    background: color-mix(in oklch, var(--color-background) 35%, transparent);
+  }
+
+  &[data-weather='cloudy'] {
+    background-image: linear-gradient(
+      color-mix(in oklch, var(--color-muted) 18%, transparent),
+      color-mix(in oklch, var(--color-muted) 18%, transparent)
+    );
+  }
+
+  /* Rain as a still pattern of 1px streaks on the 4px grid. */
+  &[data-weather='rain'] {
+    background-image:
+      repeating-linear-gradient(
+        115deg,
+        transparent 0 12px,
+        color-mix(in oklch, var(--color-foreground) 12%, transparent) 12px 13px
+      ),
+      linear-gradient(
+        color-mix(in oklch, var(--color-muted) 14%, transparent),
+        color-mix(in oklch, var(--color-muted) 14%, transparent)
+      );
+  }
+}
+
+/* Object names sit on tile art of any colour, so they carry their own ground
+   rather than trusting the grass to give them contrast. */
+@utility scene-label {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  padding-inline: 2px;
+}
+
+/* A character moving between scheduled spots walks in whole steps along a
+   straight line. No pathfinding, and no smooth curve. */
+@utility scene-object {
+  top: 0;
+  left: 0;
+  transition: transform 1.2s steps(12, end);
+}
+
 @utility game-hud {
   font-family: var(--font-mono);
   display: flex;

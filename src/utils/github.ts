@@ -167,7 +167,7 @@ function aggregateLanguages(
 
 function mockFallback(): GitHubStats {
   const contributionCalendar = generateMockContributions()
-  return {
+  const stats: GitHubStats = {
     totalContributions: calculateTotalContributions(contributionCalendar),
     currentStreak: calculateCurrentStreak(contributionCalendar),
     longestStreak: calculateLongestStreak(contributionCalendar),
@@ -203,6 +203,8 @@ function mockFallback(): GitHubStats {
       { name: 'Shell', color: '#89e051', percentage: 3 }
     ]
   }
+  MOCK.add(stats)
+  return stats
 }
 
 export async function fetchBuildTimeStats(token: string | undefined): Promise<GitHubStats> {
@@ -379,4 +381,33 @@ export async function fetchRecentEvents(): Promise<RecentEvent[]> {
   } catch {
     return []
   }
+}
+
+const MOCK = new WeakSet<GitHubStats>()
+
+let activity: Promise<ContributionDay[] | null> | undefined
+
+/**
+ * The real contribution calendar for the valley's weather, or `null`.
+ *
+ * With a token this is the same GraphQL calendar the dashboard reads, which
+ * sees private contributions too. That call falls back to generated mock data
+ * on failure, and weather drawn from invented activity would be a fabricated
+ * claim, so a mock result is recognised and reported as `null`. Without a
+ * token the public proxy answers instead. Any failure is `null`, which the
+ * world renders as settled weather. Cached per build: four pages ask.
+ */
+export function fetchActivity(token: string | undefined): Promise<ContributionDay[] | null> {
+  activity ??= token
+    ? fetchBuildTimeStats(token).then((stats) =>
+        MOCK.has(stats) ? null : stats.contributionCalendar
+      )
+    : fetch(PROXY_URL, { signal: AbortSignal.timeout(5000) })
+        .then((res) => {
+          if (!res.ok) throw new Error(`Proxy ${res.status}`)
+          return res.json() as Promise<{ contributions: ProxyDay[] }>
+        })
+        .then((json) => mapProxyContributions(json.contributions))
+        .catch(() => null)
+  return activity
 }

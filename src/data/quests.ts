@@ -14,11 +14,61 @@ import type { Npc, Quest } from '@/models'
  * records that no testimonial exists.
  */
 export const npcs = [
-  { id: 'npc-laura', collaborator: 'Laura Elisabeth Sinaga', questIds: ['case-review'] },
+  {
+    id: 'npc-laura',
+    collaborator: 'Laura Elisabeth Sinaga',
+    questIds: ['case-review'],
+    // A fiction of where a character stands, not a claim about a real
+    // person's day: working hours in the Workshop, an evening by the pond.
+    schedule: [
+      {
+        from: 0,
+        to: 9,
+        away: {
+          en: 'Laura is out of the valley. Back at 09:00.',
+          id: 'Laura sedang di luar lembah. Kembali pukul 09.00.'
+        }
+      },
+      { from: 9, to: 13, room: 'workshop', x: 13, y: 7 },
+      // Same room, so a visitor with the page open at 13:00 sees her walk over.
+      { from: 13, to: 17, room: 'workshop', x: 8, y: 5 },
+      { from: 17, to: 20, room: 'valley', x: 24, y: 19 },
+      {
+        from: 20,
+        to: 24,
+        away: {
+          en: 'Laura is out of the valley. Back at 09:00.',
+          id: 'Laura sedang di luar lembah. Kembali pukul 09.00.'
+        }
+      }
+    ]
+  },
   {
     id: 'npc-rivaldy',
     collaborator: 'Rivaldy Firmansyah',
-    questIds: ['archive-run', 'record-check']
+    questIds: ['archive-run', 'record-check'],
+    schedule: [
+      {
+        from: 0,
+        to: 8,
+        away: {
+          en: 'Rivaldy is out of the valley. Back at 08:00.',
+          id: 'Rivaldy sedang di luar lembah. Kembali pukul 08.00.'
+        }
+      },
+      { from: 8, to: 12, room: 'records', x: 9, y: 7 },
+      { from: 12, to: 13, room: 'valley', x: 23, y: 15 },
+      { from: 13, to: 16, room: 'records', x: 9, y: 7 },
+      { from: 16, to: 18, room: 'records', x: 15, y: 6 },
+      {
+        from: 18,
+        to: 24,
+        away: {
+          en: 'Rivaldy is out of the valley. Back at 08:00.',
+          id: 'Rivaldy sedang di luar lembah. Kembali pukul 08.00.'
+        }
+      }
+    ]
   }
 ] satisfies Npc[]
 
@@ -26,11 +76,11 @@ export const quests = [
   {
     id: 'case-review',
     npcId: 'npc-laura',
-    title: { en: 'Unverified files', id: 'Berkas belum diperiksa' },
+    title: { en: 'Unopened shelves', id: 'Rak yang belum dibuka' },
     passages: [
       {
-        en: 'Three files in this room have not been opened yet. Singel, Microsite, and AIRA.',
-        id: 'Tiga berkas di ruangan ini belum dibuka. Singel, Microsite, dan AIRA.'
+        en: 'Three shelves in the Workshop have not been opened yet: Singel, Microsite, and AIRA.',
+        id: 'Tiga rak di Bengkel belum dibuka: Singel, Microsite, dan AIRA.'
       },
       {
         en: 'Open each one and read what it says. I only mark what I have seen.',
@@ -43,15 +93,15 @@ export const quests = [
     id: 'archive-run',
     npcId: 'npc-rivaldy',
     requires: 'case-review',
-    title: { en: 'One note in the archive', id: 'Satu catatan di arsip' },
+    title: { en: 'One page in the Journal', id: 'Satu halaman di Jurnal' },
     passages: [
       {
-        en: 'Next door there is one written note, on microservices. It is the only one filed so far.',
-        id: 'Di ruang sebelah ada satu catatan tertulis, tentang microservices. Baru itu yang diarsipkan.'
+        en: 'The Journal house has one written piece so far, on microservices.',
+        id: 'Rumah Jurnal baru berisi satu tulisan, tentang microservices.'
       },
       {
-        en: 'Read it, then come back. The records room is behind the archive.',
-        id: 'Baca dulu, lalu kembali. Ruang rekaman ada di balik arsip.'
+        en: 'Read it, then find me again. The Records hall is along the same road.',
+        id: 'Baca dulu, lalu temui saya lagi. Balai Catatan ada di jalan yang sama.'
       }
     ],
     completedBy: ['inspect:microservices-with-nestjs'],
@@ -61,11 +111,11 @@ export const quests = [
     id: 'record-check',
     npcId: 'npc-rivaldy',
     requires: 'archive-run',
-    title: { en: 'The record', id: 'Rekaman kerja' },
+    title: { en: 'The record', id: 'Catatan kerja' },
     passages: [
       {
-        en: 'Three desks, three places on the record. Check each one and the file is complete.',
-        id: 'Tiga meja, tiga tempat di rekaman. Periksa semuanya dan berkasnya lengkap.'
+        en: 'Three counters in the Records hall, three places Ricki has worked. Check each one and the record is complete.',
+        id: 'Tiga meja di Balai Catatan, tiga tempat Ricki pernah bekerja. Periksa semuanya dan catatannya lengkap.'
       }
     ],
     completedBy: [

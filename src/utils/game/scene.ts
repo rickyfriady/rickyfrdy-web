@@ -1,4 +1,4 @@
-import type { Collaborator, Room, RoomObject } from '@/models'
+import type { Collaborator, Npc, Room, RoomObject } from '@/models'
 import { resolveNpc } from './quests'
 
 /**
@@ -22,6 +22,10 @@ export interface SceneObject {
   title: string
   summary: string
   href?: string
+  /** In-fiction place name for a route signpost ("Workshop"); content stays literal. */
+  place?: string
+  /** A project's own date, so the page can derive how grown its crop is. */
+  date?: string
 }
 
 export interface SceneDoor {
@@ -41,10 +45,34 @@ export interface SceneRoom {
 }
 
 export interface SceneSources {
-  projects: readonly { slug: string; title: string; shortDescription: string }[]
+  projects: readonly { slug: string; title: string; shortDescription: string; date?: string }[]
   posts: readonly { slug: string; title: string; description: string }[]
   experiences: readonly { company: string; role: string; period: string; bullets: string[] }[]
   people?: readonly Collaborator[]
+  /** Page labels for route signposts, read from the site's own nav copy. */
+  routes?: readonly SceneRoute[]
+}
+
+export interface SceneRoute {
+  path: string
+  title: string
+  summary: string
+  place: string
+  /** Set when the route has no localized twin, e.g. the English-only blog. */
+  href?: string
+}
+
+/** A schedule stop with its away text already in the page's language. */
+export type SceneStop =
+  | { from: number; to: number; room: string; x: number; y: number }
+  | { from: number; to: number; away: string }
+
+export interface SceneNpc {
+  id: string
+  sprite: string
+  title: string
+  summary: string
+  schedule: SceneStop[]
 }
 
 function localize(path: string, lang: 'en' | 'id'): string {
@@ -80,6 +108,7 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
       slug,
       title: project.title,
       summary: project.shortDescription,
+      date: project.date,
       // Case-study routes are English-only, matching the command palette.
       href: `/projects/${slug}`
     }
@@ -111,6 +140,20 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
     }
   }
 
+  if (kind === 'route') {
+    const route = sources.routes?.find((r) => r.path === slug)
+    if (!route) throw new Error(`Room object "${object.id}" points at unknown route "${slug}"`)
+    return {
+      ...base,
+      kind,
+      slug,
+      title: route.title,
+      summary: route.summary,
+      place: route.place,
+      href: route.href ?? localize(slug, lang)
+    }
+  }
+
   const person = resolveNpc(slug, sources.people)
   if (!person) throw new Error(`Room object "${object.id}" points at unknown NPC "${slug}"`)
   return {
@@ -122,7 +165,42 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
   }
 }
 
-/** Every destination the scene exposes, for the always-present HTML list. */
+/**
+ * Every destination the scene exposes, for the always-present HTML list.
+ *
+ * One entry per URL: a project is both a crop in the valley and a shelf in the
+ * Workshop, and listing it twice would read as two different things.
+ */
 export function sceneDestinations(rooms: readonly SceneRoom[]): SceneObject[] {
-  return rooms.flatMap((room) => room.objects).filter((object) => object.href)
+  const seen = new Set<string>()
+  return rooms
+    .flatMap((room) => room.objects)
+    .filter((object) => {
+      if (!object.href || seen.has(object.href)) return false
+      seen.add(object.href)
+      return true
+    })
+}
+
+/** Characters with their identity resolved and their schedule localized. */
+export function buildNpcs(
+  npcs: readonly Npc[],
+  people: readonly Collaborator[] | undefined,
+  lang: 'en' | 'id'
+): SceneNpc[] {
+  return npcs.map((npc) => {
+    const person = resolveNpc(npc.id, people)
+    if (!person) throw new Error(`NPC "${npc.id}" has no collaborator entry`)
+    return {
+      id: npc.id,
+      sprite: npc.id,
+      title: person.name,
+      summary: `${person.role} · ${person.company}`,
+      schedule: npc.schedule.map((stop) =>
+        'away' in stop
+          ? { from: stop.from, to: stop.to, away: stop.away[lang] }
+          : { from: stop.from, to: stop.to, room: stop.room, x: stop.x, y: stop.y }
+      )
+    }
+  })
 }

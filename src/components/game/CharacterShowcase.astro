@@ -29,9 +29,11 @@ const { name, role, stats, labels } = Astro.props
 ---
 
 <aside class="evidence-panel flex w-full flex-col gap-3 p-4 md:w-64" aria-label={labels.heading}>
-  <!-- Illustrated art supersedes the drawn portrait the moment a file lands on
-       the illustrated path; until then this renders exactly as before. -->
-  <AssetImage id="investigator-portrait" fallbackClass="showcase-portrait" eager />
+  <!-- The same 16px sprite the player walks as, at 8x. Integer scale only: the
+       drawn portrait is the floor if the file is ever missing. -->
+  <div class="bg-secondary flex aspect-[3/4] items-center justify-center">
+    <AssetImage id="hero" size={128} fallbackClass="showcase-portrait w-full" eager />
+  </div>
 
   <div>
     <p class="chapter-label">{labels.heading}</p>

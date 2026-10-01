@@ -3,15 +3,17 @@ import type { QuestState, Stat } from '@/models'
 import { gameEvents, initGame, recordEvent, resetGame } from '@/stores/game'
 import { resolveById } from '@/utils/game/assets'
 import { cameraOffset } from '@/utils/game/camera'
-import { doorAt, TILE } from '@/utils/game/collision'
-import { damageFor, moves, opponents } from '@/utils/game/encounter'
+import { doorAt, roomSize, TILE } from '@/utils/game/collision'
 import { nearestFacing } from '@/utils/game/interact'
 import { type Direction, type MoveInput, stepPosition } from '@/utils/game/movement'
 import { questStates } from '@/utils/game/quests'
-import { mulberry32, seedFrom } from '@/utils/game/random'
-import type { SceneRoom } from '@/utils/game/scene'
+import type { SceneNpc, SceneObject, SceneRoom } from '@/utils/game/scene'
+import { usualSpot, whereIs } from '@/utils/game/schedule'
 import { fallbackKind, integerScale } from '@/utils/game/sprites'
+import { cellAt, type Frame } from '@/utils/game/tiles'
+import { growthOf, seasonOf, type Weather } from '@/utils/game/time'
 import { playSound } from '@/utils/sound'
+import { framesStyle, hasSheet, parseTileSprite } from './TileArt'
 
 /** Viewport in tiles — deliberately smaller than a room, so the camera works. */
 const VIEW_W = 15
@@ -39,14 +41,27 @@ export interface SceneQuest {
 
 interface Props {
   rooms: SceneRoom[]
+  npcs: SceneNpc[]
   quests: SceneQuest[]
   player: ScenePlayer
   labels: Record<string, string>
-  /** Opponent names live in data as `{ en, id }`; the island picks the side. */
-  lang: 'en' | 'id'
+  /** Derived at build time from real activity; `settled` when it was unavailable. */
+  weather: Weather
 }
 
-type Panel = 'none' | 'journal' | 'sheet' | 'encounter'
+type Panel = 'none' | 'journal' | 'sheet'
+
+/** A room object, or a character placed by the hour, or the note left when one is away. */
+type Placed = Omit<SceneObject, 'kind'> & { kind: SceneObject['kind'] | 'note' }
+
+const CROP_FRAME: Record<ReturnType<typeof growthOf>, Frame> = {
+  seedling: { sheet: 'farm', index: 40 },
+  growing: { sheet: 'farm', index: 41 },
+  ripe: { sheet: 'farm', index: 42 }
+}
+
+/** Stacking order for anything standing in the world: its bottom edge, in tenths of a tile. */
+const depth = (bottom: number) => Math.floor(bottom * 10)
 
 interface Dialogue {
   title: string
@@ -78,9 +93,28 @@ interface Dialogue {
  * directly beneath it, so a screen reader loses nothing when art replaces the
  * stand-in.
  */
-function ObjectArt({ sprite, tilePx }: { sprite: string; tilePx: number }) {
+function ObjectArt({
+  sprite,
+  tilePx,
+  frame
+}: {
+  sprite: string
+  tilePx: number
+  /** A tile-sheet frame to draw instead of a sprite file. */
+  frame?: Frame | null
+}) {
   const [failed, setFailed] = useState(false)
   const asset = useMemo(() => resolveById(sprite), [sprite])
+  // A sheet frame draws from the sheet; with the sheet missing it takes the
+  // same drawn stand-in as any sprite with no art.
+  if (frame && hasSheet(frame.sheet)) {
+    return (
+      <div
+        aria-hidden="true"
+        style={{ width: tilePx, height: tilePx, ...framesStyle([frame], tilePx) }}
+      />
+    )
+  }
   const floor = (
     <div
       className="sprite-fb pixel-sprite"
@@ -90,7 +124,7 @@ function ObjectArt({ sprite, tilePx }: { sprite: string; tilePx: number }) {
     />
   )
 
-  if (failed || asset.path === 'fallback' || !asset.url) return floor
+  if (frame || failed || asset.path === 'fallback' || !asset.url) return floor
 
   return (
     <img
@@ -108,7 +142,7 @@ function ObjectArt({ sprite, tilePx }: { sprite: string; tilePx: number }) {
   )
 }
 
-export default function PlayScene({ rooms, quests, player, labels, lang }: Props) {
+export default function PlayScene({ rooms, npcs, quests, player, labels, weather }: Props) {
   /* Read once: a visitor who asked for less motion gets a still scene, and the
      destination list below the stage is the interaction path. */
   const [reduced] = useState(
@@ -140,9 +174,15 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
   const [panel, setPanel] = useState<Panel>('none')
   const [events, setEvents] = useState<string[]>([])
   const [scale, setScale] = useState(2)
-  const [encounter, setEncounter] = useState<{ index: number; hp: number; log: string[] } | null>(
-    null
-  )
+  /* Read at mount and re-read each minute, never stored: the hour moves the
+     characters and the date sets the season. */
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 60_000)
+    return () => window.clearInterval(timer)
+  }, [])
+  const season = seasonOf(now)
+  const hour = now.getHours()
 
   const stageRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
@@ -154,6 +194,54 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
   const dialogueOpenRef = useRef(false)
 
   const room = useMemo(() => rooms.find((r) => r.id === roomId) ?? rooms[0], [rooms, roomId])
+
+  /* Everything that can be approached in this room at this hour: its objects,
+     the characters scheduled here, and a note for anyone who usually is but is
+     away. Crops take their frame from the project's own date. */
+  const placed = useMemo<Placed[]>(() => {
+    if (!room) return []
+    const people: Placed[] = []
+    for (const npc of npcs) {
+      const stop = whereIs(npc.schedule, hour)
+      if ('room' in stop) {
+        if (stop.room !== room.id) continue
+        people.push({
+          id: npc.id,
+          x: stop.x,
+          y: stop.y,
+          sprite: npc.sprite,
+          kind: 'npc',
+          slug: npc.id,
+          title: npc.title,
+          summary: npc.summary
+        })
+        continue
+      }
+      const usual = usualSpot(npc.schedule)
+      if (usual?.room !== room.id) continue
+      people.push({
+        id: `${npc.id}-note`,
+        x: usual.x,
+        y: usual.y,
+        sprite: 'tile:town:83',
+        kind: 'note',
+        slug: npc.id,
+        title: npc.title,
+        summary: stop.away
+      })
+    }
+    return [...room.objects, ...people]
+  }, [room, npcs, hour])
+
+  /* Tiles resolve once per room and season, never in the frame loop. */
+  const cells = useMemo(() => {
+    if (!room) return []
+    const { w, h } = roomSize(room)
+    return Array.from({ length: h }, (_, y) =>
+      Array.from({ length: w }, (_, x) => cellAt(room.grid, x, y, season))
+    )
+  }, [room, season])
+  const movingRef = useRef(false)
   const states = useMemo(() => questStates(events, quests.map(toQuest)), [events, quests])
   const tilePx = TILE * scale
 
@@ -185,9 +273,14 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       worldRef.current.style.transform = `translate3d(${-Math.round(cam.x * tilePx)}px, ${-Math.round(cam.y * tilePx)}px, 0)`
     }
     if (actorRef.current) {
-      actorRef.current.style.transform = `translate3d(${Math.round(pos.x * tilePx)}px, ${Math.round(pos.y * tilePx)}px, 0)`
+      // Two-frame step while moving; the art is single-angle, so facing left
+      // mirrors it rather than pretending to a walk cycle it does not have.
+      const bob = movingRef.current && Math.floor(performance.now() / 160) % 2 === 1 ? -scale : 0
+      const flip = facingRef.current === 'left' ? ' scaleX(-1)' : ''
+      actorRef.current.style.transform = `translate3d(${Math.round(pos.x * tilePx)}px, ${Math.round(pos.y * tilePx) + bob}px, 0)${flip}`
+      actorRef.current.style.zIndex = String(depth(pos.y + BODY))
     }
-  }, [room, tilePx])
+  }, [room, tilePx, scale])
 
   /* Spawn on room change; a door has already set the entry point if we came
      through one, so only a genuinely unplaced character gets moved. */
@@ -207,7 +300,9 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       const delta = last ? now - last : 0
       last = now
       if (!dialogueOpenRef.current) {
-        posRef.current = stepPosition(room, posRef.current, keysRef.current, delta)
+        const keys = keysRef.current
+        movingRef.current = keys.up || keys.down || keys.left || keys.right
+        posRef.current = stepPosition(room, posRef.current, keys, delta)
         const door = doorAt(room, posRef.current.x + BODY / 2, posRef.current.y + BODY / 2)
         if (door) {
           // One step: the character is never in neither room.
@@ -274,8 +369,12 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
 
   const interact = useCallback(() => {
     if (!room) return
-    const target = nearestFacing(room.objects, posRef.current, facingRef.current)
+    const target = nearestFacing(placed, posRef.current, facingRef.current)
     if (!target) return // Nothing in reach: silence, not an error.
+    if (target.kind === 'note') {
+      openDialogue({ title: target.title, passages: [target.summary] })
+      return
+    }
     if (target.kind === 'npc') {
       recordEvent(`talk:${target.slug}`)
       const quest = quests.find((q) => q.npcId === target.slug)
@@ -294,7 +393,7 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       href: target.href,
       linkLabel: labels.open
     })
-  }, [room, quests, labels.open, openDialogue])
+  }, [room, placed, quests, labels.open, openDialogue])
 
   const setKey = (event: React.KeyboardEvent, down: boolean): boolean => {
     const keys = keysRef.current
@@ -339,7 +438,7 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
       dialogue ? advance() : interact()
       return
     }
-    if (event.key === 'j' || event.key === 'J') {
+    if (event.key === 'q' || event.key === 'Q') {
       setPanel((p) => (p === 'journal' ? 'none' : 'journal'))
       return
     }
@@ -374,36 +473,6 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
     }
   }
 
-  const startEncounter = () => {
-    setEncounter({ index: 0, hp: opponents[0].hp, log: [] })
-    setPanel('encounter')
-  }
-
-  const playMove = (moveIndex: number) => {
-    setEncounter((current) => {
-      if (!current) return current
-      const turn = current.log.length
-      const opponent = opponents[current.index]
-      if (turn >= opponent.maxTurns || current.hp <= 0) return current
-      const rand = mulberry32(seedFrom(`${opponent.id}:${turn}`))
-      const damage = damageFor(topLevel(player.stats), moveIndex, rand())
-      const hp = Math.max(0, current.hp - damage)
-      playSound('stamp')
-      return {
-        ...current,
-        hp,
-        log: [
-          ...current.log,
-          `${labels[`move_${moves[moveIndex].id}`] ?? moves[moveIndex].id}, ${damage}`
-        ]
-      }
-    })
-  }
-
-  const opponent = encounter ? opponents[encounter.index] : null
-  const encounterOver =
-    encounter && opponent ? encounter.hp === 0 || encounter.log.length >= opponent.maxTurns : false
-
   if (!room) return null
 
   if (!wide) return null
@@ -414,13 +483,10 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
         <span>{room.name}</span>
         <span className="flex gap-2">
           <button type="button" className="menu-cursor px-2" onClick={() => setPanel('journal')}>
-            [J] {labels.journal}
+            [Q] {labels.journal}
           </button>
           <button type="button" className="menu-cursor px-2" onClick={() => setPanel('sheet')}>
             [C] {labels.sheet}
-          </button>
-          <button type="button" className="menu-cursor px-2" onClick={startEncounter}>
-            {labels.encounter}
           </button>
         </span>
       </div>
@@ -438,12 +504,18 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
         onBlur={clearKeys}
         onPointerDown={() => stageRef.current?.focus()}
       >
-        <div ref={worldRef} className="absolute top-0 left-0 will-change-transform">
-          {/* Static floor: rendered once per room, never touched by the loop. */}
-          {room.grid.map((row, y) => (
+        {/* Every layer below is decorative: the destination list outside the
+            stage carries the same content as text. */}
+        <div
+          ref={worldRef}
+          className="absolute top-0 left-0 will-change-transform"
+          aria-hidden="true"
+        >
+          {/* Ground: one node per tile, resolved once per room and season. */}
+          {cells.map((row, y) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: in a tile grid the index IS the identity — row 3 is always row 3, and the list never reorders.
             <div key={`${room.id}-${y}`} className="flex" style={{ height: tilePx }}>
-              {[...row].map((tile, x) => (
+              {row.map((cell, x) => (
                 <span
                   // biome-ignore lint/suspicious/noArrayIndexKey: same — a tile's coordinate is its identity.
                   key={`${room.id}-${y}-${x}`}
@@ -451,41 +523,97 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
                   style={{
                     width: tilePx,
                     height: tilePx,
-                    background:
-                      tile === '#'
-                        ? 'var(--color-border)'
-                        : tile === '+'
-                          ? 'var(--color-thread)'
-                          : 'var(--color-secondary)'
+                    ...framesStyle(cell.ground, tilePx, cell.kind)
                   }}
                 />
               ))}
             </div>
           ))}
 
-          {room.objects.map((object) => (
+          {/* Objects: trees, things, people. Sorted by their bottom edge, so a
+              character standing north of a tree is drawn behind it. */}
+          {cells.flatMap((row, y) =>
+            row.map((cell, x) =>
+              cell.object ? (
+                <span
+                  // biome-ignore lint/suspicious/noArrayIndexKey: coordinate identity, as above.
+                  key={`o-${room.id}-${y}-${x}`}
+                  className="absolute block"
+                  style={{
+                    left: x * tilePx,
+                    top: y * tilePx,
+                    width: tilePx,
+                    height: tilePx,
+                    zIndex: depth(y + 1),
+                    ...framesStyle([cell.object], tilePx, 'solid')
+                  }}
+                />
+              ) : null
+            )
+          )}
+
+          {placed.map((object) => (
             <div
               key={object.id}
-              className="absolute flex flex-col items-center"
-              style={{ left: object.x * tilePx, top: object.y * tilePx, width: tilePx }}
+              className="scene-object absolute flex flex-col items-center"
+              style={{
+                width: tilePx,
+                zIndex: depth(object.y + 1),
+                transform: `translate3d(${object.x * tilePx}px, ${object.y * tilePx}px, 0)`,
+                transition: reduced ? 'none' : undefined
+              }}
             >
-              <ObjectArt sprite={object.sprite} tilePx={tilePx} />
-              <span className="text-muted mt-1 max-w-[7rem] truncate font-mono text-[0.5rem] uppercase">
-                {object.title}
+              <ObjectArt
+                sprite={object.sprite}
+                tilePx={tilePx}
+                frame={
+                  object.sprite === 'crop'
+                    ? CROP_FRAME[growthOf(object.date, now)]
+                    : parseTileSprite(object.sprite)
+                }
+              />
+              {/* Two tiles wide at most, so neighbours two apart never overlap;
+                  the full title is in the dialogue and the destination list. */}
+              <span
+                className="scene-label mt-1 truncate font-mono text-[0.5rem] uppercase"
+                style={{ maxWidth: tilePx * 2 - 4 }}
+              >
+                {object.place ?? object.title}
               </span>
             </div>
           ))}
 
           {/* The ref stays on the positioned wrapper so the loop keeps mutating one
               element's transform; the art inside resolves like every other slot. */}
-          <div
-            ref={actorRef}
-            className="absolute top-0 left-0 will-change-transform"
-            aria-hidden="true"
-          >
+          <div ref={actorRef} className="absolute top-0 left-0 will-change-transform">
             <ObjectArt sprite="hero" tilePx={Math.round(BODY * tilePx)} />
           </div>
+
+          {/* Overhead: roof eaves drawn over anyone walking behind a building. */}
+          {cells.flatMap((row, y) =>
+            row.map((cell, x) =>
+              cell.overhead ? (
+                <span
+                  // biome-ignore lint/suspicious/noArrayIndexKey: coordinate identity, as above.
+                  key={`h-${room.id}-${y}-${x}`}
+                  className="absolute block"
+                  style={{
+                    left: x * tilePx,
+                    top: y * tilePx,
+                    width: tilePx,
+                    height: tilePx,
+                    zIndex: 10_000,
+                    ...framesStyle([cell.overhead], tilePx)
+                  }}
+                />
+              ) : null
+            )
+          )}
         </div>
+
+        {/* Night and weather are a change of state, not an animation: a veil
+            over the stage chosen once from the clock and the week's activity. */}
+        <div className="scene-sky" data-weather={weather} aria-hidden="true" />
       </div>
 
       <p className="text-muted text-center font-mono text-[0.65rem]">{labels.controls}</p>
@@ -596,56 +724,8 @@ export default function PlayScene({ rooms, quests, player, labels, lang }: Props
           </button>
         </section>
       )}
-
-      {panel === 'encounter' && encounter && opponent && (
-        <section
-          className="evidence-panel mx-auto w-full max-w-2xl p-4"
-          aria-label={labels.encounter}
-        >
-          <h2 className="font-display text-lg">{opponent.opponent[lang]}</h2>
-          <p className="font-mono text-[0.7rem]">
-            HP {encounter.hp}/{opponent.hp} · {labels.turn} {encounter.log.length}/
-            {opponent.maxTurns}
-          </p>
-          <ul className="text-muted mt-2 font-mono text-[0.65rem]">
-            {encounter.log.map((line) => (
-              <li key={line}>&gt; {line}</li>
-            ))}
-          </ul>
-          {encounterOver ? (
-            <p className="mt-3 text-sm">{encounter.hp === 0 ? labels.won : labels.timeout}</p>
-          ) : (
-            <div className="mt-3 flex flex-wrap gap-3 font-mono text-[0.65rem]">
-              {moves.map((move, index) => (
-                <button
-                  key={move.id}
-                  type="button"
-                  className="menu-cursor"
-                  onClick={() => playMove(index)}
-                >
-                  [{index + 1}] {labels[`move_${move.id}`] ?? move.id}
-                </button>
-              ))}
-            </div>
-          )}
-          <button
-            type="button"
-            className="menu-cursor mt-4 block font-mono text-[0.65rem]"
-            onClick={() => {
-              setEncounter(null)
-              setPanel('none')
-            }}
-          >
-            [S] {labels.skip}
-          </button>
-        </section>
-      )}
     </div>
   )
-}
-
-function topLevel(stats: Stat[]): number {
-  return stats.length > 0 ? stats[0].level : 1
 }
 
 /** The island receives quests already localized; the state machine needs the shape back. */

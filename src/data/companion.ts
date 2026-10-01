@@ -10,18 +10,18 @@ import type { LocalizedText } from '@/models'
  * Keyed by path without the `/id` prefix, so one map serves both locales.
  */
 export const companionReactions: Record<string, LocalizedText> = {
-  '/': { en: 'Case file open.', id: 'Berkas kasus terbuka.' },
-  '/projects': { en: 'Five files on this shelf.', id: 'Lima berkas di rak ini.' },
-  '/blog': { en: 'Notes from the desk.', id: 'Catatan dari meja.' },
-  '/about': { en: 'The subject himself.', id: 'Subjeknya sendiri.' },
-  '/experience': { en: 'The record.', id: 'Rekaman kerja.' },
+  '/': { en: 'Welcome to the valley.', id: 'Selamat datang di lembah.' },
+  '/projects': { en: 'Fresh from the workshop.', id: 'Langsung dari bengkel.' },
+  '/blog': { en: 'Pages from the journal.', id: 'Halaman dari jurnal.' },
+  '/about': { en: 'Home, and who lives here.', id: 'Rumah, dan penghuninya.' },
+  '/experience': { en: 'The records hall.', id: 'Balai catatan.' },
   '/resume': { en: 'One page, printed.', id: 'Satu halaman, tercetak.' },
-  '/contact': { en: 'Leave a message.', id: 'Tinggalkan pesan.' },
+  '/contact': { en: 'The post office is open.', id: 'Kantor pos buka.' },
   '/board': { en: 'Mind the threads.', id: 'Awas benangnya.' },
-  '/arcade': { en: 'Evidence that clashes.', id: 'Bukti yang bertabrakan.' },
-  '/play': { en: "You're inside now.", id: 'Sekarang kamu di dalam.' },
-  '/now': { en: 'Active case.', id: 'Kasus berjalan.' },
+  '/arcade': { en: 'Toys that clash.', id: 'Mainan yang bertabrakan.' },
+  '/play': { en: "You're in the valley now.", id: 'Sekarang kamu di lembah.' },
+  '/now': { en: 'This season.', id: 'Musim ini.' },
   '/changelog': { en: 'Every edit, logged.', id: 'Tiap perubahan, tercatat.' },
-  '/dashboard': { en: 'Surveillance feed.', id: 'Umpan pengawasan.' },
-  '/ask': { en: 'Ask the file.', id: 'Tanya berkasnya.' }
+  '/dashboard': { en: 'The weather station.', id: 'Stasiun cuaca.' },
+  '/ask': { en: 'Ask the well.', id: 'Tanya sumurnya.' }
 }

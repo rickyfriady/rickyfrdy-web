@@ -91,7 +91,7 @@ describe('activeQuestFor()', () => {
 
 describe('resolveNpc()', () => {
   const people = [{ name: 'Ada L', role: 'Engineer', company: 'Somewhere' }]
-  const roster = [{ id: 'npc-ada', collaborator: 'Ada L', questIds: [] }]
+  const roster = [{ id: 'npc-ada', collaborator: 'Ada L', questIds: [], schedule: [] }]
 
   it('reads identity from the collaborators data', () => {
     expect(resolveNpc('npc-ada', people, roster)?.role).toBe('Engineer')

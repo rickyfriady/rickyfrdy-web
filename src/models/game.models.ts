@@ -20,17 +20,22 @@ export interface LocalizedText {
 }
 
 /**
- * Tile codes as they appear in a room's `grid` rows.
- * `.` walkable floor · `#` solid · `+` door (walkable, triggers a link)
+ * Tile codes as they appear in a room's `grid` rows. The full vocabulary, with
+ * each code's art, layer and collision rule, lives in `utils/game/tiles.ts`;
+ * these three are the ones the engine itself relies on.
+ * `.` walkable floor · `#` solid · `+` door (walkable, triggers a room change)
  */
 export type Tile = '.' | '#' | '+'
 
-export type RoomId = 'case-room' | 'archive' | 'records'
+export type RoomId = 'valley' | 'workshop' | 'journal' | 'records'
 
 /** What a room object points at. The object never carries the content itself. */
 export interface ObjectBinding {
-  kind: 'project' | 'post' | 'experience' | 'npc'
-  /** Project slug, post slug, company name, or NPC id — resolved at build time. */
+  kind: 'project' | 'post' | 'experience' | 'npc' | 'route'
+  /**
+   * Project slug, post slug, company name, NPC id, or a route path such as
+   * `/about`. Resolved at build time.
+   */
   slug: string
 }
 
@@ -90,12 +95,22 @@ export interface Sprite {
   sheet?: SpriteSheet
 }
 
+/** Where a character is for a span of hours: a spot in a room, or away. */
+export type ScheduleStop =
+  | { from: number; to: number; room: RoomId; x: number; y: number }
+  | { from: number; to: number; away: LocalizedText }
+
 /** An NPC's identity is derived from `collaborators.ts`, never duplicated. */
 export interface Npc {
   id: string
   /** Must match a `Collaborator.name` exactly. */
   collaborator: string
   questIds: string[]
+  /**
+   * Hours are `[from, to)` on the visitor's clock and must cover 0 to 24 with
+   * no gap, so every hour of the day places the character somewhere.
+   */
+  schedule: ScheduleStop[]
 }
 
 export type QuestState = 'locked' | 'available' | 'active' | 'complete'

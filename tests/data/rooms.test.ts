@@ -15,7 +15,11 @@ const posts = [
   }
 ]
 
-const sources = { projects, posts, experiences, people: collaborators }
+const routes = ['/about', '/contact', '/projects', '/blog', '/experience', '/board'].map(
+  (path) => ({ path, title: path, summary: `The ${path} page.`, place: path })
+)
+
+const sources = { projects, posts, experiences, people: collaborators, routes }
 
 describe('room grids', () => {
   it('has rectangular grids', () => {
@@ -119,11 +123,28 @@ describe('buildScene()', () => {
 })
 
 describe('destinations', () => {
-  it('exposes a link for every non-NPC object', () => {
+  it('exposes one link for every distinct destination, and no duplicates', () => {
     const scene = buildScene(rooms, sources, 'en')
     const destinations = sceneDestinations(scene)
-    const linkable = scene.flatMap((r) => r.objects).filter((o) => o.kind !== 'npc')
-    expect(destinations).toHaveLength(linkable.length)
+    const hrefs = new Set(scene.flatMap((r) => r.objects).flatMap((o) => (o.href ? [o.href] : [])))
+    expect(destinations.map((d) => d.href).sort()).toEqual([...hrefs].sort())
+  })
+
+  it('never links a localized route that does not exist', () => {
+    const blog = { path: '/blog', title: 'Blog', summary: 'Blog.', place: 'Journal', href: '/blog' }
+    const scene = buildScene(
+      rooms,
+      { ...sources, routes: [...routes.filter((r) => r.path !== '/blog'), blog] },
+      'id'
+    )
+    const hrefs = sceneDestinations(scene).map((d) => d.href)
+    expect(hrefs).toContain('/blog')
+    expect(hrefs).not.toContain('/id/blog')
+  })
+
+  it('gives every building its canonical route', () => {
+    const hrefs = sceneDestinations(buildScene(rooms, sources, 'en')).map((d) => d.href)
+    for (const route of routes) expect(hrefs, route.path).toContain(route.path)
   })
 
   it('reaches every project in the portfolio, so the game hides nothing', () => {

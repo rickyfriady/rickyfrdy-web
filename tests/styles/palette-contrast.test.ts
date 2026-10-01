@@ -113,6 +113,19 @@ const worldBlock = block(CSS, '.world.dark {')
 const light = tokens(themeBlock)
 const dark = { ...light, ...tokens(darkBlock) } // dark inherits anything it does not override
 const world = { ...dark, ...tokens(worldBlock) } // world inherits thread, which it never overrides
+// Seasons by day. Night is the world block itself, whatever the season, so
+// these four plus `world` cover every season at both times of day.
+const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const
+const seasonBlocks = Object.fromEntries(
+  SEASONS.map((season) => [
+    season,
+    block(CSS, `.world[data-time='day'][data-season='${season}'] {`)
+  ])
+) as Record<(typeof SEASONS)[number], string>
+const seasons: [string, Record<string, Oklch>][] = SEASONS.map((season) => [
+  `${season} day`,
+  { ...world, ...tokens(seasonBlocks[season]) }
+])
 
 const TEXT_ROLES = ['foreground', 'muted', 'accent', 'accent-hover'] as const
 const GRAPHIC_ROLES = ['thread', 'border', 'sun'] as const
@@ -120,11 +133,14 @@ const GRAPHIC_ROLES = ['thread', 'border', 'sun'] as const
 // floor: text now sits on it, so it has to clear the same bar as the others.
 const GROUNDS = ['background', 'surface', 'secondary'] as const
 
-describe.each([
+const palettes: [string, Record<string, Oklch>][] = [
   ['light', light],
   ['dark', dark],
-  ['world', world]
-])('%s theme', (_name, palette) => {
+  ['world', world],
+  ...seasons
+]
+
+describe.each(palettes)('%s theme', (_name, palette) => {
   it('defines every role the stylesheet relies on', () => {
     for (const role of [...TEXT_ROLES, ...GRAPHIC_ROLES, ...GROUNDS]) {
       expect(palette[role], `--color-${role} missing`).toBeDefined()
@@ -199,6 +215,21 @@ describe('world palette', () => {
 
   it('is declared after .dark, so it still wins when both land on <html>', () => {
     expect(CSS.indexOf('.world.dark {')).toBeGreaterThan(CSS.indexOf('.dark {'))
+  })
+})
+
+describe('seasons', () => {
+  it.each(SEASONS)('%s never touches the thread', (season) => {
+    expect(tokens(seasonBlocks[season]).thread).toBeUndefined()
+  })
+
+  it.each(SEASONS)('%s is a designed palette of its own, not a copy', (season) => {
+    const own = tokens(seasonBlocks[season])
+    expect(own.background).toBeDefined()
+    for (const other of SEASONS) {
+      if (other !== season)
+        expect(own.background).not.toEqual(tokens(seasonBlocks[other]).background)
+    }
   })
 })
 

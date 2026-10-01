@@ -1,118 +1,150 @@
 import type { Room } from '@/models'
 
 /**
- * Three rooms, not six.
+ * The valley and the three buildings you can walk into.
  *
- * There are five projects and one published article. Six themed rooms over
- * that much content is mostly empty corridor. Each room here holds enough to
- * feel populated, and adding a fourth later is a data edit — the renderer
- * reads the grid and never knows a room by name.
+ * The valley is the front door: every destination on the site is a building,
+ * a signpost, or a crop in it. The Workshop, the Journal and the Records hall
+ * have interiors holding the individual pieces of work; the About house, the
+ * Post office and the notice board are signposts straight to their pages. A
+ * building and its route are the same content at two addresses, so every
+ * signpost carries its canonical URL and nothing redirects.
  *
- * Grid legend: `#` solid · `.` walkable floor · `+` door tile.
+ * Authoring format: terrain is rows of tile codes (legend in
+ * `utils/game/tiles.ts`), and edges are picked from neighbours at render time,
+ * so a pond or a road is a blob of `~` or `=` rather than hand-placed corner
+ * pieces. The one constraint that follows: water has no inner-corner art, so
+ * ponds stay convex.
+ *
  * Objects carry `{ kind, slug }` only. Titles and summaries are resolved from
- * `projects.ts`, the blog collection, and `experience.ts` at build time, so a
- * retitled project cannot leave a stale name inside the game.
+ * `projects.ts`, the blog collection, `experience.ts` and the page labels at
+ * build time, so a retitled project cannot leave a stale name in the world.
  */
 export const rooms = [
   {
-    id: 'case-room',
-    name: { en: 'Case Room', id: 'Ruang Kasus' },
+    id: 'valley',
+    name: { en: 'The Valley', id: 'Lembah' },
     grid: [
-      '####################',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................+',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '####################'
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'T,,,,,,,,,,*,,,,,,,,,"",,,,*,,,,,,,,,,,T',
+      'T,,,rrrrr,,,,,T,,,,,,,T,,,,,,,rrrrr,,,,T',
+      'T,,,RRRRR,,,,,,,,,T,,,,,,,,,,,RRRRR,,,,T',
+      'T,*,WWDWW,,,,,,,,,,,,,,,,T,,,,WWDWW,,,,T',
+      'T,,,,,============================,,*,,T',
+      'T,,,,,============================,,,,,T',
+      'TCCCCCCCCCvvvvCCCCCSSCCCCCvvvvCCCCCCCCCT',
+      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,,,,,,T',
+      'T,,,rrrrr,,,ggggg,,==,,ggggggg,,,,,,,,,T',
+      'T,T,RRRRR,T,GGGGGo,==o,GGGGGGG,,,,,T,,,T',
+      'T,,,WW+WW,,,QQ+QQ,,==,,QQQ+QQQ,,,,,,,T,T',
+      'T,,",,==,,,",,==,,,==,,,,,==,,,,,",,,,,T',
+      'T======================================T',
+      'T======================================T',
+      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,,*,,,T',
+      'T,,fffffffffff,,,,,==,,,o,,,,,,,o,,,,,,T',
+      'T,,,,,,,,,,,,,,,T,,==,,,,,~~~~~~,,,,,,,T',
+      'T,*,%,%,%,%,%,,,,,,==,*,,,~~~~~~,T,,,,,T',
+      'T,,,,,,,,,,,,,,,*,,==,,,,,~~~~~~,,,,,,,T',
+      'T,,fffffffffff,,,,,==,,,",~~~~~~,,,,,,,T',
+      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,T,,,,T',
+      'T,,,,o,,,,,,,,,o,,,==,,T,,,,,,,,,,,,,,,T',
+      'T,,,,,,,T,,,,,,,,,,==,,,,,,,,,*,,,,,,,,T',
+      'T,,T,,,,,,,,,T,,,",==,,,,,,,T,,,,,,,,,,T',
+      'T,,,,,,,,*,,,,,,,,,==,,,,,,,,,,",,,,T,,T',
+      'T,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,T',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT'
     ],
-    spawn: { x: 9, y: 6 },
+    spawn: { x: 19.1, y: 16 },
     objects: [
       {
-        id: 'file-singel',
-        x: 3,
-        y: 2,
-        sprite: 'shelf',
+        id: 'sign-about',
+        x: 8,
+        y: 5,
+        sprite: 'tile:town:83',
+        binding: { kind: 'route', slug: '/about' }
+      },
+      {
+        id: 'sign-contact',
+        x: 34,
+        y: 5,
+        sprite: 'tile:town:83',
+        binding: { kind: 'route', slug: '/contact' }
+      },
+      {
+        id: 'sign-projects',
+        x: 8,
+        y: 12,
+        sprite: 'tile:town:83',
+        binding: { kind: 'route', slug: '/projects' }
+      },
+      {
+        id: 'sign-blog',
+        x: 16,
+        y: 12,
+        sprite: 'tile:town:83',
+        binding: { kind: 'route', slug: '/blog' }
+      },
+      {
+        id: 'sign-experience',
+        x: 28,
+        y: 12,
+        sprite: 'tile:town:83',
+        binding: { kind: 'route', slug: '/experience' }
+      },
+      {
+        id: 'notice-board',
+        x: 22,
+        y: 15,
+        sprite: 'tile:town:57',
+        binding: { kind: 'route', slug: '/board' }
+      },
+      // One crop per project. How grown it is comes from the project's own
+      // date at render time; nothing about growth is stored here.
+      {
+        id: 'crop-singel',
+        x: 4,
+        y: 18,
+        sprite: 'crop',
         binding: { kind: 'project', slug: 'singel-app' }
       },
       {
-        id: 'file-microsite',
-        x: 7,
-        y: 2,
-        sprite: 'shelf',
+        id: 'crop-microsite',
+        x: 6,
+        y: 18,
+        sprite: 'crop',
         binding: { kind: 'project', slug: 'microsite-pinjaman' }
       },
       {
-        id: 'file-kamila',
-        x: 11,
-        y: 2,
-        sprite: 'shelf',
+        id: 'crop-kamila',
+        x: 8,
+        y: 18,
+        sprite: 'crop',
         binding: { kind: 'project', slug: 'kamila' }
       },
       {
-        id: 'file-aira',
-        x: 3,
-        y: 8,
-        sprite: 'shelf',
+        id: 'crop-aira',
+        x: 10,
+        y: 18,
+        sprite: 'crop',
         binding: { kind: 'project', slug: 'aira-reconciliation' }
       },
       {
-        id: 'file-chatbot',
-        x: 7,
-        y: 8,
-        sprite: 'shelf',
+        id: 'crop-chatbot',
+        x: 12,
+        y: 18,
+        sprite: 'crop',
         binding: { kind: 'project', slug: 'chatbot-kukerta' }
-      },
-      {
-        id: 'npc-laura',
-        x: 13,
-        y: 8,
-        sprite: 'npc-laura',
-        binding: { kind: 'npc', slug: 'npc-laura' }
-      }
-    ],
-    doors: [{ x: 19, y: 6, to: 'archive', entry: { x: 1, y: 6 } }]
-  },
-  {
-    id: 'archive',
-    name: { en: 'Archive', id: 'Arsip' },
-    grid: [
-      '####################',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '+..................+',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '####################'
-    ],
-    spawn: { x: 9, y: 6 },
-    objects: [
-      {
-        id: 'note-nestjs',
-        x: 6,
-        y: 3,
-        sprite: 'cabinet',
-        binding: { kind: 'post', slug: 'microservices-with-nestjs' }
       }
     ],
     doors: [
-      { x: 0, y: 6, to: 'case-room', entry: { x: 18, y: 6 } },
-      { x: 19, y: 6, to: 'records', entry: { x: 1, y: 6 } }
+      { x: 6, y: 11, to: 'workshop', entry: { x: 9, y: 10 } },
+      { x: 14, y: 11, to: 'journal', entry: { x: 9, y: 10 } },
+      { x: 26, y: 11, to: 'records', entry: { x: 9, y: 10 } }
     ]
   },
   {
-    id: 'records',
-    name: { en: 'Records', id: 'Rekaman' },
+    id: 'workshop',
+    name: { en: 'Workshop', id: 'Bengkel' },
     grid: [
       '####################',
       '#..................#',
@@ -120,45 +152,124 @@ export const rooms = [
       '#..................#',
       '#..................#',
       '#..................#',
-      '+..................#',
       '#..................#',
       '#..................#',
       '#..................#',
       '#..................#',
-      '####################'
+      '#..................#',
+      '#########+##########'
     ],
-    spawn: { x: 9, y: 6 },
+    spawn: { x: 9, y: 9 },
     objects: [
       {
-        id: 'rec-pegadaian',
+        id: 'shelf-singel',
+        x: 3,
+        y: 2,
+        sprite: 'tile:farm:76',
+        binding: { kind: 'project', slug: 'singel-app' }
+      },
+      {
+        id: 'shelf-microsite',
+        x: 7,
+        y: 2,
+        sprite: 'tile:farm:76',
+        binding: { kind: 'project', slug: 'microsite-pinjaman' }
+      },
+      {
+        id: 'shelf-kamila',
+        x: 11,
+        y: 2,
+        sprite: 'tile:farm:76',
+        binding: { kind: 'project', slug: 'kamila' }
+      },
+      {
+        id: 'shelf-aira',
+        x: 15,
+        y: 2,
+        sprite: 'tile:farm:76',
+        binding: { kind: 'project', slug: 'aira-reconciliation' }
+      },
+      {
+        id: 'shelf-chatbot',
+        x: 3,
+        y: 7,
+        sprite: 'tile:farm:76',
+        binding: { kind: 'project', slug: 'chatbot-kukerta' }
+      }
+    ],
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 6.1, y: 12.1 } }]
+  },
+  {
+    id: 'journal',
+    name: { en: 'Journal', id: 'Jurnal' },
+    grid: [
+      '####################',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#########+##########'
+    ],
+    spawn: { x: 9, y: 9 },
+    objects: [
+      {
+        id: 'desk-nestjs',
+        x: 6,
+        y: 3,
+        sprite: 'tile:farm:98',
+        binding: { kind: 'post', slug: 'microservices-with-nestjs' }
+      }
+    ],
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 14.1, y: 12.1 } }]
+  },
+  {
+    id: 'records',
+    name: { en: 'Records Hall', id: 'Balai Catatan' },
+    grid: [
+      '####################',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '#########+##########'
+    ],
+    spawn: { x: 9, y: 9 },
+    objects: [
+      {
+        id: 'counter-pegadaian',
         x: 4,
         y: 3,
-        sprite: 'desk',
+        sprite: 'tile:farm:100',
         binding: { kind: 'experience', slug: 'PT. Pegadaian' }
       },
       {
-        id: 'rec-freelance',
+        id: 'counter-freelance',
         x: 9,
         y: 3,
-        sprite: 'desk',
+        sprite: 'tile:farm:100',
         binding: { kind: 'experience', slug: 'Freelance' }
       },
       {
-        id: 'rec-skj',
+        id: 'counter-skj',
         x: 14,
         y: 3,
-        sprite: 'desk',
+        sprite: 'tile:farm:100',
         binding: { kind: 'experience', slug: 'PT. Sumatera Kalimantan Jaya' }
-      },
-      {
-        id: 'npc-rivaldy',
-        x: 9,
-        y: 8,
-        sprite: 'npc-rivaldy',
-        binding: { kind: 'npc', slug: 'npc-rivaldy' }
       }
     ],
-    doors: [{ x: 0, y: 6, to: 'archive', entry: { x: 18, y: 6 } }]
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 26.1, y: 12.1 } }]
   }
 ] satisfies Room[]
 

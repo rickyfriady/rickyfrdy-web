@@ -22,6 +22,7 @@ export type {
   Room,
   RoomId,
   RoomObject,
+  ScheduleStop,
   Sprite,
   SpriteSheet,
   Stat,

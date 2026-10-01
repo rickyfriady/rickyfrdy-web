@@ -4,6 +4,7 @@ import { webPageSchema } from '@/utils/schema'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
 import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
+import Valley from '@/components/game/Valley.astro'
 import { projects } from '@/data/projects'
 import { getSkillIconUrl } from '@/utils/skillIcon'
 import { getCollection } from 'astro:content'
@@ -98,10 +99,13 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── CASE 01 · Karya Pilihan ─────────────────────────────────── -->
+  <!-- ─── The valley: every page as a place, list first ───────── -->
+  <Valley lang="id" />
+
+  <!-- ─── 01 · Karya Pilihan ─────────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">CASE 01 · Karya Pilihan</span>
+      <span class="chapter-label">01 · Karya Pilihan</span>
     </div>
 
     <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -127,10 +131,10 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── CASE 02 · Yang Saya Bangun ──────────────────────────────── -->
+  <!-- ─── 02 · Yang Saya Bangun ──────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">CASE 02 · Yang Saya Bangun</span>
+      <span class="chapter-label">02 · Yang Saya Bangun</span>
     </div>
 
     <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -167,11 +171,11 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── CASE 03 · Tulisan Terbaru ───────────────────────────────── -->
+  <!-- ─── 03 · Tulisan Terbaru ───────────────────────────────── -->
   {recentPosts.length > 0 && (
     <section class="border-border border-b" data-stagger-group>
       <div class="chapter-heading px-4">
-        <span class="chapter-label">CASE 03 · Tulisan Terbaru</span>
+        <span class="chapter-label">03 · Tulisan Terbaru</span>
       </div>
 
       <div class="divide-border divide-y px-4">
@@ -215,7 +219,7 @@ const capabilities = [
     </section>
   )}
 
-  <!-- ─── CASE 04 · Terbuka untuk Kerja ──────────────────────────── -->
+  <!-- ─── 04 · Terbuka untuk Kerja ──────────────────────────── -->
   <section class="border-border border-b px-4 py-12">
     <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
       <div>

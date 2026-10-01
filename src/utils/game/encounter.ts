@@ -2,7 +2,15 @@ import type { Encounter, EncounterResult, EncounterTurn } from '@/models'
 import { mulberry32, seedFrom } from './random'
 
 /**
- * Turn-based encounters.
+ * Turn-based encounters. Unreachable since the valley redesign, on purpose.
+ *
+ * Nothing under `src/` imports it, so it ships in no bundle; only its tests in
+ * `tests/utils/game/random.test.ts` still run it. It stays because it is
+ * finished, tested work, and a cosy valley with a battle system bolted on is
+ * two products: the redesign's design doc records that call. Delete it, and
+ * those tests, once nobody expects combat to come back.
+ *
+ * Original contract, still true of the code below:
  *
  * Opponents are abstract engineering obstacles. No real person, employer, or
  * competitor is ever an opponent, and nothing here depicts violence — this is
