@@ -66,9 +66,13 @@ light accent is dark enough that the pair stays apart under protanopia,
 deuteranopia and tritanopia simulation. Lighten the light accent and a protanope
 sees one colour.
 
-A third palette, `.world`, is scoped to `/play`: the valley at night, a dark
-meadow ground with the same green accent. It redefines only existing roles, so
-no component knows which palette is active.
+The valley band (on `/` and `/play`) is scoped by `.world`, and its palette
+follows the visitor's own clock. `.world` itself is the valley at night: a dark
+meadow ground with the same green accent, and what a visitor without
+JavaScript sees. By day one of four seasonal palettes takes over (spring
+green-cream, summer straw, autumn amber, winter frost), set before first paint
+by an inline script from the calendar and the hour. Nothing is stored. Each
+redefines only existing roles, so no component knows which palette is active.
 
 Retired and not to return: the blue (hue 220) and old green (hue 160) accents,
 and the CASE FILE red accent.
@@ -76,8 +80,8 @@ and the CASE FILE red accent.
 Contrast is enforced by test, not by eye:
 `tests/styles/palette-contrast.test.ts` holds every text role to 4.5:1 and
 every graphic role (thread, border, sun) to 3:1 against all three grounds, in
-all three palettes, and checks thread against accent under three kinds of
-colourblindness.
+the light, dark, night and four seasonal palettes, and checks thread against
+accent under three kinds of colourblindness.
 
 ## Typography
 
@@ -104,11 +108,35 @@ Unchanged by the redesign.
 
 ## Art
 
-CC0 or it does not ship, because this repository is public. Tiles come from
-Kenney's Tiny Town, Tiny Farm and Roguelike/RPG packs, all 16x16 to match
-`TILE = 16`. Sprout Lands is the closest match to the register and is excluded:
-both tiers forbid redistribution (`docs/sprout-lands.md`). Every asset is
-recorded in the licence manifest and guarded by test.
+CC0 or it does not ship, because this repository is public. Everything is one
+artist, Kenney's Tiny series, so the world and its people share a palette and
+show no seam at 16px:
+
+- **Tiles**: Tiny Town and Tiny Farm sheets, plus the 3x3 water set cut from
+  Tiny Battle (Tiny Town has no water). 16x16, matching `TILE = 16`.
+- **Characters**: three Tiny Dungeon sprites. Which one depicts which person is
+  the owner's recorded decision (tiles 85, 99 and 88 for Ricki, Laura and
+  Rivaldy), never inferred from a name. They are single-angle: facing left
+  mirrors the sprite and walking bobs it a pixel, rather than faking a
+  four-direction cycle the art does not have.
+
+All of it sits on the sprite path, rendered pixelated at integer scale. Sprout
+Lands is the closest match to the register and is excluded: both tiers forbid
+redistribution (`docs/sprout-lands.md`). Every file is recorded in the licence
+manifest and guarded by test, and the world stays complete and playable with
+every art file removed: each tile falls back to a flat token colour chosen by
+what it does (wall, water, door, ground).
+
+## The world
+
+- **Time is read, never stored.** Season from the calendar, day and night from
+  the visitor's clock, each project's crop growth from its own date, weather
+  from the week's real GitHub activity (settled when it cannot be read).
+- **State, not animation.** Night and weather are a still veil over the scene.
+  The only motion is the player walking and a character stepping between
+  scheduled spots in whole steps.
+- **Characters follow a timetable**, a pure lookup of hour to place. When one
+  is away, a signpost at their usual spot says where and when they are back.
 
 ## Components
 
@@ -152,11 +180,12 @@ pixel language. Confident enough to be memorable, restrained enough that the
 work stays readable. Sections vary where the content varies. Motion is stepped
 and purposeful; the world's changes come from real time, not ambient loops.
 
-## Known open questions
+## Decided
 
-- The page names replacing "Exhibits" (`/projects`) and "Case Notes" (`/blog`).
-  Until they are decided, the CASE FILE page names still render.
-- Whether the board keeps its cork surface as deliberate contrast or warms with
-  everything else.
-- Whether `/play` survives as its own route once the valley is the front door.
-- Whether all four seasons ship together, or one ships and the rest follow.
+- Page names: the Workshop (`/projects`) and the Journal (`/blog`), with the
+  rest of the valley's places named to match. Nav labels stay literal.
+- The board keeps its cork surface as deliberate contrast; only its copy lost
+  the detective vocabulary.
+- `/play` survives as its own URL, rendering the same valley as the landing
+  page. Nothing redirects.
+- All four seasons ship together.
