@@ -18,7 +18,7 @@ import {
   integerScale
 } from '@/utils/game/sprites'
 import { cellAt, type Frame, horizonRows } from '@/utils/game/tiles'
-import { growthOf, seasonOf, timeOfDay, type Weather } from '@/utils/game/time'
+import { effectiveTimeOfDay, growthOf, seasonOf, type Weather } from '@/utils/game/time'
 import { playSound } from '@/utils/sound'
 import Ambient from './Ambient'
 import Backdrop from './Backdrop'
@@ -209,6 +209,18 @@ export default function PlayScene({
   const season = seasonOf(now)
   const hour = now.getHours()
 
+  /* The theme is the class on <html>, the same switch the valley's CSS reads, so
+     the lighting here and the palette there cannot disagree. Dark is night. */
+  const [dark, setDark] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  )
+  useEffect(() => {
+    const root = document.documentElement
+    const observer = new MutationObserver(() => setDark(root.classList.contains('dark')))
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
   /* Villagers read the clock twice a second. A timer, not a frame loop, and not
      started at all for a visitor who asked for less motion or when not operable. */
   const [villagerNow, setVillagerNow] = useState(() => Date.now())
@@ -218,6 +230,8 @@ export default function PlayScene({
     return () => window.clearInterval(timer)
   }, [reduced, isOperable, villagers.length])
   const villagerEls = useRef(new Map<string, HTMLElement>())
+  /* People, notes and pieces: objects that name themselves only when near. */
+  const nearEls = useRef(new Map<string, HTMLElement>())
 
   const stageRef = useRef<HTMLDivElement>(null)
   const audio = useAmbientAudio({ stageRef, allowed: !reduced && isOperable })
@@ -332,6 +346,16 @@ export default function PlayScene({
     }
     // A villager within a step and a half of the player says its piece.
     for (const el of villagerEls.current.values()) {
+      const dx = Number(el.dataset.x) + 0.5 - (pos.x + BODY / 2)
+      const dy = Number(el.dataset.y) + 0.5 - (pos.y + BODY / 2)
+      const near = dx * dx + dy * dy < 2.25 ? '1' : '0'
+      if (el.dataset.near === near) continue
+      el.dataset.near = near
+      el.style.zIndex = near === '1' ? '9000' : (el.dataset.z ?? '')
+    }
+    // The same step and a half shows a person's or a piece's name, raised above
+    // its neighbours so the full name is never covered.
+    for (const el of nearEls.current.values()) {
       const dx = Number(el.dataset.x) + 0.5 - (pos.x + BODY / 2)
       const dy = Number(el.dataset.y) + 0.5 - (pos.y + BODY / 2)
       const near = dx * dx + dy * dy < 2.25 ? '1' : '0'
@@ -645,11 +669,11 @@ export default function PlayScene({
         <div className="flex items-center justify-between border-b-2 border-border px-1 pb-1.5">
           <div className="flex items-center gap-1.5">
             <span className="inline-block h-2.5 w-2.5 animate-pulse bg-accent" aria-hidden="true" />
-            <span className="font-display text-[0.65rem] tracking-widest uppercase text-muted">
+            <span className="font-display text-label tracking-widest uppercase text-muted">
               VALLEY · POCKET
             </span>
           </div>
-          <span className="font-mono text-[0.6rem] text-muted">{room.name}</span>
+          <span className="font-mono text-label text-muted">{room.name}</span>
         </div>
       )}
 
@@ -750,6 +774,15 @@ export default function PlayScene({
             {placed.map((object) => (
               <div
                 key={object.id}
+                ref={(el) => {
+                  if (object.place) return
+                  if (el) nearEls.current.set(object.id, el)
+                  else nearEls.current.delete(object.id)
+                }}
+                data-x={object.place ? undefined : object.x}
+                data-y={object.place ? undefined : object.y}
+                data-z={object.place ? undefined : depth(object.y + 1)}
+                data-near={object.place ? undefined : '0'}
                 className="scene-object absolute flex flex-col items-center"
                 style={{
                   width: tilePx,
@@ -767,11 +800,12 @@ export default function PlayScene({
                       : parseTileSprite(object.sprite)
                   }
                 />
-                {/* Two tiles wide at most, so neighbours two apart never overlap;
-                  the full title is in the dialogue and the destination list. */}
+                {/* Buildings always name themselves, in full, below. People and
+                  pieces name themselves only when the player is beside them, and
+                  above their heads, so no name sits on a building's label and
+                  none needs truncating. */}
                 <span
-                  className="scene-label mt-1 truncate font-mono text-[0.5rem] uppercase"
-                  style={{ maxWidth: tilePx * 2 - 4 }}
+                  className={`scene-label whitespace-nowrap font-mono text-label uppercase ${object.place ? 'mt-1' : 'scene-label-near absolute bottom-full mb-1'}`}
                 >
                   {object.place ?? object.title}
                 </span>
@@ -852,7 +886,7 @@ export default function PlayScene({
           {!reduced && isOperable && horizon > 0 && (
             <Ambient
               season={season}
-              night={timeOfDay(now) === 'night'}
+              night={effectiveTimeOfDay(now, dark) === 'night'}
               scale={scale}
               viewW={viewCols * TILE}
               viewH={viewRows * TILE}
@@ -868,7 +902,7 @@ export default function PlayScene({
       {/* Controls: Desktop vs Handheld */}
       {!isHandheld && (
         <>
-          <p className="text-muted text-center font-mono text-[0.65rem]">{labels.controls}</p>
+          <p className="text-muted text-center font-mono text-label">{labels.controls}</p>
           {audio.supported && !reduced && (
             <div className="flex items-center justify-center gap-3">
               <button
@@ -1003,7 +1037,7 @@ export default function PlayScene({
                 >
                   B
                 </button>
-                <span className="mt-1 font-mono text-[0.6rem] uppercase text-muted">Back</span>
+                <span className="mt-1 font-mono text-label uppercase text-muted">Back</span>
               </div>
               <div className="-translate-y-3 flex flex-col items-center">
                 <button
@@ -1018,7 +1052,7 @@ export default function PlayScene({
                 >
                   A
                 </button>
-                <span className="mt-1 font-mono text-[0.6rem] uppercase text-muted">Act</span>
+                <span className="mt-1 font-mono text-label uppercase text-muted">Act</span>
               </div>
             </div>
           </div>
@@ -1035,7 +1069,7 @@ export default function PlayScene({
               }}
             >
               <span className="block h-3 w-10 border border-border bg-secondary group-active:bg-accent" />
-              <span className="mt-1 font-mono text-[0.55rem] tracking-wider uppercase text-muted">
+              <span className="mt-1 font-mono text-label tracking-wider uppercase text-muted">
                 SELECT
               </span>
             </button>
@@ -1049,7 +1083,7 @@ export default function PlayScene({
               }}
             >
               <span className="block h-3 w-10 border border-border bg-secondary group-active:bg-accent" />
-              <span className="mt-1 font-mono text-[0.55rem] tracking-wider uppercase text-muted">
+              <span className="mt-1 font-mono text-label tracking-wider uppercase text-muted">
                 START
               </span>
             </button>
@@ -1065,7 +1099,7 @@ export default function PlayScene({
                     audio.enabled ? 'bg-accent' : 'bg-secondary'
                   }`}
                 />
-                <span className="mt-1 font-mono text-[0.55rem] tracking-wider uppercase text-muted">
+                <span className="mt-1 font-mono text-label tracking-wider uppercase text-muted">
                   {audio.enabled ? 'MUTE' : 'SOUND'}
                 </span>
               </button>
@@ -1083,7 +1117,7 @@ export default function PlayScene({
         >
           <p className="font-display text-base">▸ {dialogue.title}</p>
           <p className="mt-2 min-h-[3rem] text-sm leading-relaxed">{text.slice(0, revealed)}</p>
-          <div className="mt-3 flex flex-wrap gap-4 font-mono text-[0.65rem]">
+          <div className="mt-3 flex flex-wrap gap-4 font-mono text-label">
             <button
               type="button"
               className="menu-cursor"
@@ -1127,13 +1161,13 @@ export default function PlayScene({
             {quests.map((quest) => (
               <li key={quest.id} className="text-sm">
                 <span className="text-foreground">{quest.title}</span>{' '}
-                <span className="text-muted font-mono text-[0.65rem]">
+                <span className="text-muted font-mono text-label">
                   , {labels[`state_${states[quest.id] as QuestState}`]}
                 </span>
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex gap-4 font-mono text-[0.65rem]">
+          <div className="mt-4 flex gap-4 font-mono text-label">
             <button
               type="button"
               className="menu-cursor text-accent"
@@ -1172,7 +1206,7 @@ export default function PlayScene({
           <p className="text-muted mt-4 text-xs leading-relaxed">{labels.statBasis}</p>
           <button
             type="button"
-            className="menu-cursor mt-3 font-mono text-[0.65rem]"
+            className="menu-cursor mt-3 font-mono text-label"
             onClick={() => setPanel('none')}
           >
             [ESC] {labels.close}

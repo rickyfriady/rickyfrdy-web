@@ -30,9 +30,15 @@ interface Props {
   /** The character card, for `/play`, where there is room for it. */
   showcase?: boolean
   mobilePlayScene?: boolean
+  /**
+   * Hrefs the page already links elsewhere (its project cards and posts). The
+   * list leaves those pieces out rather than repeating them; `/play` has no
+   * such sections and passes nothing, so it lists every piece.
+   */
+  linkedElsewhere?: string[]
 }
 
-const { lang, showcase = false, mobilePlayScene = showcase } = Astro.props
+const { lang, showcase = false, mobilePlayScene = showcase, linkedElsewhere = [] } = Astro.props
 const experiences = lang === 'id' ? experiencesId : experiencesEn
 
 const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
@@ -84,7 +90,7 @@ const sources = { projects, posts, experiences, people: collaborators, routes }
 const scene = buildScene(rooms, sources, lang)
 const destinations = sceneDestinations(scene)
 const places = destinations.filter((d) => d.place)
-const pieces = destinations.filter((d) => !d.place)
+const pieces = destinations.filter((d) => !d.place && !(d.href && linkedElsewhere.includes(d.href)))
 const sceneNpcs = buildNpcs(npcs, collaborators, lang)
 const sceneVillagers = buildVillagers(villagers, lang)
 
@@ -157,33 +163,38 @@ const kindLabel = (kind: string) =>
     })()
   </script>
 
-  <div class="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-start">
-    <div class="md:w-72 md:shrink-0">
-      <span class="chapter-label">{t(lang, 'case.file')}</span>
+  <div class="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-start">
+    <div class="lg:w-96 lg:shrink-0">
+      <h2 class="chapter-label inline">{t(lang, 'case.file')}</h2>
       <p class="text-muted mt-2 text-sm leading-relaxed">{t(lang, 'valley.intro')}</p>
-      <ul class="mt-4 flex flex-col gap-2" aria-label={t(lang, 'game.destinations')}>
+      <ul class="mt-4 grid grid-cols-2 gap-2" aria-label={t(lang, 'game.destinations')}>
         {places.map((object) => (
           <li>
             <a href={object.href} class="menu-cursor portal-card no-underline">
-              <span class="text-muted block font-mono text-[9px] tracking-[0.12em] uppercase">
+              <span class="text-muted hidden font-mono text-label tracking-[0.12em] uppercase md:block">
                 {object.place}
               </span>
-              <span class="text-foreground mt-1 block text-sm font-semibold leading-tight">
+              <span class="text-foreground block text-sm font-semibold leading-tight md:mt-1">
                 {object.title}
               </span>
-              <span class="text-muted mt-1 block text-xs leading-snug">{object.summary}</span>
+              {/* Between lg and xl the stage drops to scale 2 and its column shortens, so the
+                  summaries step aside there and the world, not its index, sets the height. */}
+              <span class="text-muted mt-1 hidden text-xs leading-snug md:block lg:hidden xl:block">{object.summary}</span>
             </a>
           </li>
         ))}
         {/* The individual pieces inside the buildings: one line each, so the
-            list stays a list and does not outgrow the world beside it. */}
+            list stays a list and does not outgrow the world beside it. Below
+            `md` they stay in the HTML but are not shown: there is no world to
+            walk there, each one is a tap away through its place, and "Selected
+            Work" repeats them directly below. */}
         {pieces.map((object) => (
-          <li>
+          <li class="col-span-2 hidden md:block">
             <a
               href={object.href}
               class="menu-cursor text-foreground hover:text-accent flex min-h-11 items-baseline gap-3 py-2 text-sm no-underline"
             >
-              <span class="text-muted w-14 shrink-0 font-mono text-[9px] tracking-[0.12em] uppercase">
+              <span class="text-muted w-14 shrink-0 font-mono text-label tracking-[0.12em] uppercase">
                 {kindLabel(object.kind)}
               </span>
               <span class="leading-snug">{object.title}</span>
@@ -194,7 +205,7 @@ const kindLabel = (kind: string) =>
     </div>
 
     <div class="flex min-w-0 flex-1 flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
-      <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden md:block'}>
+      <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden w-full md:block'}>
         <PlayScene
           client:only="react"
           rooms={scene}
@@ -205,7 +216,14 @@ const kindLabel = (kind: string) =>
           labels={labels}
           weather={weather}
           allowMobileHandheld={mobilePlayScene}
-        />
+        >
+          {/* Server-rendered, replaced when the island mounts: with scripts
+              blocked the slot says where the places are, in one line, and the
+              list beside it keeps the width. */}
+          <p slot="fallback" class="soft-panel text-muted p-4 text-sm">
+            {t(lang, 'game.loading')}
+          </p>
+        </PlayScene>
       </div>
       {!mobilePlayScene && (
         <p class="text-muted text-sm md:hidden">{t(lang, 'game.smallScreen')}</p>

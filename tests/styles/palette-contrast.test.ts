@@ -347,3 +347,36 @@ describe('pixel identity tokens', () => {
     expect(themeBlock).toMatch(/--spacing:\s*0\.25rem/)
   })
 })
+
+/*
+ * `<meta name="theme-color">` cannot read custom properties, so BaseHead holds
+ * literal hex, the second documented exception after ogCard.ts. This keeps it
+ * equal to the background tokens it stands for.
+ */
+describe('theme-color meta follows the background tokens', () => {
+  const head = readFileSync(
+    resolve(__dirname, '../../src/components/layout/BaseHead.astro'),
+    'utf8'
+  )
+  const hex = (c: Oklch) =>
+    `#${oklchToSrgb(c)
+      .map((v) =>
+        Math.round(v * 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')}`
+  const meta = (scheme: string) =>
+    head.match(
+      new RegExp(
+        `name="theme-color" content="(#[0-9a-f]{6})" media="\\(prefers-color-scheme: ${scheme}\\)"`
+      )
+    )?.[1]
+
+  it.each([
+    ['light', light],
+    ['dark', dark]
+  ] as const)('%s', (scheme, palette) => {
+    expect(meta(scheme)).toBe(hex(palette.background))
+  })
+})

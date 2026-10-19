@@ -1,3 +1,4 @@
+import { localizePath } from '@/i18n/ui'
 import type { Collaborator, Npc, Room, RoomObject, Villager } from '@/models'
 import { resolveNpc } from './quests'
 
@@ -75,11 +76,6 @@ export interface SceneNpc {
   schedule: SceneStop[]
 }
 
-function localize(path: string, lang: 'en' | 'id'): string {
-  if (lang !== 'id') return path
-  return path === '/' ? '/id' : `/id${path}`
-}
-
 export function buildScene(
   rooms: readonly Room[],
   sources: SceneSources,
@@ -136,7 +132,7 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
       slug,
       title: `${entry.role} · ${entry.company}`,
       summary: `${entry.period}: ${entry.bullets[0] ?? ''}`,
-      href: localize('/experience', lang)
+      href: localizePath('/experience', lang)
     }
   }
 
@@ -150,7 +146,7 @@ function resolveObject(object: RoomObject, sources: SceneSources, lang: 'en' | '
       title: route.title,
       summary: route.summary,
       place: route.place,
-      href: route.href ?? localize(slug, lang)
+      href: route.href ?? localizePath(slug, lang)
     }
   }
 

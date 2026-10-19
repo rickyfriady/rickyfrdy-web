@@ -27,13 +27,18 @@ const { title, description, lang = 'en', ogImage, ogType, hreflangPairs, schema 
 ---
 
 <!doctype html>
-<html lang={lang} class="dark">
+<!--
+  No theme class here: the script in BaseHead sets `dark` before first paint from
+  the stored choice or the system preference, and a visitor without scripts gets
+  the light palette instead of a forced dark one.
+-->
+<html lang={lang}>
   <head>
     <BaseHead title={title} description={description} ogImage={ogImage} lang={lang} ogType={ogType} hreflangPairs={hreflangPairs} schema={schema} />
     <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col">
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-background focus:rounded-lg focus:font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-background focus:font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
       Skip to main content
     </a>
     <AppHeader />
@@ -47,7 +52,7 @@ const { title, description, lang = 'en', ogImage, ogType, hreflangPairs, schema 
 
     <MobileBottomNav transition:persist />
 
-    <CompanionCharacter />
+    <CompanionCharacter lang={lang} />
 
     <CommandPalette />
   </body>

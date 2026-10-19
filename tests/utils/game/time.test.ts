@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { growthOf, seasonOf, timeOfDay, weatherFrom } from '@/utils/game/time'
+import { effectiveTimeOfDay, growthOf, seasonOf, timeOfDay, weatherFrom } from '@/utils/game/time'
 
 const at = (iso: string) => new Date(iso)
 
@@ -25,6 +25,17 @@ describe('timeOfDay()', () => {
     ['2026-07-01T18:00:00', 'night']
   ])('%s is %s', (iso, time) => {
     expect(timeOfDay(at(iso))).toBe(time)
+  })
+})
+
+describe('effectiveTimeOfDay()', () => {
+  it.each([
+    ['2026-07-01T12:00:00', false, 'day'],
+    ['2026-07-01T22:00:00', false, 'night'],
+    ['2026-07-01T12:00:00', true, 'night'],
+    ['2026-07-01T22:00:00', true, 'night']
+  ])('%s with dark=%s is %s', (iso, dark, time) => {
+    expect(effectiveTimeOfDay(at(iso), dark)).toBe(time)
   })
 })
 

@@ -25,7 +25,7 @@ const BUTTERFLIES = [
 
 interface Props {
   season: Season
-  /** The visitor's own clock says night: no light, no creatures. */
+  /** Night by the visitor's clock or their dark theme: no light, no creatures. */
   night: boolean
   scale: number
   /** Viewport size in source pixels, so paths scale with the scene. */

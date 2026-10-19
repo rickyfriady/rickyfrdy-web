@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { t } from '@/i18n/ui'
+import { localizePath, t } from '@/i18n/ui'
 
 describe('t()', () => {
   it('returns the correct label for a known key', () => {
@@ -27,5 +27,20 @@ describe('t()', () => {
       expect(typeof t('en', key)).toBe('string')
       expect(t('en', key).length).toBeGreaterThan(0)
     })
+  })
+})
+
+describe('localizePath()', () => {
+  it('maps the home page to /id', () => {
+    expect(localizePath('/', 'id')).toBe('/id')
+  })
+
+  it('prefixes any other page', () => {
+    expect(localizePath('/about', 'id')).toBe('/id/about')
+  })
+
+  it('leaves English paths alone', () => {
+    expect(localizePath('/about', 'en')).toBe('/about')
+    expect(localizePath('/', 'en')).toBe('/')
   })
 })

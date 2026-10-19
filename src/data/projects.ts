@@ -22,6 +22,17 @@ export const projects = [
       { value: '0', label: 'regression incidents' },
       { value: '5+', label: 'teams deploy independently' }
     ],
+    translations: {
+      id: {
+        shortDescription:
+          'Aplikasi Micro-Frontend untuk seluruh perusahaan, dibangun dengan Vue 3 dan microservice NestJS, sehingga tiap tim bisa deploy sendiri.',
+        metrics: [
+          { value: '≥80%', label: 'cakupan unit test' },
+          { value: '0', label: 'insiden regresi' },
+          { value: '5+', label: 'tim deploy secara mandiri' }
+        ]
+      }
+    },
     date: '2024-11-01',
     year: 2024,
     challenges: [
@@ -61,6 +72,17 @@ export const projects = [
       { value: '0', label: 'downtime during migration' },
       { value: '3', label: 'sprints to complete' }
     ],
+    translations: {
+      id: {
+        shortDescription:
+          'Merombak monolit CodeIgniter 3 lama menjadi 9 microservice NestJS dengan Factory pattern, melayani akuisisi calon peminjam dalam skala besar.',
+        metrics: [
+          { value: '9', label: 'microservice dibangun' },
+          { value: '0', label: 'downtime selama migrasi' },
+          { value: '3', label: 'sprint hingga selesai' }
+        ]
+      }
+    },
     date: '2024-01-10',
     year: 2024,
     challenges: [
@@ -108,6 +130,17 @@ export const projects = [
       { value: '60%', label: 'of sessions from mobile' },
       { value: '5 min', label: 'lead processing (was hours)' }
     ],
+    translations: {
+      id: {
+        shortDescription:
+          'Aplikasi internal Pegadaian untuk memantau progres pemasaran, mengukur KPI, dan menerima pengajuan calon peminjam dari mitra eksternal.',
+        metrics: [
+          { value: '200+', label: 'karyawan pemasaran terlayani' },
+          { value: '60%', label: 'sesi dari perangkat mobile' },
+          { value: '5 min', label: 'pemrosesan lead (sebelumnya berjam-jam)' }
+        ]
+      }
+    },
     date: '2023-05-15',
     year: 2023,
     challenges: [

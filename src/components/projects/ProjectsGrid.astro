@@ -121,7 +121,7 @@ const sorted = [...projects].sort((a, b) => {
             data-year={project.year}
           >
             {project.featured ? (
-              <div class="pixel-frame pixel-frame-thread relative">
+              <div class="pixel-frame relative">
                 <a href={`/projects/${project.slug}`} class="group relative z-10 flex items-center gap-4 overflow-hidden px-5 py-4 no-underline transition-colors duration-200">
                   {cardInner}
                 </a>
@@ -324,12 +324,12 @@ const sorted = [...projects].sort((a, b) => {
         panel.style.height = '0'
         panel.style.opacity = '0'
         requestAnimationFrame(() => {
-          panel.style.transition = 'height 0.25s ease, opacity 0.2s ease'
+          panel.style.transition = 'height 0.25s var(--ease-out), opacity 0.2s var(--ease-out)'
           panel.style.height = `${h}px`
           panel.style.opacity = '1'
         })
       } else {
-        panel.style.transition = 'height 0.2s ease, opacity 0.15s ease'
+        panel.style.transition = 'height 0.2s var(--ease-out), opacity 0.15s var(--ease-out)'
         panel.style.height = '0'
         panel.style.opacity = '0'
       }

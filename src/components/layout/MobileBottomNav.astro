@@ -1,18 +1,41 @@
 ---
-const MAIN_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Projects' }
-] as const
+import { alternatePath, isIdPath, localizePath } from '@/i18n/path'
+import { t, type UIKey } from '@/i18n/ui'
 
-const MORE_LINKS = [
-  { href: '/experience', label: 'Experience' },
-  { href: '/resume', label: 'Resume' },
-  { href: '/contact', label: 'Contact' }
-] as const
+/*
+ * This bar is `transition:persist`, so it outlives a client-side switch between
+ * English and Indonesian pages. Each label and link therefore carries both
+ * locales in data attributes, and the script below picks the right one on every
+ * page load; the server renders the current locale so the first paint is right.
+ */
+const { pathname } = Astro.url
+const lang = isIdPath(pathname) ? 'id' : 'en'
+
+const MAIN_LINKS: readonly { href: string; key: UIKey }[] = [
+  { href: '/', key: 'nav.home' },
+  { href: '/about', key: 'nav.about' },
+  { href: '/projects', key: 'nav.projects' }
+]
+
+const MORE_LINKS: readonly { href: string; key: UIKey }[] = [
+  { href: '/experience', key: 'nav.experience' },
+  { href: '/resume', key: 'nav.resume' },
+  { href: '/contact', key: 'nav.contact' }
+]
+
+/** Both locales of a label, for the persisted bar to swap between. */
+const labels = (key: UIKey) => ({ 'data-label-en': t('en', key), 'data-label-id': t('id', key) })
+/** Both locales of a link. */
+const hrefs = (href: string) => ({ 'data-href-en': href, 'data-href-id': localizePath(href, 'id') })
 ---
 
-<div id="mobile-nav" class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 md:hidden" style="opacity: 0">
+<!--
+  Hidden until the entrance animation fades it in. Without scripts nothing would
+  ever reveal it, and below `xl` it is the only page navigation, so `noscript`
+  shows it outright. `is:inline` keeps Astro from hoisting the style out.
+-->
+<noscript><style is:inline>#mobile-nav { opacity: 1 !important; }</style></noscript>
+<div id="mobile-nav" class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 xl:hidden" style="opacity: 0">
 
   <!-- More drawer (above nav bar) -->
   <div
@@ -29,39 +52,55 @@ const MORE_LINKS = [
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
         <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
       </svg>
-      Search
+      <span data-nav-text {...labels('nav.search')}>{t(lang, 'nav.search')}</span>
     </button>
-    {MORE_LINKS.map(({ href, label }, i) => (
+    {MORE_LINKS.map(({ href, key }, i) => (
       <a
-        href={href}
+        href={localizePath(href, lang)}
+        {...hrefs(href)}
         role="menuitem"
         data-more-link
         data-nav-href={href}
         class="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
         style={i > 0 ? 'border-top: 1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent)' : ''}
       >
-        {label === 'Experience' && (
+        {key === 'nav.experience' && (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
             <rect width="20" height="14" x="2" y="6" rx="2"/>
           </svg>
         )}
-        {label === 'Resume' && (
+        {key === 'nav.resume' && (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
             <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
             <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
             <path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
           </svg>
         )}
-        {label === 'Contact' && (
+        {key === 'nav.contact' && (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
             <rect width="20" height="16" x="2" y="4" rx="2"/>
             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
           </svg>
         )}
-        {label}
+        <span data-nav-text {...labels(key)}>{t(lang, key)}</span>
       </a>
     ))}
+    <!-- The other language, named in that language (so its own `lang`). The
+         only language control below `md`, where the header switcher is hidden. -->
+    <a
+      href={alternatePath(pathname)}
+      hreflang={lang === 'id' ? 'en' : 'id'}
+      role="menuitem"
+      data-lang-alt
+      class="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+      style="border-top: 1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent); color: var(--color-muted)"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <span data-nav-text lang={lang === 'id' ? 'en' : 'id'} {...labels('nav.language')}>{t(lang, 'nav.language')}</span>
+    </a>
   </div>
 
   <!-- Nav bar -->
@@ -78,34 +117,35 @@ const MORE_LINKS = [
     ></span>
 
     <!-- Main links -->
-    {MAIN_LINKS.map(({ href, label }) => (
+    {MAIN_LINKS.map(({ href, key }) => (
       <a
-        href={href}
+        href={localizePath(href, lang)}
+        {...hrefs(href)}
         data-nav-item
         data-nav-href={href}
         class="relative flex flex-col items-center gap-[4px] rounded-[var(--radius-interactive)] px-3 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       >
         <span class="nav-icon relative z-10" aria-hidden="true">
-          {label === 'Home' && (
+          {key === 'nav.home' && (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
           )}
-          {label === 'About' && (
+          {key === 'nav.about' && (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
             </svg>
           )}
-          {label === 'Projects' && (
+          {key === 'nav.projects' && (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>
             </svg>
           )}
         </span>
-        <span class="nav-label relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase">{label}</span>
-        <span class="nav-dot absolute bottom-[4px] left-1/2 -translate-x-1/2 h-[4px] w-[4px] rounded-full bg-accent" style="box-shadow: 0 0 5px color-mix(in oklch, var(--color-accent) 60%, transparent); display: none" aria-hidden="true"></span>
+        <span class="nav-label relative z-10 font-mono text-label tracking-[0.07em] uppercase" data-nav-text {...labels(key)}>{t(lang, key)}</span>
+        <span class="nav-dot absolute bottom-[4px] left-1/2 -translate-x-1/2 h-[4px] w-[4px] rounded-full bg-accent" style="display: none" aria-hidden="true"></span>
       </a>
     ))}
 
@@ -124,26 +164,28 @@ const MORE_LINKS = [
           <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
         </svg>
       </span>
-      <span class="nav-label relative z-10 font-mono text-[7.5px] tracking-[0.07em] uppercase">More</span>
+      <span class="nav-label relative z-10 font-mono text-label tracking-[0.07em] uppercase" data-nav-text {...labels('nav.more')}>{t(lang, 'nav.more')}</span>
     </button>
   </div>
 </div>
 
 <script>
   import gsap from 'gsap'
+  import { alternatePath, isIdPath, stripLocale } from '@/i18n/path'
 
   const MAIN_HREFS = ['/', '/about', '/projects']
   const MORE_HREFS = ['/experience', '/resume', '/contact']
-  const DIM = 'color-mix(in oklch, var(--color-foreground) 38%, transparent)'
+  // Inactive, but still text: the muted role meets 4.5:1 in every palette, which a
+  // faded foreground did not (2.3:1). Active items stand out by accent and pill.
+  const DIM = 'var(--color-muted)'
 
   let isMoreOpen = false
 
-  function normPath(p: string): string {
-    return p.replace(/^\/id(?=\/|$)/, '') || '/'
-  }
+  // Reduced motion: every tween below lands on its end state instead.
+  const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   function isLinkActive(href: string, path: string): boolean {
-    const p = normPath(path)
+    const p = stripLocale(path)
     return href === '/' ? p === '/' : p.startsWith(href)
   }
 
@@ -156,8 +198,8 @@ const MORE_LINKS = [
   function movePill(item: HTMLElement | null, container: HTMLElement, pill: HTMLElement, animate: boolean) {
     if (!item) { pill.style.opacity = '0'; return }
     const { left, top, width, height } = getPillTarget(item, container)
-    if (animate) {
-      gsap.to(pill, { left, top, width, height, opacity: 1, duration: 0.35, ease: 'back.out(1.5)' })
+    if (animate && !reducedMotion()) {
+      gsap.to(pill, { left, top, width, height, opacity: 1, duration: 0.35, ease: 'steps(7)' })
     } else {
       gsap.set(pill, { left, top, width, height, opacity: 1 })
     }
@@ -202,7 +244,7 @@ const MORE_LINKS = [
     // Update more drawer link colors
     MORE_HREFS.forEach(href => {
       const link = document.querySelector<HTMLElement>(`[data-more-link][data-nav-href="${href}"]`)
-      if (link) link.style.color = isLinkActive(href, path) ? 'var(--color-accent)' : 'color-mix(in oklch, var(--color-foreground) 55%, transparent)'
+      if (link) link.style.color = isLinkActive(href, path) ? 'var(--color-accent)' : 'var(--color-muted)'
     })
   }
 
@@ -212,10 +254,14 @@ const MORE_LINKS = [
     const moreBtn = document.getElementById('more-btn') as HTMLElement
     moreBtn.setAttribute('aria-expanded', 'true')
     drawer.classList.remove('hidden')
-    gsap.fromTo(drawer,
-      { opacity: 0, y: 10, scale: 0.95 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: 'back.out(1.5)' }
-    )
+    if (reducedMotion()) {
+      gsap.set(drawer, { opacity: 1, y: 0, scale: 1 })
+    } else {
+      gsap.fromTo(drawer,
+        { opacity: 0, y: 10, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: 'steps(5)' }
+      )
+    }
     updateActive(false)
   }
 
@@ -224,15 +270,37 @@ const MORE_LINKS = [
     const drawer = document.getElementById('mobile-more-drawer') as HTMLElement
     const moreBtn = document.getElementById('more-btn') as HTMLElement
     moreBtn.setAttribute('aria-expanded', 'false')
-    if (skipAnim) {
+    if (skipAnim || reducedMotion()) {
       drawer.classList.add('hidden')
     } else {
       gsap.to(drawer, {
-        opacity: 0, y: 6, scale: 0.96, duration: 0.15, ease: 'power2.in',
+        opacity: 0, y: 6, scale: 0.96, duration: 0.15, ease: 'steps(5)',
         onComplete: () => drawer.classList.add('hidden')
       })
     }
     updateActive(false)
+  }
+
+  /** Labels and links for the page now showing; the bar itself persists. */
+  function relocalize() {
+    const root = document.getElementById('mobile-nav')
+    if (!root) return
+    const id = isIdPath(window.location.pathname)
+    root.querySelectorAll<HTMLElement>('[data-nav-text]').forEach((el) => {
+      const label = id ? el.dataset.labelId : el.dataset.labelEn
+      if (label) el.textContent = label
+    })
+    const alt = root.querySelector<HTMLAnchorElement>('a[data-lang-alt]')
+    if (alt) {
+      const other = id ? 'en' : 'id'
+      alt.href = alternatePath(window.location.pathname)
+      alt.hreflang = other
+      alt.querySelector('[data-nav-text]')?.setAttribute('lang', other)
+    }
+    root.querySelectorAll<HTMLAnchorElement>('a[data-href-en]').forEach((a) => {
+      const href = id ? a.dataset.hrefId : a.dataset.hrefEn
+      if (href) a.href = href
+    })
   }
 
   function initMobileNav() {
@@ -240,11 +308,11 @@ const MORE_LINKS = [
     if (!root) return
 
     // Entrance animation — only once per page session
-    if (!root.dataset.mnEntered) {
+    if (!root.dataset.mnEntered && !reducedMotion()) {
       root.dataset.mnEntered = '1'
       gsap.fromTo(root,
         { opacity: 0, y: 16, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.5)', delay: 0.2 }
+        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'steps(12)', delay: 0.2 }
       )
     } else {
       root.style.opacity = '1'
@@ -270,6 +338,7 @@ const MORE_LINKS = [
 
     document.addEventListener('astro:page-load', () => {
       if (isMoreOpen) closeMoreDrawer(true)
+      relocalize()
       updateActive(true)
     })
   }

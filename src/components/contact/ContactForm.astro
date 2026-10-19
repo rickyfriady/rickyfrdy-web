@@ -133,7 +133,7 @@
       container.appendChild(dot)
       gsap.to(dot, {
         y: 400, opacity: 0, scale: 1.5, rotate: 360, duration: 1.2,
-        delay: Math.random() * 0.3, ease: 'power2.out',
+        delay: Math.random() * 0.3, ease: 'steps(12)',
         onComplete: () => dot.remove()
       })
     }
@@ -176,7 +176,7 @@
     if (msgEl) msgEl.textContent = msg
     if (banner) {
       banner.classList.remove('hidden')
-      gsap.fromTo(banner, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.2 })
+      gsap.fromTo(banner, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.2, ease: 'steps(5)' })
     }
   }
 
@@ -188,7 +188,7 @@
     if (form) form.classList.add('hidden')
     if (success) {
       success.classList.remove('hidden')
-      gsap.fromTo(success, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.5)' })
+      gsap.fromTo(success, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'steps(5)' })
     }
     if (confetti) launchConfetti(confetti)
   }

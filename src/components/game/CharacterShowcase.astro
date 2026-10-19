@@ -46,12 +46,12 @@ const { name, role, stats, labels } = Astro.props
       <li class="flex items-center justify-between gap-2 text-xs">
         <span class="text-foreground truncate">{stat.name}</span>
         <span class="flex items-center gap-2">
-          <span class="text-muted font-mono text-[0.65rem]">{labels.level}{stat.level}</span>
+          <span class="text-muted font-mono text-label">{labels.level}{stat.level}</span>
           <span class="stat-bar" aria-hidden="true" style={`--stat-fill: ${stat.level}`}></span>
         </span>
       </li>
     ))}
   </ul>
 
-  <p class="text-muted text-[0.65rem] leading-relaxed">{labels.basis}</p>
+  <p class="text-muted text-label leading-relaxed">{labels.basis}</p>
 </aside>

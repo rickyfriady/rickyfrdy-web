@@ -16,7 +16,11 @@ const eyeStyle = round ? 'border-radius: 9999px' : ''
 ---
 <Tag
   href={asLink ? '/' : undefined}
-  class="brand-link text-foreground font-display inline-flex items-center gap-2 text-lg font-light tracking-tight rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+  class:list={[
+    'brand-link text-foreground font-display inline-flex items-center gap-2 text-lg font-light tracking-tight rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+    // The link is header chrome and gets the 44px target; the bare specimen does not.
+    asLink && 'min-h-11'
+  ]}
 >
   <span aria-hidden="true" class="inline-flex gap-1" id="wandering-eyes-container">
     <div class="we-eye border-border relative h-4 w-4 overflow-hidden border-2" style={eyeStyle}>
@@ -34,12 +38,13 @@ const eyeStyle = round ? 'border-radius: 9999px' : ''
 </Tag>
 
 <script>
-  import { animate } from 'motion'
-
   function initWanderingEyes() {
     const container = document.getElementById('wandering-eyes-container')
     if (!container || container.dataset.weInit) return
     container.dataset.weInit = '1'
+
+    // Under reduced motion the eyes stay at rest instead of tracking the cursor.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const isPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
@@ -71,7 +76,8 @@ const eyeStyle = round ? 'border-radius: 9999px' : ''
         const cx = rect.left + rect.width / 2
         const cy = rect.top + rect.height / 2
         const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI)
-        animate(inners[i], { rotate: angle + 90 }, { type: 'spring', stiffness: 300, damping: 20 })
+        // Set, not tweened: the pupils snap to the cursor like any pixel sprite.
+        inners[i].style.transform = `rotate(${angle + 90}deg)`
       }
     }
 

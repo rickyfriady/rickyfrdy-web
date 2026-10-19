@@ -66,7 +66,7 @@ const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
       content.style.display = ''
       delete content.dataset.skeletonActive
       if (clone) {
-        clone.style.transition = 'opacity 200ms ease'
+        clone.style.transition = 'opacity 200ms var(--ease-out)'
         clone.style.opacity = '0'
         setTimeout(() => clone.remove(), 200)
       }

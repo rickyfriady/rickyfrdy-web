@@ -38,6 +38,15 @@ export function timeOfDay(date: Date): TimeOfDay {
   return hour >= 6 && hour < 18 ? 'day' : 'night'
 }
 
+/**
+ * The hour the world shows. A visitor who chose the dark theme has stated a
+ * preference, and DESIGN.md reads dark as evening in the same valley, so dark
+ * is night whatever the clock says. Light leaves the clock in charge.
+ */
+export function effectiveTimeOfDay(date: Date, dark: boolean): TimeOfDay {
+  return dark ? 'night' : timeOfDay(date)
+}
+
 const MONTH_MS = 30.44 * 24 * 60 * 60 * 1000
 
 /**

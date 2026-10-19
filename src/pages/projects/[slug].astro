@@ -202,7 +202,7 @@ const pairs = project.challenges
         gsap.from(heroBg, {
           scale: 1.12,
           duration: 1.8,
-          ease: 'power3.out',
+          ease: 'steps(12)',
         })
         gsap.to(heroBg, {
           yPercent: 28,
@@ -222,7 +222,7 @@ const pairs = project.challenges
         gsap.from(heroTitle, {
           y: '110%',
           duration: 1.1,
-          ease: 'power4.out',
+          ease: 'steps(12)',
           delay: 0.1,
         })
       }
@@ -234,7 +234,7 @@ const pairs = project.challenges
         y: 0,
         stagger: 0.12,
         duration: 0.75,
-        ease: 'power3.out',
+        ease: 'steps(12)',
         delay: 0.65,
       })
 
@@ -244,7 +244,7 @@ const pairs = project.challenges
           opacity: 0,
           y: 40,
           duration: 0.85,
-          ease: 'power3.out',
+          ease: 'steps(12)',
           scrollTrigger: {
             trigger: section,
             start: 'top 88%',
@@ -261,7 +261,7 @@ const pairs = project.challenges
           scale: 0.85,
           stagger: 0.04,
           duration: 0.5,
-          ease: 'back.out(1.5)',
+          ease: 'steps(10)',
           scrollTrigger: {
             trigger: techChips[0],
             start: 'top 88%',
@@ -278,7 +278,7 @@ const pairs = project.challenges
           x: (i) => (i === 0 ? -24 : i === 2 ? 24 : 0),
           duration: 0.7,
           stagger: 0.1,
-          ease: 'power3.out',
+          ease: 'steps(12)',
           scrollTrigger: {
             trigger: pair,
             start: 'top 86%',
@@ -294,7 +294,7 @@ const pairs = project.challenges
           x: -20,
           stagger: 0.1,
           duration: 0.6,
-          ease: 'power3.out',
+          ease: 'steps(12)',
           scrollTrigger: {
             trigger: resultItems[0],
             start: 'top 88%',

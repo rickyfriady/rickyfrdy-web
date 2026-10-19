@@ -20,7 +20,7 @@ const hash = await getBlurhash(src)
       alt=""
       aria-hidden="true"
       class="absolute inset-0 h-full w-full object-cover"
-      style="transition: opacity 200ms ease"
+      style="transition: opacity 200ms var(--ease-out)"
     />
   )}
   <img data-blurhash-real src={src} alt={alt} loading="lazy" class={className} />

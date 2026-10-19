@@ -131,7 +131,7 @@ const { projects } = Astro.props
             height: 0,
             opacity: 0,
             duration: reduced ? 0 : 0.2,
-            ease: 'power2.in',
+            ease: 'steps(5)',
             onComplete: () => detail.removeAttribute('open')
           })
         } else {
@@ -144,7 +144,7 @@ const { projects } = Astro.props
               height: 0,
               opacity: 0,
               duration: reduced ? 0 : 0.2,
-              ease: 'power2.in',
+              ease: 'steps(5)',
               onComplete: () => sibling.removeAttribute('open')
             })
           })
@@ -152,7 +152,7 @@ const { projects } = Astro.props
           detail.setAttribute('open', '')
           gsap.fromTo(body,
             { height: 0, opacity: 0 },
-            { height: 'auto', opacity: 1, duration: reduced ? 0 : 0.25, ease: 'power2.out' }
+            { height: 'auto', opacity: 1, duration: reduced ? 0 : 0.25, ease: 'steps(5)' }
           )
         }
       })

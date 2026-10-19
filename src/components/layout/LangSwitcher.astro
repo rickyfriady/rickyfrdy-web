@@ -1,5 +1,7 @@
 ---
-const isId = Astro.url.pathname === '/id' || Astro.url.pathname.startsWith('/id/')
+import { isIdPath } from '@/i18n/path'
+
+const isId = isIdPath(Astro.url.pathname)
 const currentLang = isId ? 'id' : 'en'
 const LANGS = [
   { code: 'en', flag: '🇺🇸', label: 'English' },
@@ -15,7 +17,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     aria-haspopup="true"
     aria-expanded="false"
     aria-label={`Language: ${active.label}`}
-    class="glass-btn flex items-center gap-2 px-3 py-2 text-sm"
+    class="glass-btn flex min-h-11 items-center gap-2 px-3 text-sm"
     data-current={currentLang}
   >
     <span class="text-base leading-none" id="lang-flag">{active.flag}</span>
@@ -48,7 +50,7 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
             type="button"
             aria-current={isActive ? 'true' : undefined}
             data-lang={lang.code}
-            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+            class="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
             style={isActive ? 'background: color-mix(in oklch, var(--color-accent) 12%, transparent); color: var(--color-accent)' : ''}
           >
             <span class="text-base leading-none">{lang.flag}</span>
@@ -67,26 +69,19 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 
 <script>
   import gsap from 'gsap'
+  import { alternatePath, isIdPath } from '@/i18n/path'
 
   const CLOSE_MS = 150
 
-  function isIdLocale(pathname: string): boolean {
-    return pathname === '/id' || pathname.startsWith('/id/')
-  }
-
+  /** Where choosing a language goes: here, or this page in the other locale (never a 404). */
   function getTargetHref(targetLang: string): string {
     const pathname = window.location.pathname
-    const isId = isIdLocale(pathname)
-    if (targetLang === 'id') {
-      if (isId) return pathname
-      return pathname === '/' ? '/id' : `/id${pathname}`
-    }
-    if (!isId) return pathname
-    return pathname.replace(/^\/id(?=\/|$)/, '') || '/'
+    const current = isIdPath(pathname) ? 'id' : 'en'
+    return targetLang === current ? pathname : alternatePath(pathname)
   }
 
   function updateDisplay() {
-    const lang = isIdLocale(window.location.pathname) ? 'id' : 'en'
+    const lang = isIdPath(window.location.pathname) ? 'id' : 'en'
     const FLAGS: Record<string, string> = { en: '🇺🇸', id: '🇮🇩' }
     const btn = document.getElementById('lang-btn')
     const flag = document.getElementById('lang-flag')
@@ -165,11 +160,11 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
       }
       gsap
         .timeline()
-        .to(btn, { scale: 0.88, duration: 0.08, ease: 'power2.in' })
+        .to(btn, { scale: 0.88, duration: 0.08, ease: 'steps(3)' })
         .to(btn, {
           scale: 1,
           duration: 0.2,
-          ease: 'back.out(3)',
+          ease: 'steps(5)',
           clearProps: 'transform',
           onComplete: () => { window.location.href = href }
         })

@@ -8,6 +8,15 @@ export const ui = {
     'nav.resume': 'Resume',
     'nav.projects': 'Projects',
     'nav.contact': 'Contact',
+    'nav.board': 'Board',
+    'nav.more': 'More',
+    'nav.search': 'Search',
+    'nav.language': 'Bahasa Indonesia',
+    'footer.built': 'Built with Astro & Tailwind v4',
+    'nav.ask': 'Ask',
+    'nav.arcade': 'Arcade',
+    'hero.eyebrow': 'Fullstack Developer · Jakarta, Indonesia',
+    'hero.available': 'Available for work',
 
     // Valley place names. Chrome only: these appear as chapter labels and
     // eyebrows, never as nav labels. A recruiter scanning the nav must still
@@ -68,6 +77,9 @@ export const ui = {
     'game.destinations': 'Everything in the valley',
     'game.artCredits': 'Art credits',
     'game.smallScreen': 'The valley needs a wider screen. This list reaches every place in it.',
+    'game.loading':
+      'The walkable valley appears here when scripts run. Every place in it is already in the list.',
+    'companion.hide': 'Hide companion',
     'game.showcase': 'Character',
     'game.journal': 'Quests',
     'game.sheet': 'Character sheet',
@@ -233,6 +245,15 @@ export const ui = {
     'nav.resume': 'CV',
     'nav.projects': 'Proyek',
     'nav.contact': 'Kontak',
+    'nav.board': 'Papan',
+    'nav.more': 'Lainnya',
+    'nav.search': 'Cari',
+    'nav.language': 'English',
+    'footer.built': 'Dibuat dengan Astro & Tailwind v4',
+    'nav.ask': 'Tanya',
+    'nav.arcade': 'Gudang Mainan',
+    'hero.eyebrow': 'Pengembang Fullstack · Jakarta, Indonesia',
+    'hero.available': 'Terbuka untuk tawaran kerja',
 
     // Nama tempat di lembah. Hanya untuk chrome (chapter label dan eyebrow),
     // tidak pernah untuk label nav.
@@ -292,6 +313,9 @@ export const ui = {
     'game.artCredits': 'Kredit ilustrasi',
     'game.smallScreen':
       'Lembahnya butuh layar lebih lebar. Daftar ini menjangkau semua tempat di dalamnya.',
+    'game.loading':
+      'Lembah yang bisa dijelajahi muncul di sini saat skrip berjalan. Semua tempat di dalamnya sudah ada di daftar.',
+    'companion.hide': 'Sembunyikan teman',
     'game.showcase': 'Karakter',
     'game.journal': 'Tugas',
     'game.sheet': 'Lembar karakter',
@@ -458,3 +482,5 @@ export type UIKey = keyof (typeof ui)['en']
 export function t(lang: Lang, key: UIKey): string {
   return ui[lang][key]
 }
+
+export { localizePath } from './path'

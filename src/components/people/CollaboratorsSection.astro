@@ -108,7 +108,7 @@ function primaryHref(c: Collaborator): string {
             id="collab-rest-list"
             data-collab-rest
             class="grid overflow-hidden"
-            style="grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease-out-quart, ease)"
+            style="grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease-out-quart)"
           >
             <div class="min-h-0">
               <ul class="grid gap-x-8 gap-y-3 pt-6 sm:grid-cols-2">
@@ -177,14 +177,14 @@ function primaryHref(c: Collaborator): string {
           y: 28,
           duration: 0.7,
           stagger: 0.1,
-          ease: 'power3.out',
+          ease: 'steps(12)',
           scrollTrigger: { trigger: cards[0], start: 'top 88%' },
         })
       }
 
       // Featured cards: GSAP-driven hover — lift, photo color reveal + zoom, tag slide-in
       const dur = 0.5
-      const ease = 'power3.out'
+      const ease = 'steps(10)'
       const cleanups: Array<() => void> = []
 
       cards.forEach((card) => {
@@ -238,7 +238,7 @@ function primaryHref(c: Collaborator): string {
           gsap.fromTo(
             rows,
             { opacity: 0, y: 10 },
-            { opacity: 1, y: 0, stagger: 0.035, duration: 0.4, ease: 'power2.out' }
+            { opacity: 1, y: 0, stagger: 0.035, duration: 0.4, ease: 'steps(8)' }
           )
         }
       })

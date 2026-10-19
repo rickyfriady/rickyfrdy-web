@@ -61,3 +61,17 @@ describe('projects data schema', () => {
     })
   })
 })
+
+describe('project translations', () => {
+  const translated = projects.filter((p) => p.translations?.id)
+
+  it('covers the three cards on the landing page', () => {
+    expect(projects.slice(0, 3).every((p) => p.translations?.id)).toBe(true)
+  })
+
+  it.each(translated.map((p) => [p.slug, p] as const))('%s keeps every metric value', (_, p) => {
+    const en = (p.metrics ?? []).map((m) => m.value)
+    const id = (p.translations?.id?.metrics ?? []).map((m) => m.value)
+    expect(id).toEqual(en)
+  })
+})

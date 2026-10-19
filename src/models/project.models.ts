@@ -33,6 +33,13 @@ export interface Project {
   solutions: string[]
   results: string[]
   codeSnippets?: CodeSnippet[]
+  /**
+   * Card copy for other locales. Metric values stay the English record's;
+   * only their labels are translated (tests/data/projects.test.ts).
+   */
+  translations?: {
+    id?: { shortDescription: string; metrics?: Metric[] }
+  }
 }
 
 export type ProjectCategory = Project['category']

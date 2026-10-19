@@ -1,9 +1,18 @@
 ---
 import { companionReactions } from '@/data/companion'
+import { t } from '@/i18n/ui'
 import { getSprite } from '@/utils/game/sprites'
 
+interface Props {
+  lang?: 'en' | 'id'
+}
+
+const { lang = 'en' } = Astro.props
+
 /**
- * A pixel character that walks the bottom of every page.
+ * A pixel character that walks the side gutter of every page, beside the
+ * content column and never over it. Where the gutter cannot hold it, it does
+ * not render.
  *
  * Deliberately not an island. This mounts on all 37 routes, and hydrating a
  * framework everywhere to walk a sprite would be an unforced cost on exactly
@@ -27,32 +36,41 @@ const walk = sprite.sheet?.animations?.walk
 const frameCount = walk ? walk.to - walk.from + 1 : 1
 ---
 
+<!--
+  Hidden until the script measures a gutter wide enough to hold it, so there is
+  nothing on the page without JavaScript and nothing over the content column.
+  Only the sprite and its bubble are decorative; the dismiss button is a real
+  control, outside the aria-hidden part and after all page content in tab order.
+-->
 <div
   id="companion"
   transition:persist
   transition:name="companion"
-  aria-hidden="true"
-  class="pointer-events-none fixed bottom-0 left-0 z-40 hidden h-16 w-full md:block"
+  class="pointer-events-none fixed bottom-0 left-0 z-40 hidden h-16 w-full"
   data-art={sprite.url ?? ''}
   data-frame-w={sprite.sheet?.frameWidth ?? 32}
   data-frame-h={sprite.sheet?.frameHeight ?? 32}
   data-frames={frameCount}
 >
-  <div data-actor class="absolute bottom-3 left-0 will-change-transform">
+  <div aria-hidden="true">
     <div
       data-bubble
-      class="evidence-card absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap px-2 py-1 font-mono text-[0.6rem]"
+      class="evidence-card absolute bottom-16 left-2 hidden px-2 py-1 font-mono text-label"
     >
     </div>
-    <div data-body class="sprite-fb pixel-sprite" data-kind="actor"></div>
+    <div data-actor class="absolute bottom-3 left-0 will-change-transform">
+      <div data-body class="sprite-fb pixel-sprite" data-kind="actor"></div>
+    </div>
   </div>
 
   <button
     type="button"
     data-dismiss
-    tabindex="-1"
-    class="pointer-events-auto absolute right-3 bottom-3 font-mono text-[0.65rem] text-muted hover:text-accent"
-  >[×]</button>
+    aria-label={t(lang, 'companion.hide')}
+    data-label-en={t('en', 'companion.hide')}
+    data-label-id={t('id', 'companion.hide')}
+    class="bg-background border-border text-muted hover:text-accent focus-visible:ring-accent pointer-events-auto absolute bottom-0 left-0 flex size-11 border-2 focus-visible:ring-inset items-center justify-center font-mono text-xs focus-visible:ring-2 focus-visible:outline-none"
+  ><span aria-hidden="true">[×]</span></button>
 </div>
 
 <script
@@ -63,17 +81,20 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
 ></script>
 
 <script>
+  import { isIdPath } from '@/i18n/path'
   import { companionDismissed, initGame, setCompanionDismissed } from '@/stores/game'
 
   const SPEED = 26 // px per second, a stroll, not a sprint
   const BOB_MS = 180
+  const LANE_START = 48 // clear of the 44px dismiss button in the corner
+  const EDGE = 8 // breathing room against the content column
 
   let raf = 0
   let root: HTMLElement | null = null
   let actor: HTMLElement | null = null
   let body: HTMLElement | null = null
   let bubble: HTMLElement | null = null
-  let x = 96
+  let x = LANE_START
   let dir = 1
   let last = 0
   let elapsed = 0
@@ -86,8 +107,14 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  const wideEnough = () =>
-    typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
+  /** The empty strip left of the content column, measured, not assumed. */
+  const gutter = () => document.getElementById('main-content')?.getBoundingClientRect().left ?? 0
+
+  /** The furthest the sprite may walk and stay clear of the content column. */
+  const laneEnd = () => gutter() - frameW - EDGE
+
+  /** Room for the button and one sprite's stroll; below that it does not render. */
+  const fits = () => typeof window !== 'undefined' && laneEnd() >= LANE_START
 
   function paint() {
     if (!actor || !body) return
@@ -112,12 +139,12 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
     last = now
     elapsed += dt
     x += (dir * SPEED * dt) / 1000
-    const limit = root.clientWidth - 64
+    const limit = laneEnd()
     if (x > limit) {
       x = limit
       dir = -1
-    } else if (x < 96) {
-      x = 96
+    } else if (x < LANE_START) {
+      x = LANE_START
       dir = 1
     }
     paint()
@@ -132,7 +159,8 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
 
   function start() {
     stop()
-    if (!root || reduced() || !wideEnough()) {
+    x = Math.min(Math.max(x, LANE_START), Math.max(LANE_START, laneEnd()))
+    if (!root || reduced() || !fits()) {
       paint()
       return
     }
@@ -143,7 +171,7 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
     if (!bubble) return
     const path = window.location.pathname.replace(/^\/id(?=\/|$)/, '') || '/'
     const key = path.length > 1 ? path.replace(/\/$/, '') : path
-    const lang = window.location.pathname.startsWith('/id') ? 'id' : 'en'
+    const lang = isIdPath(window.location.pathname) ? 'id' : 'en'
     let map: Record<string, { en: string; id: string }> = {}
     try {
       map = JSON.parse(document.getElementById('companion-data')?.textContent ?? '{}')
@@ -157,10 +185,12 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
 
   function applyVisibility() {
     if (!root) return
-    const hidden = companionDismissed.get()
-    root.style.display = hidden ? 'none' : ''
-    if (hidden) stop()
-    else start()
+    const shown = !companionDismissed.get() && fits()
+    // The `hidden` class is the default; showing is the exception.
+    root.style.display = shown ? 'block' : ''
+    if (bubble) bubble.style.maxWidth = `${Math.max(0, gutter() - 2 * EDGE)}px`
+    if (shown) start()
+    else stop()
   }
 
   function init() {
@@ -177,11 +207,10 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
     frameH = Number(root.dataset.frameH ?? frameW)
     frameCount = Number(root.dataset.frames ?? 1)
 
-    // Below the breakpoint the companion is `display: none` and `start()`
-    // already refuses to animate, so fetching the sheet there buys a download
-    // for something no one sees. Gated at init like every other viewport
-    // decision this component makes; it has never watched resize.
-    if (art && body && wideEnough()) {
+    // Without a gutter the companion is `display: none` and `start()` refuses
+    // to animate, so fetching the sheet there buys a download for something no
+    // one sees.
+    if (art && body && fits()) {
       // Verify the sheet actually decodes before dropping the drawn floor.
       // Removing `sprite-fb` first and loading second leaves a hole on the
       // page for as long as the request takes, and forever if it fails.
@@ -199,8 +228,16 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
       probe.src = art
     }
 
+    // The node persists across navigations, including EN to ID, so the
+    // button's name follows the page it is on now.
+    const dismiss = root.querySelector<HTMLButtonElement>('[data-dismiss]')
+    const lang = isIdPath(window.location.pathname) ? 'id' : 'en'
+    const label = lang === 'id' ? dismiss?.dataset.labelId : dismiss?.dataset.labelEn
+    if (dismiss && label) dismiss.setAttribute('aria-label', label)
+
     if (!root.dataset.bound) {
       root.dataset.bound = '1'
+      window.addEventListener('resize', applyVisibility)
       root.querySelector('[data-dismiss]')?.addEventListener('click', () => {
         setCompanionDismissed(true)
       })

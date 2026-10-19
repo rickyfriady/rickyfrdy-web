@@ -1,5 +1,5 @@
 import type { Lang } from '@/i18n/ui'
-import { t } from '@/i18n/ui'
+import { localizePath, t } from '@/i18n/ui'
 import type { BoardCard, BoardThread } from '@/models'
 
 /** Minimal project shape the board needs, decoupled from the full model. */
@@ -23,11 +23,6 @@ const CATEGORY_LABEL: Record<string, string> = {
   api: 'API',
   tool: 'Tool',
   'open-source': 'Open Source'
-}
-
-function localize(path: string, lang: Lang): string {
-  if (lang !== 'id') return path
-  return path === '/' ? '/id' : `/id${path}`
 }
 
 /**
@@ -66,7 +61,7 @@ export function buildBoardCards(
       title: t(lang, 'case.about'),
       category: t(lang, 'case.file'),
       tags: [],
-      url: localize('/about', lang),
+      url: localizePath('/about', lang),
       kind: 'subject',
       x: 0,
       y: 0
@@ -80,7 +75,7 @@ export function buildBoardCards(
       title: p.title,
       category: CATEGORY_LABEL[p.category] ?? p.category,
       tags: p.technologies,
-      url: localize(`/projects/${p.slug}`, lang),
+      url: localizePath(`/projects/${p.slug}`, lang),
       kind: 'exhibit',
       ...scatter(i++)
     })
@@ -93,7 +88,7 @@ export function buildBoardCards(
       title: post.title,
       category: t(lang, 'case.blog'),
       tags: post.tags ?? [],
-      url: localize(`/blog/${post.slug}`, lang),
+      url: localizePath(`/blog/${post.slug}`, lang),
       kind: 'note',
       ...scatter(i++)
     })
@@ -111,7 +106,7 @@ export function buildBoardCards(
       title: t(lang, key),
       category: t(lang, 'case.file'),
       tags: [],
-      url: localize(path, lang),
+      url: localizePath(path, lang),
       kind: 'record',
       ...scatter(i++)
     })

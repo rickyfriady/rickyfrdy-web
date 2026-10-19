@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { t } from '@/i18n/ui'
 import { webPageSchema } from '@/utils/schema'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
 import HeroPhoto from '@/components/ui/HeroPhoto.astro'
@@ -57,11 +58,10 @@ const capabilities = [
 
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
   <section class="border-border relative border-b px-4 py-16 md:py-24">
-    <div class="paper-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
     <div class="relative flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
       <!-- Left: text -->
       <div class="flex-1">
-        <p class="eyebrow mb-4" data-hero-reveal>Fullstack Developer · Jakarta, Indonesia</p>
+        <p class="eyebrow mb-4" data-hero-reveal>{t('en', 'hero.eyebrow')}</p>
         <h1
           class="title-display max-w-3xl"
           style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
@@ -70,9 +70,10 @@ const capabilities = [
           Ricki<br />
           <span class="title-accent text-accent">Friadi.</span>
         </h1>
-        <p class="text-muted mt-6 max-w-lg text-sm leading-relaxed" data-hero-reveal>
-          I build reliable fullstack systems, from Vue 3 micro-frontends and NestJS microservices
-          to the architecture that keeps them maintainable at scale.
+        <p class="text-foreground mt-6 max-w-2xl text-lg leading-relaxed md:text-xl" data-hero-reveal>
+          At PT. Pegadaian, a state-owned lender, I led the Module Federation front-end that 5+
+          teams deploy on their own. I also designed the 9 NestJS microservices that replaced a
+          legacy monolith with zero downtime.
         </p>
 
         <!-- CTAs -->
@@ -95,17 +96,23 @@ const capabilities = [
       </div>
 
       <!-- Right: avatar -->
-      <HeroPhoto />
+      <HeroPhoto lang="en" />
     </div>
   </section>
 
   <!-- ─── The valley: every page as a place, list first ───────── -->
-  <Valley lang="en" />
+  <Valley
+    lang="en"
+    linkedElsewhere={[
+      ...featuredProjects.map((p) => `/projects/${p.slug}`),
+      ...recentPosts.map((post) => `/blog/${post.id}`)
+    ]}
+  />
 
   <!-- ─── 01 · Selected Work ─────────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">01 · Selected Work</span>
+      <h2 class="chapter-label inline">01 · Selected Work</h2>
     </div>
 
     <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -134,13 +141,13 @@ const capabilities = [
   <!-- ─── 02 · What I Build ──────────────────────────────────── -->
   <section class="border-border border-b" data-stagger-group>
     <div class="chapter-heading px-4">
-      <span class="chapter-label">02 · What I Build</span>
+      <h2 class="chapter-label inline">02 · What I Build</h2>
     </div>
 
     <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       {capabilities.map((cap, i) => (
         <div class="py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0" data-stagger-item>
-          <p class="text-muted font-mono text-[10px] uppercase tracking-widest">
+          <p class="text-muted font-mono text-label uppercase tracking-widest">
             0{i + 1}
           </p>
           <h3 class="text-foreground mt-2 text-base font-semibold">{cap.area}</h3>
@@ -159,7 +166,7 @@ const capabilities = [
                     loading="lazy"
                     class="pixel-sprite"
                   />
-                  <span class="text-muted font-mono text-[9px] leading-none">{s}</span>
+                  <span class="text-muted font-mono text-label leading-none">{s}</span>
                 </div>
               ) : (
                 <span class="diff-tag self-center">{s}</span>
@@ -175,7 +182,7 @@ const capabilities = [
   {recentPosts.length > 0 && (
     <section class="border-border border-b" data-stagger-group>
       <div class="chapter-heading px-4">
-        <span class="chapter-label">03 · Recent Writing</span>
+        <h2 class="chapter-label inline">03 · Recent Writing</h2>
       </div>
 
       <div class="divide-border divide-y px-4">
@@ -187,9 +194,9 @@ const capabilities = [
           >
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1">
-                <h2 class="text-foreground group-hover:text-accent text-base font-semibold transition-colors">
+                <h3 class="text-foreground group-hover:text-accent text-base font-semibold transition-colors">
                   {post.data.title}
-                </h2>
+                </h3>
                 <p class="text-muted mt-1 line-clamp-1 text-sm leading-relaxed">
                   {post.data.description}
                 </p>

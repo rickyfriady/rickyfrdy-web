@@ -36,12 +36,19 @@ you walk into and `/projects` is the same content at a stable address; neither
 redirects to the other. The destination list renders first, server-side, so a
 recruiter with ninety seconds and a locked-down laptop never has to play.
 
+And the proof comes before the world. The hero's one sentence names the
+employer, both tiers and real numbers from `src/data/projects.ts`, so the first
+screen says what shipped before the valley asks for attention.
+`tests/pages/heroProof.test.ts` keeps every number in it traceable.
+
 ## Colors
 
 Warm neutrals, two themes, one text accent, one decorative colour, one thread.
 No literal colour values anywhere; everything references tokens in
-`global.css`. `src/utils/ogCard.ts` is the one exception, because satori cannot
-read custom properties, and its hex values are kept in step by hand.
+`global.css`. Two exceptions, both because the reader cannot resolve custom
+properties: `src/utils/ogCard.ts` (satori), kept in step by hand, and the
+`theme-color` meta tags in `BaseHead.astro` (the browser chrome), kept equal to
+the background tokens by `tests/styles/palette-contrast.test.ts`.
 
 | Role | Light ("Siang") | Dark ("Malam") |
 |---|---|---|
@@ -53,6 +60,11 @@ read custom properties, and its hex values are kept in step by hand.
 | sun | `oklch(.57 .130 70)` wheat | `oklch(.80 .140 82)` |
 
 Dark is evening in the same valley, not a second identity.
+
+Light is the default. The document carries no theme class: a script sets
+`dark` before first paint from the visitor's stored choice, else their system
+preference, and a visitor without scripts gets the light palette rather than a
+forced dark one.
 
 **The accent is split in two, on purpose.** A sunny accent and legible text
 cannot both happen on cream: every yellow, gold or orange measured fails 4.5:1.
@@ -74,6 +86,12 @@ green-cream, summer straw, autumn amber, winter frost), set before first paint
 by an inline script from the calendar and the hour. Nothing is stored. Each
 redefines only existing roles, so no component knows which palette is active.
 
+The visitor's theme outranks the clock. Having chosen dark, they get night at
+any hour, because dark is evening in the same valley: the seasonal palettes
+match only under the light theme, and the scene's day-only details (light
+shafts, butterflies) read the same switch. Toggling the theme changes the hour
+on screen without a reload. The clock still places the villagers.
+
 Retired and not to return: the blue (hue 220) and old green (hue 160) accents,
 and the CASE FILE red accent.
 
@@ -91,6 +109,11 @@ accent under three kinds of colourblindness.
   body copy.
 - Pixel headings snap to integer sizes so the glyph grid stays clean.
 - `title-accent` differentiates by colour only. No italic.
+- **Nothing on the landing page is under 11px.** The smallest size is the
+  `text-label` utility (0.6875rem), used for labels, captions, the bottom nav,
+  scene labels and the game HUD, and `tests/styles/type-floor.test.ts` holds
+  every file the page renders to it. Other routes still carry smaller sizes,
+  deferred.
 
 Not touched by any of this: `resume.pdf` and `resume-ats.pdf` keep Helvetica,
 because ATS software parses them and a pixel font is a rejection risk.
@@ -147,6 +170,11 @@ what it does (wall, water, door, ground).
   one short line when you walk up. They have no name, quest, schedule or
   content, never appear in a list or the character sheet, and are not the same
   kind of thing as the collaborators, who are the only people with names.
+- **The list beside the world is a grid, not a column.** Its places sit two to a
+  row at every width, so on desktop the list stays shorter than the world and
+  the world sets the band's height. Between `lg` and `xl`, where the stage drops
+  to scale 2, the place summaries step aside; the list on the landing page also
+  leaves out pieces the page already links as cards or posts.
 
 ## Components
 
@@ -163,17 +191,39 @@ component cannot quietly reintroduce a rounded corner or a smooth curve.
 | Flat panel | `soft-panel` | 2px solid border, `surface` ground. The cheap variant where a frame would be noise. |
 | Button | `glass-btn` | 1px transparent border that resolves to `border` on hover with a `secondary` ground. Focus is a 2px `accent` outline at 2px offset, never removed. |
 | Selection marker | `menu-cursor` | A CSS triangle in `--color-thread` that snaps in on hover, focus and `[data-active]`. Decorative: it sits alongside the focus ring and never replaces it. |
-| Nav shell | `nav-island` | Fixed, centred, 1px border on a `background` ground. |
+| Nav shell | `nav-island` | Fixed, centred, 1px border on a `background` ground. Page links show from `xl` (1280px), the first width where the whole bar fits in both locales; below that it keeps the brand, search, language, sound and theme controls. Every link and control is 44px; the bar is 54px, inside `--nav-height`. |
 | Active nav | `nav-island-pill` | Accent at 18 percent with a 2px accent border, carried between pages by `transition:name`. |
-| Mobile nav | `mobile-nav-shell`, `mobile-nav-drawer` | 4px border, `background` ground. Heavier than the desktop shell because it sits directly on content. |
+| Bottom nav | `mobile-nav-shell`, `mobile-nav-drawer` | 4px border, `background` ground. Heavier than the desktop shell because it sits directly on content. Shown below `xl`, exactly where the header's page links are hidden. Labels and links follow the page's locale, swapped on each page load because the bar persists across navigations. |
 | Section heading | `chapter-heading`, `chapter-label` | Top rule plus mono uppercase label at 0.12em tracking. |
 | Display title | `title-display` | Pixelify Sans at 0.95 line-height. `title-accent` differentiates by colour only, never italic. |
 
 The `evidence-*` utility names are CASE FILE leftovers; renaming them is part of
 the identity cleanup, not the palette.
 
+"Featured" is a still text label (`eyebrow`) on the standard `pixel-frame`. The
+thread colour stays reserved for attention (board threads, the
+`pixel-frame-thread` state), so it never marks a card as featured, and nothing
+on a card loops: a status mark is drawn still.
+
 Interactive chrome is at least 44px on its shortest side. Focus is always
 visible and never traded for a decorative marker.
+
+Language is reachable at every width: the header switcher from `md`, and below
+it the bottom nav's More drawer, whose last item names the other language in
+that language ("Bahasa Indonesia", "English"). Every language control uses
+`alternatePath` in `src/i18n/path.ts`, so a page that exists only in English
+(blog, case studies, changelog) sends Indonesian visitors to the nearest
+Indonesian page instead of a 404.
+
+The companion lives in the side gutter, left of the content column, and never
+crosses it. Where the gutter cannot hold its 44px dismiss button plus one sprite
+(about 1328px wide and narrower), it does not render, and without JavaScript it
+is not on the page at all. Its dismiss is a named button and the last stop in
+the tab order.
+
+In the scene, buildings always show their label, below. People and pieces show
+their name only when the player stands beside them, above their heads, so the
+two never collide and nothing is truncated.
 
 ## Sound
 

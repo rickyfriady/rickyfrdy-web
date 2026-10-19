@@ -15,7 +15,7 @@ const catLabel = categoryLabel ?? project.category.replace('-', ' ')
 <div
   data-card
   data-category={project.category}
-  class:list={["relative", project.featured ? "pixel-frame pixel-frame-thread" : ""]}
+  class:list={["relative", project.featured ? "pixel-frame" : ""]}
 >
 <a
   href={`/projects/${project.slug}`}

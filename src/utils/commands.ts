@@ -1,4 +1,4 @@
-import { type Lang, t } from '@/i18n/ui'
+import { type Lang, localizePath, t } from '@/i18n/ui'
 
 export type CommandGroup = 'navigation' | 'actions' | 'content'
 export type CommandKind =
@@ -34,12 +34,6 @@ const EMAIL = 'friadi.ricki@gmail.com'
 const GITHUB_URL = 'https://github.com/rickyfriady'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/rickifriadi'
 
-/** Prefix a root-relative path with the /id locale segment when needed. */
-function localizeHref(path: string, lang: Lang): string {
-  if (lang !== 'id') return path
-  return path === '/' ? '/id' : `/id${path}`
-}
-
 /**
  * `alias` exists for the two in-fiction page names. Their labels are evocative
  * but tell you nothing about what the page is, so the plain words someone would
@@ -73,7 +67,7 @@ function navCommands(lang: Lang): Command[] {
     keywords: 'alias' in item ? `${item.path} ${item.alias}` : item.path,
     group: 'navigation',
     kind: 'navigate',
-    href: localizeHref(item.path, lang)
+    href: localizePath(item.path, lang)
   }))
 }
 
@@ -85,7 +79,7 @@ function actionCommands(lang: Lang): Command[] {
       keywords: 'ask ai search question tanya cari',
       group: 'actions',
       kind: 'navigate',
-      href: localizeHref('/ask', lang)
+      href: localizePath('/ask', lang)
     },
     {
       id: 'action:theme',
@@ -107,7 +101,7 @@ function actionCommands(lang: Lang): Command[] {
       keywords: 'play game rpg walk explore main permainan',
       group: 'actions',
       kind: 'navigate',
-      href: localizeHref('/play', lang)
+      href: localizePath('/play', lang)
     },
     {
       id: 'action:companion',
@@ -129,7 +123,7 @@ function actionCommands(lang: Lang): Command[] {
       keywords: 'cv pdf download unduh',
       group: 'actions',
       kind: 'navigate',
-      href: localizeHref('/resume.pdf', lang)
+      href: localizePath('/resume.pdf', lang)
     },
     {
       id: 'action:copy-email',

@@ -49,7 +49,7 @@
         opacity: 1,
         y: 0,
         duration: 0.8,
-        ease: 'power3.out',
+        ease: 'steps(12)',
         stagger: 0.1,
         delay: 0.1
       })
@@ -67,7 +67,7 @@
           opacity: 1,
           y: 0,
           duration: 0.7,
-          ease: 'power2.out',
+          ease: 'steps(12)',
           stagger: 0.08,
           scrollTrigger: {
             trigger: group,
@@ -90,7 +90,7 @@
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: 'power3.out',
+          ease: 'steps(12)',
           scrollTrigger: {
             trigger: section,
             start: 'top 85%',
@@ -104,16 +104,16 @@
     const btns = document.querySelectorAll('[data-btn-hover]')
     btns.forEach(btn => {
       btn.addEventListener('mouseenter', () => {
-        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'power4.out' })
+        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'steps(8)' })
       })
       btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { scale: 1, duration: 0.4, ease: 'power4.out' })
+        gsap.to(btn, { scale: 1, duration: 0.4, ease: 'steps(8)' })
       })
       btn.addEventListener('mousedown', () => {
-        gsap.to(btn, { scale: 0.96, duration: 0.2, ease: 'power2.out' })
+        gsap.to(btn, { scale: 0.96, duration: 0.2, ease: 'steps(5)' })
       })
       btn.addEventListener('mouseup', () => {
-        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'power4.out' })
+        gsap.to(btn, { scale: 1.04, duration: 0.4, ease: 'steps(8)' })
       })
     })
 
@@ -133,7 +133,7 @@
           x: x * 20,
           y: y * 20,
           duration: 0.6,
-          ease: 'power2.out'
+          ease: 'steps(12)'
         })
       })
 
@@ -142,7 +142,7 @@
           x: 0,
           y: 0,
           duration: 1,
-          ease: 'elastic.out(1, 0.3)'
+          ease: 'steps(12)'
         })
       })
     })

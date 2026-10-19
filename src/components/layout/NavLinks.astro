@@ -1,19 +1,25 @@
 ---
-const { pathname } = Astro.url
+import { isIdPath, localizePath, stripLocale } from '@/i18n/path'
+import { t, type UIKey } from '@/i18n/ui'
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/experience', label: 'Experience' },
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/resume', label: 'Resume' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/board', label: 'Board' },
-  { href: '/contact', label: 'Contact' },
-] as const
+const { pathname } = Astro.url
+const lang = isIdPath(pathname) ? 'id' : 'en'
+// The page's path without its locale, so `/id/about` is active for `/about`.
+const path = stripLocale(pathname)
+
+const navLinks: readonly { href: string; key: UIKey }[] = [
+  { href: '/', key: 'nav.home' },
+  { href: '/about', key: 'nav.about' },
+  { href: '/experience', key: 'nav.experience' },
+  { href: '/dashboard', key: 'nav.dashboard' },
+  { href: '/resume', key: 'nav.resume' },
+  { href: '/projects', key: 'nav.projects' },
+  { href: '/board', key: 'nav.board' },
+  { href: '/contact', key: 'nav.contact' },
+]
 
 function isActive(href: string): boolean {
-  return href === '/' ? pathname === '/' : pathname.startsWith(href)
+  return href === '/' ? path === '/' : path.startsWith(href)
 }
 
 function setBackgroundColor(active: boolean): string {
@@ -22,15 +28,15 @@ function setBackgroundColor(active: boolean): string {
 
 ---
 
-<ul class="hidden items-center gap-1 md:flex">
-  {navLinks.map(({ href, label }) => {
+<ul class="hidden items-center gap-1 xl:flex">
+  {navLinks.map(({ href, key }) => {
     const active = isActive(href)
     return (
       <li>
         <a
-          href={href}
+          href={localizePath(href, lang)}
           class:list={[
-            'menu-cursor relative inline-flex items-center px-3 py-2 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            'menu-cursor relative inline-flex min-h-11 items-center px-3 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
             setBackgroundColor(active),
           ]}
         >
@@ -41,7 +47,7 @@ function setBackgroundColor(active: boolean): string {
               aria-hidden="true"
             />
           )}
-          <span class="relative z-10">{label}</span>
+          <span class="relative z-10">{t(lang, key)}</span>
         </a>
       </li>
     )
