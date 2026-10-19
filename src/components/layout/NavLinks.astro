@@ -36,7 +36,7 @@ function setBackgroundColor(active: boolean): string {
         <a
           href={localizePath(href, lang)}
           class:list={[
-            'menu-cursor relative inline-flex min-h-11 items-center px-3 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+            'menu-cursor relative inline-flex min-h-11 min-w-11 items-center justify-center px-3 font-mono text-[0.7rem] tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
             setBackgroundColor(active),
           ]}
         >

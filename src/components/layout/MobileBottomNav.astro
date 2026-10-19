@@ -47,7 +47,7 @@ const hrefs = (href: string) => ({ 'data-href-en': href, 'data-href-id': localiz
     <button
       type="button"
       data-cmdk-open
-      class="flex w-full items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+      class="flex min-h-11 w-full items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
         <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
@@ -61,7 +61,7 @@ const hrefs = (href: string) => ({ 'data-href-en': href, 'data-href-id': localiz
         role="menuitem"
         data-more-link
         data-nav-href={href}
-        class="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+        class="flex min-h-11 items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
         style={i > 0 ? 'border-top: 1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent)' : ''}
       >
         {key === 'nav.experience' && (
@@ -93,7 +93,7 @@ const hrefs = (href: string) => ({ 'data-href-en': href, 'data-href-id': localiz
       hreflang={lang === 'id' ? 'en' : 'id'}
       role="menuitem"
       data-lang-alt
-      class="flex items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+      class="flex min-h-11 items-center gap-3 px-4 py-3 font-mono text-[0.7rem] tracking-[0.08em] uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
       style="border-top: 1px solid color-mix(in oklch, var(--color-foreground) 8%, transparent); color: var(--color-muted)"
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">

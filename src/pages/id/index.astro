@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/components/layout/MainLayout.astro'
+import { localizePath } from '@/i18n/path'
 import { t } from '@/i18n/ui'
 import { webPageSchema } from '@/utils/schema'
 import FeaturedProjectCard from '@/components/projects/FeaturedProjectCard.astro'
@@ -93,6 +94,14 @@ const capabilities = [
             Hubungi Saya
           </a>
         </div>
+        <!-- The document a recruiter came for, one quiet step below the two CTAs. -->
+        <a
+          href={localizePath('/resume.pdf', 'id')}
+          class="text-muted hover:text-accent mt-2 inline-flex min-h-11 items-center font-mono text-xs transition-colors"
+          data-hero-reveal
+        >
+          {t('id', 'hero.resume')}
+        </a>
       </div>
 
       <!-- Right: avatar -->
@@ -132,7 +141,7 @@ const capabilities = [
     <div class="px-4 pb-8">
       <a
         href="/id/projects"
-        class="text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         Semua proyek →
       </a>
@@ -219,7 +228,7 @@ const capabilities = [
       <div class="px-4 pb-8">
         <a
           href="/blog"
-          class="text-muted hover:text-accent font-mono text-xs transition-colors"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
         >
           Semua artikel →
         </a>

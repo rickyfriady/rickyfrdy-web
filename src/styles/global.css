@@ -1031,7 +1031,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 12px;
+  /* No vertical padding: the 44px buttons set the bar's height, and the bar
+     sets the world column's, which sets the valley band's. */
+  padding: 0 12px;
+  min-height: 44px;
   background: var(--color-surface);
   color: var(--color-muted);
   border-bottom: 4px solid var(--color-border);

@@ -39,7 +39,9 @@ recruiter with ninety seconds and a locked-down laptop never has to play.
 And the proof comes before the world. The hero's one sentence names the
 employer, both tiers and real numbers from `src/data/projects.ts`, so the first
 screen says what shipped before the valley asks for attention.
-`tests/pages/heroProof.test.ts` keeps every number in it traceable.
+`tests/pages/heroProof.test.ts` keeps every number in it traceable. Under the
+two calls to action, a quieter link offers the résumé PDF in the page's
+language, because it is the document a recruiter came for.
 
 ## Colors
 
@@ -205,8 +207,10 @@ thread colour stays reserved for attention (board threads, the
 `pixel-frame-thread` state), so it never marks a card as featured, and nothing
 on a card loops: a status mark is drawn still.
 
-Interactive chrome is at least 44px on its shortest side. Focus is always
-visible and never traded for a decorative marker.
+Interactive chrome is at least 44px on its shortest side, and so is every
+standalone text link (section links, footer links, drawer items): the text
+keeps its size and only the hit area grows. Links inside running prose are the
+exception. Focus is always visible and never traded for a decorative marker.
 
 Language is reachable at every width: the header switcher from `md`, and below
 it the bottom nav's More drawer, whose last item names the other language in

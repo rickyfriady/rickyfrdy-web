@@ -13,12 +13,12 @@ const other = lang === 'id' ? 'en' : 'id'
     <p class="text-muted font-mono text-xs">
       © {year} Ricki Friadi. {t(lang, 'footer.built')}
     </p>
-    <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
+    <div class="flex flex-wrap justify-center gap-x-4 gap-y-0">
       <a
         href="https://github.com/rickyfriady"
         target="_blank"
         rel="noopener noreferrer"
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         GitHub ↗
       </a>
@@ -26,37 +26,37 @@ const other = lang === 'id' ? 'en' : 'id'
         href="https://www.linkedin.com/in/rickifriadi"
         target="_blank"
         rel="noopener noreferrer"
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         LinkedIn ↗
       </a>
       <a
         href={localizePath('/ask', lang)}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         {t(lang, 'nav.ask')}
       </a>
       <a
         href={localizePath('/now', lang)}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         Now
       </a>
       <a
         href="/changelog"
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         Changelog
       </a>
       <a
         href={localizePath('/arcade', lang)}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         {t(lang, 'nav.arcade')}
       </a>
       <a
         href={localizePath('/contact', lang)}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         {t(lang, 'nav.contact')}
       </a>
@@ -64,7 +64,7 @@ const other = lang === 'id' ? 'en' : 'id'
            scripts blocked, where the bottom nav's More drawer cannot open. -->
       <a
         href={localizePath('/resume', lang)}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         {t(lang, 'nav.resume')}
       </a>
@@ -72,7 +72,7 @@ const other = lang === 'id' ? 'en' : 'id'
         href={alternatePath(Astro.url.pathname)}
         hreflang={other}
         lang={other}
-        class="footer-link text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="footer-link inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
       >
         {t(lang, 'nav.language')}
       </a>

@@ -682,10 +682,18 @@ export default function PlayScene({
         <div className="game-hud">
           <span>{room.name}</span>
           <span className="flex gap-2">
-            <button type="button" className="menu-cursor px-2" onClick={() => setPanel('journal')}>
+            <button
+              type="button"
+              className="menu-cursor inline-flex min-h-11 items-center px-2"
+              onClick={() => setPanel('journal')}
+            >
               [Q] {labels.journal}
             </button>
-            <button type="button" className="menu-cursor px-2" onClick={() => setPanel('sheet')}>
+            <button
+              type="button"
+              className="menu-cursor inline-flex min-h-11 items-center px-2"
+              onClick={() => setPanel('sheet')}
+            >
               [C] {labels.sheet}
             </button>
           </span>

@@ -67,7 +67,6 @@ const stat2 = copy.metrics?.[1]
       <div class="flex flex-wrap items-center gap-2">
         {project.featured && <FeaturedBadge label={featuredLabel} />}
         <span class="diff-tag">{catLabel}</span>
-        <span class="diff-tag">{project.year}</span>
       </div>
       <div class="flex flex-shrink-0 flex-col items-end gap-2">
         <span
@@ -83,7 +82,7 @@ const stat2 = copy.metrics?.[1]
     </div>
 
     <!-- Title + description share one width lane, kept clear of the corner image -->
-    <div class="max-w-[56%]">
+    <div class="max-w-[46%]">
       <h3
         class="text-foreground group-hover:text-accent text-base font-semibold leading-snug transition-colors duration-300"
         transition:name={`project-title-${project.slug}`}
