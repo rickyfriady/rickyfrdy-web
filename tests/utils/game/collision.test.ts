@@ -7,6 +7,7 @@ import {
   isWalkable,
   passAt,
   roomSize,
+  surfaceUnder,
   tileAt
 } from '@/utils/game/collision'
 import { MAX_STEP_MS, stepPosition } from '@/utils/game/movement'
@@ -139,5 +140,19 @@ describe('corner correction', () => {
     let pos = { x: 0.1, y: 2.1 }
     for (let i = 0; i < 60; i++) pos = stepPosition(wall, pos, up, 16)
     expect(pos.y).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('surfaceUnder()', () => {
+  const room = { grid: [',,==,', '..S+,'] }
+
+  it('takes fractional positions, as the player has', () => {
+    expect(surfaceUnder(room, 2.7, 0.9)).toBe('path')
+    expect(surfaceUnder(room, 0.1, 0.1)).toBe('grass')
+    expect(surfaceUnder(room, 3.99, 1.5)).toBe('path')
+  })
+
+  it('reads off the map as turf rather than throwing', () => {
+    expect(() => surfaceUnder(room, -4.2, 99.5)).not.toThrow()
   })
 })

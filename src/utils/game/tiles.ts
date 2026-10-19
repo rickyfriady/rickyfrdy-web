@@ -27,13 +27,14 @@ export type Pass = 'walk' | 'solid' | 'ledge' | 'trunk'
 /** Where a tile draws: under the characters, sorted with them, or over them. */
 export type Layer = 'ground' | 'object' | 'overhead'
 
-export type SheetId = 'town' | 'farm' | 'water'
+export type SheetId = 'town' | 'farm' | 'water' | 'props'
 
 /** Frames per row and rows per sheet, matching the files in `assets/sprites/tiles/`. */
 export const SHEETS: Record<SheetId, { cols: number; rows: number }> = {
   town: { cols: 12, rows: 11 },
   farm: { cols: 12, rows: 11 },
-  water: { cols: 3, rows: 3 }
+  water: { cols: 3, rows: 3 },
+  props: { cols: 12, rows: 6 }
 }
 
 export interface Frame {
@@ -58,12 +59,17 @@ interface TileDef {
   layer: Layer
   /** Ground drawn beneath a tile whose art has transparent pixels. */
   under?: string
+  /** The art is four wind frames side by side, played by CSS. */
+  sway?: boolean
+  /** Nothing is drawn: the scene's backdrop shows through. */
+  sky?: boolean
   frame: (ctx: Context) => Frame
 }
 
 const town = (index: number): Frame => ({ sheet: 'town', index })
 const farm = (index: number): Frame => ({ sheet: 'farm', index })
 const water = (index: number): Frame => ({ sheet: 'water', index })
+const props = (index: number): Frame => ({ sheet: 'props', index })
 
 /** Out of bounds counts as "same kind", so a path or a pond runs off the map edge cleanly. */
 function sameAt(ctx: Context, dx: number, dy: number, group: string): boolean {
@@ -178,6 +184,9 @@ export const TILES: Record<string, TileDef> = {
     frame: (c) => rowSlice(c, 'f', [town(44), town(45), town(46)])
   },
 
+  // The horizon: blocks like a wall and draws nothing, so the backdrop shows through.
+  '^': { name: 'horizon', pass: 'solid', layer: 'ground', sky: true, frame: () => town(0) },
+
   // Things tall enough to walk behind
   T: {
     name: 'tree',
@@ -185,6 +194,49 @@ export const TILES: Record<string, TileDef> = {
     layer: 'object',
     under: ',',
     frame: byseason({ spring: town(16), summer: town(16), autumn: town(15), winter: farm(14) })
+  },
+  // Furniture: solid, sorted with the characters so one can stand behind it.
+  M: {
+    name: 'round table',
+    pass: 'solid',
+    layer: 'object',
+    under: ',',
+    frame: () => props(0)
+  },
+  h: { name: 'chair', pass: 'solid', layer: 'object', under: ',', frame: () => props(1) },
+  B: {
+    name: 'bench',
+    pass: 'solid',
+    layer: 'object',
+    under: ',',
+    frame: (c) => rowSlice(c, 'B', [props(2), props(3), props(4)])
+  },
+  V: { name: 'flower vase', pass: 'solid', layer: 'object', under: ',', frame: () => props(5) },
+  P: { name: 'plant pot', pass: 'solid', layer: 'object', under: ',', frame: () => props(6) },
+  K: { name: 'barrel', pass: 'solid', layer: 'object', under: ',', frame: () => props(7) },
+
+  // Ground ornaments: flat, walkable, never interactive.
+  F: { name: 'flower patch', pass: 'walk', layer: 'ground', under: ',', frame: () => props(8) },
+  N: { name: 'stones', pass: 'walk', layer: 'ground', under: ',', frame: () => props(9) },
+  u: { name: 'grass tuft', pass: 'walk', layer: 'ground', under: ',', frame: () => props(10) },
+  // A tree drawn in two cells: the trunk blocks and sorts with characters, and
+  // the crown sits one row north, over them. The crown is the only part that
+  // sways, and its four wind frames are the four columns of its row.
+  y: {
+    name: 'trunk',
+    pass: 'trunk',
+    layer: 'object',
+    under: ',',
+    // The foot of the foliage is part of the trunk cell, so it follows the season too.
+    frame: byseason({ spring: props(12), summer: props(13), autumn: props(14), winter: props(15) })
+  },
+  Y: {
+    name: 'crown',
+    pass: 'walk',
+    layer: 'overhead',
+    under: ',',
+    sway: true,
+    frame: byseason({ spring: props(24), summer: props(36), autumn: props(48), winter: props(60) })
   },
   o: { name: 'bush', pass: 'trunk', layer: 'object', under: ',', frame: () => town(5) },
 
@@ -244,13 +296,19 @@ export interface Cell {
   object?: Frame
   overhead?: Frame
   /** What the ground does, for the flat stand-in drawn when a sheet is missing. */
-  kind: 'walk' | 'solid' | 'water' | 'door'
+  kind: 'walk' | 'solid' | 'water' | 'door' | 'sky'
+  /** The overhead frame is the first of four sway frames, one column apart. */
+  sway?: boolean
 }
 
 function kindOf(ch: string, def: TileDef): Cell['kind'] {
   if (ch === '+') return 'door'
   if (ch === '~') return 'water'
   return def.pass === 'solid' && def.layer === 'ground' ? 'solid' : 'walk'
+}
+
+function hasFloorNeighbour(grid: readonly string[], x: number, y: number): boolean {
+  return [grid[y - 1]?.[x], grid[y + 1]?.[x], grid[y]?.[x - 1], grid[y]?.[x + 1]].includes('.')
 }
 
 /**
@@ -260,12 +318,28 @@ function kindOf(ch: string, def: TileDef): Cell['kind'] {
 export function cellAt(grid: readonly string[], x: number, y: number, season: Season): Cell {
   const ch = grid[y]?.[x] ?? '#'
   const def = TILES[ch] ?? TILES['#']
+  if (def.sky) return { ground: [], kind: 'sky' }
   const ctx = { grid, x, y, season }
-  const underFrame = def.under ? TILES[def.under].frame({ ...ctx }) : undefined
+  // A prop's ground is grass out of doors and floor indoors. It is told apart
+  // by its neighbours, because no outdoor tile ever sits next to a floor tile.
+  const under = def.under === ',' && hasFloorNeighbour(grid, x, y) ? '.' : def.under
+  const underFrame = under ? TILES[under].frame({ ...ctx }) : undefined
   const own = def.frame(ctx)
   const kind = kindOf(ch, def)
   if (def.layer === 'object') return { ground: underFrame ? [underFrame] : [], object: own, kind }
   if (def.layer === 'overhead')
-    return { ground: underFrame ? [underFrame] : [], overhead: own, kind }
+    return { ground: underFrame ? [underFrame] : [], overhead: own, kind, sway: def.sway }
   return { ground: underFrame ? [underFrame, own] : [own], kind }
+}
+
+/** How many rows a room opens with that are nothing but horizon. */
+export function horizonRows(grid: readonly string[]): number {
+  let n = 0
+  while (n < grid.length && /^\^+$/.test(grid[n])) n++
+  return n
+}
+
+/** What a footstep lands on: stone, boards and packed earth ring; everything else is turf. */
+export function surfaceOf(ch: string): 'grass' | 'path' {
+  return '=.S+'.includes(ch) ? 'path' : 'grass'
 }

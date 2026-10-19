@@ -40,7 +40,22 @@ export const assetLicences: AssetLicence[] = [
   // source, no licence, no credit line. The entry exists anyway, because the
   // guard's job is to prove every file was considered, not only the borrowed
   // ones.
-  { file: 'sprites/character/companion-pet.png', author: 'owner' }
+  { file: 'sprites/character/companion-pet.png', author: 'owner' },
+  // Drawn in this repository by `scripts/art/`, in the style of Gen 3 overworld
+  // sprites but traced from none of them.
+  { file: 'sprites/character/hero-walk.png', author: 'owner' },
+  { file: 'sprites/tiles/props.png', author: 'owner' },
+  { file: 'sprites/backdrop/hills.png', author: 'owner' },
+  { file: 'sprites/backdrop/treeline.png', author: 'owner' },
+  // The villager sheets share one body and differ by palette and overlay.
+  ...[
+    'farmer-wheat',
+    'farmer-sky',
+    'child-peach',
+    'child-mint',
+    'shopkeeper-plum',
+    'wanderer-dusk'
+  ].map((look) => ({ file: `sprites/character/villager-${look}.png`, author: 'owner' }) as const)
 ]
 
 /**

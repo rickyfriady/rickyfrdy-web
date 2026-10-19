@@ -25,76 +25,79 @@ export const rooms = [
     id: 'valley',
     name: { en: 'The Valley', id: 'Lembah' },
     grid: [
+      '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+      '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+      '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'T,,,,,,,,,,*,,,,,,,,,"",,,,*,,,,,,,,,,,T',
-      'T,,,rrrrr,,,,,T,,,,,,,T,,,,,,,rrrrr,,,,T',
+      'T,F,,,,,,,,*,,,,,,N,,"",,,,*,,u,,,,,,F,T',
+      'T,,,rrrrr,,,,,T,,,,,,FT,,,,,,,rrrrr,,,,T',
       'T,,,RRRRR,,,,,,,,,T,,,,,,,,,,,RRRRR,,,,T',
       'T,*,WWDWW,,,,,,,,,,,,,,,,T,,,,WWDWW,,,,T',
       'T,,,,,============================,,*,,T',
       'T,,,,,============================,,,,,T',
       'TCCCCCCCCCvvvvCCCCCSSCCCCCvvvvCCCCCCCCCT',
-      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,,,,,,T',
+      'T,,,,F,,,N,,,,,F,,,==,BBB,,,,,F,,N,,,,,T',
       'T,,,rrrrr,,,ggggg,,==,,ggggggg,,,,,,,,,T',
       'T,T,RRRRR,T,GGGGGo,==o,GGGGGGG,,,,,T,,,T',
-      'T,,,WW+WW,,,QQ+QQ,,==,,QQQ+QQQ,,,,,,,T,T',
+      'T,,PWW+WWP,VQQ+QQV,==,,QQQ+QQQ,,,,,,,T,T',
       'T,,",,==,,,",,==,,,==,,,,,==,,,,,",,,,,T',
       'T======================================T',
       'T======================================T',
-      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,,*,,,T',
+      'T,,,,,,,,,,,,,u,,,,==,,,,,,u,,,,,,,*F,,T',
       'T,,fffffffffff,,,,,==,,,o,,,,,,,o,,,,,,T',
-      'T,,,,,,,,,,,,,,,T,,==,,,,,~~~~~~,,,,,,,T',
-      'T,*,%,%,%,%,%,,,,,,==,*,,,~~~~~~,T,,,,,T',
-      'T,,,,,,,,,,,,,,,*,,==,,,,,~~~~~~,,,,,,,T',
+      'T,,,,,,,,,,,,,,,T,,==hMh,,~~~~~~,,,,,,,T',
+      'T,*,%,%,%,%,%,K,,,,==,*Y,,~~~~~~,T,,,,,T',
+      'T,,,,,,,,,,,,,,,*,,==,,y,,~~~~~~,,,,,,,T',
       'T,,fffffffffff,,,,,==,,,",~~~~~~,,,,,,,T',
-      'T,,,,,,,,,,,,,,,,,,==,,,,,,,,,,,,,T,,,,T',
-      'T,,,,o,,,,,,,,,o,,,==,,T,,,,,,,,,,,,,,,T',
-      'T,,,,,,,T,,,,,,,,,,==,,,,,,,,,*,,,,,,,,T',
-      'T,,T,,,,,,,,,T,,,",==,,,,,,,T,,,,,,,,,,T',
-      'T,,,,,,,,*,,,,,,,,,==,,,,,,,,,,",,,,T,,T',
-      'T,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,T',
+      'T,,u,,,,,,u,,,,,,Y,==,,,,,,,BBB,,,T,,,,T',
+      'T,,,,o,,,,,,,,,o,y,==,,T,,,,,,,,,,,,,N,T',
+      'T,,F,,,,T,,,,,N,,,,==,,,,,,,,,*,,,,,,,,T',
+      'T,,T,,,,,,,,,T,,,",==,,,,,,,T,,,,u,,,,,T',
+      'T,,,,,,,,*,,,,,,,,,==,u,,F,,,,,",,,,T,,T',
+      'T,,,,N,,,,,,F,,,,,,,,,,,,,,,,,,,,,,,,,,T',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT'
     ],
-    spawn: { x: 19.1, y: 16 },
+    spawn: { x: 19.1, y: 19 },
     objects: [
       {
         id: 'sign-about',
         x: 8,
-        y: 5,
+        y: 8,
         sprite: 'tile:town:83',
         binding: { kind: 'route', slug: '/about' }
       },
       {
         id: 'sign-contact',
         x: 34,
-        y: 5,
+        y: 8,
         sprite: 'tile:town:83',
         binding: { kind: 'route', slug: '/contact' }
       },
       {
         id: 'sign-projects',
         x: 8,
-        y: 12,
+        y: 15,
         sprite: 'tile:town:83',
         binding: { kind: 'route', slug: '/projects' }
       },
       {
         id: 'sign-blog',
         x: 16,
-        y: 12,
+        y: 15,
         sprite: 'tile:town:83',
         binding: { kind: 'route', slug: '/blog' }
       },
       {
         id: 'sign-experience',
         x: 28,
-        y: 12,
+        y: 15,
         sprite: 'tile:town:83',
         binding: { kind: 'route', slug: '/experience' }
       },
       {
         id: 'notice-board',
         x: 22,
-        y: 15,
+        y: 18,
         sprite: 'tile:town:57',
         binding: { kind: 'route', slug: '/board' }
       },
@@ -103,43 +106,43 @@ export const rooms = [
       {
         id: 'crop-singel',
         x: 4,
-        y: 18,
+        y: 21,
         sprite: 'crop',
         binding: { kind: 'project', slug: 'singel-app' }
       },
       {
         id: 'crop-microsite',
         x: 6,
-        y: 18,
+        y: 21,
         sprite: 'crop',
         binding: { kind: 'project', slug: 'microsite-pinjaman' }
       },
       {
         id: 'crop-kamila',
         x: 8,
-        y: 18,
+        y: 21,
         sprite: 'crop',
         binding: { kind: 'project', slug: 'kamila' }
       },
       {
         id: 'crop-aira',
         x: 10,
-        y: 18,
+        y: 21,
         sprite: 'crop',
         binding: { kind: 'project', slug: 'aira-reconciliation' }
       },
       {
         id: 'crop-chatbot',
         x: 12,
-        y: 18,
+        y: 21,
         sprite: 'crop',
         binding: { kind: 'project', slug: 'chatbot-kukerta' }
       }
     ],
     doors: [
-      { x: 6, y: 11, to: 'workshop', entry: { x: 9, y: 10 } },
-      { x: 14, y: 11, to: 'journal', entry: { x: 9, y: 10 } },
-      { x: 26, y: 11, to: 'records', entry: { x: 9, y: 10 } }
+      { x: 6, y: 14, to: 'workshop', entry: { x: 9, y: 10 } },
+      { x: 14, y: 14, to: 'journal', entry: { x: 9, y: 10 } },
+      { x: 26, y: 14, to: 'records', entry: { x: 9, y: 10 } }
     ]
   },
   {
@@ -148,14 +151,14 @@ export const rooms = [
     grid: [
       '####################',
       '#..................#',
+      '#P.................#',
+      '#................K.#',
+      '#................K.#',
       '#..................#',
+      '#...........hMh....#',
       '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
+      '#V.................#',
+      '#..BBB.............#',
       '#..................#',
       '#########+##########'
     ],
@@ -197,7 +200,7 @@ export const rooms = [
         binding: { kind: 'project', slug: 'chatbot-kukerta' }
       }
     ],
-    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 6.1, y: 12.1 } }]
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 6.1, y: 15.1 } }]
   },
   {
     id: 'journal',
@@ -205,13 +208,13 @@ export const rooms = [
     grid: [
       '####################',
       '#..................#',
+      '#P..........BBB...P#',
       '#..................#',
       '#..................#',
       '#..................#',
+      '#..........hMh.....#',
       '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
+      '#.................V#',
       '#..................#',
       '#..................#',
       '#########+##########'
@@ -226,7 +229,7 @@ export const rooms = [
         binding: { kind: 'post', slug: 'microservices-with-nestjs' }
       }
     ],
-    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 14.1, y: 12.1 } }]
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 14.1, y: 15.1 } }]
   },
   {
     id: 'records',
@@ -234,13 +237,13 @@ export const rooms = [
     grid: [
       '####################',
       '#..................#',
+      '#P................P#',
       '#..................#',
       '#..................#',
       '#..................#',
       '#..................#',
-      '#..................#',
-      '#..................#',
-      '#..................#',
+      '#....BBB...........#',
+      '#V................K#',
       '#..................#',
       '#..................#',
       '#########+##########'
@@ -269,7 +272,7 @@ export const rooms = [
         binding: { kind: 'experience', slug: 'PT. Sumatera Kalimantan Jaya' }
       }
     ],
-    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 26.1, y: 12.1 } }]
+    doors: [{ x: 9, y: 11, to: 'valley', entry: { x: 26.1, y: 15.1 } }]
   }
 ] satisfies Room[]
 

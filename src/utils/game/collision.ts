@@ -1,5 +1,5 @@
 import type { Vec2 } from '@/models'
-import { type Pass, passOf } from './tiles'
+import { type Pass, passOf, surfaceOf } from './tiles'
 
 /** One tile in scene pixels, before the integer display scale is applied. */
 export const TILE = 16
@@ -28,6 +28,11 @@ export function tileAt(room: GridLike, x: number, y: number): string {
   const row = room.grid[y]
   if (x < 0 || x >= row.length) return '#'
   return row[x]
+}
+
+/** What is underfoot at a point, given in fractional tiles like every other position. */
+export function surfaceUnder(room: GridLike, x: number, y: number): 'grass' | 'path' {
+  return surfaceOf(tileAt(room, Math.floor(x), Math.floor(y)))
 }
 
 /**

@@ -32,7 +32,7 @@ export const npcs = [
       { from: 9, to: 13, room: 'workshop', x: 13, y: 7 },
       // Same room, so a visitor with the page open at 13:00 sees her walk over.
       { from: 13, to: 17, room: 'workshop', x: 8, y: 5 },
-      { from: 17, to: 20, room: 'valley', x: 24, y: 19 },
+      { from: 17, to: 20, room: 'valley', x: 24, y: 22 },
       {
         from: 20,
         to: 24,
@@ -57,7 +57,7 @@ export const npcs = [
         }
       },
       { from: 8, to: 12, room: 'records', x: 9, y: 7 },
-      { from: 12, to: 13, room: 'valley', x: 23, y: 15 },
+      { from: 12, to: 13, room: 'valley', x: 23, y: 18 },
       { from: 13, to: 16, room: 'records', x: 9, y: 7 },
       { from: 16, to: 18, room: 'records', x: 15, y: 6 },
       {

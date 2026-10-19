@@ -108,17 +108,20 @@ Unchanged by the redesign.
 
 ## Art
 
-CC0 or it does not ship, because this repository is public. Everything is one
-artist, Kenney's Tiny series, so the world and its people share a palette and
-show no seam at 16px:
+Third-party art is CC0 or it does not ship, because this repository is public.
+The tiles are one artist, Kenney's Tiny series, so the ground shares a palette
+and shows no seam at 16px. Art drawn in this repository is the owner's own.
 
 - **Tiles**: Tiny Town and Tiny Farm sheets, plus the 3x3 water set cut from
   Tiny Battle (Tiny Town has no water). 16x16, matching `TILE = 16`.
-- **Characters**: three Tiny Dungeon sprites. Which one depicts which person is
-  the owner's recorded decision (tiles 85, 99 and 88 for Ricki, Laura and
-  Rivaldy), never inferred from a name. They are single-angle: facing left
-  mirrors the sprite and walking bobs it a pixel, rather than faking a
-  four-direction cycle the art does not have.
+- **Characters**: the player is drawn in this repository, 16x24 with a
+  four-direction, four-frame walk cycle (`hero-walk`, made by `scripts/art/`).
+  Ricki, Laura and Rivaldy as NPCs are still three Tiny Dungeon sprites (tiles
+  85, 99 and 88), the owner's recorded decision, never inferred from a name.
+  Those are single-angle: facing left mirrors the sprite. Drawn art takes an
+  `owner` manifest entry rather than a CC0 credit. It sits beside Kenney tiles,
+  so it is checked in the real scene in the light, dark and seasonal palettes
+  before more is drawn.
 
 All of it sits on the sprite path, rendered pixelated at integer scale. Sprout
 Lands is the closest match to the register and is excluded: both tiers forbid
@@ -132,11 +135,18 @@ what it does (wall, water, door, ground).
 - **Time is read, never stored.** Season from the calendar, day and night from
   the visitor's clock, each project's crop growth from its own date, weather
   from the week's real GitHub activity (settled when it cannot be read).
-- **State, not animation.** Night and weather are a still veil over the scene.
-  The only motion is the player walking and a character stepping between
-  scheduled spots in whole steps.
+- **State first, motion second.** Night and weather are a still veil over the
+  scene, and that is how they are read. Ambient motion is allowed on top, as
+  decoration that carries no information: tree crowns sway, light moves through
+  the canopy, villagers wander. It is stepped (`steps()`), driven by CSS, paused
+  when it cannot be seen, and absent under reduced motion and below `md`.
 - **Characters follow a timetable**, a pure lookup of hour to place. When one
   is away, a signpost at their usual spot says where and when they are back.
+- **Villagers are scenery.** A few fictional villagers (a farmer, a child, a
+  shopkeeper, a wanderer) walk between fixed spots chosen by the clock, and say
+  one short line when you walk up. They have no name, quest, schedule or
+  content, never appear in a list or the character sheet, and are not the same
+  kind of thing as the collaborators, who are the only people with names.
 
 ## Components
 
@@ -167,18 +177,34 @@ visible and never traded for a decorative marker.
 
 ## Sound
 
-Four events only: hover, open, palette, submit. Synthesised with Web Audio from
-oscillator envelopes, so no audio assets ship. Off by default, persisted, and
-silent under `prefers-reduced-motion`. No background music.
+Two separate things. Both are off by default, persisted, synthesised with Web
+Audio so no audio asset ships, and silent under `prefers-reduced-motion`.
+
+- **Interface sounds**: four events only (hover, open, palette, submit), from
+  oscillator envelopes. One toggle in the header.
+- **Ambient audio in the valley**: a quiet pastoral loop (sixteen bars at 72 BPM,
+  C major pentatonic, composed for this site), wind, now and then a bird, and
+  footsteps that ring on a path and thud on grass. Its own control sits under
+  the scene, a button and a volume slider, and it is not the header toggle:
+  someone who said yes to clicks has not said yes to music.
+
+Ambient audio never begins on its own. A saved opt-in waits for the visitor's
+next key press or tap, then fades in over about a second. It plays only while the
+valley is on screen and the tab is visible, fades out when either stops being
+true, and is absent below `md` and under reduced motion. If the browser has no
+Web Audio the control is not shown and nothing else changes.
 
 ## Dials
 
-ENERGY 2 / RHYTHM 2 / MOTION 2.
+ENERGY 2 / RHYTHM 2 / MOTION 3.
 
 Read as: a personal portfolio for recruiters and engineers, in a warm pastoral
 pixel language. Confident enough to be memorable, restrained enough that the
-work stays readable. Sections vary where the content varies. Motion is stepped
-and purposeful; the world's changes come from real time, not ambient loops.
+work stays readable. Sections vary where the content varies. Motion rose from 2
+to 3 when the valley gained wind, drifting leaves, light and wandering
+villagers. It is ambient and optional: stepped, never eased, off under reduced
+motion, paused when unseen, and it never carries information. The world's
+state (season, hour, weather, crop growth) still comes from real time.
 
 ## Decided
 

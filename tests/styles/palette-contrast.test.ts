@@ -105,6 +105,58 @@ function contrast(a: Oklch, b: Oklch): number {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)
 }
 
+/**
+ * `color-mix(in oklch, a pct%, b)`: lightness and chroma blend linearly, hue
+ * along the shorter arc. Enough to reproduce the sky gradient from its tokens.
+ */
+function mix(a: Oklch, pct: number, b: Oklch): Oklch {
+  const t = pct / 100
+  let dh = b[2] - a[2]
+  if (dh > 180) dh -= 360
+  if (dh < -180) dh += 360
+  return [a[0] * t + b[0] * (1 - t), a[1] * t + b[1] * (1 - t), (a[2] + dh * (1 - t) + 360) % 360]
+}
+
+/** The two stops of `valley-sky`, read from the stylesheet so the test follows the CSS. */
+const skyStops = [
+  ...block(CSS, '@utility valley-sky {').matchAll(
+    /color-mix\(in oklch, var\(--color-sun\) (\d+)%, var\(--color-background\)\)/g
+  )
+].map((m) => Number(m[1]))
+
+type Rgb = [number, number, number]
+
+const rgbContrast = (a: Rgb, b: Rgb) => {
+  const [x, y] = [luminance(a), luminance(b)]
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)
+}
+
+/** The strongest the light through the canopy ever gets, read from the stylesheet. */
+const ambientBlock = CSS.slice(
+  CSS.indexOf('Ambient: wind, light'),
+  CSS.indexOf('@utility game-hud')
+)
+const SHAFT_MAX = Math.max(
+  ...[...ambientBlock.matchAll(/opacity:\s*([\d.]+)/g)].map((m) => Number(m[1]))
+)
+const SHAFT_MIX = Number(
+  CSS.match(/--shaft:\s*color-mix\(in oklch, var\(--color-sun\) (\d+)%, white\)/)?.[1]
+)
+
+/**
+ * What the ground looks like with a shaft over it at full strength:
+ * `mix-blend-mode: screen`, composited at the shaft's own opacity.
+ */
+function underShaft(sun: Oklch, ground: Oklch): Rgb {
+  const white: Oklch = [1, 0, sun[2]]
+  const shaft = oklchToSrgb(mix(sun, SHAFT_MIX, white))
+  const base = oklchToSrgb(ground)
+  return base.map((g, i) => {
+    const screened = 1 - (1 - g) * (1 - shaft[i])
+    return g + SHAFT_MAX * (screened - g)
+  }) as Rgb
+}
+
 const themeBlock = block(CSS, '@theme {')
 const darkBlock = block(CSS, '.dark {')
 // The world palette is scoped to the playable route and is promotable site-wide
@@ -157,6 +209,32 @@ describe.each(palettes)('%s theme', (_name, palette) => {
     GRAPHIC_ROLES.flatMap((role) => GROUNDS.map((ground) => [role, ground] as const))
   )('%s on %s meets non-text contrast (3:1)', (role, ground) => {
     expect(contrast(palette[role], palette[ground])).toBeGreaterThanOrEqual(3)
+  })
+
+  // Nothing sits on the valley's sky today, but a label or panel that drifts
+  // over it must still be readable, so both ends of the gradient are held to
+  // the same bar as any other ground.
+  it.each(
+    TEXT_ROLES.flatMap((role) => [0, 1].map((stop) => [role, stop] as const))
+  )('%s over the valley sky (stop %i) meets AA text contrast (4.5:1)', (role, stop) => {
+    // The sky exists only inside `.world`, so the plain light and dark themes have none.
+    if (_name === 'light' || _name === 'dark') return
+    expect(skyStops).toHaveLength(2)
+    const sky = mix(palette.sun, skyStops[stop], palette.background)
+    expect(contrast(palette[role], sky)).toBeGreaterThanOrEqual(4.5)
+  })
+
+  // The light is capped at a few percent, but "a few percent" is a claim, so
+  // the worst case is computed: full strength, over each ground, under each text role.
+  it.each(
+    TEXT_ROLES.flatMap((role) => GROUNDS.map((ground) => [role, ground] as const))
+  )('%s on %s still meets 4.5:1 under a light shaft at full strength', (role, ground) => {
+    if (_name === 'light' || _name === 'dark') return
+    expect(Number.isFinite(SHAFT_MAX) && SHAFT_MAX > 0 && SHAFT_MAX <= 0.16).toBe(true)
+    expect(Number.isFinite(SHAFT_MIX)).toBe(true)
+    expect(
+      rgbContrast(oklchToSrgb(palette[role]), underShaft(palette.sun, palette[ground]))
+    ).toBeGreaterThanOrEqual(4.5)
   })
 
   // Red thread against a green accent is exactly the pair red-green

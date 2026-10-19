@@ -19,3 +19,13 @@ function axis(focus: number, view: number, extent: number): number {
   if (view >= extent) return (extent - view) / 2
   return Math.min(Math.max(focus - view / 2, 0), extent - view)
 }
+
+/**
+ * Background offset for a layer inside the scrolling world that should move at
+ * `speed` times the camera's own speed. The world already moves by
+ * `-cameraPx`, so the layer adds back the share it should not travel. Whole
+ * pixels only, so a backdrop never sits on a half pixel and shimmers.
+ */
+export function parallaxShift(cameraPx: number, speed: number): number {
+  return Math.round(cameraPx * (1 - speed))
+}

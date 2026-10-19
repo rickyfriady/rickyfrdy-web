@@ -10,7 +10,8 @@ import { type Cell, type Frame, SHEETS, type SheetId } from '@/utils/game/tiles'
 const SHEET_URL: Record<SheetId, string | undefined> = {
   town: getSprite('town').url,
   farm: getSprite('farm').url,
-  water: getSprite('water').url
+  water: getSprite('water').url,
+  props: getSprite('props').url
 }
 
 /**
@@ -21,7 +22,8 @@ const FALLBACK: Record<Cell['kind'], string> = {
   walk: 'var(--color-secondary)',
   solid: 'var(--color-border)',
   water: 'color-mix(in oklch, var(--color-accent) 35%, var(--color-secondary))',
-  door: 'var(--color-thread)'
+  door: 'var(--color-thread)',
+  sky: 'transparent'
 }
 
 export const hasSheet = (sheet: SheetId) => Boolean(SHEET_URL[sheet])
@@ -59,6 +61,23 @@ export function framesStyle(
 
 /** `tile:farm:76` → the frame it names, or null for an ordinary sprite id. */
 export function parseTileSprite(id: string): Frame | null {
-  const match = id.match(/^tile:(town|farm|water):(\d+)$/)
+  const match = id.match(/^tile:(town|farm|water|props):(\d+)$/)
   return match ? { sheet: match[1] as SheetId, index: Number(match[2]) } : null
+}
+
+/**
+ * Custom properties the `canopy-sway` animation reads: where the four wind
+ * frames start and end on the sheet, and a start offset so trees that stand
+ * together are not in step. The offset is a pure function of the cell, so it
+ * does not change between renders.
+ */
+export function swayVars(frame: Frame, x: number, y: number, tilePx: number): CSSProperties {
+  const { cols } = SHEETS[frame.sheet]
+  const from = -(frame.index % cols) * tilePx
+  const phase = (x * 7 + y * 13) % 4
+  return {
+    ['--sway-from' as string]: `${from}px`,
+    ['--sway-to' as string]: `${from - 4 * tilePx}px`,
+    ['--sway-delay' as string]: `${-phase * 0.6}s`
+  }
 }

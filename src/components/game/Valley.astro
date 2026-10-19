@@ -8,10 +8,11 @@ import { experiences as experiencesEn } from '@/data/experience'
 import { experiences as experiencesId } from '@/data/experience.id'
 import { projects } from '@/data/projects'
 import { npcs, quests } from '@/data/quests'
+import { villagers } from '@/data/villagers'
 import { rooms } from '@/data/rooms'
 import { t } from '@/i18n/ui'
 import { fetchActivity } from '@/utils/github'
-import { buildNpcs, buildScene, sceneDestinations } from '@/utils/game/scene'
+import { buildNpcs, buildScene, buildVillagers, sceneDestinations } from '@/utils/game/scene'
 import { deriveStats } from '@/utils/game/stats'
 import { weatherFrom } from '@/utils/game/time'
 
@@ -28,9 +29,10 @@ interface Props {
   lang: 'en' | 'id'
   /** The character card, for `/play`, where there is room for it. */
   showcase?: boolean
+  mobilePlayScene?: boolean
 }
 
-const { lang, showcase = false } = Astro.props
+const { lang, showcase = false, mobilePlayScene = showcase } = Astro.props
 const experiences = lang === 'id' ? experiencesId : experiencesEn
 
 const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
@@ -84,6 +86,7 @@ const destinations = sceneDestinations(scene)
 const places = destinations.filter((d) => d.place)
 const pieces = destinations.filter((d) => !d.place)
 const sceneNpcs = buildNpcs(npcs, collaborators, lang)
+const sceneVillagers = buildVillagers(villagers, lang)
 
 const sceneQuests = quests.map((quest) => ({
   id: quest.id,
@@ -107,6 +110,9 @@ const player = {
 const labels = {
   sceneName: t(lang, 'game.sceneName'),
   controls: t(lang, 'game.controls'),
+  ambientOn: t(lang, 'game.ambient.on'),
+  ambientOff: t(lang, 'game.ambient.off'),
+  ambientVolume: t(lang, 'game.ambient.volume'),
   journal: t(lang, 'game.journal'),
   sheet: t(lang, 'game.sheet'),
   interact: t(lang, 'game.interact'),
@@ -188,18 +194,22 @@ const kindLabel = (kind: string) =>
     </div>
 
     <div class="flex min-w-0 flex-1 flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
-      <div class="hidden md:block">
+      <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden md:block'}>
         <PlayScene
           client:only="react"
           rooms={scene}
           npcs={sceneNpcs}
+          villagers={sceneVillagers}
           quests={sceneQuests}
           player={player}
           labels={labels}
           weather={weather}
+          allowMobileHandheld={mobilePlayScene}
         />
       </div>
-      <p class="text-muted text-sm md:hidden">{t(lang, 'game.smallScreen')}</p>
+      {!mobilePlayScene && (
+        <p class="text-muted text-sm md:hidden">{t(lang, 'game.smallScreen')}</p>
+      )}
 
       {showcase && (
         <CharacterShowcase

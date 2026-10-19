@@ -27,7 +27,9 @@ export type {
   SpriteSheet,
   Stat,
   Tile,
-  Vec2
+  Vec2,
+  Villager,
+  VillagerArchetype
 } from './game.models'
 export type {
   ContributionDay,

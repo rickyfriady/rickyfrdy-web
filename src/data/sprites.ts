@@ -1,3 +1,4 @@
+import { villagers } from '@/data/villagers'
 import type { SpriteSheet } from '@/models'
 
 /**
@@ -13,14 +14,35 @@ import type { SpriteSheet } from '@/models'
  * file lands they are checked against it, so a sheet drawn at the wrong size
  * fails at build with its id named rather than rendering a shifted frame.
  */
-/*
- * `hero-walk` was registered here from the day the pipeline was built and its
- * PNG was never drawn, so the only thing it ever rendered was the drawn floor.
- * It is retired rather than left in place: a registration for a file nobody
- * intends to draw is a claim the sheet-dimension guard can never check.
- * `tests/utils/game/sprites.test.ts` builds its own fixtures and is unaffected.
+/**
+ * A 16x24 character drawn by `scripts/art/character.mjs`: down, up and left
+ * rows of four frames each. Right is the left row mirrored at render time, so
+ * it has no row. Frame 0 of each row is the idle pose.
  */
+const characterSheet = (id: string) =>
+  ({
+    id,
+    frameWidth: 16,
+    frameHeight: 24,
+    width: 64,
+    height: 72,
+    animations: {
+      'walk-down': { from: 0, to: 3 },
+      'walk-up': { from: 4, to: 7 },
+      'walk-left': { from: 8, to: 11 },
+      'idle-down': { from: 0, to: 0 },
+      'idle-up': { from: 4, to: 4 },
+      'idle-left': { from: 8, to: 8 }
+    },
+    frameDuration: 160
+  }) satisfies SpriteSheet
+
+/** One sheet per distinct villager look; two villagers may share one. */
+const villagerSheetIds = [...new Set(villagers.map((v) => v.sheet))]
+
 export const spriteSheets = [
+  characterSheet('hero-walk'),
+  ...villagerSheetIds.map(characterSheet),
   {
     /**
      * The companion. Cut from the Petdex source by

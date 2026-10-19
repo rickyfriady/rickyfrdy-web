@@ -1,4 +1,4 @@
-import type { Collaborator, Npc, Room, RoomObject } from '@/models'
+import type { Collaborator, Npc, Room, RoomObject, Villager } from '@/models'
 import { resolveNpc } from './quests'
 
 /**
@@ -203,4 +203,23 @@ export function buildNpcs(
       )
     }
   })
+}
+
+/** A villager for the page: same shape, remarks already in the page's language. */
+export interface SceneVillager {
+  id: string
+  sheet: string
+  room: string
+  spots: { x: number; y: number }[]
+  remarks: string[]
+}
+
+export function buildVillagers(villagers: readonly Villager[], lang: 'en' | 'id'): SceneVillager[] {
+  return villagers.map((v) => ({
+    id: v.id,
+    sheet: v.sheet,
+    room: v.room,
+    spots: v.spots.map((s) => ({ ...s })),
+    remarks: v.remarks.map((r) => r[lang])
+  }))
 }

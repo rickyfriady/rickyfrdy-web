@@ -113,6 +113,27 @@ export interface Npc {
   schedule: ScheduleStop[]
 }
 
+export type VillagerArchetype = 'farmer' | 'child' | 'shopkeeper' | 'wanderer'
+
+/**
+ * A fictional background villager.
+ *
+ * Deliberately has no `binding`, `title`, `quest` or `schedule`: a villager is
+ * scenery that happens to walk, never a person the site represents. What it
+ * lacks is the contract, so a field added here is a decision to revisit.
+ */
+export interface Villager {
+  id: string
+  archetype: VillagerArchetype
+  /** Sprite sheet id: `villager-<archetype>-<palette>`. */
+  sheet: string
+  room: RoomId
+  /** Tiles it stands on, in order of nothing: which one is chosen comes from the clock. */
+  spots: Vec2[]
+  /** Short in-fiction remarks. No facts about the owner, a project or a collaborator. */
+  remarks: LocalizedText[]
+}
+
 export type QuestState = 'locked' | 'available' | 'active' | 'complete'
 
 export interface Quest {

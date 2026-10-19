@@ -167,3 +167,23 @@ describe('quests never gate content', () => {
     }
   })
 })
+
+describe('the valley after the horizon rows', () => {
+  const valley = rooms.find((r) => r.id === 'valley')
+
+  it('opens with three rows of horizon above the tree line', () => {
+    expect(valley?.grid.slice(0, 3).every((row) => /^\^+$/.test(row))).toBe(true)
+    expect(valley?.grid[3]?.startsWith('TTTT')).toBe(true)
+  })
+
+  it('every crop still stands on a crop plot', () => {
+    const crops = valley?.objects.filter((o) => o.sprite === 'crop') ?? []
+    expect(crops.length).toBeGreaterThan(0)
+    for (const crop of crops) expect(valley?.grid[crop.y][crop.x], crop.id).toBe('%')
+  })
+
+  it('every signpost still stands on open ground, not in the horizon or a wall', () => {
+    const signs = valley?.objects.filter((o) => o.id.startsWith('sign-')) ?? []
+    for (const sign of signs) expect(canStand(valley as never, sign.x, sign.y), sign.id).toBe(true)
+  })
+})

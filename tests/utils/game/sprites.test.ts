@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
+import { spriteSheets } from '@/data/sprites'
 import type { SpriteSheet } from '@/models'
 import {
   animationFrame,
   assertSheetFits,
   buildSpriteMap,
+  characterPose,
   fallbackKind,
   frameOffset,
+  getSprite,
   integerScale,
   sheetCapacity,
   spriteKey
@@ -116,5 +119,70 @@ describe('fallbackKind()', () => {
     expect(fallbackKind('npc-laura')).toBe('npc')
     expect(fallbackKind('door')).toBe('door')
     expect(fallbackKind('shelf')).toBe('object')
+  })
+})
+
+describe('declared character sheets', () => {
+  it('every declared sheet fits its real image, or getSprite throws naming it', () => {
+    for (const declared of spriteSheets) {
+      expect(() => getSprite(declared.id), declared.id).not.toThrow()
+    }
+  })
+
+  it('hero-walk has a walk and an idle for each drawn direction', () => {
+    const hero = spriteSheets.find((s) => s.id === 'hero-walk') as SpriteSheet
+    for (const dir of ['down', 'up', 'left']) {
+      expect(hero.animations[`walk-${dir}`], dir).toBeDefined()
+      expect(hero.animations[`idle-${dir}`], dir).toBeDefined()
+    }
+  })
+
+  it('a mis-sized fixture fails with the sprite id', () => {
+    const wrong = {
+      ...sheet,
+      id: 'hero-walk',
+      width: 64,
+      height: 48,
+      frameWidth: 16,
+      frameHeight: 24
+    }
+    expect(() => assertSheetFits(wrong, { url: '/x.png', width: 64, height: 72 })).toThrow(
+      /hero-walk/
+    )
+  })
+})
+
+describe('characterPose()', () => {
+  const hero = spriteSheets.find((s) => s.id === 'hero-walk') as SpriteSheet & {
+    animations: Record<string, { from: number; to: number }>
+  }
+  const d = hero.frameDuration
+
+  it('stands on frame 0 of the facing row when not moving', () => {
+    expect(characterPose(hero, 'down', false, 0).frame).toBe(0)
+    expect(characterPose(hero, 'up', false, 500).frame).toBe(4)
+    expect(characterPose(hero, 'left', false, 0).frame).toBe(8)
+  })
+
+  it('mirrors the left row for right, and nothing else', () => {
+    expect(characterPose(hero, 'right', false, 0)).toEqual({ frame: 8, mirror: true })
+    expect(characterPose(hero, 'left', false, 0).mirror).toBe(false)
+    expect(characterPose(hero, 'down', false, 0).mirror).toBe(false)
+  })
+
+  it('steps at once when movement starts, then cycles neutral, foot, neutral, foot', () => {
+    const frames = [0, 1, 2, 3, 4].map((i) => characterPose(hero, 'down', true, i * d).frame)
+    expect(frames).toEqual([1, 2, 3, 0, 1])
+  })
+
+  it('walks the row it faces', () => {
+    expect(characterPose(hero, 'up', true, 0).frame).toBeGreaterThanOrEqual(4)
+    expect(characterPose(hero, 'up', true, 0).frame).toBeLessThanOrEqual(7)
+    expect(characterPose(hero, 'right', true, 0).frame).toBeGreaterThanOrEqual(8)
+  })
+
+  it('returns to idle the moment movement stops', () => {
+    expect(characterPose(hero, 'down', true, d).frame).not.toBe(0)
+    expect(characterPose(hero, 'down', false, d).frame).toBe(0)
   })
 })

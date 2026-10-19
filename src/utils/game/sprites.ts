@@ -107,6 +107,29 @@ export function animationFrame(
   return range.from + (step % length)
 }
 
+export type Facing = 'up' | 'down' | 'left' | 'right'
+
+/**
+ * Which frame of a character sheet to show, and whether to mirror it.
+ *
+ * The sheet draws down, up and left; right is left mirrored. A walker that has
+ * just started moving shows a stepping frame at once rather than a stand frame
+ * first, and one that stopped is back on frame 0 of its row, the idle pose.
+ */
+export function characterPose(
+  sheet: SpriteSheet,
+  facing: Facing,
+  moving: boolean,
+  movingForMs: number
+): { frame: number; mirror: boolean } {
+  const view = facing === 'right' ? 'left' : facing
+  const mirror = facing === 'right'
+  const idle = sheet.animations[`idle-${view}`]?.from ?? 0
+  if (!moving) return { frame: idle, mirror }
+  const walk = animationFrame(sheet, `walk-${view}`, movingForMs + sheet.frameDuration)
+  return { frame: walk ?? idle, mirror }
+}
+
 /**
  * Integer-only scaling. A fractional factor resamples the sprite and every
  * hard pixel edge turns to mush, so the factor is floored — never below 1,
