@@ -43,6 +43,13 @@ screen says what shipped before the valley asks for attention.
 two calls to action, a quieter link offers the résumé PDF in the page's
 language, because it is the document a recruiter came for.
 
+Below `md` the photo is a 72px thumbnail in one row with the availability
+mark, above the eyebrow, so a phone's first screen shows both clear of the
+bottom nav. From `md` it is the portrait card, set 64px beside the copy rather
+than at the far edge. The skills sit in one plain Stack line under the selected
+work, the same technologies the old capability grid listed, nothing added;
+`/about` holds the full matrix.
+
 ## Colors
 
 Warm neutrals, two themes, one text accent, one decorative colour, one thread.
@@ -177,6 +184,9 @@ what it does (wall, water, door, ground).
   the world sets the band's height. Between `lg` and `xl`, where the stage drops
   to scale 2, the place summaries step aside; the list on the landing page also
   leaves out pieces the page already links as cards or posts.
+- **Without scripts the world takes no room.** A `noscript` style hides the
+  world's column from `md` and, from `lg`, spreads the list three to a row
+  across the band, so the band is only as tall as its list.
 
 ## Components
 
@@ -205,7 +215,10 @@ the identity cleanup, not the palette.
 "Featured" is a still text label (`eyebrow`) on the standard `pixel-frame`. The
 thread colour stays reserved for attention (board threads, the
 `pixel-frame-thread` state), so it never marks a card as featured, and nothing
-on a card loops: a status mark is drawn still.
+on a card loops: a status mark is drawn still. A project card's image is a
+strip above its text, never under it, and the link is named by the project
+title. Metric values are body-small in the foreground colour; their labels stay
+muted.
 
 Interactive chrome is at least 44px on its shortest side, and so is every
 standalone text link (section links, footer links, drawer items): the text

@@ -8,10 +8,14 @@ interface Props {
 const { lang = 'en' } = Astro.props
 ---
 
-<div class="flex-shrink-0 self-start md:self-center" data-hero-reveal>
-  <!-- Portrait photo card — static gradient border -->
+<!-- Below md a thumbnail row above the eyebrow, so the pill clears the bottom nav; from md the portrait card. -->
+<div
+  class="order-first flex flex-shrink-0 items-center gap-4 self-start md:order-none md:flex-col md:items-start md:gap-0 md:self-center"
+  data-hero-reveal
+>
+  <!-- Portrait photo card, static gradient border; one image, sized by class -->
   <div
-    class="relative w-[clamp(148px,20vw,196px)] aspect-[3/4] p-[4px]"
+    class="relative w-[72px] aspect-[3/4] flex-shrink-0 p-[3px] md:w-[clamp(148px,20vw,196px)] md:p-[4px]"
     style="background: linear-gradient(145deg, color-mix(in oklch, var(--color-accent) 55%, transparent), color-mix(in oklch, var(--color-accent) 18%, var(--color-border)))"
     data-parallax-wrap
   >
@@ -32,7 +36,7 @@ const { lang = 'en' } = Astro.props
   </div>
 
   <!-- Availability pill -->
-  <div class="mt-4 flex justify-start" data-hero-reveal>
+  <div class="flex justify-start md:mt-4" data-hero-reveal>
     <div
       class="inline-flex items-center gap-2 rounded-full border px-4 py-2"
       style="border-color: color-mix(in oklch, var(--color-accent) 22%, transparent); background: color-mix(in oklch, var(--color-accent) 7%, transparent)"

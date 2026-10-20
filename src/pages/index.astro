@@ -8,7 +8,6 @@ import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import Valley from '@/components/game/Valley.astro'
 import { projects } from '@/data/projects'
-import { getSkillIconUrl } from '@/utils/skillIcon'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 
@@ -26,22 +25,10 @@ const categoryLabel: Record<string, string> = {
   'open-source': 'Open Source',
 }
 
-const capabilities = [
-  {
-    area: 'Frontend',
-    description: 'Component-driven UIs with Vue 3, React, and Astro. Micro-Frontend Architecture with Module Federation.',
-    stack: ['Vue 3', 'React', 'Astro', 'TypeScript', 'Tailwind'],
-  },
-  {
-    area: 'Backend',
-    description: 'REST and event-driven APIs with NestJS and Node.js. PostgreSQL, Redis, and SFTP integrations.',
-    stack: ['NestJS', 'Node.js', 'PostgreSQL', 'Redis', 'Express'],
-  },
-  {
-    area: 'Architecture',
-    description: 'Microservices with Factory pattern, contract-first API design enforced by Zod, GitLab CI pipelines.',
-    stack: ['Microservices', 'Module Federation', 'Zod', 'Docker', 'GitLab CI'],
-  },
+// The old capability chips, deduplicated: one scannable line, nothing added.
+const stack = [
+  'Vue 3', 'React', 'Astro', 'TypeScript', 'Tailwind', 'NestJS', 'Node.js', 'PostgreSQL', 'Redis',
+  'Express', 'Microservices', 'Module Federation', 'Zod', 'Docker', 'GitLab CI',
 ]
 ---
 
@@ -58,10 +45,10 @@ const capabilities = [
   <PageAnimations />
 
   <!-- ─── Hero ─────────────────────────────────────────────────── -->
-  <section class="border-border relative border-b px-4 py-16 md:py-24">
-    <div class="relative flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
+  <section class="border-border relative border-b px-4 py-12 md:py-16">
+    <div class="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-start md:gap-16">
       <!-- Left: text -->
-      <div class="flex-1">
+      <div class="md:max-w-3xl">
         <p class="eyebrow mb-4" data-hero-reveal>{t('en', 'hero.eyebrow')}</p>
         <h1
           class="title-display max-w-3xl"
@@ -147,44 +134,12 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- ─── 02 · What I Build ──────────────────────────────────── -->
-  <section class="border-border border-b" data-stagger-group>
+  <!-- ─── 02 · Stack ─────────────────────────────────────────── -->
+  <section class="border-border border-b">
     <div class="chapter-heading px-4">
-      <h2 class="chapter-label inline">02 · What I Build</h2>
+      <h2 class="chapter-label inline">02 · Stack</h2>
     </div>
-
-    <div class="divide-border divide-y px-4 pb-8 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-      {capabilities.map((cap, i) => (
-        <div class="py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0" data-stagger-item>
-          <p class="text-muted font-mono text-label uppercase tracking-widest">
-            0{i + 1}
-          </p>
-          <h3 class="text-foreground mt-2 text-base font-semibold">{cap.area}</h3>
-          <p class="text-muted mt-2 text-sm leading-relaxed">{cap.description}</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            {cap.stack.map((s) => {
-              const url = getSkillIconUrl(s)
-              return url ? (
-                <div class="flex flex-col items-center gap-1">
-                  <img
-                    src={url}
-                    alt={s}
-                    title={s}
-                    width="32"
-                    height="32"
-                    loading="lazy"
-                    class="pixel-sprite"
-                  />
-                  <span class="text-muted font-mono text-label leading-none">{s}</span>
-                </div>
-              ) : (
-                <span class="diff-tag self-center">{s}</span>
-              )
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
+    <p class="text-foreground max-w-4xl px-4 pb-8 text-sm leading-relaxed">{stack.join(' · ')}</p>
   </section>
 
   <!-- ─── 03 · Recent Writing ────────────────────────────────── -->
@@ -249,7 +204,8 @@ const capabilities = [
         </h2>
         <p class="text-muted mt-3 max-w-md text-sm leading-relaxed">
           Looking for fullstack or backend-focused positions. Strong preference for TypeScript,
-          Vue / React, and NestJS stacks. Remote or Jakarta-based.
+          Vue / React, and NestJS stacks. Remote or Jakarta-based. Also open to freelance projects:
+          a whole system, front end to back end, from one person.
         </p>
       </div>
       <div class="flex flex-wrap gap-3">
