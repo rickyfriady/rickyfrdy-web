@@ -36,6 +36,9 @@ coverage
 .claude/
 .opencode/
 .playwright-mcp/
+.hallmark/
+.oil-ui/
+.taste-skill/
 skills-lock.json
 visual-*.png
 

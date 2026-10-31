@@ -21,9 +21,11 @@ contradictory advice, not better design.
 | The request | Use |
 |---|---|
 | Any UI, copy, or layout work | `antislop` (core, always) + its task skill above |
-| Score a page: how good is it, what to fix first | `/design-check [target]` (audit /20 + critique /40) |
+| Score a page: how good is it, what to fix first | `/design-check [target]` (audit /20 + critique /40, with slop lint and a blind walkthrough beside the scores) |
+| Mechanical AI-slop tells on a page | `/design-check` audit check 5 (Hallmark `sloplint`); `/hallmark audit <path>` only when asked by name |
+| Does a cold visitor get what the page is for | `/design-check` step 2b (oil-ui blind walkthrough) |
 | Craft pass: polish, harden, adapt, animate, typeset, clarify, distill | `impeccable` |
-| A new surface whose direction is not in DESIGN.md yet | `impeccable` `shape`, then its build commands |
+| A new surface whose direction is not in DESIGN.md yet | `impeccable` `shape`, then its build commands; oil-ui's text-first "three directions, pick one" step may supply the alternatives |
 | Brand artefacts: logo systems, identity boards | `brandkit` |
 | Motion principles or CSS transition recipes | `motion-design` or `transitions-dev`, with `steps()` easing |
 
@@ -35,18 +37,50 @@ Helpers, never the lead:
   (off-centre, blank gaps, edge text, untitled sections). Do not let it lead:
   its `draw.mjs` picks styles and its scroll scenes smooth-scroll, both ruled
   out by DESIGN.md.
+- **Hallmark** supplies `sloplint.mjs`, a linter for slop tells (transition on
+  `all`, emoji icons, arrows glued to links, content hidden without JS, `vh`
+  heroes), static and rendered. Used: `sloplint` and, by name only,
+  `/hallmark audit`. Not used: themes, `deal`/`draw`/`scaffold`, `redesign`,
+  the CSS stamp, the photo library, image generation, the edit-time hook.
+  Gates DESIGN.md decides are dropped by `/design-check`, listed in
+  `.impeccable/critique/ignore.md`.
+- **oil-ui** supplies the blind UX walkthrough (`references/ux-review.md`): a
+  fresh sub-agent gets only the URL and a phone viewport and reports what it
+  took the page to be for. Its direction step may serve `impeccable shape` for
+  a surface DESIGN.md does not cover. Not used: its scroll-narrative and motion
+  references, its style explorer for settled surfaces, its Oil UI Pro upsell
+  (ignore that line). Its update check is off (`OIL_NO_UPDATE_CHECK=1` in
+  `.claude/settings.json`), since it otherwise calls `ui.oiloil.org`.
+
+How they connect to impeccable:
+- `/design-check` folds Hallmark P1 findings and reproducible walkthrough
+  obstacles into the critique snapshot's Priority Issues, tagged
+  `[hallmark <gate>]` and `[walkthrough]`, so `/impeccable polish` takes them
+  as backlog.
+- After any impeccable craft pass that edits UI (polish, harden, adapt,
+  animate, typeset, clarify, distill, layout, colorize, quieter, bolder), run
+  `node .claude/skills/hallmark/scripts/sloplint.mjs <touched files> --genre playful --json`,
+  drop the gates listed in `ignore.md`, and fix or report any new `FAIL` before
+  handing back.
 
 Not installed, on purpose: `redesign-existing-projects` (retired upstream into
 taste-skill), `high-end-visual-design` and `design-taste-frontend-v1` (a
-generic premium-agency look), and oil-ui (direction exploration is settled in
-DESIGN.md; it also phones home for updates on every run). Revisit oil-ui when a
-surface needs a new direction.
+generic premium-agency look).
 
 **DESIGN.md outranks every skill.** These skills supply method; DESIGN.md
 supplies the direction. Where a skill's default aesthetic contradicts DESIGN.md
 (soft shadows, large radii, glassmorphism, blue or green accents, smooth
 easing), DESIGN.md wins and the conflict gets said out loud, not silently
-split.
+split. Known conflicts, each settled for DESIGN.md:
+- Hallmark Floor 9 bans eyebrows and tracked or mono labels; DESIGN.md
+  "Typography" makes mono tracked uppercase the site's label style.
+- Hallmark gate 80 bans drawn illustration; the valley is drawn art.
+- Hallmark themes and its photo library pick palette, type and imagery;
+  DESIGN.md has fixed all three.
+- oil-ui's motion and scroll-narrative references build scroll-driven scenes
+  with library eases; easing here is `steps()`, never a curve.
+- oil-ui's three-direction exploration reopens a settled direction; use it only
+  for a surface DESIGN.md does not cover.
 
 Hard constraints no skill may override, each enforced by a test or a token:
 - Radius is 0. Every `--radius-*` token is zeroed in `global.css`.
@@ -79,14 +113,26 @@ gitignored, so all of this is per-machine and a fresh clone has none of it.
 - taste-skill (project plugin, default skill only, not `taste-skill-classics`):
   `claude plugin marketplace add Leonxlnx/taste-skill`, then `claude plugin
   install taste-skill@taste-skill --scope project`.
+- Hallmark (project skill): `npx --registry=https://registry.npmjs.org skills
+  add nutlope/hallmark -a claude-code -y`. Its render tier needs
+  `puppeteer-core` in `~/.cache/hallmark-puppeteer` (`npm i puppeteer-core`
+  there) and `env.HALLMARK_PUPPETEER` pointing at it in `.claude/settings.json`;
+  without it `sloplint` runs static only.
+- oil-ui (project skill): `npx --registry=https://registry.npmjs.org skills add
+  oil-oil/oil-ui -a claude-code -y`, then set `env.OIL_NO_UPDATE_CHECK` to `"1"`
+  in `.claude/settings.json`. Its `shoot.mjs` needs Node 22+ and Chrome.
+- The `--registry` flag is there because this machine's default npm registry is
+  a work mirror.
 - `brandkit` moved to `Leonxlnx/imagegen-skills`; `motion-design` is
   `LottieFiles/motion-design-skill`; `transitions-dev` is
   `Jakubantalik/transitions.dev` (`npx skills add <repo>`).
 - `/design-check` is `.claude/commands/design-check.md`: it runs impeccable audit
   then critique on a target (default the homepage), adds the hard-constraint
   checks above to audit's Theming score, and gives critique's evidence sub-agent
-  a taste-skill `inspect.mjs` run at 1440, 768 and 390. Recreate it from the
-  `design-review-loop` OpenSpec change if it is missing.
+  a taste-skill `inspect.mjs` run at 1440, 768 and 390, plus Hallmark
+  `sloplint` (audit check 5) and an oil-ui blind walkthrough (step 2b).
+  Recreate it from the `design-review-loop` and `adopt-hallmark-and-oil-ui`
+  OpenSpec changes if it is missing.
 <!-- design-routing:end -->
 
 ## Design Context
