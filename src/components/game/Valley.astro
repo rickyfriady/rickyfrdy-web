@@ -10,6 +10,7 @@ import { projects } from '@/data/projects'
 import { npcs, quests } from '@/data/quests'
 import { villagers } from '@/data/villagers'
 import { rooms } from '@/data/rooms'
+import { localizePath } from '@/i18n/path'
 import { t } from '@/i18n/ui'
 import { fetchActivity } from '@/utils/github'
 import { buildNpcs, buildScene, buildVillagers, sceneDestinations } from '@/utils/game/scene'
@@ -39,6 +40,8 @@ interface Props {
 }
 
 const { lang, showcase = false, mobilePlayScene = showcase, linkedElsewhere = [] } = Astro.props
+/** Below `md` without a playable world, the list only repeats the bottom nav, so it steps aside. */
+const fromMd = mobilePlayScene ? '' : 'hidden md:block'
 const experiences = lang === 'id' ? experiencesId : experiencesEn
 
 const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
@@ -180,19 +183,35 @@ const kindLabel = (kind: string) =>
   <div class="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-start">
     <div class="lg:w-96 lg:shrink-0" data-list-col>
       <h2 class="chapter-label inline">{t(lang, 'case.file')}</h2>
-      <p class="text-muted mt-2 text-sm leading-relaxed">{t(lang, 'valley.intro')}</p>
-      {!showcase && (
-        <noscript><p class="text-muted mt-2 text-sm leading-relaxed">{t(lang, 'game.loading')}</p></noscript>
+      {!mobilePlayScene && (
+        <p class="text-muted mt-2 text-sm leading-relaxed md:hidden">
+          {t(lang, 'valley.phone')}
+          <a
+            href={localizePath('/play', lang)}
+            class="text-accent hover:text-accent-hover flex w-fit min-h-11 items-center font-medium underline underline-offset-4"
+          >
+            {t(lang, 'valley.phoneLink')}
+          </a>
+        </p>
       )}
-      <ul class="mt-4 grid grid-cols-2 gap-2" aria-label={t(lang, 'game.destinations')}>
+      <p class:list={['text-muted mt-2 text-sm leading-relaxed', fromMd]}>{t(lang, 'valley.intro')}</p>
+      {!showcase && (
+        <noscript><p class:list={['text-muted mt-2 text-sm leading-relaxed', fromMd]}>{t(lang, 'game.loading')}</p></noscript>
+      )}
+      <ul
+        class:list={['mt-4 grid-cols-2 gap-2', mobilePlayScene ? 'grid' : 'hidden md:grid']}
+        aria-label={t(lang, 'game.destinations')}
+      >
         {places.map((object) => (
           <li>
-            <a href={object.href} class="menu-cursor portal-card no-underline">
-              <span class="text-muted hidden font-mono text-label tracking-[0.12em] uppercase md:block">
-                {object.place}
-              </span>
-              <span class="text-foreground block text-sm font-semibold leading-tight md:mt-1">
+            {/* The page comes first in the DOM, so the link's name starts with where it
+                goes; the place name still shows above it. */}
+            <a href={object.href} class="menu-cursor portal-card flex flex-col no-underline">
+              <span class="text-foreground block text-sm font-semibold leading-tight">
                 {object.title}
+              </span>
+              <span class="text-muted order-first hidden font-mono text-label tracking-[0.12em] uppercase md:mb-1 md:block">
+                {object.place}
               </span>
               {/* Between lg and xl the stage drops to scale 2 and its column shortens, so the
                   summaries step aside there and the world, not its index, sets the height. */}
@@ -221,7 +240,13 @@ const kindLabel = (kind: string) =>
       </ul>
     </div>
 
-    <div class="flex min-w-0 flex-1 flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center" data-stage-col>
+    <div
+      class:list={[
+        'min-w-0 flex-1 flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center',
+        mobilePlayScene ? 'flex' : 'hidden md:flex'
+      ]}
+      data-stage-col
+    >
       <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden w-full md:block'}>
         <PlayScene
           client:only="react"
@@ -242,9 +267,6 @@ const kindLabel = (kind: string) =>
           </p>
         </PlayScene>
       </div>
-      {!mobilePlayScene && (
-        <p class="text-muted text-sm md:hidden">{t(lang, 'game.smallScreen')}</p>
-      )}
 
       {showcase && (
         <CharacterShowcase

@@ -21,6 +21,8 @@ export interface Project {
   technologies: string[]
   keyMetric?: string
   heroImage?: string
+  /** Where a card's image strip focuses (CSS object-position), when the product is not at the centre. */
+  heroFocus?: string
   role?: string
   metrics?: Metric[]
   liveUrl?: string

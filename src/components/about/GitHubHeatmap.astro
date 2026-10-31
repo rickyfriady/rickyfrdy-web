@@ -144,7 +144,7 @@ const statItems = [
                   tabindex={weekIdx === 0 && dayIdx === 0 ? 0 : -1}
                   aria-label={`${d.count} contribution${d.count !== 1 ? 's' : ''} on ${formatDate(d.date)}`}
                   title={`${d.count} contributions on ${formatDate(d.date)}`}
-                  class={`${getColorClass(d.level)} h-[12px] w-[12px] md:h-[8px] md:w-[8px] cursor-default transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:scale-125 hover:scale-125 hover:ring-2 hover:ring-accent`}
+                  class={`${getColorClass(d.level)} h-[12px] w-[12px] md:h-[8px] md:w-[8px] cursor-default transition-[transform,box-shadow] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:scale-125 hover:scale-125 hover:ring-2 hover:ring-accent`}
                   style={`background-image: ${getLevelPattern(d.level)}`}
                 />
               )

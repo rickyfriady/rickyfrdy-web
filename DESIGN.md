@@ -40,15 +40,17 @@ And the proof comes before the world. The hero's one sentence names the
 employer, both tiers and real numbers from `src/data/projects.ts`, so the first
 screen says what shipped before the valley asks for attention.
 `tests/pages/heroProof.test.ts` keeps every number in it traceable. Under the
-two calls to action, a quieter link offers the résumé PDF in the page's
-language, because it is the document a recruiter came for.
+two calls to action, a link at the proof sentence's size offers the résumé
+PDF in the page's language, because it is the document a recruiter came for.
+The nav and footer "Résumé" stay the résumé page.
 
 Below `md` the photo is a 72px thumbnail in one row with the availability
 mark, above the eyebrow, so a phone's first screen shows both clear of the
 bottom nav. From `md` it is the portrait card, set 64px beside the copy rather
 than at the far edge. The skills sit in one plain Stack line under the selected
 work, the same technologies the old capability grid listed, nothing added;
-`/about` holds the full matrix.
+`/about` holds the full matrix. The page closes on "Open to Roles and
+Projects.", one headline for both readers, with no kicker label above it.
 
 ## Colors
 
@@ -118,6 +120,13 @@ accent under three kinds of colourblindness.
   body copy.
 - Pixel headings snap to integer sizes so the glyph grid stays clean.
 - `title-accent` differentiates by colour only. No italic.
+- **Labels are mono, uppercase and tracked, site-wide.** `chapter-label` is the
+  reference (0.12em); captions, metadata, table heads, small buttons and the
+  short label above a heading (a category, a page kicker) use the same
+  register. This is the pixel-terminal voice, decided, not a default to remove.
+  It does not lower the size floor: a label under 11px is still a finding. A
+  headline the page names as having no kicker (the homepage closing line)
+  keeps none.
 - **Nothing on the landing page is under 11px.** The smallest size is the
   `text-label` utility (0.6875rem), used for labels, captions, the bottom nav,
   scene labels and the game HUD, and `tests/styles/type-floor.test.ts` holds
@@ -179,8 +188,12 @@ what it does (wall, water, door, ground).
   one short line when you walk up. They have no name, quest, schedule or
   content, never appear in a list or the character sheet, and are not the same
   kind of thing as the collaborators, who are the only people with names.
-- **The list beside the world is a grid, not a column.** Its places sit two to a
-  row at every width, so on desktop the list stays shorter than the world and
+- **On a phone the band points, it does not list.** Below `md` the landing
+  band shows its label and one line linking the walkable valley at `/play`,
+  which a phone can play; the place tiles would only repeat the bottom nav.
+  They stay in the HTML. `/play` itself keeps its list at every width.
+- **The list beside the world is a grid, not a column.** From `md` its places
+  sit two to a row, so on desktop the list stays shorter than the world and
   the world sets the band's height. Between `lg` and `xl`, where the stage drops
   to scale 2, the place summaries step aside; the list on the landing page also
   leaves out pieces the page already links as cards or posts.
@@ -212,10 +225,14 @@ component cannot quietly reintroduce a rounded corner or a smooth curve.
 The `evidence-*` utility names are CASE FILE leftovers; renaming them is part of
 the identity cleanup, not the palette.
 
-"Featured" is a still text label (`eyebrow`) on the standard `pixel-frame`. The
-thread colour stays reserved for attention (board threads, the
-`pixel-frame-thread` state), so it never marks a card as featured, and nothing
-on a card loops: a status mark is drawn still. A project card's image is a
+"Featured" is a still text label (`eyebrow`) on the standard `pixel-frame`,
+used where a surface marks featured projects (the projects grid). The landing
+page's "Selected Work" is already the selection, so its cards carry no
+Featured label, no company logo (the hero names the employer), and the same
+frame; their head is the category and the date. The thread colour stays
+reserved for attention (board threads, the `pixel-frame-thread` state), so it
+never marks a card as featured, and nothing on a card loops: a status mark is
+drawn still. A project card's image is a
 strip above its text, never under it, and the link is named by the project
 title. Metric values are body-small in the foreground colour; their labels stay
 muted.
@@ -225,6 +242,8 @@ standalone text link (section links, footer links, drawer items): the text
 keeps its size and only the hit area grows. Links inside running prose are the
 exception. Focus is always visible and never traded for a decorative marker.
 
+The skip link speaks the page's language.
+
 Language is reachable at every width: the header switcher from `md`, and below
 it the bottom nav's More drawer, whose last item names the other language in
 that language ("Bahasa Indonesia", "English"). Every language control uses
@@ -233,8 +252,9 @@ that language ("Bahasa Indonesia", "English"). Every language control uses
 Indonesian page instead of a 404.
 
 The companion lives in the side gutter, left of the content column, and never
-crosses it. Where the gutter cannot hold its 44px dismiss button plus one sprite
-(about 1328px wide and narrower), it does not render, and without JavaScript it
+crosses it. Its dismiss sits 16px in from the screen's corner. Where the gutter
+cannot hold that inset, the 44px dismiss button and one sprite (below about
+1390px wide), it does not render, and without JavaScript it
 is not on the page at all. Its dismiss is a named button and the last stop in
 the tab order.
 

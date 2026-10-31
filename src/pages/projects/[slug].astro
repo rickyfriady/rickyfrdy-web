@@ -62,7 +62,7 @@ const pairs = project.challenges
 
       {project.role && (
         <div class="mb-6 flex flex-wrap items-baseline gap-3">
-          <span class="font-mono text-[10px] tracking-[0.22em] uppercase text-accent">
+          <span class="font-mono text-label tracking-[0.22em] uppercase text-accent">
             {t(lang, 'case.role')}
           </span>
           <span class="text-foreground text-sm">{project.role}</span>
@@ -87,7 +87,7 @@ const pairs = project.challenges
   <!-- § Overview -->
   <section class="border-border border-b" data-reveal>
     <div class="px-6 py-12 md:px-16 md:py-14">
-      <p class="font-mono mb-6 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+      <p class="font-mono mb-6 text-label tracking-[0.25em] uppercase text-accent">
         {t(lang, 'case.overview')}
       </p>
       <h2 class="text-foreground text-xl font-semibold leading-snug mb-5 max-w-2xl md:text-2xl">
@@ -107,7 +107,7 @@ const pairs = project.challenges
   {project.metrics && project.metrics.length > 0 && (
     <section class="border-border border-b" data-reveal>
       <div class="px-6 py-12 md:px-16 md:py-14">
-        <p class="font-mono mb-8 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+        <p class="font-mono mb-8 text-label tracking-[0.25em] uppercase text-accent">
           {t(lang, 'case.impact')}
         </p>
         <MetricCounters metrics={project.metrics} />
@@ -118,7 +118,7 @@ const pairs = project.challenges
   <!-- § Problem → Solution -->
   <section class="border-border border-b" data-reveal>
     <div class="px-6 py-12 md:px-16 md:py-14">
-      <p class="font-mono mb-10 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+      <p class="font-mono mb-10 text-label tracking-[0.25em] uppercase text-accent">
         {t(lang, 'case.problem')} → {t(lang, 'case.solution')}
       </p>
 
@@ -127,7 +127,7 @@ const pairs = project.challenges
           <div class="grid gap-0 sm:grid-cols-[1fr_40px_1fr]" data-pair>
             <!-- Challenge -->
             <div class="pb-6 sm:pb-0 sm:pr-8">
-              <p class="font-mono mb-3 text-[9px] tracking-[0.25em] uppercase text-muted">
+              <p class="font-mono mb-3 text-label tracking-[0.25em] uppercase text-muted">
                 {t(lang, 'case.problem')}
               </p>
               <p class="text-foreground text-sm leading-relaxed">{pair.challenge}</p>
@@ -147,7 +147,7 @@ const pairs = project.challenges
 
             <!-- Solution -->
             <div class="border-t border-border pt-6 sm:border-0 sm:pt-0 sm:pl-8">
-              <p class="font-mono mb-3 text-[9px] tracking-[0.25em] uppercase text-muted">
+              <p class="font-mono mb-3 text-label tracking-[0.25em] uppercase text-muted">
                 {t(lang, 'case.solution')}
               </p>
               <p class="text-foreground text-sm leading-relaxed">{pair.solution}</p>
@@ -161,7 +161,7 @@ const pairs = project.challenges
   <!-- § Key highlights -->
   <section class="border-border border-b" data-reveal>
     <div class="px-6 py-12 md:px-16 md:py-14">
-      <p class="font-mono mb-8 text-[10px] tracking-[0.25em] uppercase text-accent/70">
+      <p class="font-mono mb-8 text-label tracking-[0.25em] uppercase text-accent">
         {t(lang, 'case.highlights')}
       </p>
       <ul class="space-y-4 max-w-2xl">
@@ -174,6 +174,25 @@ const pairs = project.challenges
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- § Next step: the reader who finished the evidence can act on it here,
+       not only browse to another project. Not data-reveal: it must never be hidden. -->
+  <section class="border-border border-b">
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-3 px-6 py-10 md:px-16">
+      <a
+        href="/contact"
+        class="menu-cursor bg-accent text-background hover:bg-accent-hover inline-flex min-h-[44px] items-center px-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      >
+        Talk about a role or project
+      </a>
+      <a
+        href="/resume.pdf"
+        class="text-foreground hover:text-accent inline-flex min-h-11 items-center text-base underline underline-offset-4 transition-colors"
+      >
+        {t(lang, 'hero.resume')}
+      </a>
     </div>
   </section>
 
@@ -229,9 +248,9 @@ const pairs = project.challenges
 
       // 3. Metadata items: stagger fade + rise
       const heroItems = document.querySelectorAll<HTMLElement>('[data-hero-item]')
-      gsap.to(heroItems, {
-        opacity: 1,
-        y: 0,
+      gsap.from(heroItems, {
+        opacity: 0,
+        y: 12,
         stagger: 0.12,
         duration: 0.75,
         ease: 'steps(12)',

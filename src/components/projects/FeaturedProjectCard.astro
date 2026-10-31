@@ -1,19 +1,16 @@
 ---
 import type { Project } from '@/models'
-import FinLogo from '@/components/ui/FinLogo.astro'
-import FeaturedBadge from '@/components/ui/FeaturedBadge.astro'
 import BlurhashImage from '@/components/ui/BlurhashImage.astro'
 
 interface Props {
   project: Project
   categoryLabel?: string
-  featuredLabel?: string
   locale?: string
   /** The page's locale; the card shows that locale's copy where the project records it. */
   lang?: 'en' | 'id'
 }
 
-const { project, categoryLabel, featuredLabel = 'Featured', locale = 'en-US', lang = 'en' } = Astro.props
+const { project, categoryLabel, locale = 'en-US', lang = 'en' } = Astro.props
 const copy = (lang !== 'en' && project.translations?.[lang]) || project
 const catLabel = categoryLabel ?? project.category.replace('-', ' ')
 const dateStr = new Date(project.date).toLocaleDateString(locale, { month: 'short', year: 'numeric' })
@@ -22,16 +19,12 @@ const stat1 = copy.metrics?.[0]
 const stat2 = copy.metrics?.[1]
 ---
 
-<div class:list={["relative", project.featured ? "pixel-frame" : ""]}>
+<!-- Every landing card is an equal: "Selected Work" is already the selection. -->
+<div class="pixel-frame relative">
 <a
   href={`/projects/${project.slug}`}
   aria-labelledby={`card-title-${project.slug}`}
-  class:list={[
-    "group relative flex flex-col overflow-hidden no-underline min-h-[220px] transition-all duration-300",
-    project.featured
-      ? "z-10"
-      : "border border-border hover:border-accent/60"
-  ]}
+  class="group relative z-10 flex min-h-[220px] flex-col overflow-hidden no-underline transition-colors duration-300"
   style="background: var(--color-surface);"
 >
   <!-- ── Image strip: above the text, so no text ever sits on it ── -->
@@ -40,32 +33,22 @@ const stat2 = copy.metrics?.[1]
       <BlurhashImage
         src={project.heroImage}
         alt=""
-        class="h-full w-full object-cover object-left-top
-               grayscale transition-[transform,filter] duration-700 ease-out will-change-transform
-               group-hover:grayscale-0"
+        position={project.heroFocus}
+        srcset={`${project.heroImage.replace(/\.webp$/, '-720.webp')} 720w, ${project.heroImage} 1440w`}
+        sizes="(min-width: 768px) 360px, calc(100vw - 32px)"
+        class="h-full w-full object-cover object-center"
       />
     </div>
   )}
 
   <!-- ── Card content ───────────────────────────────────────────── -->
   <div class="relative z-10 flex flex-1 flex-col p-5">
-    <!-- Top row: badges (left), date pill and logo side by side (right) -->
-    <div class="mb-3 flex items-start justify-between gap-2">
-      <div class="flex flex-wrap items-center gap-2">
-        {project.featured && <FeaturedBadge label={featuredLabel} />}
-        <span class="diff-tag">{catLabel}</span>
-      </div>
-      <div class="flex flex-shrink-0 items-center gap-2">
-        <span
-          class="rounded-full border px-2 py-1 font-mono text-label leading-tight
-                 border-accent/50 text-accent"
-        >
-          {dateStr}
-        </span>
-        {project.companyLogo && (
-          <FinLogo name={project.companyLogo} size={32} bg label={project.company} />
-        )}
-      </div>
+    <!-- Head: category and date only; the hero already names the employer -->
+    <div class="mb-3 flex items-center justify-between gap-2">
+      <span class="diff-tag">{catLabel}</span>
+      <span class="border-accent/50 text-accent border px-2 py-1 font-mono text-label leading-tight">
+        {dateStr}
+      </span>
     </div>
 
     <div>

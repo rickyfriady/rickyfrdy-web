@@ -1,5 +1,8 @@
 /**
- * Runs axe against the real rendered pages.
+ * Runs axe against the real rendered pages, then checks DESIGN.md's hard
+ * constraints as rendered: radius 0 and no blurred shadow. The tokens are
+ * zeroed in global.css, but a utility like `rounded` reached past them on the
+ * brand link, so only the browser can say what actually paints.
  *
  * A script rather than a vitest suite: axe needs a real browser and a running
  * server, neither of which the jsdom unit environment has, and the whole check
@@ -20,7 +23,7 @@ const OWN_PORT = 4322
 
 // One route per distinct layout. /play carries the third palette, and /board
 // is the only page whose main content is a canvas.
-const routes = ['/', '/projects', '/blog', '/about', '/contact', '/now', '/board', '/play']
+const routes = ['/', '/id/', '/projects', '/projects/singel-app', '/blog', '/about', '/contact', '/now', '/board', '/play']
 
 const reachable = async (url) => {
   try {
@@ -64,6 +67,28 @@ async function resolveBase() {
   throw new Error(`dev server did not answer on ${base}`)
 }
 
+/** Visible elements that render a corner radius or a shadow with blur. */
+const constraintBreaches = (page) =>
+  page.evaluate(() => {
+    const found = []
+    for (const el of document.querySelectorAll('body *')) {
+      const box = el.getBoundingClientRect()
+      if (!box.width || !box.height) continue
+      const cs = getComputedStyle(el)
+      if (cs.visibility === 'hidden' || cs.display === 'none') continue
+      const name = `${el.tagName.toLowerCase()}.${[...el.classList].slice(0, 2).join('.')}`
+      if (cs.borderTopLeftRadius !== '0px' || cs.borderBottomRightRadius !== '0px')
+        found.push(`radius ${cs.borderTopLeftRadius} on ${name}`)
+      if (cs.boxShadow !== 'none') {
+        // Strip colour functions, then the third length of each shadow is its blur.
+        const shadows = cs.boxShadow.replace(/[a-z]+\([^)]*\)/g, '').split(',')
+        if (shadows.some((s) => parseFloat((s.match(/-?[\d.]+px/g) || [])[2] || '0') > 0))
+          found.push(`blurred shadow on ${name}`)
+      }
+    }
+    return [...new Set(found)]
+  })
+
 const BASE = await resolveBase()
 const browser = await chromium.launch()
 // axe needs an explicit context; a page off browser.newPage() is rejected.
@@ -91,12 +116,21 @@ for (const route of routes) {
     }
   }
 
-  if (violations.length === 0) {
+  const breaches = []
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.waitForTimeout(200)
+    for (const b of await constraintBreaches(page)) breaches.push(`${b} @${width}`)
+  }
+  await page.setViewportSize({ width: 1280, height: 720 })
+
+  if (violations.length === 0 && breaches.length === 0) {
     console.log(`ok    ${route}`)
     continue
   }
-  failures += violations.length
+  failures += violations.length + breaches.length
   console.log(`FAIL  ${route}`)
+  for (const b of [...new Set(breaches)].slice(0, 8)) console.log(`  [constraint] ${b}`)
   for (const v of violations) {
     console.log(`  [${v.impact}] ${v.id}: ${v.help}`)
     for (const node of v.nodes.slice(0, 3)) console.log(`      ${node.target.join(' ')}`)

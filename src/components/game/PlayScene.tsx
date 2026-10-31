@@ -680,7 +680,8 @@ export default function PlayScene({
       {/* Desktop HUD */}
       {!isHandheld && (
         <div className="game-hud">
-          <span>{room.name}</span>
+          {/* Outdoors the band's heading already names the valley; indoors this says where you are. */}
+          <span>{room === rooms[0] ? null : room.name}</span>
           <span className="flex gap-2">
             <button
               type="button"
@@ -1142,7 +1143,7 @@ export default function PlayScene({
                 href={dialogue.href}
                 onClick={(e) => e.stopPropagation()}
               >
-                {dialogue.linkLabel} →
+                {dialogue.linkLabel}
               </a>
             )}
             <button

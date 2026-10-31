@@ -105,16 +105,16 @@ const groups = skillGroups.map((g) => g.label)
     let query = ''
 
     function movePill(tab: HTMLElement, animate: boolean) {
+      // The pill is 1px wide; scaleX stretches it to the tab, so only transform animates.
+      const place = `translateX(${tab.offsetLeft}px) scaleX(${tab.offsetWidth})`
       if (!animate) {
         const prev = pill.style.transition
         pill.style.transition = 'none'
-        pill.style.transform = `translateX(${tab.offsetLeft}px)`
-        pill.style.width = `${tab.offsetWidth}px`
+        pill.style.transform = place
         void pill.offsetWidth
         pill.style.transition = prev
       } else {
-        pill.style.transform = `translateX(${tab.offsetLeft}px)`
-        pill.style.width = `${tab.offsetWidth}px`
+        pill.style.transform = place
       }
     }
 

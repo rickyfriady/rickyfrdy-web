@@ -4,8 +4,8 @@ import { isIdPath } from '@/i18n/path'
 const isId = isIdPath(Astro.url.pathname)
 const currentLang = isId ? 'id' : 'en'
 const LANGS = [
-  { code: 'en', flag: '🇺🇸', label: 'English' },
-  { code: 'id', flag: '🇮🇩', label: 'Indonesia' }
+  { code: 'en', label: 'English' },
+  { code: 'id', label: 'Bahasa Indonesia' }
 ] as const
 const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 ---
@@ -20,7 +20,6 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
     class="glass-btn flex min-h-11 items-center gap-2 px-3 text-sm"
     data-current={currentLang}
   >
-    <span class="text-base leading-none" id="lang-flag">{active.flag}</span>
     <span class="text-foreground font-mono text-xs uppercase tracking-wide" id="lang-code">{active.code}</span>
     <svg
       id="lang-chevron"
@@ -53,7 +52,6 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
             class="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
             style={isActive ? 'background: color-mix(in oklch, var(--color-accent) 12%, transparent); color: var(--color-accent)' : ''}
           >
-            <span class="text-base leading-none">{lang.flag}</span>
             <span class="font-medium">{lang.label}</span>
             {isActive && (
               <svg class="ml-auto h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -82,12 +80,9 @@ const active = LANGS.find((l) => l.code === currentLang) ?? LANGS[0]
 
   function updateDisplay() {
     const lang = isIdPath(window.location.pathname) ? 'id' : 'en'
-    const FLAGS: Record<string, string> = { en: '🇺🇸', id: '🇮🇩' }
     const btn = document.getElementById('lang-btn')
-    const flag = document.getElementById('lang-flag')
     const code = document.getElementById('lang-code')
     if (btn) btn.dataset.current = lang
-    if (flag) flag.textContent = FLAGS[lang]
     if (code) code.textContent = lang
 
     // Scoped to the switcher's own options. A bare document-wide

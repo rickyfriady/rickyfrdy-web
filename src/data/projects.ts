@@ -4,6 +4,8 @@ export const projects = [
   {
     slug: 'singel-app',
     heroImage: '/works/works-1.webp',
+    // The capture's top half is a pale banner; the news cards below it are the product.
+    heroFocus: 'center 85%',
     title: 'Singel APP (Pegadaian Kita)',
     shortDescription:
       'Company-wide Micro-Frontend application built with Vue 3 and NestJS microservices, enabling independent team deployments.',
@@ -18,18 +20,18 @@ export const projects = [
     companyLogo: 'pegadaian',
     role: 'Lead Frontend Engineer · Fullstack Developer',
     metrics: [
+      { value: '5+', label: 'teams deploy independently' },
       { value: '≥80%', label: 'unit test coverage' },
-      { value: '0', label: 'regression incidents' },
-      { value: '5+', label: 'teams deploy independently' }
+      { value: '0', label: 'regression incidents' }
     ],
     translations: {
       id: {
         shortDescription:
           'Aplikasi Micro-Frontend untuk seluruh perusahaan, dibangun dengan Vue 3 dan microservice NestJS, sehingga tiap tim bisa deploy sendiri.',
         metrics: [
+          { value: '5+', label: 'tim deploy secara mandiri' },
           { value: '≥80%', label: 'cakupan unit test' },
-          { value: '0', label: 'insiden regresi' },
-          { value: '5+', label: 'tim deploy secara mandiri' }
+          { value: '0', label: 'insiden regresi' }
         ]
       }
     },

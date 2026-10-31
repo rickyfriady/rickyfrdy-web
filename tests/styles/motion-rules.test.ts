@@ -117,3 +117,34 @@ describe('reduced motion is honoured', () => {
     expect(missing).toEqual([])
   })
 })
+
+// Hallmark gate 10a, found by `/design-check` run 7: a transition on `all`
+// animates whatever changes next, focus rings included, and animating box
+// geometry relays out every frame. Name the properties; move with transform.
+describe('motion moves transforms, not layout', () => {
+  const LAYOUT = /(?<![-\w])(width|height|top|left)(?![-\w])/
+
+  it('never transitions all', () => {
+    expect(
+      offences(/transition(?:-property)?\s*:\s*all\b|\btransition-all\b/g, () => true)
+    ).toEqual([])
+  })
+
+  it('transitions no layout property', () => {
+    const declaration = /transition(?:-property)?\s*:\s*([^;}]+)/g
+    const listed = (value: string) =>
+      value.split(',').some((part) => LAYOUT.test(part.trim().split(/\s+/)[0]))
+    const utility = /\btransition-\[([^\]]+)\]/g
+    expect([
+      ...offences(declaration, (m) => listed(m[1])),
+      ...offences(utility, (m) => m[1].split(',').some((p) => LAYOUT.test(p)))
+    ]).toEqual([])
+  })
+
+  it('keyframes no layout property', () => {
+    const keyframes = /@keyframes\s+[\w-]+\s*\{((?:[^{}]*\{[^}]*\})*)[^{}]*\}/g
+    expect(offences(keyframes, (m) => /(?<![-\w])(width|height|top|left)\s*:/.test(m[1]))).toEqual(
+      []
+    )
+  })
+})

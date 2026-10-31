@@ -5,9 +5,14 @@ interface Props {
   src: string
   alt: string
   class?: string
+  /** CSS object-position, for an image whose product sits off-centre. */
+  position?: string
+  /** Responsive candidates and slot size, so a small slot does not fetch the full image. */
+  srcset?: string
+  sizes?: string
 }
 
-const { src, alt, class: className = '' } = Astro.props
+const { src, alt, class: className = '', position, srcset, sizes } = Astro.props
 
 const hash = await getBlurhash(src)
 ---
@@ -23,7 +28,16 @@ const hash = await getBlurhash(src)
       style="transition: opacity 200ms var(--ease-out)"
     />
   )}
-  <img data-blurhash-real src={src} alt={alt} loading="lazy" class={className} />
+  <img
+    data-blurhash-real
+    src={src}
+    srcset={srcset}
+    sizes={sizes}
+    alt={alt}
+    loading="lazy"
+    class={className}
+    style={position ? `object-position: ${position}` : undefined}
+  />
 </div>
 
 <script>

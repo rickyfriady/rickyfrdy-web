@@ -3,10 +3,10 @@ import type { Season } from '@/utils/game/time'
 
 /** Leaf colours by season: the foliage's own colour, so the wind carries what the trees drop. */
 const LEAF: Record<Season, string> = {
-  spring: '#a8d878',
-  summer: '#7cc060',
-  autumn: '#e09040',
-  winter: '#e6edf0'
+  spring: 'var(--leaf-spring)',
+  summer: 'var(--leaf-summer)',
+  autumn: 'var(--leaf-autumn)',
+  winter: 'var(--leaf-winter)'
 }
 
 /** Hard caps. The DOM count is the cap, so nothing can accumulate. */
@@ -19,8 +19,8 @@ const LEAVES = [
   { left: 84, delay: 6.8, dur: 10 }
 ]
 const BUTTERFLIES = [
-  { wing: '#f0c040', left: 22, top: 62, dur: 14, delay: 0 },
-  { wing: '#cfe3f0', left: 64, top: 48, dur: 18, delay: 4 }
+  { wing: 'var(--wing-a)', left: 22, top: 62, dur: 14, delay: 0 },
+  { wing: 'var(--wing-b)', left: 64, top: 48, dur: 18, delay: 4 }
 ]
 
 interface Props {

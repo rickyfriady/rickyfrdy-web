@@ -69,7 +69,7 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
     aria-label={t(lang, 'companion.hide')}
     data-label-en={t('en', 'companion.hide')}
     data-label-id={t('id', 'companion.hide')}
-    class="bg-background border-border text-muted hover:text-accent focus-visible:ring-accent pointer-events-auto absolute bottom-0 left-0 flex size-11 border-2 focus-visible:ring-inset items-center justify-center font-mono text-xs focus-visible:ring-2 focus-visible:outline-none"
+    class="bg-background border-border text-muted hover:text-accent focus-visible:ring-accent pointer-events-auto absolute bottom-4 left-4 flex size-11 border-2 focus-visible:ring-inset items-center justify-center font-mono text-xs focus-visible:ring-2 focus-visible:outline-none"
   ><span aria-hidden="true">[×]</span></button>
 </div>
 
@@ -86,7 +86,7 @@ const frameCount = walk ? walk.to - walk.from + 1 : 1
 
   const SPEED = 26 // px per second, a stroll, not a sprint
   const BOB_MS = 180
-  const LANE_START = 48 // clear of the 44px dismiss button in the corner
+  const LANE_START = 64 // clear of the 44px dismiss button, inset 16px from the corner
   const EDGE = 8 // breathing room against the content column
 
   let raf = 0

@@ -17,7 +17,7 @@ const { repos } = Astro.props
           href={repo.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="group flex flex-col gap-2 rounded-lg border border-border/60 bg-background/40 p-3 min-h-[44px] no-underline transition-all duration-200 hover:border-accent/40 hover:bg-background/70 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          class="group flex flex-col gap-2 rounded-lg border border-border/60 bg-background/40 p-3 min-h-[44px] no-underline transition-[color,background-color,border-color,box-shadow] duration-200 hover:border-accent/40 hover:bg-background/70 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           aria-label={`View ${repo.name} on GitHub`}
         >
           <!-- Header: name + GitHub icon -->

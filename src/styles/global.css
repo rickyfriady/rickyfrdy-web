@@ -68,7 +68,9 @@
   --radius-interactive: 0;
 
   /* Zero out Tailwind's radius scale so every `rounded-*` utility already in
-     markup resolves to 0 — one override instead of editing ~40 files. */
+     markup resolves to 0 — one override instead of editing ~40 files. The bare
+     `rounded` reads `--radius`, outside the scale, so it is zeroed too. */
+  --radius: 0;
   --radius-xs: 0;
   --radius-sm: 0;
   --radius-md: 0;
@@ -77,6 +79,12 @@
   --radius-2xl: 0;
   --radius-3xl: 0;
   --radius-4xl: 0;
+
+  /* The same for shadows: DESIGN.md frames are 0-blur offsets drawn by the
+     pixel-frame utilities, so Tailwind's blurred shadow scale is removed and a
+     stray `shadow-md` paints nothing. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
 }
 
 /* ━━━━ Dark mode overrides ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -198,11 +206,20 @@
   border-radius: 0;
 }
 
+/* Ambient creatures in the valley. Decoration that carries no information, so
+   the palette contrast test leaves them alone: the leaf is the foliage's own
+   colour by season, and the two butterflies are a wheat yellow and a pale sky. */
+:root {
+  --leaf-spring: #a8d878;
+  --leaf-summer: #7cc060;
+  --leaf-autumn: #e09040;
+  --leaf-winter: #e6edf0;
+  --wing-a: #f0c040;
+  --wing-b: #cfe3f0;
+}
+
 /* ━━━━ Transitions.dev — semantic tokens ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :root {
-  /* Card resize */
-  --resize-dur: 300ms;
-  --resize-ease: steps(6, end);
   /* Notification badge */
   --badge-slide-dur: 260ms;
   --badge-pop-dur: 500ms;
@@ -263,12 +280,6 @@
   --reveal-dur: 400ms;
   --reveal-blur: 2px;
   --reveal-ease: steps(6, end);
-  /* Shimmer text */
-  --shimmer-dur: 2000ms;
-  --shimmer-base: #7c7c7c;
-  --shimmer-highlight: #0d0d0d;
-  --shimmer-band: 400%;
-  --shimmer-ease: linear;
   /* Tabs sliding */
   --tabs-dur: 250ms;
   --tabs-ease: steps(5, end);
@@ -278,8 +289,6 @@
   --tabs-pill-bg: #ffffff;
 }
 .dark {
-  --shimmer-base: #6b6b6b;
-  --shimmer-highlight: #e0e0e0;
   --tabs-text-muted: rgba(220, 220, 220, 0.7);
   --tabs-text-active: #f0f0f0;
   --tabs-bar-bg: #222;
@@ -292,19 +301,34 @@
     box-sizing: border-box;
   }
 
+  /* clip, not hidden: no scroll container, so position: sticky keeps working. */
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: clip;
     font-family: var(--font-sans);
     line-height: 1.6;
   }
 
   ::selection {
     background: var(--color-accent);
-    color: oklch(0.99 0 0);
+    color: oklch(0.99 0.008 88);
+  }
+
+  /* The accent carries focus everywhere. Zero specificity, so a component that
+     draws its own ring (focus-visible:ring-*, glass-btn) still wins. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Clear the 4px frame instead of sinking into it. */
+  :where(.pixel-frame) :where(a, button):focus-visible {
+    outline-offset: 6px;
   }
 }
 
@@ -341,7 +365,10 @@
 @utility glass-btn {
   border: 1px solid transparent;
   border-radius: var(--radius-interactive);
-  transition: all 200ms var(--ease-out-quart);
+  transition:
+    background-color 200ms var(--ease-out-quart),
+    border-color 200ms var(--ease-out-quart),
+    color 200ms var(--ease-out-quart);
   &:hover {
     background: var(--color-secondary);
     border-color: var(--color-border);
@@ -360,7 +387,6 @@
   border-radius: var(--radius-interactive);
   background: var(--color-background);
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 24px oklch(0 0 0 / 0.12), 0 1px 0 oklch(1 0 0 / 0.08) inset;
 }
 
 @utility nav-island-pill {
@@ -1224,7 +1250,9 @@
 @layer components {
   .nav-link {
     @apply text-muted relative inline-flex items-center rounded px-3 py-1.5 font-mono text-[0.7rem] tracking-[0.1em] uppercase;
-    transition: all 0.2s var(--ease-out-quart);
+    transition:
+      color 0.2s var(--ease-out-quart),
+      background-color 0.2s var(--ease-out-quart);
   }
   .nav-link:hover {
     @apply text-foreground bg-secondary;
@@ -1511,38 +1539,6 @@
   50%      { opacity: var(--pulse-min); }
 }
 
-/* Shimmer text (15) */
-.t-shimmer {
-  position: relative;
-  display: inline-block;
-  color: var(--shimmer-base);
-}
-.t-shimmer::before {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: linear-gradient(
-    90deg,
-    transparent          0%,
-    transparent         40%,
-    var(--shimmer-highlight) 50%,
-    transparent         60%,
-    transparent        100%
-  );
-  background-size: var(--shimmer-band) 100%;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: t-shimmer var(--shimmer-dur) var(--shimmer-ease) infinite;
-}
-@keyframes t-shimmer {
-  0%   { background-position: 100% 0; }
-  100% { background-position: 0% 0; }
-}
-
 /* Tabs sliding (16) */
 .t-tabs {
   position: relative;
@@ -1575,14 +1571,14 @@
   top: 3px;
   left: 0;
   height: 30px;
-  width: 0;
+  /* 1px wide, stretched by scaleX to the active tab, so only transform moves. */
+  width: 1px;
   background: var(--tabs-pill-bg);
   border-radius: 0;
-  transform: translateX(0);
-  transition:
-    transform var(--tabs-dur) var(--tabs-ease),
-    width     var(--tabs-dur) var(--tabs-ease);
-  will-change: transform, width;
+  transform: translateX(0) scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--tabs-dur) var(--tabs-ease);
+  will-change: transform;
   z-index: 0;
   pointer-events: none;
 }
@@ -1624,14 +1620,6 @@
     filter    var(--badge-pop-close-dur)  var(--badge-close-ease);
 }
 
-/* Card resize (01) */
-.t-resize {
-  transition:
-    width  var(--resize-dur) var(--resize-ease),
-    height var(--resize-dur) var(--resize-ease);
-  will-change: width, height;
-}
-
 /* Wandering eyes — mobile auto-wander keyframes */
 @keyframes wandering-eyes-move {
   0%,  10% { background-position: 0 0; }
@@ -1641,8 +1629,8 @@
   93%,100% { background-position: 0 0; }
 }
 @keyframes wandering-eyes-blink {
-  0%,10%,12%,20%,22%,40%,42%,60%,62%,70%,72%,90%,92%,98%,100% { height: 16px; }
-  11%,21%,41%,61%,71%,91%,99% { height: 6px; }
+  0%,10%,12%,20%,22%,40%,42%,60%,62%,70%,72%,90%,92%,98%,100% { transform: scaleY(1); }
+  11%,21%,41%,61%,71%,91%,99% { transform: scaleY(0.375); }
 }
 
 /* Touch sizing.

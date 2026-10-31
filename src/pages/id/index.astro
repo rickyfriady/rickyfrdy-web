@@ -8,6 +8,7 @@ import HeroPhoto from '@/components/ui/HeroPhoto.astro'
 import PageAnimations from '@/components/ui/PageAnimations.astro'
 import Valley from '@/components/game/Valley.astro'
 import { projects } from '@/data/projects'
+import { stackGroups } from '@/data/stack'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 
@@ -25,11 +26,6 @@ const categoryLabel: Record<string, string> = {
   'open-source': 'Open Source',
 }
 
-// The old capability chips, deduplicated: one scannable line, nothing added.
-const stack = [
-  'Vue 3', 'React', 'Astro', 'TypeScript', 'Tailwind', 'NestJS', 'Node.js', 'PostgreSQL', 'Redis',
-  'Express', 'Microservices', 'Module Federation', 'Zod', 'Docker', 'GitLab CI',
-]
 ---
 
 <MainLayout
@@ -49,7 +45,7 @@ const stack = [
     <div class="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-start md:gap-16">
       <!-- Left: text -->
       <div class="md:max-w-3xl">
-        <p class="eyebrow mb-4" data-hero-reveal>{t('id', 'hero.eyebrow')}</p>
+        <p class="eyebrow mb-3" data-hero-reveal>{t('id', 'hero.eyebrow')}</p>
         <h1
           class="title-display max-w-3xl"
           style="font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.92"
@@ -68,23 +64,23 @@ const stack = [
         <div class="mt-8 flex flex-wrap gap-3" data-hero-reveal>
           <a
             href="/id/projects"
-            class="menu-cursor bg-accent text-background hover:bg-accent-hover inline-flex min-h-11 py-2 items-center px-6 text-sm font-medium transition-colors"
+            class="menu-cursor bg-accent text-background hover:bg-accent-hover inline-flex min-h-[44px] items-center px-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             data-btn-hover
           >
             Lihat Karya Saya
           </a>
           <a
             href="/id/contact"
-            class="menu-cursor border-border text-foreground hover:bg-secondary inline-flex min-h-11 py-2 items-center border-2 px-6 text-sm font-medium transition-colors"
+            class="menu-cursor border-border text-foreground hover:bg-secondary inline-flex min-h-[44px] items-center border-2 px-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             data-btn-hover
           >
             Hubungi Saya
           </a>
         </div>
-        <!-- The document a recruiter came for, one quiet step below the two CTAs. -->
+        <!-- The document a recruiter came for, under the two CTAs at the proof sentence's size. -->
         <a
           href={localizePath('/resume.pdf', 'id')}
-          class="text-muted hover:text-accent mt-2 inline-flex min-h-11 items-center font-mono text-xs transition-colors"
+          class="text-foreground hover:text-accent mt-2 inline-flex min-h-11 items-center text-lg underline underline-offset-4 transition-colors md:text-xl"
           data-hero-reveal
         >
           {t('id', 'hero.resume')}
@@ -117,7 +113,6 @@ const stack = [
           <FeaturedProjectCard
             project={project}
             categoryLabel={categoryLabel[project.category] ?? project.category}
-            featuredLabel="Unggulan"
             locale="id-ID"
             lang="id"
           />
@@ -128,9 +123,9 @@ const stack = [
     <div class="px-4 pb-8">
       <a
         href="/id/projects"
-        class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
+        class="text-foreground hover:text-accent inline-flex min-h-11 items-center text-sm underline underline-offset-4 transition-colors"
       >
-        Semua proyek →
+        Lihat semua proyek
       </a>
     </div>
   </section>
@@ -140,14 +135,21 @@ const stack = [
     <div class="chapter-heading px-4">
       <h2 class="chapter-label inline">02 · Teknologi</h2>
     </div>
-    <p class="text-foreground max-w-4xl px-4 pb-8 text-sm leading-relaxed">{stack.join(' · ')}</p>
+    <dl class="max-w-4xl space-y-2 px-4 pb-8 text-sm leading-relaxed">
+      {stackGroups.map((group) => (
+        <div class="flex flex-col gap-x-4 sm:flex-row sm:items-baseline">
+          <dt class="text-muted text-label shrink-0 font-mono tracking-[0.12em] uppercase sm:w-28">{t('id', group.label)}</dt>
+          <dd class="text-foreground">{group.items.join(' · ')}</dd>
+        </div>
+      ))}
+    </dl>
   </section>
 
-  <!-- ─── 03 · Tulisan Terbaru ───────────────────────────────── -->
+  <!-- ─── 03 · Tulisan ──────────────────────────────────────── -->
   {recentPosts.length > 0 && (
     <section class="border-border border-b" data-stagger-group>
       <div class="chapter-heading px-4">
-        <h2 class="chapter-label inline">03 · Tulisan Terbaru</h2>
+        <h2 class="chapter-label inline">03 · Tulisan</h2>
       </div>
 
       <div class="divide-border divide-y px-4">
@@ -162,7 +164,7 @@ const stack = [
                 <h3 class="text-foreground group-hover:text-accent text-base font-semibold transition-colors">
                   {post.data.title}
                 </h3>
-                <p class="text-muted mt-1 line-clamp-1 text-sm leading-relaxed">
+                <p class="text-muted mt-1 text-sm leading-relaxed">
                   {post.data.description}
                 </p>
               </div>
@@ -183,28 +185,27 @@ const stack = [
       <div class="px-4 pb-8">
         <a
           href="/blog"
-          class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted hover:text-accent font-mono text-xs transition-colors"
+          class="text-foreground hover:text-accent inline-flex min-h-11 items-center text-sm underline underline-offset-4 transition-colors"
         >
-          Semua artikel →
+          Baca semua artikel
         </a>
       </div>
     </section>
   )}
 
-  <!-- ─── 04 · Terbuka untuk Kerja ──────────────────────────── -->
+  <!-- ─── 04 · Terbuka untuk Peran dan Proyek ──────────────────────────── -->
   <section class="border-border border-b px-4 py-12">
     <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
       <div>
-        <p class="eyebrow mb-2">Ketersediaan</p>
         <h2
           class="title-display"
           style="font-size: clamp(1.8rem, 4vw, 3rem); line-height: 0.95"
         >
           Terbuka untuk<br />
-          <span class="title-accent text-accent">Peran Baru.</span>
+          <span class="title-accent text-accent">Peran dan Proyek.</span>
         </h2>
         <p class="text-muted mt-3 max-w-md text-sm leading-relaxed">
-          Mencari posisi fullstack atau backend-focused. Preferensi kuat untuk stack TypeScript,
+          Mencari posisi fullstack atau berfokus backend. Preferensi kuat untuk stack TypeScript,
           Vue / React, dan NestJS. Remote atau berbasis di Jakarta. Juga terbuka untuk proyek
           freelance: satu sistem utuh, dari front-end sampai back-end, dikerjakan satu orang.
         </p>
