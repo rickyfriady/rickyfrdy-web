@@ -61,6 +61,8 @@ interface Props {
   /** Derived at build time from real activity; `settled` when it was unavailable. */
   weather: Weather
   allowMobileHandheld?: boolean
+  /** Where the full stage starts; the landing band waits for `lg`, where it sits beside the list. */
+  wideQuery?: string
 }
 
 type Panel = 'none' | 'journal' | 'sheet'
@@ -167,7 +169,8 @@ export default function PlayScene({
   player,
   labels,
   weather,
-  allowMobileHandheld = false
+  allowMobileHandheld = false,
+  wideQuery = WIDE_ENOUGH
 }: Props) {
   /* Read once: a visitor who asked for less motion gets a still scene, and the
      destination list below the stage is the interaction path. */
@@ -177,15 +180,15 @@ export default function PlayScene({
   )
   /* Below `md` the scene adapts to handheld mode if allowMobileHandheld is true. */
   const [wide, setWide] = useState(
-    () => typeof window === 'undefined' || window.matchMedia(WIDE_ENOUGH).matches
+    () => typeof window === 'undefined' || window.matchMedia(wideQuery).matches
   )
   useEffect(() => {
-    const mq = window.matchMedia(WIDE_ENOUGH)
+    const mq = window.matchMedia(wideQuery)
     const sync = () => setWide(mq.matches)
     sync()
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
-  }, [])
+  }, [wideQuery])
 
   const isOperable = wide || allowMobileHandheld
   const isHandheld = !wide && allowMobileHandheld

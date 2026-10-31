@@ -188,11 +188,13 @@ what it does (wall, water, door, ground).
   one short line when you walk up. They have no name, quest, schedule or
   content, never appear in a list or the character sheet, and are not the same
   kind of thing as the collaborators, who are the only people with names.
-- **On a phone the band points, it does not list.** Below `md` the landing
-  band shows its label and one line linking the walkable valley at `/play`,
-  which a phone can play; the place tiles would only repeat the bottom nav.
-  They stay in the HTML. `/play` itself keeps its list at every width.
-- **The list beside the world is a grid, not a column.** From `md` its places
+- **Below `lg` the band points, it does not list.** On a phone or a tablet the
+  landing band shows its label and one line linking the walkable valley at
+  `/play`; the place tiles would only repeat the bottom nav, and the world would
+  stack under them, taller than the screen. The world does not mount there.
+  The tiles stay in the HTML. `/play` itself keeps its list and world at every
+  width.
+- **The list beside the world is a grid, not a column.** From `lg` its places
   sit two to a row, so on desktop the list stays shorter than the world and
   the world sets the band's height. Between `lg` and `xl`, where the stage drops
   to scale 2, the place summaries step aside; the list on the landing page also
@@ -234,15 +236,26 @@ reserved for attention (board threads, the `pixel-frame-thread` state), so it
 never marks a card as featured, and nothing on a card loops: a status mark is
 drawn still. A project card's image is a
 strip above its text, never under it, and the link is named by the project
-title. Metric values are body-small in the foreground colour; their labels stay
-muted.
+title. The metrics are the evidence, so they are set at the description's
+size: values in mono, in the foreground colour; labels muted body text. The
+image strip is 96px on a phone and 128px from `sm`, and the frames in a row
+are equal height.
+
+A case study opens on its numbers. The header is sized to its content, on the
+page ground: category and year, the title, the summary, then the Impact
+numbers, then the project image in a frame. Nothing sits on the image, and
+there is no scroll cue: the reader came from a card's numbers and finds them
+on the first screen.
 
 Interactive chrome is at least 44px on its shortest side, and so is every
 standalone text link (section links, footer links, drawer items): the text
 keeps its size and only the hit area grows. Links inside running prose are the
 exception. Focus is always visible and never traded for a decorative marker.
 
-The skip link speaks the page's language.
+The skip link and every header control speak the page's language. A footer
+link reads like the heading of the page it opens ("Toy Shed"). A section link
+to a list ("Read all articles") shows only when the list holds more than the
+section does.
 
 Language is reachable at every width: the header switcher from `md`, and below
 it the bottom nav's More drawer, whose last item names the other language in

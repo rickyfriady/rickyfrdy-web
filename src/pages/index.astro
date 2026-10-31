@@ -14,10 +14,10 @@ import type { CollectionEntry } from 'astro:content'
 
 const featuredProjects = projects.slice(0, 3)
 
-const recentPosts = (await getCollection('blog') as CollectionEntry<'blog'>[])
+const posts = (await getCollection('blog') as CollectionEntry<'blog'>[])
   .filter((entry) => !entry.data.draft)
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 2)
+const recentPosts = posts.slice(0, 2)
 
 const categoryLabel: Record<string, string> = {
   'web-app': 'Web App',
@@ -181,14 +181,17 @@ const categoryLabel: Record<string, string> = {
         ))}
       </div>
 
-      <div class="px-4 pb-8">
-        <a
-          href="/blog"
-          class="text-foreground hover:text-accent inline-flex min-h-11 items-center text-sm underline underline-offset-4 transition-colors"
-        >
-          Read all articles
-        </a>
-      </div>
+      {/* Only when there is more to read than the section shows: PRODUCT.md, write more, not imply more. */}
+      {posts.length > recentPosts.length && (
+        <div class="px-4 pb-8">
+          <a
+            href="/blog"
+            class="text-foreground hover:text-accent inline-flex min-h-11 items-center text-sm underline underline-offset-4 transition-colors"
+          >
+            Read all articles
+          </a>
+        </div>
+      )}
     </section>
   )}
 

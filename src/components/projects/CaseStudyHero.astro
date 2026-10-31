@@ -1,6 +1,7 @@
 ---
 import type { Project } from '@/models'
 import FinLogo from '@/components/ui/FinLogo.astro'
+import MetricCounters from '@/components/projects/MetricCounters.astro'
 
 interface Props {
   project: Project
@@ -9,47 +10,16 @@ interface Props {
 const { project } = Astro.props
 ---
 
-<header
-  class="relative flex min-h-svh flex-col justify-end overflow-hidden"
-  data-hero
->
-  <!-- Background image / paper-grid fallback -->
-  {project.heroImage ? (
-    <img
-      src={project.heroImage}
-      alt=""
-      aria-hidden="true"
-      data-hero-bg
-      class="absolute inset-0 h-full w-full object-cover"
-    />
-  ) : (
-    <div
-      class="paper-grid absolute inset-0"
-      data-hero-bg
-      style="background: var(--color-surface);"
-      role="img"
-      aria-label={project.title}
-    />
-  )}
-
-  <!-- Layered overlay in the page ground, near-solid at the bottom so the text reads in either theme -->
-  <div class="absolute inset-0 bg-background/30" />
-  <div class="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-transparent" />
-
-  <!-- Left accent line -->
-  <div class="bg-accent absolute inset-y-0 left-0 w-[4px]" />
-
-  <!-- Hero content -->
-  <div class="relative px-8 pb-48 pt-32 md:px-16 xl:pb-24" id="case-study-hero-title">
-
-    <!-- Company logo -->
+<!-- Sized to its content, on the page ground: the reader came from a card's
+     numbers, so the numbers are on the first screen and the photo follows. -->
+<header class="px-6 pt-10 pb-12 md:px-16" data-hero>
+  <div id="case-study-hero-title">
     {project.companyLogo && (
       <div class="mb-6" data-hero-item>
         <FinLogo name={project.companyLogo} size={28} bg label={project.company} />
       </div>
     )}
 
-    <!-- Category · Year -->
     <p
       class="font-mono mb-4 text-[11px] tracking-[0.25em] uppercase text-foreground"
       data-hero-item
@@ -61,7 +31,7 @@ const { project } = Astro.props
     <div class="overflow-hidden mb-6">
       <h1
         class="title-display text-foreground"
-        style="font-size: clamp(3rem, 9vw, 6.5rem); line-height: 0.9; will-change: transform;"
+        style="font-size: clamp(2.5rem, 7vw, 5rem); line-height: 0.9; will-change: transform;"
         transition:name={`project-title-${project.slug}`}
         data-hero-title
       >
@@ -69,24 +39,20 @@ const { project } = Astro.props
       </h1>
     </div>
 
-    <!-- Short description -->
-    <p
-      class="max-w-xl text-sm leading-relaxed text-foreground"
-      data-hero-item
-    >
+    <p class="max-w-xl text-sm leading-relaxed text-foreground" data-hero-item>
       {project.shortDescription}
     </p>
-
-    <!-- Scroll indicator -->
-    <div
-      class="mt-10 flex items-center gap-3"
-      data-hero-item
-      aria-hidden="true"
-    >
-      <div class="h-px w-10 bg-accent/50" />
-      <span class="font-mono text-label tracking-[0.22em] uppercase text-muted">
-        Scroll to explore
-      </span>
-    </div>
   </div>
+
+  {project.metrics && project.metrics.length > 0 && (
+    <div class="mt-8 max-w-3xl">
+      <MetricCounters metrics={project.metrics} />
+    </div>
+  )}
+
+  {project.heroImage ? (
+    <figure class="pixel-frame mt-10 aspect-[16/7] max-w-5xl overflow-hidden">
+      <img src={project.heroImage} alt="" aria-hidden="true" class="h-full w-full object-cover" />
+    </figure>
+  ) : null}
 </header>

@@ -3,7 +3,6 @@ import { getCollection, render } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import CaseStudyHero from '@/components/projects/CaseStudyHero.astro'
-import MetricCounters from '@/components/projects/MetricCounters.astro'
 import ProjectCTAs from '@/components/projects/ProjectCTAs.astro'
 import ProjectNav from '@/components/projects/ProjectNav.astro'
 import MainLayout from '@/components/layout/MainLayout.astro'
@@ -102,18 +101,6 @@ const pairs = project.challenges
       )}
     </div>
   </section>
-
-  <!-- § Impact metrics -->
-  {project.metrics && project.metrics.length > 0 && (
-    <section class="border-border border-b" data-reveal>
-      <div class="px-6 py-12 md:px-16 md:py-14">
-        <p class="font-mono mb-8 text-label tracking-[0.25em] uppercase text-accent">
-          {t(lang, 'case.impact')}
-        </p>
-        <MetricCounters metrics={project.metrics} />
-      </div>
-    </section>
-  )}
 
   <!-- § Problem → Solution -->
   <section class="border-border border-b" data-reveal>
@@ -214,26 +201,6 @@ const pairs = project.challenges
   function initAnimations() {
     gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
       // ── Hero ──────────────────────────────────────────────────────
-
-      // 1. Background image: scale-in entrance + parallax on scroll
-      const heroBg = document.querySelector<HTMLElement>('[data-hero-bg]')
-      if (heroBg) {
-        gsap.from(heroBg, {
-          scale: 1.12,
-          duration: 1.8,
-          ease: 'steps(12)',
-        })
-        gsap.to(heroBg, {
-          yPercent: 28,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '[data-hero]',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1.2,
-          },
-        })
-      }
 
       // 2. Title: slide up from inside overflow:hidden parent (clip reveal)
       const heroTitle = document.querySelector<HTMLElement>('[data-hero-title]')

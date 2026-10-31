@@ -40,8 +40,8 @@ interface Props {
 }
 
 const { lang, showcase = false, mobilePlayScene = showcase, linkedElsewhere = [] } = Astro.props
-/** Below `md` without a playable world, the list only repeats the bottom nav, so it steps aside. */
-const fromMd = mobilePlayScene ? '' : 'hidden md:block'
+/** Below `lg` without a handheld, the list only repeats the bottom nav and the world would stack under it, so both step aside. */
+const fromLg = mobilePlayScene ? '' : 'hidden lg:block'
 const experiences = lang === 'id' ? experiencesId : experiencesEn
 
 const posts = ((await getCollection('blog')) as CollectionEntry<'blog'>[])
@@ -184,7 +184,7 @@ const kindLabel = (kind: string) =>
     <div class="lg:w-96 lg:shrink-0" data-list-col>
       <h2 class="chapter-label inline">{t(lang, 'case.file')}</h2>
       {!mobilePlayScene && (
-        <p class="text-muted mt-2 text-sm leading-relaxed md:hidden">
+        <p class="text-muted mt-2 text-sm leading-relaxed lg:hidden">
           {t(lang, 'valley.phone')}
           <a
             href={localizePath('/play', lang)}
@@ -194,12 +194,12 @@ const kindLabel = (kind: string) =>
           </a>
         </p>
       )}
-      <p class:list={['text-muted mt-2 text-sm leading-relaxed', fromMd]}>{t(lang, 'valley.intro')}</p>
+      <p class:list={['text-muted mt-2 text-sm leading-relaxed', fromLg]}>{t(lang, 'valley.intro')}</p>
       {!showcase && (
-        <noscript><p class:list={['text-muted mt-2 text-sm leading-relaxed', fromMd]}>{t(lang, 'game.loading')}</p></noscript>
+        <noscript><p class:list={['text-muted mt-2 text-sm leading-relaxed', fromLg]}>{t(lang, 'game.loading')}</p></noscript>
       )}
       <ul
-        class:list={['mt-4 grid-cols-2 gap-2', mobilePlayScene ? 'grid' : 'hidden md:grid']}
+        class:list={['mt-4 grid-cols-2 gap-2', mobilePlayScene ? 'grid' : 'hidden lg:grid']}
         aria-label={t(lang, 'game.destinations')}
       >
         {places.map((object) => (
@@ -243,11 +243,11 @@ const kindLabel = (kind: string) =>
     <div
       class:list={[
         'min-w-0 flex-1 flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center',
-        mobilePlayScene ? 'flex' : 'hidden md:flex'
+        mobilePlayScene ? 'flex' : 'hidden lg:flex'
       ]}
       data-stage-col
     >
-      <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden w-full md:block'}>
+      <div class={mobilePlayScene ? 'w-full flex justify-center' : 'hidden w-full lg:block'}>
         <PlayScene
           client:only="react"
           rooms={scene}
@@ -258,6 +258,7 @@ const kindLabel = (kind: string) =>
           labels={labels}
           weather={weather}
           allowMobileHandheld={mobilePlayScene}
+          wideQuery={mobilePlayScene ? undefined : '(min-width: 64rem)'}
         >
           {/* Server-rendered, replaced when the island mounts: with scripts
               blocked the slot says where the places are, in one line, and the

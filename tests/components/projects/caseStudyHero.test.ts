@@ -56,3 +56,28 @@ describe('MetricCounters', () => {
     expect(METRICS).not.toMatch(/\bitalic\b/)
   })
 })
+
+/**
+ * Run 9 found the hero a full screen of photo with ghost interface text under
+ * the title and "Scroll to explore", and the first Impact number two screens
+ * down. The reader came from a card's numbers, so the numbers open the page.
+ */
+describe('CaseStudyHero, proof first', () => {
+  it('is sized to its content, not the viewport', () => {
+    expect(HERO).not.toMatch(/min-h-(svh|screen|dvh)/)
+  })
+
+  it('carries the metric grid, and the page renders it nowhere else', () => {
+    expect(HERO).toMatch(/<MetricCounters/)
+    expect(PAGE).not.toMatch(/<MetricCounters/)
+  })
+
+  it('keeps the photo out from under the text', () => {
+    expect(HERO).not.toMatch(/absolute inset-0[^"]*object-cover/)
+  })
+
+  it('has no scroll cue and no accent stripe', () => {
+    expect(HERO).not.toMatch(/Scroll to explore/i)
+    expect(HERO).not.toMatch(/inset-y-0 left-0 w-\[4px\]/)
+  })
+})

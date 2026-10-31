@@ -2,6 +2,10 @@
 import LangSwitcher from './LangSwitcher.astro'
 import NavLinks from './NavLinks.astro'
 import WanderingEyes from './WanderingEyes.astro'
+import { isIdPath } from '@/i18n/path'
+import { t } from '@/i18n/ui'
+
+const lang = isIdPath(Astro.url.pathname) ? 'id' : 'en'
 ---
 
 <div id="scroll-progress" class="fixed top-0 left-0 z-[51] h-[4px] bg-accent/60" style="width:0%" aria-hidden="true" />
@@ -17,7 +21,7 @@ import WanderingEyes from './WanderingEyes.astro'
         id="cmdk-trigger"
         type="button"
         data-cmdk-open
-        aria-label="Open command palette"
+        aria-label={t(lang, 'nav.palette')}
         aria-keyshortcuts="Meta+K Control+K"
         class="glass-btn text-muted hover:text-foreground hidden min-h-11 items-center gap-2 px-3 md:flex"
       >
@@ -32,7 +36,7 @@ import WanderingEyes from './WanderingEyes.astro'
       <button
         id="sound-toggle"
         type="button"
-        aria-label="Toggle interaction sounds"
+        aria-label={t(lang, 'nav.sound')}
         aria-pressed="false"
         class="glass-btn text-muted hover:text-foreground flex size-11 items-center justify-center"
       >
@@ -49,7 +53,7 @@ import WanderingEyes from './WanderingEyes.astro'
       <button
         id="theme-toggle"
         type="button"
-        aria-label="Toggle dark mode"
+        aria-label={t(lang, 'nav.theme')}
         class="glass-btn text-muted hover:text-foreground flex size-11 items-center justify-center"
       >
         <svg id="icon-sun" class="block h-4 w-4 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">

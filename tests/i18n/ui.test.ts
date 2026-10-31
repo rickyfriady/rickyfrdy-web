@@ -9,12 +9,11 @@ describe('t()', () => {
     expect(t('en', 'case.github')).toBe('View on GitHub')
   })
 
-  it('returns all 11 keys without error', () => {
+  it('returns all 10 keys without error', () => {
     const keys = [
       'case.back',
       'case.role',
       'case.overview',
-      'case.impact',
       'case.problem',
       'case.solution',
       'case.highlights',
