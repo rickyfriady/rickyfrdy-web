@@ -69,9 +69,12 @@ describe('project translations', () => {
     expect(projects.slice(0, 3).every((p) => p.translations?.id)).toBe(true)
   })
 
+  // Locales write units their own way ("1.5M", "1,5 jt"); the number itself must not change.
+  const digits = (v: string) => v.replace(/\D/g, '')
+
   it.each(translated.map((p) => [p.slug, p] as const))('%s keeps every metric value', (_, p) => {
-    const en = (p.metrics ?? []).map((m) => m.value)
-    const id = (p.translations?.id?.metrics ?? []).map((m) => m.value)
+    const en = (p.metrics ?? []).map((m) => digits(m.value))
+    const id = (p.translations?.id?.metrics ?? []).map((m) => digits(m.value))
     expect(id).toEqual(en)
   })
 })

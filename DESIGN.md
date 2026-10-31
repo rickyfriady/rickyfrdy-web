@@ -50,7 +50,11 @@ bottom nav. From `md` it is the portrait card, set 64px beside the copy rather
 than at the far edge. The skills sit in one plain Stack line under the selected
 work, the same technologies the old capability grid listed, nothing added;
 `/about` holds the full matrix. The page closes on "Open to Roles and
-Projects.", one headline for both readers, with no kicker label above it.
+Projects.", one headline for both readers, with no kicker label above it, then
+one line for each at equal weight and body size ("Roles: …", "Projects: …"),
+and the résumé PDF beside the contact action. The hero's entrance moves its
+items a stepped 20px and never fades them: the name and proof read at full
+strength from the first paint.
 
 ## Colors
 
@@ -237,9 +241,12 @@ never marks a card as featured, and nothing on a card loops: a status mark is
 drawn still. A project card's image is a
 strip above its text, never under it, and the link is named by the project
 title. The metrics are the evidence, so they are set at the description's
-size: values in mono, in the foreground colour; labels muted body text. The
-image strip is 96px on a phone and 128px from `sm`, and the frames in a row
-are equal height.
+size: values in mono, in the foreground colour; labels muted body text. A card
+leads with scale the owner has confirmed (users served, money moved), then the
+figure that proves its tier; a locale may write the units its own way ("1.5M",
+"1,5 jt") but never a different number. The image strip is 96px on a phone and
+128px from `sm`; the cards stack until `lg`, where three fit, and the frames in
+a row are equal height.
 
 A case study opens on its numbers. The header is sized to its content, on the
 page ground: category and year, the title, the summary, then the Impact
@@ -255,7 +262,8 @@ exception. Focus is always visible and never traded for a decorative marker.
 The skip link and every header control speak the page's language. A footer
 link reads like the heading of the page it opens ("Toy Shed"). A section link
 to a list ("Read all articles") shows only when the list holds more than the
-section does.
+section does. A link before the valley band, shown on focus, skips its Tab
+stops to the selected work.
 
 Language is reachable at every width: the header switcher from `md`, and below
 it the bottom nav's More drawer, whose last item names the other language in

@@ -42,11 +42,11 @@
     // Elements with data-hero-reveal (optional data-hero-delay)
     const heroItems = document.querySelectorAll('[data-hero-reveal]')
     if (heroItems.length > 0) {
-      // Set initial state immediately to prevent flash
-      gsap.set(heroItems, { opacity: 0, y: 20 })
+      // Offset only: the name, proof and actions read at full strength from
+      // the first paint, so a fast scanner never meets a pale hero.
+      gsap.set(heroItems, { y: 20 })
 
       gsap.to(heroItems, {
-        opacity: 1,
         y: 0,
         duration: 0.8,
         ease: 'steps(12)',

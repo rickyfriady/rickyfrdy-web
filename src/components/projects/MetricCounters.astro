@@ -9,20 +9,22 @@ interface Props {
 }
 
 const { metrics } = Astro.props
+// Every row full: three in one row; four two by two on a phone, one row from `sm`.
+const cols = metrics.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'
 ---
 
 <!-- The numbers are proof, so they only ever show their real values: no
      count-up, whose in-between frames are numbers that were never true. The
      grid may fade in, from a start state the script sets itself, only when
      motion is allowed and the grid is still below the fold. -->
-<div class="grid grid-cols-3 gap-2 sm:gap-4" data-metric-grid>
+<div class:list={['grid gap-2 sm:gap-4', cols]} data-metric-grid>
   {metrics.map((metric) => (
     <div
       role="img"
       class="border-border flex flex-col items-center gap-2 border px-2 py-3 text-center sm:p-5"
       aria-label={`${metric.value} ${metric.label}`}
     >
-      <span class="text-accent font-mono text-[clamp(1.8rem,4vw,2.8rem)] font-bold leading-none">
+      <span class="text-accent whitespace-nowrap font-mono text-[clamp(1.8rem,4vw,2.8rem)] font-bold leading-none">
         {metric.value}
       </span>
       <span class="text-muted text-sm leading-snug">{metric.label}</span>

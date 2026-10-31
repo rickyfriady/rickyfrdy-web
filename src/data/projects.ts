@@ -20,6 +20,7 @@ export const projects = [
     companyLogo: 'pegadaian',
     role: 'Lead Frontend Engineer · Fullstack Developer',
     metrics: [
+      { value: '1.5M', label: 'active users on the platform' },
       { value: '5+', label: 'teams deploy independently' },
       { value: '≥80%', label: 'unit test coverage' },
       { value: '0', label: 'regression incidents' }
@@ -29,6 +30,7 @@ export const projects = [
         shortDescription:
           'Aplikasi Micro-Frontend untuk seluruh perusahaan, dibangun dengan Vue 3 dan microservice NestJS, sehingga tiap tim bisa deploy sendiri.',
         metrics: [
+          { value: '1,5 jt', label: 'pengguna aktif platform' },
           { value: '5+', label: 'tim deploy secara mandiri' },
           { value: '≥80%', label: 'cakupan unit test' },
           { value: '0', label: 'insiden regresi' }
@@ -70,18 +72,20 @@ export const projects = [
     companyLogo: 'pegadaian',
     role: 'Backend Engineer · System Architect',
     metrics: [
+      { value: 'Rp 3B+', label: 'in loan originations' },
       { value: '9', label: 'microservices built' },
-      { value: '0', label: 'downtime during migration' },
-      { value: '3', label: 'sprints to complete' }
+      { value: '80%', label: 'lead-to-approval conversion' },
+      { value: '0', label: 'downtime during migration' }
     ],
     translations: {
       id: {
         shortDescription:
           'Merombak monolit CodeIgniter 3 lama menjadi 9 microservice NestJS dengan Factory pattern, melayani akuisisi calon peminjam dalam skala besar.',
         metrics: [
+          { value: 'Rp 3 M+', label: 'pinjaman tersalurkan' },
           { value: '9', label: 'microservice dibangun' },
-          { value: '0', label: 'downtime selama migrasi' },
-          { value: '3', label: 'sprint hingga selesai' }
+          { value: '80%', label: 'konversi lead ke persetujuan' },
+          { value: '0', label: 'downtime selama migrasi' }
         ]
       }
     },
